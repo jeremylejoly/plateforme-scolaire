@@ -19501,20 +19501,34 @@ function jtFin(){
     `<span style="font-family:'Nunito',sans-serif;font-weight:900;font-size:36px;color:${color}">${jtScore}/${jtNumQ}</span><br>
      <span style="color:${color};font-weight:700">${pct}%</span><br>
      ⏱️ Temps : <strong>${sec} secondes</strong>`;
-  if(state.student){
-    try {
-      saveResult({
-        student:state.student, cls:state.studentCls,
-        className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
-        activity:'jeu_tables',
-        bookTitle:'Jeu — Tables de multiplication' + (jtTable ? ' (table de ' + jtTable + ')' : ' (toutes les tables)'),
-        score:jtScore, total:jtNumQ, pct,
-        time_sec: sec,
-        date:new Date().toLocaleDateString('fr-BE'),
-        time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
-      });
-    } catch(e){ console.warn('saveResult', e); }
+  // Record : meilleur score, puis temps le plus court, pour cette table et ce nombre de questions
+  const recs = jeuRecordGet('tables');
+  const cle = (jtTable || 'toutes') + '_' + jtNumQ;
+  const old = recs[cle];
+  const nomTable = jtTable ? 'table de ' + jtTable : 'toutes les tables';
+  let ligne;
+  if (!old || jtScore > old.score || (jtScore === old.score && sec < old.sec)) {
+    recs[cle] = { score: jtScore, sec: sec };
+    jeuRecordSet('tables', recs);
+    ligne = old ? `🔥 <strong>Nouveau record</strong> (${nomTable}, ${jtNumQ} questions) ! Ancien : ${old.score}/${jtNumQ} en ${old.sec} s.`
+                : `📌 Premier record enregistré pour la ${nomTable} en ${jtNumQ} questions.`;
+  } else {
+    ligne = `🏅 Ton record (${nomTable}, ${jtNumQ} questions) : <strong>${old.score}/${jtNumQ} en ${old.sec} s</strong>.`;
   }
+  document.getElementById('jt-score-final').innerHTML += `<div style="margin-top:0.8rem;font-size:14px;color:var(--text)">${ligne}</div>`;
+}
+
+// Records personnels des jeux (gardés sur l'appareil, jamais envoyés à l'enseignant)
+function jeuRecordKey(jeu){
+  let who = 'invite';
+  try { if (state && state.student) who = (state.studentCls || '') + '_' + state.student; } catch(e) {}
+  return 'lcml_record_' + jeu + '_' + who;
+}
+function jeuRecordGet(jeu){
+  try { return JSON.parse(localStorage.getItem(jeuRecordKey(jeu)) || '{}') || {}; } catch(e) { return {}; }
+}
+function jeuRecordSet(jeu, obj){
+  try { localStorage.setItem(jeuRecordKey(jeu), JSON.stringify(obj)); } catch(e) {}
 }
 
 function jtReset(){
@@ -20200,20 +20214,16 @@ function memFinJeu(){
       <div style="font-size:16px;font-weight:700;color:var(--purple)">${perf}</div>`;
     panel.scrollIntoView({behavior:'smooth'});
   }
-  if(state.student){
-    try {
-      saveResult({
-        student:state.student, cls:state.studentCls,
-        className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
-        activity:'jeu_memory',
-        bookTitle:'Jeu — Memory Calcul (' + memTours + ' tentatives)',
-        score:8, total:8, pct:100,
-        time_sec: memElapsed,
-        date:new Date().toLocaleDateString('fr-BE'),
-        time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
-      });
-    } catch(e){ console.warn('saveResult', e); }
+  // Record : le moins de tentatives, puis le temps le plus court
+  const rec = jeuRecordGet('memory');
+  let ligne;
+  if (!rec.tours || memTours < rec.tours || (memTours === rec.tours && memElapsed < rec.sec)) {
+    ligne = rec.tours ? `🔥 Nouveau record ! Ancien : ${rec.tours} tentatives en ${rec.sec} s.` : '📌 Premier record enregistré.';
+    jeuRecordSet('memory', { tours: memTours, sec: memElapsed });
+  } else {
+    ligne = `🏅 Ton record : <strong>${rec.tours} tentatives en ${rec.sec} s</strong>.`;
   }
+  if (panel) panel.innerHTML += `<div style="font-size:14px;margin-top:0.5rem;color:var(--text)">${ligne}</div>`;
 }
 
 
