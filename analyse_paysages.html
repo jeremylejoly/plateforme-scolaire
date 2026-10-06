@@ -306,6 +306,10 @@
       color: var(--encre);
     }
 
+    .choice-btn.is-good { background: var(--vert-clair); border-color: var(--vert); color: var(--vert); }
+    .choice-btn.is-bad { background: var(--rouge-clair); border-color: var(--rouge); color: var(--rouge); text-decoration: line-through; }
+    .choice-btn.is-missed { background: #e8f0fc; border-color: #1f5fbf; color: #1f5fbf; outline: 2px solid #1f5fbf; }
+    .choice-btn:disabled { cursor: default; }
     .choice-btn.selected {
       background: var(--primaire);
       border-color: #1e293b;
@@ -502,15 +506,15 @@
         <h3>Les plans du paysage</h3>
         <div class="summary-item">
           <strong>Le premier plan (ou avant-plan)</strong>
-          <p>C'est la partie du paysage située le plus près de l'observateur, tout en bas. Les éléments y apparaissent grands et très détaillés (ex: la rivière, la route, les champs devant nous).</p>
+          <p>C'est la partie du paysage située le plus près de l'observateur, tout en bas. Les éléments y apparaissent grands et très détaillés.</p>
         </div>
         <div class="summary-item">
           <strong>Le second plan (ou plan intermédiaire)</strong>
-          <p>C'est la partie située à mi-distance, entre l'avant-plan et l'arrière-plan. Les éléments y sont de taille moyenne et un peu moins détaillés (ex: le village, le pont, la forêt sur les flancs de la colline, le train).</p>
+          <p>C'est la partie située à mi-distance, entre le premier plan et l'arrière-plan. Les éléments y sont de taille moyenne et un peu moins détaillés.</p>
         </div>
         <div class="summary-item">
           <strong>L'arrière-plan</strong>
-          <p>C'est la partie la plus éloignée, tout au fond, se terminant par la ligne d'horizon. Les éléments y paraissent petits et flous (ex: les collines lointaines).</p>
+          <p>C'est la partie la plus éloignée, tout au fond, se terminant par la ligne d'horizon. Les éléments y paraissent petits et flous.</p>
         </div>
       </div>
 
@@ -538,7 +542,7 @@
         </div>
         <div class="summary-item">
           <strong>Les voies de communication</strong>
-          <p>Comprennent les infrastructures de transport : routes, ponts, voies ferrées, lignes électriques et ports.</p>
+          <p>Comprennent les infrastructures de transport : routes, ponts, voies ferrées, canaux et ports.</p>
         </div>
         <div class="summary-item">
           <strong>Les activités économiques</strong>
@@ -745,7 +749,7 @@
       <!-- Element 7 -->
       <div class="element-card" id="card-6">
         <div class="element-header">
-          <span class="element-title">Les collines de l'horizon</span>
+          <span class="element-title">Les collines</span>
           <span class="element-status" id="status-6">Faux</span>
         </div>
         
@@ -820,17 +824,17 @@
     {
       plan: 'premier',
       nature: 'naturelle',
-      text: "La rivière s'écoule tout en bas de l'image, au plus près de nous (premier plan). C'est un élément naturel lié à l'eau (hydrographie)."
+      text: "La rivière coule tout en bas de l'image, au plus près de nous (premier plan). C'est un élément naturel lié à l'eau (hydrographie)."
     },
     {
       plan: 'second',
       nature: 'humaine',
-      text: "Le village de briques avec son église est implanté à mi-distance (second plan). C'est une composante humaine créée pour se loger (habitat)."
+      text: "Le village en pierre avec son église est implanté à mi-distance (second plan). C'est une composante humaine créée pour se loger (habitat)."
     },
     {
       plan: 'second',
       nature: 'naturelle',
-      text: "La forêt couvre le flanc de la colline à mi-distance (second plan). C'est une composante naturelle (végétation spontanée)."
+      text: "La forêt couvre le flanc de la colline à mi-distance (second plan). C'est une composante naturelle (végétation)."
     },
     {
       plan: 'premier',
@@ -843,9 +847,9 @@
       text: "La route asphaltée démarre au tout premier plan. C'est une infrastructure construite par l'Homme pour se déplacer (voie de communication)."
     },
     {
-      plan: 'second',
+      plan: 'premier',
       nature: 'humaine',
-      text: "Le pont en pierre permet de traverser la rivière au second plan. C'est un aménagement humain facilitant les déplacements (voie de communication)."
+      text: "Le pont en pierre est en bas de l'image, tout près de nous (premier plan). Il permet de traverser la rivière : c'est un aménagement humain (voie de communication)."
     },
     {
       plan: 'arriere',
@@ -855,7 +859,7 @@
     {
       plan: 'second',
       nature: 'humaine',
-      text: "La ligne ferroviaire supporte le train à mi-distance (second plan). Il s'agit d'une infrastructure de transport aménagée par l'Homme (voie de communication)."
+      text: "La voie de chemin de fer, avec son train, est à mi-distance sur la droite (second plan). Il s'agit d'une infrastructure de transport aménagée par l'Homme (voie de communication)."
     }
   ];
 
@@ -865,10 +869,14 @@
     nature: null
   }));
 
+  let validated = false;
+  const PLAN_BTNS = ['premier', 'second', 'arriere'];
+  const NATURE_BTNS = ['naturelle', 'humaine'];
+
   // Met à jour la sélection de l'élève
   function selectOption(index, category, value) {
     // Si l'exercice a été validé, on empêche de modifier les réponses
-    if (document.getElementById('btn-reset').style.display === 'block') return;
+    if (validated) return;
 
     // Enregistre le choix
     state[index][category] = value;
@@ -919,6 +927,9 @@
 
   // Valide l'ensemble des réponses
   function validateExercise() {
+    if (validated) return;
+    if (state.some(it => it.plan === null || it.nature === null)) return;
+    validated = true;
     let totalScore = 0;
 
     state.forEach((item, idx) => {
@@ -956,23 +967,50 @@
         let correctionParts = [];
         if (!isPlanCorrect) {
           const planLabels = { premier: "premier plan", second: "second plan", arriere: "arrière-plan" };
-          correctionParts.push(`le plan correct est : **${planLabels[correctPlan]}**`);
+          correctionParts.push(`${planLabels[correctPlan]}`);
         }
         if (!isNatureCorrect) {
           const natureLabels = { naturelle: "composante naturelle", humaine: "composante humaine" };
-          correctionParts.push(`la nature correcte est : **${natureLabels[correctNature]}**`);
+          correctionParts.push(`${natureLabels[correctNature]}`);
         }
-        explanationText = `Erreur. Note : ${correctionParts.join(' et ')}.<br><br>${answers[idx].text}`;
+        explanationText = `<strong style="color:#1f5fbf">Correction : ${correctionParts.join(' et ')}.</strong><br>${answers[idx].text}`;
       } else {
         explanationText = answers[idx].text;
       }
       
       explainBox.innerHTML = explanationText;
       explainBox.style.display = "block";
+
+      // Boutons : vert = bonne réponse choisie, rouge = mauvais choix, bleu = bonne réponse manquée
+      [['plan', PLAN_BTNS, correctPlan, item.plan], ['nature', NATURE_BTNS, correctNature, item.nature]].forEach(([cat, vals, good, chosen]) => {
+        document.querySelectorAll(`#${cat}-group-${idx} .choice-btn`).forEach((btn, bi) => {
+          const v = vals[bi];
+          btn.disabled = true;
+          btn.classList.remove('selected');
+          if (v === chosen && v === good) btn.classList.add('is-good');
+          else if (v === chosen) btn.classList.add('is-bad');
+          else if (v === good) btn.classList.add('is-missed');
+        });
+      });
     });
 
     // Affiche le score
     document.getElementById('score-text').innerText = `${totalScore}/16`;
+
+    // Sauvegarde (une seule fois par validation)
+    try {
+      if (window.parent && window.parent !== window && typeof window.parent.saveResult === 'function') {
+        window.parent.saveResult({
+          activity: 'geo_paysages_vallee',
+          bookTitle: 'Les paysages : la vallée',
+          score: totalScore,
+          total: 16,
+          pct: Math.round(totalScore / 16 * 100),
+          date: new Date().toLocaleDateString('fr-BE'),
+          time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+        });
+      }
+    } catch (e) { console.warn('saveResult', e); }
 
     // Met à jour les boutons d'action
     document.getElementById('btn-validate').style.display = 'none';
@@ -984,6 +1022,8 @@
 
   // Réinitialise tout pour recommencer
   function resetExercise() {
+    validated = false;
+    document.querySelectorAll('.choice-btn').forEach(btn => { btn.disabled = false; btn.classList.remove('is-good', 'is-bad', 'is-missed'); });
     state.forEach((item, idx) => {
       item.plan = null;
       item.nature = null;
