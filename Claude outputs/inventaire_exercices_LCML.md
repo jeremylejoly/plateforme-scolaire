@@ -1509,6 +1509,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Nouvelle orthographe : boite.
 - Tests jsdom : cadre vide sans cœur perdu, double clic = 1 client, Recommencer sans saut, partie 5 / 6 → 1 sauvegarde ; syntaxe OK.
 
+### 06/10 — Maths › Grandeurs › La monnaie › Deux objets — Rends la monnaie (`grandeur_monnaie_deux_objets`, `fiches/deux_objets_monnaie.html` + copies public et racine) — sw.js v585
+- 20 paires d'objets (prix cohérents avec les deux autres fiches de monnaie, aucune paire en double) : billet toujours supérieur au total, monnaie à rendre faisable avec au plus 5 pièces ou billets de chaque sorte (recherche exhaustive). Résultat déjà enregistré sous le bon identifiant.
+- Même moteur que « Paie le commerçant » et « Rends la monnaie », mêmes corrections : double clic sur « Valider » = client compté deux fois → ignoré pendant le message ; score toujours 5 / 5 → monnaies rendues juste / essais ; un seul enregistrement ; « Recommencer » pendant un message sans effet sur la nouvelle partie.
+- Nouvelle orthographe : boite.
+- Tests jsdom : cadre vide sans cœur perdu, double clic = 1 client, Recommencer sans saut, partie 5 / 6 → 1 sauvegarde ; syntaxe OK. **Les 3 fiches de monnaie sont vérifiées.**
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1863,7 +1869,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 06/10 | Le Labo des Durées | `grandeur_durees_situations` | fiches/durees_situations.html |  |
 | ✅ 06/10 | Paie le commerçant | `grandeur_monnaie_payer` | fiches/payer_le_commercant.html |  |
 | ✅ 06/10 | Rends la monnaie | `grandeur_monnaie_rendre` | fiches/rendre_la_monnaie.html |  |
-| ⬜ | Deux objets — Rends la monnaie | `grandeur_monnaie_deux_objets` | fiches/deux_objets_monnaie.html |  |
+| ✅ 06/10 | Deux objets — Rends la monnaie | `grandeur_monnaie_deux_objets` | fiches/deux_objets_monnaie.html |  |
 | ⬜ | Recettes | `grandeur_proportionnalite_exercice` | fiches/proportionnalite.html |  |
 | ⬜ | Le rallye des bolides | `grandeur_proportionnalite_rallye_bolides` | fiches/rallye_bolides.html |  |
 | ⬜ | Le supermarché malin | `grandeur_proportionnalite_supermarche_malin` | fiches/supermarche_malin.html |  |

@@ -440,7 +440,7 @@ const BANK = [
   {n1:"Un pain au chocolat",p1:130, n2:"Une tablette de chocolat",p2:240, paid:500},
   {n1:"Un sachet de bonbons",p1:199, n2:"Une glace",p2:250, paid:1000},
   {n1:"Un pot de confiture",p1:320, n2:"Une douzaine d'œufs",p2:360, paid:1000},
-  {n1:"Une boîte de céréales",p1:395, n2:"Un litre de lait",p2:125, paid:1000},
+  {n1:"Une boite de céréales",p1:395, n2:"Un litre de lait",p2:125, paid:1000},
   {n1:"Un magazine",p1:490, n2:"Une trousse",p2:650, paid:2000},
   {n1:"Un petit ballon",p1:435, n2:"Une paire de chaussettes",p2:575, paid:2000},
   {n1:"Un sandwich",p1:420, n2:"Une bouteille d'eau",p2:95, paid:1000},
@@ -451,7 +451,7 @@ const BANK = [
   {n1:"Un jeu de société",p1:1750, n2:"Un livre de poche",p2:890, paid:5000},
   {n1:"Une tablette de chocolat",p1:240, n2:"Un sachet de bonbons",p2:199, paid:1000},
   {n1:"Une baguette",p1:115, n2:"Un pain au chocolat",p2:130, paid:500},
-  {n1:"Un pot de confiture",p1:320, n2:"Une boîte de céréales",p2:395, paid:1000},
+  {n1:"Un pot de confiture",p1:320, n2:"Une boite de céréales",p2:395, paid:1000},
   {n1:"Une casquette",p1:1230, n2:"Un magazine",p2:490, paid:2000},
   {n1:"Une douzaine d'œufs",p1:360, n2:"Un menu au fast-food",p2:980, paid:2000},
   {n1:"Une paire de chaussettes",p1:575, n2:"Une trousse",p2:650, paid:2000},
@@ -543,7 +543,7 @@ ${stars}
 }
 
 /* ===================== État ===================== */
-let session=[], exIndex=0, counts={}, hearts=HEARTS, solved=0;
+let session=[], exIndex=0, counts={}, hearts=HEARTS, solved=0, busy=false, ended=false, saved=false, jeton=0;
 function formatEuro(c){return (c/100).toFixed(2).replace(".",",")+" €";}
 function target(){const ex=session[exIndex];return ex.paid - (ex.p1+ex.p2);}
 function pickFive(){
@@ -600,19 +600,24 @@ function removeMoney(m){const n=counts[m.cents]||0;if(n>0)counts[m.cents]=n-1;re
 function currentTotal(){let t=0;for(const c in counts)t+=Number(c)*counts[c];return t;}
 
 function toast(big,msg,sub,then){
+  const j=jeton;
   const t=document.getElementById("toast");
   document.getElementById("toastBig").textContent=big;document.getElementById("toastMsg").textContent=msg;
   document.getElementById("toastSub").textContent=sub||"";t.classList.add("show");
-  setTimeout(()=>{t.classList.remove("show");if(then)then();}, then?1400:1700);
+  // busy : pendant le message, « Valider » est ignoré (avant : un double clic sur une bonne réponse
+  // comptait le client deux fois et sautait le suivant). jeton : annulé si on recommence.
+  busy=true;
+  setTimeout(()=>{ if(j!==jeton) return; t.classList.remove("show"); busy=false; if(then)then(); }, then?1400:1700);
 }
 function validate(){
+  if(busy || ended) return;
   const goal=target(), total=currentTotal();
   if(total===0){toast("🤔","Le cadre est vide.","Calcule le total, puis dépose la monnaie à rendre.");return;}
   if(total===goal){solved++;toast("🎉","Parfait, le compte est bon !","",nextExercise);}
   else if(total>goal){loseHeart();toast("💸","C'est trop !","Tu rends "+formatEuro(total-goal)+" de trop.");}
   else{loseHeart();toast("🪙","Ce n'est pas assez.","Il manque encore "+formatEuro(goal-total)+".");}
 }
-function loseHeart(){hearts--;renderHearts();if(hearts<=0)setTimeout(()=>endGame(false),1500);}
+function loseHeart(){hearts--;renderHearts();if(hearts<=0){ended=true;const j=jeton;setTimeout(()=>{ if(j===jeton) endGame(false); },1500);}}
 function loadExercise(){
   const ex=session[exIndex];
   document.getElementById("n1").textContent=ex.n1;document.getElementById("p1").textContent=formatEuro(ex.p1);
@@ -626,24 +631,29 @@ function nextExercise(){exIndex++;if(exIndex>=session.length)endGame(true);else 
 function endGame(won){
   const es=document.getElementById("endscreen");
   document.getElementById("endTitle").textContent=won?"Bravo, caisse impeccable ! 🛍️":"Plus de cœurs… 💔";
-  document.getElementById("endScore").textContent="Tu as rendu la bonne monnaie "+solved+" fois sur "+session.length+".";
+  // Score = monnaies rendues juste / essais (avant : chaque client finissait toujours par être servi, une erreur
+  // ne faisait que retirer un cœur → 5 / 5 même avec 2 erreurs)
+  const erreurs=HEARTS-hearts, essais=solved+erreurs;
+  document.getElementById("endScore").textContent="Tu as rendu la bonne monnaie "+solved+" fois sur "+essais+" essai"+(essais>1?"s":"")+" ("+solved+" client"+(solved>1?"s":"")+" sur "+session.length+").";
   es.classList.add("show");
-
-  if (window.parent && window.parent.saveResult) {
-    const pct = Math.round(solved / session.length * 100);
-    window.parent.saveResult({
+  ended=true;
+  if (!saved && window.parent && typeof window.parent.saveResult === 'function') {
+    saved=true;
+    const pct = Math.round(solved / essais * 100);
+    try { window.parent.saveResult({
       activity: 'grandeur_monnaie_deux_objets',
       bookTitle: 'Deux objets — Rends la monnaie',
       score: solved,
-      total: session.length,
+      total: essais,
       pct: pct,
       date: new Date().toLocaleDateString('fr-BE'),
       time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
-    });
+    }); } catch(e){ console.warn('Erreur sauvegarde deux objets', e); }
   }
 }
 function newSession(){
-  session=pickFive();exIndex=0;hearts=HEARTS;solved=0;
+  session=pickFive();exIndex=0;hearts=HEARTS;solved=0;busy=false;ended=false;saved=false;jeton++;
+  document.getElementById("toast").classList.remove("show");
   document.getElementById("endscreen").classList.remove("show");
   renderHearts();renderPalette();loadExercise();
 }
