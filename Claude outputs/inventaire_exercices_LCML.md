@@ -1789,6 +1789,16 @@ Spécifique :
 - **Entrée inutilisable après la réponse et double clic sur « Question suivante » qui sautait une question** → Entrée = Valider puis Suivant, garde de 600 ms. Figure générée (orientation au hasard) au lieu des 2 images fixes. Orthographe : Entraine-toi, maitrises.
 - Tests jsdom : 3 000 séries, vide / « 7, » non comptés, « 18,0 » accepté, 2 échecs → réponse bleue, double Entrée sans saut, partie 9/10 → 1 sauvegarde, Recommencer OK. Capture 390 px sans défilement horizontal.
 
+### 06/10 — Mathématiques → Solides et figures → Le cercle et le disque → L'enquête du compas (`disque_compas`, `fiches/disque_compas.html` + copies public et racine) — sw.js v614
+- **Aucun résultat enregistré** → `saveResult` au format objet, une seule fois, try/catch.
+- **Toujours les 10 mêmes questions** (banque de 10, toutes posées) et **les propositions jamais mélangées dans la copie affichée** (fiches/ ; seules les copies public/ et racine avaient un mélange, biaisé) → bonne réponse toujours au même endroit pour chaque question.
+- **Questions qui se donnaient la réponse** (même figure 2 ou 3 fois : « rayon 4 cm » dans l'explication de la largeur, « rayon = AB » dans la largeur des cercles sécants, rayon 6 cm puis diamètre 12 cm du yin-yang) ; **réponse écrite sur le dessin** (« 4 cm » sur le rayon du cercle orange demandé) ; questions confuses (« le diamètre total de cette double figure reliant A à B plus leurs rayons », « pétale courbé vers le bas… au point opposé A, c'est-à-dire le point C ») ; option « Toutes ces réponses ».
+- → Figures dessinées par le programme et 9 sortes de questions générées (centre d'un pétale de rosace, écartement du pétale, cercles qui se touchent : écartement et largeur, cercles qui passent par le centre de l'autre : écartement et largeur, « yin-yang » : demi-cercle, grand rayon, diamètre) ; nouvelles mesures et lettres mélangées à chaque série ; série = les 9 sortes + 1 pétale, ordre Fisher–Yates ; 4 propositions mélangées (≈ 25 % par position).
+- Vérification indépendante sur 30 000 questions (calcul refait à partir de l'énoncé : 0 erreur ; 2 000 rosaces : l'arc est toujours centré sur la lettre attendue et passe par O).
+- Bonne réponse en bleu (#1f5fbf) après une erreur ; « Question suivante » protégé (600 ms), Entrée ; orthographe : Entraine-toi.
+- Tests jsdom : partie 7/10 → 1 sauvegarde, Entrée juste après un clic sans saut, Recommencer OK. Planche des 9 figures et capture 390 px sans défilement horizontal.
+- Les 4 images `assets/disque/compas_*.png` ne sont plus utilisées (comme les 7 autres images de `assets/disque/`).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2198,7 +2208,7 @@ Spécifique :
 | ⬜ | Quadrilatères — Évaluation | `quadrilateres_evaluation` | index › startShapeEvaluation |  |
 | ✅ 06/10 | Le cercle et le disque — Le vocabulaire | `disque_vocabulaire` | fiches/disque_vocabulaire.html |  |
 | ✅ 06/10 | Le cercle et le disque — Le laboratoire | `disque_laboratoire` | fiches/disque_laboratoire.html |  |
-| ⬜ | Le cercle et le disque — L'enquête du compas | `disque_compas` | fiches/disque_compas.html |  |
+| ✅ 06/10 | Le cercle et le disque — L'enquête du compas | `disque_compas` | fiches/disque_compas.html |  |
 
 ### 🔢 Mathématiques — 🔷 Solides & Figures — Polyèdres, Symétrie & 3D
 
