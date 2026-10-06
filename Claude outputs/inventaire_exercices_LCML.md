@@ -2515,14 +2515,14 @@ Spécifique :
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Le vocabulaire des opérations | `op_vocabulaire` | index › (?) | (code à localiser) |
+| ✅ 06/10 (menu) | Le vocabulaire des opérations | `op_vocabulaire` | index › (?) | (code à localiser) |
 
 ### ? — (menu renderNumerationScreen)
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Les angles | `solide_angles` | index › (?) | (code à localiser) |
-| ⬜ | Le cercle et le disque | `solide_disque` | index › (?) | (code à localiser) |
+| ✅ 06/10 (menu) | Les angles | `solide_angles` | index › (?) | (code à localiser) |
+| ✅ 06/10 (menu) | Le cercle et le disque | `solide_disque` | index › (?) | (code à localiser) |
 
 ### 🔢 Mathématiques — 🔷 Solides & Figures — Quadrilatères & Cercle › Les quadrilatères (Menu)
 
