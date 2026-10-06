@@ -1494,6 +1494,15 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Nouvelle orthographe : Entraine-toi, maitrises, entrainer, Entrainement terminé.
 - Tests jsdom : vide non compté, double Entrée sans saut, partie 7 / 10 (les 3 types) → 1 sauvegarde ; capture 390 px du schéma de départ ; syntaxe OK.
 
+### 06/10 — Maths › Grandeurs › La monnaie › Paie le commerçant (`grandeur_monnaie_payer`, `fiches/payer_le_commercant.html` + copies public et racine) — sw.js v583
+- 20 articles (0,95 € à 149,90 €) : chaque prix peut être payé exactement avec au plus 5 pièces ou billets de chaque sorte (vérifié par recherche exhaustive). Résultat déjà enregistré sous le bon identifiant.
+- **Double clic sur « Valider »** avec la bonne somme : l'achat était compté deux fois et l'article suivant sauté → « Valider » ignoré pendant le message.
+- **Score toujours 5 / 5** (l'élève recommence le même article jusqu'à réussir ; une erreur ne retirait qu'un cœur) → score = paiements justes / essais (ex. 5 / 6), même règle que « Quelle heure est-il ? » ; écran de fin adapté.
+- **Plusieurs enregistrements** possibles en fin de partie (clics pendant le délai) → un seul. **« Recommencer » pendant un message** : l'ancien message faisait avancer la nouvelle partie → annulé.
+- Nouvelle orthographe : boite.
+- Remarque (non modifiée) : en Belgique, les paiements en espèces sont arrondis à 5 cents ; l'exercice garde les pièces de 1 et 2 cents (prix comme 1,99 €). À voir avec Jeremy.
+- Tests jsdom : cadre vide sans cœur perdu, double clic = 1 achat, Recommencer sans saut, partie 5 / 6 → 1 sauvegarde ; syntaxe OK.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1846,7 +1855,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 06/10 | Les durées — Durée entre 2 heures | `grandeur_durees_entre` | index › startDureesExercise |  |
 | ✅ 06/10 | Quelle heure est-il ? (avec secondes) | `grandeur_durees_heure_secondes` | fiches/heure_secondes.html |  |
 | ✅ 06/10 | Le Labo des Durées | `grandeur_durees_situations` | fiches/durees_situations.html |  |
-| ⬜ | Paie le commerçant | `grandeur_monnaie_payer` | fiches/payer_le_commercant.html |  |
+| ✅ 06/10 | Paie le commerçant | `grandeur_monnaie_payer` | fiches/payer_le_commercant.html |  |
 | ⬜ | Rends la monnaie | `grandeur_monnaie_rendre` | fiches/rendre_la_monnaie.html |  |
 | ⬜ | Deux objets — Rends la monnaie | `grandeur_monnaie_deux_objets` | fiches/deux_objets_monnaie.html |  |
 | ⬜ | Recettes | `grandeur_proportionnalite_exercice` | fiches/proportionnalite.html |  |

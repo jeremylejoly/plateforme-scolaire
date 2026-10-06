@@ -420,7 +420,7 @@ const BANK = [
   {name:"Une glace en cornet",       cents:250},
   {name:"Un pot de confiture",       cents:320},
   {name:"Une douzaine d'œufs",       cents:360},
-  {name:"Une boîte de céréales",     cents:395},
+  {name:"Une boite de céréales",     cents:395},
   {name:"Un magazine",               cents:490},
   {name:"Une trousse",               cents:650},
   {name:"Un livre de poche",         cents:890},
@@ -432,7 +432,6 @@ const BANK = [
   {name:"Une trottinette",           cents:7990},
   {name:"Un vélo pour enfant",       cents:14990},
 ];
-
 /* ===================== Monnaie disponible ===================== */
 const MONEY = [
   {cents:5000, type:"bill"},{cents:2000, type:"bill"},{cents:1000, type:"bill"},{cents:500, type:"bill"},
@@ -441,11 +440,9 @@ const MONEY = [
 ];
 const MAX_PER = 5;
 const HEARTS = 3;
-
 /* tailles (px) — proportions réalistes des vrais euros */
 const COIN_W = {200:74,100:66,50:70,20:64,10:58,5:62,2:56,1:52};
 const BILL_W = {5000:122,2000:114,1000:108,500:102};
-
 /* ===================== Générateurs SVG ===================== */
 let UID=0;
 function grad(stops){
@@ -489,7 +486,6 @@ ${centerEl}
 <text x="50" y="70" text-anchor="middle" dominant-baseline="central" font-family="Trebuchet MS, sans-serif" font-weight="700" font-size="8.5" letter-spacing="1.1" fill="${txt}">${spec.sub}</text>
 </svg>`;
 }
-
 const BILL_SPEC={
   5000:{name:"50",light:"#f8dcad",mid:"#e8a44f",dark:"#9c5712",ink:"#7a430d"},
   2000:{name:"20",light:"#c3d9f3",mid:"#6796d6",dark:"#1f4f8c",ink:"#173d6e"},
@@ -544,10 +540,8 @@ ${stars}
 <text x="179" y="70" text-anchor="middle" font-family="Trebuchet MS, sans-serif" font-weight="800" font-size="13" fill="${s.ink}" opacity="0.45">€</text>
 </svg>`;
 }
-
 /* ===================== État ===================== */
-let session=[], exIndex=0, counts={}, hearts=HEARTS, solved=0;
-
+let session=[], exIndex=0, counts={}, hearts=HEARTS, solved=0, busy=false, ended=false, saved=false, jeton=0;
 function formatEuro(c){return (c/100).toFixed(2).replace(".",",")+" €";}
 function pickFive(){
   const pool=[...BANK];
@@ -568,7 +562,6 @@ function moneyLabel(m){
   const c=COIN_SPEC[m.cents];
   return "Pièce de "+c.label+" "+(c.sub==="EURO"?"euro":"centimes");
 }
-
 /* ===================== Rendu ===================== */
 function renderHearts(){
   const box=document.getElementById("hearts");box.innerHTML="";
@@ -615,7 +608,6 @@ function renderCadre(){
   });
   document.querySelectorAll(".piece").forEach(p=>{p.disabled=(counts[p.dataset.cents]||0)>=MAX_PER;});
 }
-
 /* ===================== Actions ===================== */
 function addMoney(m,btn){
   const n=counts[m.cents]||0;
@@ -625,23 +617,27 @@ function addMoney(m,btn){
 }
 function removeMoney(m){const n=counts[m.cents]||0;if(n>0)counts[m.cents]=n-1;renderCadre();}
 function currentTotal(){let t=0;for(const c in counts)t+=Number(c)*counts[c];return t;}
-
 function toast(big,msg,sub,then){
+  const j=jeton;
   const t=document.getElementById("toast");
   document.getElementById("toastBig").textContent=big;
   document.getElementById("toastMsg").textContent=msg;
   document.getElementById("toastSub").textContent=sub||"";
   t.classList.add("show");
-  setTimeout(()=>{t.classList.remove("show");if(then)then();}, then?1400:1700);
+  // busy : pendant le message, « Valider » est ignoré (avant : un double clic sur une bonne réponse
+  // comptait l'achat deux fois et sautait l'article suivant). jeton : annulé si on recommence.
+  busy=true;
+  setTimeout(()=>{ if(j!==jeton) return; t.classList.remove("show"); busy=false; if(then)then(); }, then?1400:1700);
 }
 function validate(){
+  if(busy || ended) return;
   const target=session[exIndex].cents, total=currentTotal();
   if(total===0){toast("🤔","Le cadre est vide.","Ajoute des pièces ou des billets.");return;}
   if(total===target){solved++;toast("🎉","C'est exactement le bon compte !","",nextExercise);}
   else if(total>target){loseHeart();toast("💰","C'est trop !","Tu donnes "+formatEuro(total-target)+" de trop.");}
   else{loseHeart();toast("🪙","Ce n'est pas assez.","Il manque "+formatEuro(target-total)+".");}
 }
-function loseHeart(){hearts--;renderHearts();if(hearts<=0)setTimeout(()=>endGame(false),1500);}
+function loseHeart(){hearts--;renderHearts();if(hearts<=0){ended=true;const j=jeton;setTimeout(()=>{ if(j===jeton) endGame(false); },1500);}}
 function loadExercise(){
   const ex=session[exIndex];
   document.getElementById("price").textContent=formatEuro(ex.cents);
@@ -652,24 +648,29 @@ function nextExercise(){exIndex++;if(exIndex>=session.length)endGame(true);else 
 function endGame(won){
   const es=document.getElementById("endscreen");
   document.getElementById("endTitle").textContent=won?"Bravo, le magasin est ravi ! 🛍️":"Plus de cœurs… 💔";
-  document.getElementById("endScore").textContent="Tu as réussi "+solved+" achat"+(solved>1?"s":"")+" sur "+session.length+".";
+  // Score = achats payés juste / essais (avant : chaque achat finissait toujours par être réussi, une erreur
+  // ne faisait que retirer un cœur → 5 / 5 même avec 2 erreurs)
+  const erreurs=HEARTS-hearts, essais=solved+erreurs;
+  document.getElementById("endScore").textContent="Tu as payé juste "+solved+" fois sur "+essais+" essai"+(essais>1?"s":"")+" ("+solved+" achat"+(solved>1?"s":"")+" sur "+session.length+").";
   es.classList.add("show");
-
-  if (window.parent && window.parent.saveResult) {
-    const pct = Math.round(solved / session.length * 100);
-    window.parent.saveResult({
+  ended=true;
+  if (!saved && window.parent && typeof window.parent.saveResult === 'function') {
+    saved=true;
+    const pct = Math.round(solved / essais * 100);
+    try { window.parent.saveResult({
       activity: 'grandeur_monnaie_payer',
       bookTitle: 'Paie le commerçant',
       score: solved,
-      total: session.length,
+      total: essais,
       pct: pct,
       date: new Date().toLocaleDateString('fr-BE'),
       time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
-    });
+    }); } catch(e){ console.warn('Erreur sauvegarde paie le commerçant', e); }
   }
 }
 function newSession(){
-  session=pickFive();exIndex=0;hearts=HEARTS;solved=0;
+  session=pickFive();exIndex=0;hearts=HEARTS;solved=0;busy=false;ended=false;saved=false;jeton++;
+  document.getElementById("toast").classList.remove("show");
   document.getElementById("endscreen").classList.remove("show");
   renderHearts();renderPalette();loadExercise();
 }
