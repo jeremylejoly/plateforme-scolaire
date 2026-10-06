@@ -2283,6 +2283,8 @@ Spécifique :
 
 - **06/10 — CEB Histoire/Géo 2023 (`ceb_hg_2023`, CEB histoire:géo/ceb_histoire_geo_2023.html, sw.js v731)** : 20 questions vérifiées contre le portfolio PDF (p. 18-32 : caches et trésors 1-8, Cointe, moissons 1-6, cartes 1-4 de Belgique, Stalag I-A (28 mai 1940, carte 1942), saisons, garde-robe du Manneken-Pis). Défaut de contenu : 4.4 FAUSSE — les lettres A-D du planisphère p. 32 désignent des océans, pas des pays (l'Argentine est reliée au costume par un trait) → « quel océan est désigné par la lettre C ? » (Atlantique). Questions qui donnaient la réponse : 1.2 (« Préhistoire, vers 7 000 avant J.-C. »), 2.1 (« au bord du Nil vers 4 000 avant J.-C. », et seuls les distracteurs portaient une date récente → 4 documents sans date), 1.1 (« près de Mons »), 3.5 (définition des polders et « nord-ouest »), 4.1 (« quand et où ») → retirés ; « Prusse-Orientale » (absent) retiré ; bonne réponse seule longue (1.4, 2.5, 3.2, 3.4, 3.5, 4.1, 4.2) → équilibrée. Moteur 2024 réutilisé (module) : sauvegarde unique /20, Vrai/Faux en points entiers, choix mélangés, réponse unique, bleu, « Revoir mes réponses ». NO : aout, entrainement, maitriser. Test Playwright 390 px : bilan 17/20, 3 réponses en bleu, 1 seule sauvegarde, pas de débordement.
 
+- **06/10 — CEB Histoire/Géo 2022 (`ceb_hg_2022`, CEB histoire:géo/ceb_histoire_geo_2022.html, sw.js v732)** : 20 questions vérifiées contre le portfolio PDF (p. 20-30 : 8 photos de milieux naturels et carte, enluminures février/mars/juillet/novembre, remparts de Binche, Ferraris 1777, plan de 2020 (N90, Parc Communal, Grand-Place), glaciers, Europe politique, FOJE (1991 Belgique, tous les 2 ans, 13-18 ans, finales de cyclisme les 28 et 29)). Défaut de contenu : 1.5 la bonne réponse plaçait la photo 2 « au bord des mers du nord de l'Europe » alors que le point 2 est sur la côte atlantique de la France → « la photo 3 est au bord de la Méditerranée » ; 1.2 les choix nommaient les continents (réponse évidente) → numéros de photos seuls (la photo 7, autre désert, comme piège) ; 4.1 « sous l'effet de l'augmentation des températures » (absent) retiré ; bonne réponse seule longue (1.1, 2.2, 2.4, 2.5, 3.1, 3.5, 4.1, 4.5) → équilibrée ; explications 1.5, 3.2, 4.1 recalées. Moteur 2024 (module) : sauvegarde unique /20, Vrai/Faux en points entiers, choix mélangés, réponse unique, bleu, « Revoir mes réponses ». NO : chaine, entrainement, maitriser. Test Playwright 390 px : bilan 17/20, 1 seule sauvegarde, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2849,7 +2851,7 @@ Spécifique :
 | ✅ 06/10 | CEB Histoire/Géo 2025 | `ceb_hg_2025` | index › openCEB |  |
 | ✅ 06/10 | CEB Histoire/Géo 2024 | `ceb_hg_2024` | index › openCEB |  |
 | ✅ 06/10 | CEB Histoire/Géo 2023 | `ceb_hg_2023` | index › openCEB |  |
-| ⬜ | CEB Histoire/Géo 2022 | `ceb_hg_2022` | index › openCEB |  |
+| ✅ 06/10 | CEB Histoire/Géo 2022 | `ceb_hg_2022` | index › openCEB |  |
 | ⬜ | CEB Histoire/Géo 2021 | `ceb_hg_2021` | index › openCEB |  |
 | ⬜ | CEB Histoire/Géo 2019 | `ceb_hg_2019` | index › openCEB |  |
 | ⬜ | CEB Histoire/Géo 2016 | `ceb_hg_2016` | index › openCEB |  |
