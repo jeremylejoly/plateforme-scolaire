@@ -80,7 +80,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding: 16px 12px 48px;
+    padding: 10px 10px 20px;
     user-select: none;
     -webkit-user-select: none;
   }
@@ -887,6 +887,8 @@
   let flaggedCount = 0;
   let revealedSafeCount = 0;
   let totalSafeCells = 0;
+  let endgameTimeout = null;
+  let lastLongPressTime = 0;
 
   // Chronomètre
   let timerInterval = null;
@@ -996,6 +998,13 @@
 
   // ===== INITIALISATION ET GESTION DU PLATEAU =====
   function initGame() {
+    if (endgameTimeout) {
+      clearTimeout(endgameTimeout);
+      endgameTimeout = null;
+    }
+    if (endgameModal) {
+      endgameModal.classList.remove('open');
+    }
     clearInterval(timerInterval);
     timerInterval = null;
     elapsedSeconds = 0;
@@ -1136,6 +1145,9 @@
     el.addEventListener('contextmenu', (e) => {
       e.preventDefault();
       if (gameOver || gameWon) return;
+      if (Date.now() - lastLongPressTime < 800) {
+        return; // Ignore le contextmenu natif d'Android tiré juste après l'appui long
+      }
       toggleFlag(r, c);
     });
 
@@ -1151,6 +1163,7 @@
 
       longPressTimer = setTimeout(() => {
         longPressed = true;
+        lastLongPressTime = Date.now();
         toggleFlag(r, c);
         if (navigator.vibrate) navigator.vibrate(40);
         smileyBtn.textContent = '🙂';
@@ -1182,12 +1195,12 @@
         smileyBtn.textContent = '😮';
       }
     });
-    window.addEventListener('mouseup', () => {
-      if (!gameOver && !gameWon) {
-        smileyBtn.textContent = '🙂';
-      }
-    });
   }
+  window.addEventListener('mouseup', () => {
+    if (!gameOver && !gameWon) {
+      smileyBtn.textContent = '🙂';
+    }
+  });
 
   function handleCellAction(r, c) {
     const cell = grid[r][c];
@@ -1404,7 +1417,8 @@
       // Sauvegarder le meilleur score
       saveBestScore();
 
-      setTimeout(() => {
+      if (endgameTimeout) clearTimeout(endgameTimeout);
+      endgameTimeout = setTimeout(() => {
         showEndgameModal(true);
       }, 700);
     }
@@ -1437,7 +1451,8 @@
       }
     }
 
-    setTimeout(() => {
+    if (endgameTimeout) clearTimeout(endgameTimeout);
+    endgameTimeout = setTimeout(() => {
       showEndgameModal(false);
     }, 900);
   }
@@ -1453,7 +1468,9 @@
 
     const formattedTime = timerCounterEl.textContent;
     timeStatEl.textContent = formattedTime;
-    minesStatEl.textContent = `${totalMines} / ${totalMines}`;
+    let goodFlags = 0;
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) if (grid[r][c].isMine && grid[r][c].isFlagged) goodFlags++;
+    minesStatEl.textContent = won ? `${totalMines} / ${totalMines}` : `${goodFlags} / ${totalMines}`;
     bestStatEl.textContent = getBestScoreFormatted();
 
     if (won) {
@@ -1471,17 +1488,21 @@
 
   // ===== SCORES & LOCALSTORAGE =====
   function getBestScoreKey() {
-    return `lcml_demineur_best_${currentDiff}`;
+    let who = '';
+    try {
+      const st = window.parent && window.parent !== window && window.parent.state;
+      if (st && st.student) who = '_' + (st.studentCls || '') + '_' + st.student;
+    } catch (e) {}
+    return `lcml_demineur_best_${currentDiff}${who}`;
   }
 
   function getBestScore() {
-    const val = localStorage.getItem(getBestScoreKey());
-    return val ? parseInt(val, 10) : null;
+    try { const val = localStorage.getItem(getBestScoreKey()); return val !== null ? parseInt(val, 10) : null; } catch (e) { return null; }
   }
 
   function getBestScoreFormatted() {
     const best = getBestScore();
-    if (!best) return '--:--';
+    if (best === null || isNaN(best)) return '--:--';
     const m = Math.floor(best / 60);
     const s = best % 60;
     return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
@@ -1490,8 +1511,8 @@
   function saveBestScore() {
     if (currentDiff === 'custom') return; // Pas de record enregistré en personnalisé
     const currentBest = getBestScore();
-    if (!currentBest || elapsedSeconds < currentBest) {
-      localStorage.setItem(getBestScoreKey(), elapsedSeconds);
+    if (currentBest === null || elapsedSeconds < currentBest) {
+      try { localStorage.setItem(getBestScoreKey(), elapsedSeconds); } catch (e) {}
       updateBestScoreDisplay();
     }
   }
@@ -1605,16 +1626,18 @@
 
   // Calcul dynamique de la taille de cellule pour que TOUTE la grille tienne dans l'écran
   function adjustGridSize() {
-    const maxAvailableWidth = Math.min(window.innerWidth - 36, 840);
-    const usableWidth = maxAvailableWidth - 46;
+    const maxAvailableWidth = Math.min(window.innerWidth - 24, 840);
+    const usableWidth = maxAvailableWidth - 28;
     const cellFromWidth = Math.floor((usableWidth - (cols - 1) * 2) / cols);
 
-    const topElementsHeight = 330;
-    const availableHeight = Math.max(260, window.innerHeight - topElementsHeight);
+    // Position réelle du haut de la grille (avant : on additionnait des blocs dont les noms n'existaient pas,
+    // et la grille dépassait de 150 px en bas sur iPad)
+    const boardTop = boardEl.getBoundingClientRect().top + window.scrollY;
+    const availableHeight = Math.max(160, window.innerHeight - boardTop - 28);
     const cellFromHeight = Math.floor((availableHeight - (rows - 1) * 2) / rows);
 
     const optimalCell = Math.min(cellFromWidth, cellFromHeight);
-    const cellSize = Math.max(20, Math.min(44, optimalCell));
+    const cellSize = Math.max(20, Math.min(42, optimalCell)); // 20 px minimum pour le doigt
     document.documentElement.style.setProperty('--cell-size', `${cellSize}px`);
   }
 

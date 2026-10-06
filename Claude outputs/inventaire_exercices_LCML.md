@@ -2252,6 +2252,8 @@ Spécifique :
 
 - **06/10 — Jeux › 2048 (`jeu_2048`, 2048.html + public, sw.js v716)** : règles correctes (une tuile ne fusionne qu'une fois par coup, nouvelle tuile 2 ou 4, victoire à 2048 avec « Continuer », fin quand plus aucun coup) ; flèches, glisser du doigt et pavé tactile ; lien Accueil déjà caché dans le site. Petites corrections : record par élève (avant : commun à l'appareil) ; « Nouveau record ! » s'affichait aussi en cas d'égalité avec l'ancien record ; on pouvait encore jouer au clavier derrière la fenêtre de victoire → bloqué. Pas de saveResult. Test Playwright 390 px : partie jouée au pavé jusqu'à la fin (2 812 points), record enregistré, pas de débordement.
 
+- **06/10 — Jeux › Le Démineur (`jeu_demineur`, demineur.html + public, sw.js v717)** : repris de l'analyse du 29/09. Déjà corrigés depuis (commit fcf19ae) : modale de fin qui s'ouvrait sur la partie suivante, appui long Android. Restait : calcul de la hauteur de grille fondé sur des blocs inexistants (.difficulty-selector / .control-bar) → grille trop haute (Expert en portrait iPad : 1 121 px pour 964) → mesure de la vraie position de la grille, cases min. 20 px (Expert tient désormais en portrait tablette et sur téléphone ; en paysage tablette, l'en-tête prend trop de place, on défile un peu) ; modale de défaite « Mines débusquées 10 / 10 » même sans en trouver → nombre de drapeaux justes ; un écouteur mouseup ajouté par case à chaque partie → un seul ; record de 0 s ignoré ; record par élève (avant : commun à l'appareil). Copie public/demineur.html qui avait pris du retard (antérieure aux corrections du 29/09) → réalignée. Pas de saveResult. Test Playwright : tailles à 390×784, 768×964, 1024×580 ; défaite → modale « 0 / 10 ».
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2853,7 +2855,7 @@ Spécifique :
 | ✅ 06/10 | 2048 | `jeu_2048` | 2048.html (racine + public) |  |
 | ✅ 06/10 | Motus | `jeu_motus` | motus.html (racine + public) |  |
 | ✅ 06/10 | Le Tangram | `jeu_tangram` | tangram.html (racine + public) |  |
-| ⬜ | Le Démineur | `jeu_demineur` | index › (?) | (code à localiser) |
+| ✅ 06/10 | Le Démineur | `jeu_demineur` | demineur.html (racine + public) |  |
 | ⬜ | La Pipopipette | `jeu_pipopipette` | index › (?) | (code à localiser) |
 
 ### ? — (menu renderLectureNarrativeMenu)
