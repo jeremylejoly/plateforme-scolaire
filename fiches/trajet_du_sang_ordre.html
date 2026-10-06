@@ -293,6 +293,20 @@
       box-shadow: 6px 6px 0px var(--green);
       color: #166534;
     }
+    .drag-card.selected { outline: 3px solid #f59e0b; outline-offset: 2px; }
+    .drag-card.locked { cursor: default; }
+    .fix { display:block; margin-top:4px; font-size:0.85rem; font-weight:800; color:#1f5fbf; }
+    .tabs-container { flex-wrap: wrap; }
+    @media (max-width: 480px) {
+      body { padding: 1rem .5rem; }
+      .card { padding: 1.1rem .9rem; box-shadow: 4px 4px 0px var(--border); }
+      h1 { font-size: 1.3rem; gap: 8px; }
+      .step-row { gap: 8px; }
+      .step-num { min-width: 24px; font-size: 1rem; }
+      .drag-card, .given-card { padding: .6rem .7rem; font-size: .9rem; gap: 8px; }
+      .insert-line { margin-left: 32px; }
+      .tab-btn { font-size: .8rem; padding: .45rem .6rem; }
+    }
     .result-msg.partial {
       display: block;
       background: var(--amber-light);
@@ -324,8 +338,8 @@
 
   <div id="list-container"></div>
 
-  <button class="btn-verify" onclick="verify()">✅ Vérifier l'ordre</button>
-  <button class="btn-reset" onclick="resetExercise()">↺ Mélanger à nouveau</button>
+  <button class="btn-verify" id="btn-verify" onclick="verify()">✅ Vérifier l'ordre</button>
+  <button class="btn-reset" id="btn-reset" onclick="resetExercise()">↺ Mélanger à nouveau</button>
   <div class="result-msg" id="result"></div>
 </div>
 
@@ -334,7 +348,7 @@
     petite: {
       activity: 'sci_circ_petite',
       bookTitle: 'Circulatoire — La petite circulation',
-      instr: "Remets les étapes de la petite circulation dans le bon ordre en les faisant glisser.",
+      instr: "Remets les étapes de la petite circulation dans le bon ordre : fais-les glisser, ou touche une étape puis l'endroit où elle doit aller.",
       firstStep: "Le sang chargé en gaz carbonique arrive dans l'oreillette droite",
       steps: [
         "Il passe dans le ventricule droit",
@@ -348,31 +362,30 @@
     grande: {
       activity: 'sci_circ_grande',
       bookTitle: 'Circulatoire — La grande circulation',
-      instr: "Remets les étapes de la grande circulation dans le bon ordre en les faisant glisser.",
+      instr: "Remets les étapes de la grande circulation dans le bon ordre : fais-les glisser, ou touche une étape puis l'endroit où elle doit aller.",
       firstStep: "Le sang chargé en oxygène arrive dans l'oreillette gauche",
       steps: [
         "Il passe dans le ventricule gauche",
         "Le ventricule gauche se contracte et envoie le sang dans l'artère aorte",
-        "Le sang est distribué aux organes via les artères",
+        "Les artères distribuent le sang à tous les organes",
         "Le sang arrive dans les capillaires des organes",
         "Les échanges gazeux ont lieu : l'oxygène est livré aux cellules, le gaz carbonique est récupéré",
-        "Le sang chargé en gaz carbonique repart par les veines vers la veine cave",
+        "Le sang chargé en gaz carbonique repart par les veines jusqu'aux veines caves",
         "Il arrive dans l'oreillette droite"
       ]
     },
     ensemble: {
       activity: 'sci_circ_ensemble',
       bookTitle: 'Circulatoire — Le trajet du sang dans le corps',
-      instr: "Remets les étapes du trajet général du sang dans le bon ordre en les faisant glisser.",
-      firstStep: "Le cœur se contracte",
+      instr: "Remets les étapes du trajet général du sang dans le bon ordre : fais-les glisser, ou touche une étape puis l'endroit où elle doit aller.",
+      firstStep: "Le sang chargé en gaz carbonique arrive au cœur, dans l'oreillette droite",
       steps: [
-        "Le ventricule droit envoie le sang vers les poumons",
-        "Dans les poumons, le sang capte l'oxygène et rejette le gaz carbonique",
-        "Le sang oxygéné revient au cœur par les veines pulmonaires",
-        "Le ventricule gauche envoie le sang oxygéné vers les organes",
-        "Dans les organes, l'oxygène est livré aux cellules",
-        "Le sang chargé en gaz carbonique revient au cœur par la veine cave",
-        "Le cycle recommence"
+        "Il passe dans le ventricule droit, qui l'envoie vers les poumons par l'artère pulmonaire",
+        "Dans les poumons, le sang rejette le gaz carbonique et capte l'oxygène",
+        "Le sang chargé en oxygène revient au cœur par les veines pulmonaires, dans l'oreillette gauche",
+        "Il passe dans le ventricule gauche, qui l'envoie vers les organes par l'artère aorte",
+        "Dans les organes, le sang livre l'oxygène aux cellules et récupère le gaz carbonique",
+        "Le sang chargé en gaz carbonique revient au cœur par les veines caves : le cycle recommence"
       ]
     }
   };
@@ -382,12 +395,11 @@
   let dragSrcIdx = null;
   let insertIdx = null;
   let highlights = null;
+  let done = false, saved = false, lastClick = 0, sel = null;
 
-  // Touch state
-  let touchStartIdx = null;
-  let touchActiveEl = null;
-  let touchClone = null;
-  let touchInsertIdx = null;
+  // Toucher
+  let touchStartIdx = null, touchActiveEl = null, touchClone = null, touchInsertIdx = null;
+  let touchX = 0, touchY = 0, touchMoved = false;
 
   function shuffle(arr) {
     let a = [...arr];
@@ -395,83 +407,75 @@
       let j = Math.floor(Math.random() * (i + 1));
       [a[i], a[j]] = [a[j], a[i]];
     }
-    if (a.every((v, i) => v === arr[i])) return shuffle(arr);
+    // jamais déjà (presque) en ordre
+    if (a.filter((v, i) => v === arr[i]).length > Math.floor(arr.length / 2) - 1) return shuffle(arr);
     return a;
   }
 
   function isTabLocked(tabKey) {
     try {
-      if (!window.parent || typeof window.parent.isActivityLocked !== 'function') {
-        return false;
-      }
-      // If the logged in user is a teacher, bypass the lock
-      if (window.parent.state && window.parent.state.role === 'teacher') {
-        return false;
-      }
+      if (!window.parent || window.parent === window || typeof window.parent.isActivityLocked !== 'function') return false;
+      if (window.parent.state && window.parent.state.role === 'teacher') return false;
       return window.parent.isActivityLocked(DATA[tabKey].activity);
     } catch (e) {
-      console.warn("Parent access blocked or restricted:", e);
-      return false; // Safe fallback: assume unlocked if we can't check
+      return false;
     }
   }
 
   function checkLocks() {
-    const keys = ['petite', 'grande', 'ensemble'];
-    for (const key of keys) {
-      const isLocked = isTabLocked(key);
+    ['petite', 'grande', 'ensemble'].forEach(key => {
       const btn = document.getElementById(`btn-tab-${key}`);
-      if (btn) {
-        if (isLocked) {
-          btn.classList.add('locked');
-          btn.disabled = true;
-          // Clean inner text to prevent duplicate lock emojis
-          let cleanText = btn.innerText.replace('🔒 ', '').replace('🔒', '').trim();
-          btn.innerHTML = `🔒 ` + cleanText;
-        } else {
-          btn.classList.remove('locked');
-          btn.disabled = false;
-          btn.innerHTML = btn.innerText.replace('🔒 ', '').replace('🔒', '').trim();
-        }
-      }
-    }
+      if (!btn) return;
+      const cleanText = btn.textContent.replace('🔒', '').trim();
+      if (isTabLocked(key)) { btn.classList.add('locked'); btn.disabled = true; btn.textContent = '🔒 ' + cleanText; }
+      else { btn.classList.remove('locked'); btn.disabled = false; btn.textContent = cleanText; }
+    });
   }
 
   function switchTab(tabKey, force = false) {
-    // Prevent switching to locked tabs unless forced as a fallback
-    const isLocked = isTabLocked(tabKey);
-    if (isLocked && !force) return;
-
+    if (isTabLocked(tabKey) && !force) return;
     activeTab = tabKey;
-    
-    // Update active tab buttons
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     const activeBtn = document.getElementById(`btn-tab-${tabKey}`);
     if (activeBtn) activeBtn.classList.add('active');
-
-    // Load tab details
     const tabData = DATA[tabKey];
     document.getElementById('exercise-instr').textContent = tabData.instr;
     document.getElementById('exercise-first-step').textContent = tabData.firstStep;
-
-    // Reset state
-    order = shuffle(tabData.steps);
-    highlights = null;
-    document.getElementById('result').style.display = 'none';
-
-    render();
+    resetExercise();
   }
 
   function resetExercise() {
-    const tabData = DATA[activeTab];
-    order = shuffle(tabData.steps);
-    highlights = null;
-    document.getElementById('result').style.display = 'none';
+    order = shuffle(DATA[activeTab].steps);
+    highlights = null; done = false; saved = false; sel = null;
+    const msg = document.getElementById('result');
+    msg.style.display = 'none'; msg.className = 'result-msg';
+    document.getElementById('btn-verify').style.display = '';
+    document.getElementById('btn-reset').textContent = '↺ Mélanger à nouveau';
+    render();
+  }
+
+  function moveItem(from, insertBefore) {
+    if (insertBefore === from || insertBefore === from + 1) return false;
+    const item = order.splice(from, 1)[0];
+    order.splice(insertBefore > from ? insertBefore - 1 : insertBefore, 0, item);
+    return true;
+  }
+
+  function cardClick(i) {
+    if (done) return;
+    if (sel === null) { sel = i; render(); return; }
+    if (sel === i) { sel = null; render(); return; }
+    const item = order.splice(sel, 1)[0];
+    order.splice(i, 0, item);
+    sel = null;
     render();
   }
 
   function render() {
-    const container = document.getElementById('list-container');
-    container.innerHTML = '';
+    const old = document.getElementById('list-container');
+    const container = old.cloneNode(false);
+    old.replaceWith(container);
+    const steps = DATA[activeTab].steps;
 
     order.forEach((text, i) => {
       const line = document.createElement('div');
@@ -489,32 +493,30 @@
 
       const card = document.createElement('div');
       card.className = 'drag-card';
-      if (highlights) card.classList.add(highlights[i] ? 'card-correct' : 'card-wrong');
-      card.draggable = true;
+      if (highlights) card.classList.add(highlights[i] ? 'card-correct' : 'card-wrong', 'locked');
+      if (sel === i) card.classList.add('selected');
+      card.draggable = !done;
       card.dataset.idx = i;
-      card.innerHTML = `<span class="drag-handle">☰</span><span>${text}</span>`;
+      card.innerHTML = done
+        ? `<span>${highlights[i] ? '✅ ' : '❌ '}${text}${highlights[i] ? '' : `<span class="fix">➜ ${steps[i]}</span>`}</span>`
+        : `<span class="drag-handle">☰</span><span>${text}</span>`;
 
-      // Mouse drag-and-drop events (Original robust centralized logic)
-      card.addEventListener('dragstart', e => {
-        dragSrcIdx = i;
-        insertIdx = null;
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/plain', String(i));
-        setTimeout(() => card.classList.add('dragging'), 0);
-      });
-
-      card.addEventListener('dragend', () => {
-        card.classList.remove('dragging');
-        clearInsertLines();
-        dragSrcIdx = null;
-        insertIdx = null;
-      });
-
-      // Touch events (iPads and tablets support)
-      card.addEventListener('touchstart', handleTouchStart, { passive: false });
-      card.addEventListener('touchmove', handleTouchMove, { passive: false });
-      card.addEventListener('touchend', handleTouchEnd);
-
+      if (!done) {
+        card.addEventListener('dragstart', e => {
+          dragSrcIdx = i; insertIdx = null; sel = null;
+          e.dataTransfer.effectAllowed = 'move';
+          e.dataTransfer.setData('text/plain', String(i));
+          setTimeout(() => card.classList.add('dragging'), 0);
+        });
+        card.addEventListener('dragend', () => {
+          card.classList.remove('dragging'); clearInsertLines(); dragSrcIdx = null; insertIdx = null;
+        });
+        card.addEventListener('click', () => cardClick(i));
+        card.addEventListener('touchstart', handleTouchStart, { passive: false });
+        card.addEventListener('touchmove', handleTouchMove, { passive: false });
+        card.addEventListener('touchend', handleTouchEnd, { passive: false });
+        card.addEventListener('touchcancel', handleTouchCancel);
+      }
       row.appendChild(num);
       row.appendChild(card);
       container.appendChild(row);
@@ -524,187 +526,150 @@
     lastLine.className = 'insert-line';
     lastLine.dataset.insertBefore = order.length;
     container.appendChild(lastLine);
+
+    if (done) return;
+    container.addEventListener('dragover', e => {
+      e.preventDefault();
+      if (dragSrcIdx === null) return;
+      e.dataTransfer.dropEffect = 'move';
+      const n = insertFromY(e.clientY);
+      if (n !== insertIdx) { insertIdx = n; showInsertLine(insertIdx); }
+    });
+    container.addEventListener('drop', e => {
+      e.preventDefault();
+      if (dragSrcIdx === null || insertIdx === null) return;
+      moveItem(dragSrcIdx, insertIdx);
+      clearInsertLines(); dragSrcIdx = null; insertIdx = null;
+      render();
+    });
+    container.addEventListener('dragleave', e => {
+      if (!container.contains(e.relatedTarget)) { clearInsertLines(); insertIdx = null; }
+    });
   }
 
-  // Set up container listeners once (clean event delegation)
-  const container = document.getElementById('list-container');
-
-  container.addEventListener('dragover', e => {
-    e.preventDefault();
-    if (dragSrcIdx === null) return;
-    e.dataTransfer.dropEffect = 'move';
-    const rows = [...container.querySelectorAll('.step-row')];
-    let newInsert = order.length;
+  function insertFromY(y) {
+    const rows = [...document.querySelectorAll('#list-container .step-row')];
     for (let j = 0; j < rows.length; j++) {
       const rect = rows[j].getBoundingClientRect();
-      if (e.clientY < rect.top + rect.height / 2) { newInsert = j; break; }
+      if (y < rect.top + rect.height / 2) return j;
     }
-    if (newInsert !== insertIdx) {
-      insertIdx = newInsert;
-      showInsertLine(insertIdx);
-    }
-  });
+    return order.length;
+  }
 
-  container.addEventListener('drop', e => {
-    e.preventDefault();
-    if (dragSrcIdx === null || insertIdx === null) return;
-    if (insertIdx !== dragSrcIdx && insertIdx !== dragSrcIdx + 1) {
-      const item = order.splice(dragSrcIdx, 1)[0];
-      let target = insertIdx;
-      if (insertIdx > dragSrcIdx) target--;
-      order.splice(target, 0, item);
-      highlights = null;
-      document.getElementById('result').style.display = 'none';
-    }
-    clearInsertLines();
-    dragSrcIdx = null;
-    insertIdx = null;
-    render();
-  });
-
-  container.addEventListener('dragleave', e => {
-    if (!container.contains(e.relatedTarget)) {
-      clearInsertLines();
-      insertIdx = null;
-    }
-  });
-
-  // Touch Handlers
   function handleTouchStart(e) {
+    if (done) return;
     const card = e.currentTarget;
-    const idx = parseInt(card.dataset.idx);
-    touchStartIdx = idx;
+    touchStartIdx = parseInt(card.dataset.idx);
     touchActiveEl = card;
-    
-    touchClone = card.cloneNode(true);
-    touchClone.style.position = 'fixed';
-    touchClone.style.zIndex = '9999';
-    touchClone.style.width = card.offsetWidth + 'px';
-    touchClone.style.opacity = '0.9';
-    touchClone.style.pointerEvents = 'none';
-    touchClone.style.boxShadow = '6px 6px 0px var(--border)';
-    
-    const touch = e.touches[0];
-    touchClone.style.left = (touch.clientX - card.offsetWidth / 2) + 'px';
-    touchClone.style.top = (touch.clientY - 20) + 'px';
-    
-    document.body.appendChild(touchClone);
-    card.classList.add('dragging');
+    const t = e.touches[0];
+    touchX = t.clientX; touchY = t.clientY; touchMoved = false; touchInsertIdx = null;
   }
-
   function handleTouchMove(e) {
-    if (!touchClone) return;
+    if (touchActiveEl === null) return;
+    const t = e.touches[0];
+    if (!touchMoved && Math.abs(t.clientX - touchX) < 8 && Math.abs(t.clientY - touchY) < 8) return;
     e.preventDefault();
-    const touch = e.touches[0];
-    touchClone.style.left = (touch.clientX - touchClone.offsetWidth / 2) + 'px';
-    touchClone.style.top = (touch.clientY - 20) + 'px';
-    
-    const rows = [...container.querySelectorAll('.step-row')];
-    let newInsert = order.length;
-    for (let j = 0; j < rows.length; j++) {
-      const rect = rows[j].getBoundingClientRect();
-      if (touch.clientY < rect.top + rect.height / 2) { newInsert = j; break; }
+    if (!touchMoved) {
+      touchMoved = true; sel = null;
+      touchActiveEl.classList.remove('selected');
+      touchClone = touchActiveEl.cloneNode(true);
+      touchClone.style.position = 'fixed';
+      touchClone.style.zIndex = '9999';
+      touchClone.style.width = touchActiveEl.offsetWidth + 'px';
+      touchClone.style.opacity = '0.9';
+      touchClone.style.pointerEvents = 'none';
+      document.body.appendChild(touchClone);
+      touchActiveEl.classList.add('dragging');
     }
-    
-    if (newInsert !== touchInsertIdx) {
-      touchInsertIdx = newInsert;
-      showInsertLine(touchInsertIdx);
-    }
+    touchClone.style.left = (t.clientX - touchClone.offsetWidth / 2) + 'px';
+    touchClone.style.top = (t.clientY - 20) + 'px';
+    const n = insertFromY(t.clientY);
+    if (n !== touchInsertIdx) { touchInsertIdx = n; showInsertLine(touchInsertIdx); }
   }
-
   function handleTouchEnd(e) {
-    if (!touchClone) return;
-    touchClone.remove();
-    touchClone = null;
-    
+    if (touchActiveEl === null) return;
+    if (!touchMoved) { touchActiveEl = null; return; }
+    e.preventDefault();
+    if (touchClone) { touchClone.remove(); touchClone = null; }
+    touchActiveEl.classList.remove('dragging');
+    clearInsertLines();
+    if (touchInsertIdx !== null) moveItem(touchStartIdx, touchInsertIdx);
+    touchStartIdx = null; touchActiveEl = null; touchInsertIdx = null;
+    render();
+  }
+  function handleTouchCancel() {
+    if (touchClone) { touchClone.remove(); touchClone = null; }
     if (touchActiveEl) touchActiveEl.classList.remove('dragging');
     clearInsertLines();
-    
-    if (touchInsertIdx !== null && touchInsertIdx !== touchStartIdx && touchInsertIdx !== touchStartIdx + 1) {
-      const item = order.splice(touchStartIdx, 1)[0];
-      let target = touchInsertIdx;
-      if (touchInsertIdx > touchStartIdx) target--;
-      order.splice(target, 0, item);
-      highlights = null;
-      document.getElementById('result').style.display = 'none';
-      render();
-    }
-    
-    touchStartIdx = null;
-    touchActiveEl = null;
-    touchInsertIdx = null;
+    touchStartIdx = null; touchActiveEl = null; touchInsertIdx = null;
   }
 
   function showInsertLine(idx) {
-    document.querySelectorAll('.insert-line').forEach(l => l.classList.remove('visible'));
-    const lines = document.querySelectorAll('.insert-line');
+    const lines = document.querySelectorAll('#list-container .insert-line');
+    lines.forEach(l => l.classList.remove('visible'));
     if (lines[idx]) lines[idx].classList.add('visible');
   }
-
-  // Clear lines helper
   function clearInsertLines() {
     document.querySelectorAll('.insert-line').forEach(l => l.classList.remove('visible'));
   }
 
   function verify() {
+    const now = Date.now();
+    if (done || now - lastClick < 600) return;
+    lastClick = now;
     const tabData = DATA[activeTab];
+    done = true; sel = null;
     highlights = order.map((text, i) => text === tabData.steps[i]);
     render();
     const correct = highlights.filter(Boolean).length;
     const total = tabData.steps.length;
+    const pct = Math.round(correct / total * 100);
     const msg = document.getElementById('result');
     if (correct === total) {
       msg.className = 'result-msg success';
       msg.innerHTML = '🎉 Bravo ! Toutes les étapes sont dans le bon ordre !';
     } else {
       msg.className = 'result-msg partial';
-      msg.innerHTML = `${correct}/${total} étapes correctes. Les cases en rouge sont à corriger !`;
+      msg.innerHTML = `${correct}/${total} étapes à la bonne place.<br><span style="font-size:1rem">La bonne étape est écrite en <span style="color:#1f5fbf">bleu</span> sous chaque case rouge.</span>`;
     }
+    msg.style.display = 'block';
+    document.getElementById('btn-verify').style.display = 'none';
+    document.getElementById('btn-reset').textContent = '🔄 Recommencer';
 
-    // Save score to parent dashboard
-    if (window.parent && window.parent.saveResult) {
-      const pct = Math.round(correct / total * 100);
-      window.parent.saveResult({
-        activity: tabData.activity,
-        bookTitle: tabData.bookTitle,
-        score: correct,
-        total: total,
-        pct: pct,
-        date: new Date().toLocaleDateString('fr-BE'),
-        time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
-      });
+    if (!saved) {
+      saved = true;
+      try {
+        if (window.parent && window.parent !== window && typeof window.parent.saveResult === 'function') {
+          window.parent.saveResult({
+            activity: tabData.activity,
+            bookTitle: tabData.bookTitle,
+            score: correct, total: total, pct: pct,
+            date: new Date().toLocaleDateString('fr-BE'),
+            time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+          });
+        }
+      } catch (e) {}
     }
+    msg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
-  // Parse location hash to auto-select tab
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Enter' || (e.target && e.target.tagName === 'BUTTON')) return;
+    e.preventDefault();
+    if (done) resetExercise(); else verify();
+  });
+
+  // Onglet choisi par l'adresse (#petite, #grande, #ensemble)
   function loadFromHash() {
     checkLocks();
-    const hash = window.location.hash.substring(1); // remove '#'
-    if (hash && DATA[hash]) {
-      const isLocked = isTabLocked(hash);
-      if (!isLocked) {
-        switchTab(hash, true);
-        return;
-      }
+    const hash = window.location.hash.substring(1);
+    if (hash && DATA[hash] && !isTabLocked(hash)) { switchTab(hash, true); return; }
+    for (const k of ['petite', 'grande', 'ensemble']) {
+      if (!isTabLocked(k)) { switchTab(k, true); return; }
     }
-    
-    // Find first unlocked tab
-    const keys = ['petite', 'grande', 'ensemble'];
-    for (const k of keys) {
-      if (!isTabLocked(k)) {
-        switchTab(k, true);
-        return;
-      }
-    }
-
-    // Fallback to default (forced so it renders even if locked for student)
     switchTab('petite', true);
   }
-
-  // Watch for hash changes in case it's re-launched from plan de travail with different hash
   window.addEventListener('hashchange', loadFromHash);
-
-  // Initialize
   loadFromHash();
 </script>
 </body>

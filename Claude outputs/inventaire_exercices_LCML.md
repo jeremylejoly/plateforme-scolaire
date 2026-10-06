@@ -2067,6 +2067,11 @@ Spécifique :
 - Mise en page sans dépendre de Tailwind (CDN) : image à 100 % de son cadre (sans Tailwind elle débordait et les pastilles étaient décalées), grille 1 colonne sur téléphone / 2 colonnes ≥ 768 px.
 - Tests Playwright 390 px : message à vide, radius/cubitus inversés → 13/15 + 2 bleus, menus verrouillés, 1 sauvegarde malgré 3 clics, Entrée relance, plus de bouton de calibrage, pas de débordement.
 
+### 06/10 — Éveil → Sciences → L'appareil circulatoire → Remettre de l'ordre (`sci_circ_ordre` = page à 3 onglets `sci_circ_petite` / `sci_circ_grande` / `sci_circ_ensemble`, fiche trajet_du_sang_ordre.html + copies racine et public/fiches) — sw.js v655
+- Contenu : « Le trajet général » commençait par « Le cœur se contracte » puis mêlait ventricule droit et gauche (qui se contractent en même temps) → départ ambigu, l'ordre « organes d'abord » était aussi juste. Nouvelle 1re étape donnée « Le sang chargé en gaz carbonique arrive au cœur, dans l'oreillette droite » ; « Le cycle recommence » (étape triviale) fusionné avec le retour par les veines caves ; 6 étapes précises (artère pulmonaire, veines pulmonaires, aorte, veines caves). Grande circulation : « via les artères » → « Les artères distribuent le sang à tous les organes », « vers la veine cave » → « jusqu'aux veines caves ».
+- Mécanique (comme trajet_de_lair v644) : vérification unique, garde 600 ms, bonne étape en bleu, Recommencer, Entrée, sauvegarde unique try/catch `window.parent !== window` (avant : à chaque clic), mélange ≤ 2 étapes en place, toucher-placer, conteneur reconstruit (plus d'écouteurs empilés), onglets qui passent à la ligne, mise en page < 480 px. Verrouillage par onglet (isActivityLocked) et onglet par #ancre conservés.
+- Tests Playwright 390 px (toucher) : ouverture sur #ensemble, 3 onglets remis en ordre par toucher puis 2 inversées → 4/6, 5/7, 4/6 + 2 bleus chacun, 1 sauvegarde par onglet, onglet verrouillé 🔒 désactivé, 3000 mélanges ≤ 2 en place, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2540,9 +2545,9 @@ Spécifique :
 | ✅ 06/10 | Appareil circulatoire — Le trajet du sang | `sci_trajet_sang` | index › renderSciTrajetSangScreen |  |
 | ✅ 06/10 | Appareil circulatoire — QCM | `sci_circulatoire_qcm` | index › renderSciCirculatoireQCM |  |
 | ✅ 06/10 | Appareil circulatoire — Termes et définitions | `sci_circulatoire_assoc` | index › renderSciCirculatoireAssoc |  |
-| ⬜ | La petite circulation (Ordre) | `sci_circ_petite` | index › renderSciCircOrdrePetite |  |
-| ⬜ | La grande circulation (Ordre) | `sci_circ_grande` | index › renderSciCircOrdreGrande |  |
-| ⬜ | Le trajet du sang (Ordre complet) | `sci_circ_ensemble` | index › renderSciCircOrdreEnsemble |  |
+| ✅ 06/10 | La petite circulation (Ordre) | `sci_circ_petite` | index › renderSciCircOrdrePetite |  |
+| ✅ 06/10 | La grande circulation (Ordre) | `sci_circ_grande` | index › renderSciCircOrdreGrande |  |
+| ✅ 06/10 | Le trajet du sang (Ordre complet) | `sci_circ_ensemble` | index › renderSciCircOrdreEnsemble |  |
 
 ### 🌍 Éveil — 🔬 Sciences — Monde vivant & Matière
 
@@ -2674,7 +2679,7 @@ Spécifique :
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Remettre de l'ordre | `sci_circ_ordre` | index › renderSciCircOrdre |  |
+| ✅ 06/10 | Remettre de l'ordre | `sci_circ_ordre` | index › renderSciCircOrdre |  |
 
 ### ? — (menu validerGeoBelgiqueQCM)
 
