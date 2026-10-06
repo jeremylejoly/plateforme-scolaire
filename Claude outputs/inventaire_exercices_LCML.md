@@ -2010,6 +2010,11 @@ Spécifique :
 - Mécanique : vérification une seule fois (avant : clic répété = sauvegardes multiples et nouvelle chance), garde 600 ms, après erreur la bonne étape s'affiche en bleu sous chaque case rouge, bouton Recommencer, Entrée = vérifier/recommencer ; sauvegarde unique en try/catch avec `window.parent !== window` ; total calculé (plus de 9 codé en dur) ; mélange Fisher–Yates qui laisse au plus 3 étapes déjà à leur place ; écouteurs du conteneur plus empilés à chaque rendu ; toucher : glisser ou toucher une étape puis l'endroit (sélection orange) ; mise en page resserrée sous 480 px.
 - Tests Playwright 390 px (toucher réel CDP) : 2000 mélanges ≤ 3 étapes en place, placement par toucher jusqu'à l'ordre parfait, glisser au doigt déplace l'étape, 2 inversées → 6/8 + 2 corrections bleues, 1 seule sauvegarde malgré 3 clics, Entrée relance, pas de débordement.
 
+### 06/10 — Éveil → Sciences → L'appareil digestif → Le schéma (`sci_dig_schema`, index › SCI_DIG_SCHEMA_DATA / renderSciDigSchema / validateSciDigSchema, image appareil_digestif.png) — sw.js v645
+- Numéros 1–10 vérifiés sur l'image : bouche, glandes salivaires, œsophage, estomac, foie, pancréas, intestin grêle, gros intestin, anus (9), rectum (10) — tous corrects. « Oesophage » → « Œsophage ».
+- Moteur remplacé par celui déjà corrigé du schéma respiratoire : 2 colonnes fixes → grille auto (image puis tableau sur téléphone), toucher une étiquette puis la case, message « il en reste N » au lieu d'une validation à vide, garde 600 ms, validation unique (avant : clics répétés = sauvegardes multiples), bonne légende en bleu sous chaque case fausse (avant : rien si la case était remplie), sauvegarde unique en try/catch.
+- Tests Playwright 390 px (toucher) : message à vide, placement par toucher, bouche/anus inversés → 8/10 + 2 corrections bleues, 1 seule sauvegarde malgré 3 clics, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2473,7 +2478,7 @@ Spécifique :
 | ✅ 06/10 | Appareil respiratoire — Termes et définitions | `sci_resp_assoc` | index › renderSciRespAssoc |  |
 | ✅ 06/10 | Appareil respiratoire — Remettre de l'ordre | `sci_resp_ordre` | index › renderSciRespOrdre |  |
 | ⬜ | Appareil digestif — La leçon | `fiche_digestif` | fiches/appareil-digestif.html |  |
-| ⬜ | Appareil digestif — Le schéma | `sci_dig_schema` | index › renderSciDigSchema |  |
+| ✅ 06/10 | Appareil digestif — Le schéma | `sci_dig_schema` | index › renderSciDigSchema |  |
 | ⬜ | Appareil digestif — Trajet des aliments | `sci_dig_texte` | index › renderSciDigTexte |  |
 | ⬜ | Appareil digestif — QCM | `sci_dig_qcm` | index › renderSciDigQCM |  |
 | ⬜ | Appareil digestif — Termes et définitions | `sci_dig_assoc` | index › renderSciDigAssoc |  |

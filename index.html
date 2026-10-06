@@ -37123,7 +37123,7 @@ function renderSciQcmQuestion() {
 const SCI_DIG_SCHEMA_DATA = [
   {num:1,  label:'Bouche'},
   {num:2,  label:'Glandes salivaires'},
-  {num:3,  label:'Oesophage'},
+  {num:3,  label:'Œsophage'},
   {num:4,  label:'Estomac'},
   {num:5,  label:'Foie'},
   {num:6,  label:'Pancréas'},
@@ -37133,26 +37133,27 @@ const SCI_DIG_SCHEMA_DATA = [
   {num:10, label:'Rectum'},
 ];
 
-let sciDigSchemaState = {answers:{}, dragging:null};
+let sciDigSchemaState = {answers:{}, dragging:null, sel:null, done:false, lastClick:0};
 
 function renderSciDigSchema(){
-  const body = document.getElementById('sci-dig-schema-body'); if(!body) return;
-  sciDigSchemaState = {answers:{}, dragging:null};
+  const body = document.getElementById('sci-dig-schema-body');
+  if(!body) return;
+  sciDigSchemaState = {answers:{}, dragging:null, sel:null, done:false, lastClick:0};
   SCI_DIG_SCHEMA_DATA.forEach(d => { sciDigSchemaState.answers[d.num] = ''; });
   const tags = shuffle(SCI_DIG_SCHEMA_DATA.map(d => d.label));
 
   let tableHtml = `<table class="geo-table"><thead><tr><th>N°</th><th>Légende</th></tr></thead><tbody>`;
   SCI_DIG_SCHEMA_DATA.forEach(d => {
     tableHtml += `<tr><td>${d.num}</td><td>
-      <div class="geo-drop-zone" id="drop-dig-${d.num}" data-num="${d.num}" onclick="digSchemaClearZone(this)"
+      <div class="geo-drop-zone" id="drop-dig-${d.num}" data-num="${d.num}" onclick="digSchemaZoneClick(this)"
         ondragover="digSchemaDragOver(event)" ondrop="digSchemaDrop(event)" ondragleave="digSchemaDragLeave(event)"></div>
     </td></tr>`;
   });
   tableHtml += '</tbody></table>';
 
-  let tagsHtml = '<div class="geo-tags-pool" id="dig-schema-pool">';
+  let tagsHtml = '<div class="geo-tags-pool" id="dig-schema-tags-pool">';
   tags.forEach((t,i) => {
-    tagsHtml += `<div class="geo-tag" id="dig-tag-${i}" draggable="true" data-text="${t}" data-idx="${i}"
+    tagsHtml += `<div class="geo-tag" id="dig-tag-${i}" draggable="true" data-text="${t}" data-idx="${i}" onclick="digSchemaSelect(this)"
       ondragstart="digSchemaDragStart(event)" ondragend="digSchemaDragEnd(event)"
       ontouchstart="digSchemaTouchStart(event)" ontouchmove="digSchemaTouchMove(event)" ontouchend="digSchemaTouchEnd(event)" ontouchcancel="digSchemaTouchCancel(event)"
     >${t}</div>`;
@@ -37160,32 +37161,65 @@ function renderSciDigSchema(){
   tagsHtml += '</div>';
 
   body.innerHTML = `
-    <div class="card" style="margin-bottom:1rem;padding:.8rem 1rem;background:var(--purple-light);border:1px solid var(--purple);">
-      <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">Glisse chaque organe dans la bonne case du tableau.</p>
+    <div class="card" style="margin-bottom:1rem;padding:0.8rem 1rem;background:var(--purple-light);border:1px solid var(--purple);">
+      <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">Glisse chaque organe dans la bonne case du tableau (ou touche une étiquette, puis la case).</p>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;align-items:start;">
       <div>
-        <img src="appareil_digestif.png" alt="Schéma de l'appareil digestif" style="width:100%;border-radius:6px;border:2px solid var(--border);">
+        <img src="appareil_digestif.png" alt="Schéma de l'appareil digestif" style="width:100%;max-width:520px;display:block;margin:0 auto;border-radius:6px;border:2px solid var(--border);">
         ${tagsHtml}
       </div>
       <div>
         ${tableHtml}
-        <button class="btn" onclick="validateSciDigSchema()" style="width:100%;margin-bottom:1rem">✅ Valider</button>
+        <div id="dig-schema-msg" style="display:none;margin:.5rem 0;padding:.6rem .9rem;border-radius:8px;background:#fff7ed;border:1.5px solid #f59e0b;color:#92400e;font-size:13px;font-weight:700;text-align:center"></div>
+        <button class="btn" id="dig-schema-valider" onclick="validateSciDigSchema()" style="width:100%;margin-bottom:1rem">✅ Valider</button>
         <div id="dig-schema-score" style="display:none" class="geo-score-panel"></div>
       </div>
     </div>`;
 }
-function digSchemaDragStart(e){ e.dataTransfer.setData('text/plain',e.currentTarget.dataset.text); e.currentTarget.style.opacity='0.5'; }
+
+function digSchemaDragStart(e){ if(sciDigSchemaState.done){ e.preventDefault(); return; } e.dataTransfer.setData('text/plain', e.currentTarget.dataset.text); e.currentTarget.style.opacity='0.5'; }
 function digSchemaDragEnd(e){ e.currentTarget.style.opacity=''; }
 function digSchemaDragOver(e){ e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
 function digSchemaDragLeave(e){ e.currentTarget.classList.remove('drag-over'); }
-function digSchemaDrop(e){ e.preventDefault(); const zone=e.currentTarget; zone.classList.remove('drag-over'); digSchemaPlaceTag(zone,e.dataTransfer.getData('text/plain'),parseInt(zone.dataset.num)); }
-function digSchemaPlaceTag(zone,text,num){ const old=zone.textContent.trim(); if(old) digSchemaReturnTag(old); zone.textContent=text; zone.classList.add('filled'); sciDigSchemaState.answers[num]=text; digSchemaMarkUsed(text); }
-function digSchemaReturnTag(text){ const pool=document.getElementById('dig-schema-pool'); if(!pool) return; pool.querySelectorAll('.geo-tag').forEach(t=>{ if(t.dataset.text===text&&t.classList.contains('used')) t.classList.remove('used'); }); }
-function digSchemaMarkUsed(text){ const pool=document.getElementById('dig-schema-pool'); if(!pool) return; let found=false; pool.querySelectorAll('.geo-tag').forEach(t=>{ if(t.dataset.text===text&&!t.classList.contains('used')&&!found){t.classList.add('used');found=true;} }); }
-function digSchemaClearZone(zone){
-  const panel = document.getElementById('dig-schema-score');
-  if (panel && panel.style.display === 'block') return;
+function digSchemaDrop(e){
+  e.preventDefault();
+  const zone = e.currentTarget; zone.classList.remove('drag-over');
+  digSchemaPlaceTag(zone, e.dataTransfer.getData('text/plain'), parseInt(zone.dataset.num));
+}
+function digSchemaPlaceTag(zone, text, num){
+  if(sciDigSchemaState.done || !text) return;
+  const old = zone.textContent.trim();
+  if(old) digSchemaReturnTag(old);
+  zone.textContent = text; zone.classList.add('filled');
+  sciDigSchemaState.answers[num] = text; digSchemaMarkUsed(text);
+  digSchemaClearSel();
+  const m = document.getElementById('dig-schema-msg'); if(m) m.style.display='none';
+}
+function digSchemaReturnTag(text){
+  const pool = document.getElementById('dig-schema-tags-pool'); if(!pool) return;
+  let done=false;
+  pool.querySelectorAll('.geo-tag').forEach(t => { if(!done && t.dataset.text===text && t.classList.contains('used')){ t.classList.remove('used'); done=true; } });
+}
+function digSchemaMarkUsed(text){
+  const pool = document.getElementById('dig-schema-tags-pool'); if(!pool) return;
+  let found = false;
+  pool.querySelectorAll('.geo-tag').forEach(t => { if(t.dataset.text===text && !t.classList.contains('used') && !found){ t.classList.add('used'); found=true; } });
+}
+function digSchemaClearSel(){
+  sciDigSchemaState.sel = null;
+  document.querySelectorAll('#dig-schema-tags-pool .geo-tag').forEach(t => t.style.outline='');
+}
+function digSchemaSelect(tag){
+  if(sciDigSchemaState.done || !tag || tag.classList.contains('used')) return;
+  const same = sciDigSchemaState.sel === tag;
+  digSchemaClearSel();
+  if(!same){ sciDigSchemaState.sel = tag; tag.style.outline='3px solid #f59e0b'; }
+}
+function digSchemaZoneClick(zone){
+  if(sciDigSchemaState.done) return;
+  const sel = sciDigSchemaState.sel;
+  if(sel){ digSchemaPlaceTag(zone, sel.dataset.text, parseInt(zone.dataset.num)); return; }
   const num = parseInt(zone.dataset.num);
   const text = sciDigSchemaState.answers[num];
   if(!text) return;
@@ -37193,17 +37227,86 @@ function digSchemaClearZone(zone){
   digSchemaReturnTag(text);
   sciDigSchemaState.answers[num] = '';
 }
-let digTouchEl=null,digTouchClone=null;
-function digSchemaTouchStart(e){ const tag=e.currentTarget; if(tag.classList.contains('used')) return; digTouchEl=tag; const clone=tag.cloneNode(true); clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;transform:scale(1.1);'; const touch=e.touches[0]; clone.style.left=(touch.clientX-40)+'px'; clone.style.top=(touch.clientY-20)+'px'; document.body.appendChild(clone); digTouchClone=clone; tag.style.opacity='0.4'; }
-function digSchemaTouchMove(e){ e.preventDefault(); if(!digTouchClone) return; const touch=e.touches[0]; digTouchClone.style.left=(touch.clientX-40)+'px'; digTouchClone.style.top=(touch.clientY-20)+'px'; }
-function digSchemaTouchEnd(e){ if(!digTouchClone) return; const touch=e.changedTouches[0]; digTouchClone.remove(); digTouchClone=null; if(digTouchEl) digTouchEl.style.opacity=''; const el=document.elementFromPoint(touch.clientX,touch.clientY); const zone=el?el.closest('.geo-drop-zone'):null; if(zone&&digTouchEl) digSchemaPlaceTag(zone,digTouchEl.dataset.text,parseInt(zone.dataset.num)); digTouchEl=null; }
-function digSchemaTouchCancel(e){ if(digTouchClone) { digTouchClone.remove(); digTouchClone=null; } if(digTouchEl) { digTouchEl.style.opacity=''; digTouchEl=null; } }
+// conservé pour compatibilité
+function digSchemaClearZone(zone){ digSchemaZoneClick(zone); }
+
+let digTouchEl=null, digTouchClone=null, digTouchX=0, digTouchY=0;
+function digSchemaTouchStart(e){
+  const tag=e.currentTarget; if(tag.classList.contains('used') || sciDigSchemaState.done) return;
+  digTouchEl=tag;
+  const touch=e.touches[0];
+  digTouchX=touch.clientX; digTouchY=touch.clientY;
+  const clone=tag.cloneNode(true);
+  clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;transform:scale(1.1);';
+  clone.style.left=(touch.clientX-40)+'px'; clone.style.top=(touch.clientY-20)+'px';
+  document.body.appendChild(clone); digTouchClone=clone; tag.style.opacity='0.4';
+}
+function digSchemaTouchMove(e){
+  e.preventDefault(); if(!digTouchClone) return;
+  const touch=e.touches[0];
+  digTouchClone.style.left=(touch.clientX-40)+'px'; digTouchClone.style.top=(touch.clientY-20)+'px';
+  geoAutoScroll(touch);
+}
+function digSchemaTouchEnd(e){
+  if(!digTouchClone) return;
+  e.preventDefault();
+  const touch=e.changedTouches[0];
+  digTouchClone.remove(); digTouchClone=null;
+  geoStopAutoScroll();
+  if(digTouchEl) digTouchEl.style.opacity='';
+  const zone=geoZoneAtTouch(touch);
+  if(zone && digTouchEl){
+    digSchemaPlaceTag(zone, digTouchEl.dataset.text, parseInt(zone.dataset.num));
+  } else if(digTouchEl && Math.abs(touch.clientX-digTouchX)<10 && Math.abs(touch.clientY-digTouchY)<10){
+    digSchemaSelect(digTouchEl);
+  }
+  digTouchEl=null;
+}
+function digSchemaTouchCancel(e){
+  if(digTouchClone) { digTouchClone.remove(); digTouchClone=null; }
+  if(digTouchEl) { digTouchEl.style.opacity=''; digTouchEl=null; }
+}
+
 function validateSciDigSchema(){
-  let ok=0; const total=SCI_DIG_SCHEMA_DATA.length;
-  SCI_DIG_SCHEMA_DATA.forEach(d=>{ const zone=document.getElementById('drop-dig-'+d.num); if(!zone) return; if(sciDigSchemaState.answers[d.num]===d.label){zone.style.background='#d4f5e2';zone.style.color='#166534';ok++;}else{zone.style.background='#fdd9d7';zone.style.color='#991b1b';if(!sciDigSchemaState.answers[d.num]) zone.textContent='— '+d.label;} });
-  const pct=Math.round(ok/total*100); const panel=document.getElementById('dig-schema-score'); panel.style.display='block';
-  panel.innerHTML=`<div style="font-size:48px">${pct>=70?'🎉':pct>=50?'👍':'💪'}</div><div style="font-weight:800;font-size:28px;color:${pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)'}">${ok}/${total} — ${pct}%</div><button class="btn" onclick="renderSciDigSchema()" style="margin-top:1rem">🔄 Recommencer</button>`;
-  if(state.student) saveResult({student:state.student,cls:state.studentCls,className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,activity:'sci_dig_schema',bookTitle:'Digestif — Schéma',score:ok,total,pct,date:new Date().toLocaleDateString('fr-BE'),time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})});
+  const st = sciDigSchemaState, now = Date.now();
+  if(st.done || now - st.lastClick < 600) return;
+  st.lastClick = now;
+  const vides = SCI_DIG_SCHEMA_DATA.filter(d => !st.answers[d.num]).length;
+  const msg = document.getElementById('dig-schema-msg');
+  if(vides > 0){
+    if(msg){ msg.textContent = vides === 1 ? 'Place d\'abord la dernière étiquette.' : 'Place d\'abord toutes les étiquettes (il en reste ' + vides + ').'; msg.style.display = 'block'; }
+    return;
+  }
+  if(msg) msg.style.display = 'none';
+  st.done = true;
+  digSchemaClearSel();
+  const vb = document.getElementById('dig-schema-valider'); if(vb) vb.style.display = 'none';
+  let ok=0;
+  SCI_DIG_SCHEMA_DATA.forEach(d => {
+    const zone = document.getElementById('drop-dig-'+d.num);
+    if(!zone) return;
+    zone.style.cursor = 'default';
+    if(st.answers[d.num]===d.label){ zone.style.background='#d4f5e2'; zone.style.color='#166534'; zone.style.borderColor='#16a34a'; ok++; }
+    else {
+      zone.style.background='#fdd9d7'; zone.style.color='#991b1b'; zone.style.borderColor='#dc2626';
+      zone.style.flexDirection='column';
+      const c=document.createElement('div'); c.style.cssText='color:#1f5fbf;font-weight:800;font-size:12px;margin-top:2px'; c.textContent='➜ '+d.label;
+      zone.appendChild(c);
+    }
+  });
+  const total = SCI_DIG_SCHEMA_DATA.length;
+  const pct = Math.round(ok/total*100);
+  const panel = document.getElementById('dig-schema-score');
+  panel.style.display='block';
+  panel.innerHTML = `<div class="score-title">${ok}/${total} — ${pct}%</div>
+    <div class="score-msg">${pct===100?'Parfait ! 🏆':pct>=70?'Bien joué ! 👍':'Continue à réviser ! 💪'}</div>
+    ${ok<total?'<div class="score-msg" style="font-size:13px">La bonne légende est indiquée en <span style="color:#1f5fbf;font-weight:800">bleu</span>.</div>':''}
+    <button class="btn" onclick="renderSciDigSchema()" style="margin-top:.6rem">🔄 Recommencer</button>`;
+  if(state.student){ try{ saveResult({student:state.student,cls:state.studentCls,
+    className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+    activity:'sci_dig_schema',bookTitle:'Digestif — Schéma',
+    score:ok,total,pct,date:new Date().toLocaleDateString('fr-BE'),
+    time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})}); }catch(e){} }
 }
 
 // ----- EXERCICE 2 : TEXTES LACUNAIRES -----
