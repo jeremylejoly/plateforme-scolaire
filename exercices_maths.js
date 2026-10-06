@@ -793,73 +793,118 @@ window.TD_MOYENNES = [
   },
 ];
 
-window.TD_GRAPHIQUES = [
-  {
-    titre:"Nombre de livres lus par mois",
-    type:'barres',
-    axeX:'Mois',
-    axeY:'Nombre de livres',
-    donnees:[
-      {label:'Sept.',valeur:8},
-      {label:'Oct.',valeur:12},
-      {label:'Nov.',valeur:6},
-      {label:'Déc.',valeur:4},
-      {label:'Janv.',valeur:10},
-      {label:'Févr.',valeur:9},
-    ],
-    questions:[
-      {q:"Quel mois a-t-on lu le plus de livres ?", options:["Septembre","Octobre","Janvier","Février"], correct:1, explication:"En octobre, on a lu 12 livres, c'est le maximum."},
-      {q:"Quel mois a-t-on lu le moins de livres ?", options:["Novembre","Décembre","Janvier","Février"], correct:1, explication:"En décembre, on n'a lu que 4 livres, c'est le minimum."},
-      {q:"Combien de livres a-t-on lu en tout sur ces 6 mois ?", options:["45 livres","49 livres","52 livres","55 livres"], correct:1, explication:"8+12+6+4+10+9 = 49 livres au total."},
-      {q:"Entre novembre et janvier, la lecture a-t-elle augmenté ou diminué ?", options:["Augmenté","Diminué","Elle est restée pareille","Impossible à savoir"], correct:0, explication:"En novembre : 6 livres, en janvier : 10 livres — la lecture a augmenté."},
-      {q:"Quelle est l'étendue (différence entre le max et le min) ?", options:["6 livres","7 livres","8 livres","10 livres"], correct:2, explication:"12 (max en oct.) - 4 (min en déc.) = 8 livres d'étendue."},
-    ]
-  },
-  {
-    titre:"Températures moyennes à Waimes",
-    type:'lineaire',
-    axeX:'Mois',
-    axeY:'Température (°C)',
-    donnees:[
-      {label:'Jan.',valeur:2},
-      {label:'Fév.',valeur:3},
-      {label:'Mars',valeur:7},
-      {label:'Avr.',valeur:11},
-      {label:'Mai',valeur:15},
-      {label:'Juin',valeur:18},
-      {label:'Juil.',valeur:20},
-      {label:'Août',valeur:19},
-    ],
-    questions:[
-      {q:"Quel mois fait-il le plus chaud en moyenne ?", options:["Juin","Juillet","Août","Mai"], correct:1, explication:"En juillet, la température moyenne atteint 20°C, c'est le maximum."},
-      {q:"Quel mois fait-il le plus froid en moyenne ?", options:["Janvier","Février","Mars","Avril"], correct:0, explication:"En janvier, la température n'est que de 2°C, c'est le minimum."},
-      {q:"Entre janvier et juillet, de combien de degrés la température a-t-elle augmenté ?", options:["15°C","16°C","17°C","18°C"], correct:3, explication:"20 - 2 = 18°C d'augmentation entre janvier et juillet."},
-      {q:"Pendant combien de mois la température dépasse-t-elle 15°C ?", options:["2 mois","3 mois","4 mois","5 mois"], correct:1, explication:"Juin (18), Juillet (20) et Août (19) dépassent 15°C — soit 3 mois."},
-      {q:"Entre avril et mai, quelle est l'augmentation de température ?", options:["3°C","4°C","5°C","6°C"], correct:1, explication:"15 - 11 = 4°C d'augmentation entre avril et mai."},
-    ]
-  },
-  {
-    titre:"Sports pratiqués par les élèves",
-    type:'barres',
-    axeX:'Sport',
-    axeY:'Nombre d\'élèves',
-    donnees:[
-      {label:'Foot',valeur:15},
-      {label:'Natation',valeur:9},
-      {label:'Basket',valeur:7},
-      {label:'Tennis',valeur:5},
-      {label:'Vélo',valeur:11},
-      {label:'Gym',valeur:8},
-    ],
-    questions:[
-      {q:"Quel sport est pratiqué par le plus grand nombre d'élèves ?", options:["Foot","Natation","Vélo","Basket"], correct:0, explication:"Le football est pratiqué par 15 élèves, c'est le sport le plus populaire."},
-      {q:"Combien d'élèves pratiquent le vélo ou la natation ?", options:["18 élèves","20 élèves","22 élèves","24 élèves"], correct:1, explication:"11 (vélo) + 9 (natation) = 20 élèves."},
-      {q:"Quelle est l'étendue entre le sport le plus et le moins pratiqué ?", options:["8 élèves","9 élèves","10 élèves","11 élèves"], correct:2, explication:"15 (foot) - 5 (tennis) = 10 élèves d'étendue."},
-      {q:"Combien d'élèves pratiquent un sport d'équipe (foot ou basket) ?", options:["20 élèves","22 élèves","24 élèves","18 élèves"], correct:1, explication:"15 (foot) + 7 (basket) = 22 élèves pratiquent un sport d'équipe."},
-      {q:"Combien d'élèves pratiquent la gym ou le tennis ?", options:["11 élèves","12 élèves","13 élèves","14 élèves"], correct:2, explication:"8 (gym) + 5 (tennis) = 13 élèves."},
-    ]
-  },
-];
+// ===== Lire un graphique : graphiques générés (nouvelles données à chaque fois) =====
+// genTDGraphique() renvoie { titre, type:'barres'|'lineaire', axeY, pas, max, donnees:[{label, valeur}], questions:[{q, options, correct, explication}] }
+// Toutes les valeurs tombent pile sur une ligne du quadrillage : on les lit sur l'échelle (elles ne sont pas écrites).
+(function(){
+  const melanger = a => { const r = [...a]; for (let i = r.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [r[i], r[j]] = [r[j], r[i]]; } return r; };
+  const entier = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  function qcm(q, bonne, distr, explication){
+    const vus = new Set([bonne]), d = [];
+    for (const x of melanger(distr)) { if (x !== undefined && x !== null && !vus.has(x) && d.length < 3) { vus.add(x); d.push(x); } }
+    const options = melanger([bonne, ...d]);
+    return { q, options, correct: options.indexOf(bonne), explication };
+  }
+  // distracteurs sur le quadrillage (multiples du pas), strictement positifs
+  const numD = (v, pas, u) => [v + pas, v - pas, v + 2 * pas, v - 2 * pas, v + 3 * pas].filter(x => x > 0).map(x => `${x}${u}`);
+  // n multiples de pas, tous différents, entre a et b
+  function distincts(n, a, b, pas){ const s = new Set(); while (s.size < n) s.add(pas * entier(Math.ceil(a / pas), Math.floor(b / pas))); return melanger([...s]); }
+
+  const THEMES = [
+    { type: 'barres', titre: "Livres lus par la classe chaque mois", axeY: "Nombre de livres", labels: ["Sept.", "Oct.", "Nov.", "Déc.", "Janv.", "Févr."], pas: 2, min: 2, max: 18, u: " livres", additif: true,
+      plus: "Quel mois la classe a-t-elle lu le plus de livres ?", moins: "Quel mois la classe a-t-elle lu le moins de livres ?",
+      lire: l => `Combien de livres la classe a-t-elle lus en ${l} ?`, total: "Combien de livres la classe a-t-elle lus en tout sur ces 6 mois ?", mot: ["mois", "mois"],
+      seuil: s => `Pendant combien de mois la classe a-t-elle lu au moins ${s} livres ?` },
+    { type: 'barres', titre: "Sport préféré des élèves de l'école", axeY: "Nombre d'élèves", labels: ["Foot", "Natation", "Basket", "Tennis", "Vélo", "Danse", "Judo"], n: 6, melange: true, pas: 5, min: 5, max: 45, u: " élèves", additif: true,
+      plus: "Quel sport est préféré par le plus d'élèves ?", moins: "Quel sport est préféré par le moins d'élèves ?",
+      lire: l => `Combien d'élèves préfèrent ${l === 'Natation' ? 'la natation' : l === 'Danse' ? 'la danse' : l === 'Foot' ? 'le foot' : l === 'Basket' ? 'le basket' : l === 'Tennis' ? 'le tennis' : l === 'Vélo' ? 'le vélo' : 'le judo'} ?`,
+      total: "Combien d'élèves ont répondu en tout ?", mot: ["sport", "sports"], seuil: s => `Combien de sports sont préférés par au moins ${s} élèves ?` },
+    { type: 'barres', titre: "Buts marqués par chaque équipe du tournoi", axeY: "Nombre de buts", labels: ["Les Lions", "Les Tigres", "Les Ours", "Les Loups", "Les Aigles"], n: 5, melange: true, pas: 1, min: 1, max: 10, u: " buts", additif: true,
+      plus: "Quelle équipe a marqué le plus de buts ?", moins: "Quelle équipe a marqué le moins de buts ?",
+      lire: l => `Combien de buts ${l.replace('Les', 'les')} ont-ils marqués ?`, total: "Combien de buts ont été marqués en tout ?", mot: ["équipe", "équipes"],
+      seuil: s => `Combien d'équipes ont marqué au moins ${s} buts ?` },
+    { type: 'lineaire', titre: "Température moyenne à Waimes", axeY: "Température (°C)", labels: ["Janv.", "Févr.", "Mars", "Avr.", "Mai", "Juin", "Juil.", "Août"], pas: 2, u: " °C",
+      gen: () => { const b = [2, 4, 6, 10, 14, 16, 20, 18]; return b.map((x, i) => Math.max(0, x + 2 * entier(-1, 1) * (i % 2))); },
+      plus: "Quel mois fait-il le plus chaud ?", moins: "Quel mois fait-il le plus froid ?",
+      lire: l => `Quelle température moyenne fait-il en ${l.replace('.', '').replace('Janv', 'janvier').replace('Févr', 'février').replace('Avr', 'avril').replace('Juil', 'juillet').replace('Mars', 'mars').replace('Mai', 'mai').replace('Juin', 'juin').replace('Août', 'aout')} ?`,
+      mot: ["mois", "mois"], seuil: s => `Pendant combien de mois fait-il au moins ${s} °C ?` },
+    { type: 'lineaire', titre: "Taille d'un plant de tomate", axeY: "Taille (cm)", labels: ["Sem. 1", "Sem. 2", "Sem. 3", "Sem. 4", "Sem. 5", "Sem. 6", "Sem. 7"], pas: 5, u: " cm",
+      gen: () => { let v = 5 * entier(1, 2), r = [v]; for (let i = 1; i < 7; i++) { v += 5 * entier(i === 3 ? 0 : 1, 2); r.push(v); } return r; },
+      lire: l => `Combien mesure le plant pendant la ${l.replace('Sem. ', '').replace(/^1$/, '1re').replace(/^(\d)$/, '$1e')} semaine ?`,
+      mot: ["semaine", "semaines"], seuil: s => `Pendant combien de semaines le plant mesure-t-il au moins ${s} cm ?`, croissant: true },
+    { type: 'lineaire', titre: "Visiteurs de la bibliothèque", axeY: "Nombre de visiteurs", labels: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"], pas: 10, min: 20, max: 120, u: " visiteurs",
+      plus: "Quel jour la bibliothèque a-t-elle eu le plus de visiteurs ?", moins: "Quel jour la bibliothèque a-t-elle eu le moins de visiteurs ?",
+      lire: l => `Combien de visiteurs la bibliothèque a-t-elle eus le ${l.toLowerCase()} ?`, mot: ["jour", "jours"],
+      seuil: s => `Combien de jours la bibliothèque a-t-elle eu au moins ${s} visiteurs ?`, additif: true, total: "Combien de visiteurs la bibliothèque a-t-elle eus en tout sur ces 6 jours ?" }
+  ];
+
+  function genereValeurs(t){
+    for (let k = 0; k < 500; k++) {
+      let v = t.gen ? t.gen() : distincts(t.n || t.labels.length, t.min, t.max, t.pas);
+      const mx = Math.max(...v), mn = Math.min(...v);
+      // max et min uniques (une seule bonne réponse), sauf pour une croissance (plant) où on ne demande pas le min
+      if (v.filter(x => x === mx).length === 1 && (t.croissant || v.filter(x => x === mn).length === 1)) return v;
+    }
+  }
+
+  let dernier = -1;
+  window.genTDGraphique = function(){
+    let k; do { k = entier(0, THEMES.length - 1); } while (k === dernier); dernier = k;
+    const t = THEMES[k];
+    const labels = t.melange ? melanger(t.labels).slice(0, t.n) : t.labels;
+    const v = genereValeurs(t);
+    const D = labels.map((l, i) => ({ label: l, valeur: v[i] }));
+    const u = t.u, mx = Math.max(...v), mn = Math.min(...v);
+    const iMx = v.indexOf(mx), iMn = v.indexOf(mn);
+    const qs = [];
+    const autresLabels = i => labels.filter((_, j) => j !== i);
+    if (t.croissant) {
+      qs.push(qcm("Pendant quelle semaine le plant a-t-il le plus grandi ?", (() => { let b = 1; for (let i = 2; i < v.length; i++) if (v[i] - v[i - 1] > v[b] - v[b - 1]) b = i; return labels[b]; })(),
+        labels.slice(1), 'On compare la hauteur gagnée chaque semaine (la pente la plus forte).'));
+      // vérifie qu'il n'y a qu'une seule plus forte pousse ; sinon remplace par une lecture
+      const gains = v.slice(1).map((x, i) => x - v[i]); const gmax = Math.max(...gains);
+      if (gains.filter(g => g === gmax).length > 1) qs.pop();
+      else { const b = gains.indexOf(gmax) + 1; qs[qs.length - 1].explication = `Entre ${labels[b - 1]} et ${labels[b]}, le plant passe de ${v[b - 1]} à ${v[b]} cm : +${gmax} cm, c'est la plus forte pousse.`; }
+      qs.push(qcm(`Combien mesure le plant à la fin (${labels[v.length - 1]}) ?`, `${mx}${u}`, numD(mx, t.pas, u), `On lit le dernier point : ${mx}${u}.`));
+    } else {
+      qs.push(qcm(t.plus, labels[iMx], autresLabels(iMx), `${labels[iMx]} : ${mx}${u}, c'est la valeur la plus haute du graphique.`));
+      qs.push(qcm(t.moins, labels[iMn], autresLabels(iMn), `${labels[iMn]} : ${mn}${u}, c'est la valeur la plus basse du graphique.`));
+    }
+    // lecture d'une valeur (ni le max ni le min)
+    const iL = melanger(labels.map((_, i) => i).filter(i => i !== iMx && i !== iMn))[0];
+    qs.push(qcm(t.lire(labels[iL]), `${v[iL]}${u}`, numD(v[iL], t.pas, u), `On suit le haut ${t.type === 'barres' ? 'de la barre' : 'du point'} « ${labels[iL]} » jusqu'à l'échelle : ${v[iL]}${u}.`));
+    const autres = [];
+    // écart entre deux valeurs
+    const [a, b] = melanger(labels.map((_, i) => i).filter(i => v[i] !== undefined)).slice(0, 2);
+    if (v[a] !== v[b]) {
+      const g = v[a] > v[b] ? a : b, p = g === a ? b : a;
+      autres.push(() => qcm(`Quel est l'écart entre « ${labels[g]} » et « ${labels[p]} » ?`, `${v[g] - v[p]}${u}`, [...numD(v[g] - v[p], t.pas, u), `${v[g] + v[p]}${u}`],
+        `${v[g]} − ${v[p]} = ${v[g] - v[p]}${u}.`));
+    }
+    // seuil
+    const seuils = [...new Set(v)].sort((x, y) => x - y).slice(1, -1);
+    if (seuils.length) {
+      const s = seuils[entier(0, seuils.length - 1)], nb = v.filter(x => x >= s).length;
+      autres.push(() => qcm(t.seuil(s), `${nb}`, ['1', '2', '3', '4', '5', '6'].filter(x => +x !== nb && +x <= v.length),
+        `${D.filter(d => d.valeur >= s).map(d => `${d.label} (${d.valeur})`).join(', ')} : ${nb} ${nb > 1 ? t.mot[1] : t.mot[0]}.`));
+    }
+    if (t.additif) {
+      const tot = v.reduce((x, y) => x + y, 0);
+      autres.push(() => qcm(t.total, `${tot}${u}`, [`${tot + t.pas}${u}`, `${tot - t.pas}${u}`, `${tot + 2 * t.pas}${u}`, `${tot - 2 * t.pas}${u}`, `${tot + 3 * t.pas}${u}`],
+        `${v.join(' + ')} = ${tot}${u}.`));
+    }
+    if (t.type === 'lineaire') {
+      // évolution entre deux moments
+      let i1, i2, ess = 0; do { i1 = entier(0, v.length - 2); i2 = entier(i1 + 1, v.length - 1); ess++; } while (v[i1] === v[i2] && ess < 50);
+      if (v[i1] !== v[i2]) autres.push(() => qcm(`Entre « ${labels[i1]} » et « ${labels[i2]} », la valeur a-t-elle augmenté ou diminué ?`, v[i2] > v[i1] ? 'Elle a augmenté' : 'Elle a diminué',
+        ['Elle a augmenté', 'Elle a diminué', 'Elle est restée la même'], `${labels[i1]} : ${v[i1]}${u} ; ${labels[i2]} : ${v[i2]}${u}. Elle a ${v[i2] > v[i1] ? 'augmenté' : 'diminué'} de ${Math.abs(v[i2] - v[i1])}${u}.`));
+    }
+    melanger(autres).slice(0, 5 - qs.length).forEach(f => qs.push(f()));
+    const maxAxe = t.pas * (Math.floor(mx / t.pas) + 1);
+    return { titre: t.titre, type: t.type, axeY: t.axeY, pas: t.pas, max: maxAxe, donnees: D, questions: melanger(qs) };
+  };
+})();
+
 
 window.RH_PUZZLES=[
   {name:'Puzzle 1',level:0,pieces:[

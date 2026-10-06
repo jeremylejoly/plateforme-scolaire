@@ -3238,7 +3238,7 @@ input[type=text].calc-input.incorrect {
 </style>
 <script src="livres.js?v=20261002b"></script>
 <script src="exercices_francais.js?v=20261005zp"></script>
-<script src="exercices_maths.js?v=20261006d"></script>
+<script src="exercices_maths.js?v=20261006e"></script>
 <script src="exercices_eveil.js?v=20260927e"></script>
 <script>
 /* Garde-fou : si un appareil a chargé une ancienne version du fichier des livres
@@ -23398,12 +23398,13 @@ function validerTDTableau(){
 }
 
 // ===== EXERCICE 2 : GRAPHIQUES =====
-// window.TD_GRAPHIQUES a été extrait vers un fichier JS externe
+// Graphiques générés à chaque fois : window.genTDGraphique() (exercices_maths.js)
 
-let tdGraphiqueIdx = 0, tdGraphiqueSels = {}, tdGraphiqueSubmitted = false;
+let tdGraphiqueData = null, tdGraphiqueSels = {}, tdGraphiqueSubmitted = false, tdGraphiqueLast = 0;
 
 function renderTDGraphique(){
-  tdGraphiqueIdx = Math.floor(Math.random() * TD_GRAPHIQUES.length);
+  const t = Date.now(); if (t - tdGraphiqueLast < 600) return; tdGraphiqueLast = t;   // double clic sur « Nouveau graphique »
+  tdGraphiqueData = genTDGraphique();
   tdGraphiqueSels = {};
   tdGraphiqueSubmitted = false;
   buildTDGraphique();
@@ -23412,12 +23413,13 @@ function renderTDGraphique(){
 function buildTDGraphique(){
   const body = document.getElementById('td-graphique-body');
   if(!body) return;
-  const data = TD_GRAPHIQUES[tdGraphiqueIdx];
+  const data = tdGraphiqueData;
   tdGraphiqueSels = {};
   tdGraphiqueSubmitted = false;
 
-  const maxVal = Math.max(...data.donnees.map(d=>d.valeur));
-  const W = 560, H = 220, PAD_L = 50, PAD_B = 40, PAD_T = 20, PAD_R = 20;
+  // Échelle : une ligne du quadrillage par pas ; les valeurs tombent pile sur une ligne et ne sont pas écrites (on les lit sur l'échelle)
+  const maxVal = data.max, nbPas = Math.round(data.max / data.pas);
+  const W = 460, H = 280, PAD_L = 58, PAD_B = 40, PAD_T = 14, PAD_R = 20;
   const graphW = W - PAD_L - PAD_R;
   const graphH = H - PAD_T - PAD_B;
   const n = data.donnees.length;
@@ -23427,45 +23429,32 @@ function buildTDGraphique(){
   if(data.type === 'barres'){
     const barW = Math.floor(graphW / n * 0.6);
     const gap = graphW / n;
-    // Graduations
-    for(let i=0;i<=5;i++){
-      const v = Math.round(maxVal * i / 5);
-      const y = PAD_T + graphH - (graphH * i / 5);
-      svgContent += `<line x1="${PAD_L}" y1="${y}" x2="${W-PAD_R}" y2="${y}" stroke="var(--border)" stroke-width="1" stroke-dasharray="4"/>`;
-      svgContent += `<text x="${PAD_L-6}" y="${y+4}" text-anchor="end" font-size="11" fill="var(--muted)">${v}</text>`;
-    }
+    svgContent += tdgGraduations(data, PAD_L, PAD_T, W-PAD_R, graphH);
     // Barres
     data.donnees.forEach((d,i) => {
       const x = PAD_L + gap*i + gap/2 - barW/2;
       const barH = (d.valeur / maxVal) * graphH;
       const y = PAD_T + graphH - barH;
-      svgContent += `<rect x="${x}" y="${y}" width="${barW}" height="${barH}" fill="#1565c0" rx="4"/>`;
-      svgContent += `<text x="${x+barW/2}" y="${y-6}" text-anchor="middle" font-size="12" font-weight="700" fill="#1565c0">${d.valeur}</text>`;
-      svgContent += `<text x="${x+barW/2}" y="${H-PAD_B+16}" text-anchor="middle" font-size="11" fill="var(--muted)">${d.label}</text>`;
+      svgContent += `<rect x="${x}" y="${y}" width="${barW}" height="${barH}" fill="#1565c0" fill-opacity="0.85"/>`;
+      svgContent += `<text x="${x+barW/2}" y="${H-PAD_B+16}" text-anchor="middle" font-size="12" fill="var(--muted)">${d.label}</text>`;
     });
   } else {
     // Linéaire
-    const gap = graphW / (n-1);
-    for(let i=0;i<=5;i++){
-      const v = Math.round(maxVal * i / 5);
-      const y = PAD_T + graphH - (graphH * i / 5);
-      svgContent += `<line x1="${PAD_L}" y1="${y}" x2="${W-PAD_R}" y2="${y}" stroke="var(--border)" stroke-width="1" stroke-dasharray="4"/>`;
-      svgContent += `<text x="${PAD_L-6}" y="${y+4}" text-anchor="end" font-size="11" fill="var(--muted)">${v}</text>`;
-    }
+    const gap = (graphW - 30) / (n-1);
+    svgContent += tdgGraduations(data, PAD_L, PAD_T, W-PAD_R, graphH);
     // Ligne
     const points = data.donnees.map((d,i) => {
-      const x = PAD_L + gap*i;
+      const x = PAD_L + 15 + gap*i;
       const y = PAD_T + graphH - (d.valeur/maxVal)*graphH;
       return `${x},${y}`;
     }).join(' ');
     svgContent += `<polyline points="${points}" fill="none" stroke="#1565c0" stroke-width="2.5" stroke-linejoin="round"/>`;
     // Points
     data.donnees.forEach((d,i) => {
-      const x = PAD_L + gap*i;
+      const x = PAD_L + 15 + gap*i;
       const y = PAD_T + graphH - (d.valeur/maxVal)*graphH;
       svgContent += `<circle cx="${x}" cy="${y}" r="5" fill="#1565c0"/>`;
-      svgContent += `<text x="${x}" y="${y-10}" text-anchor="middle" font-size="11" font-weight="700" fill="#1565c0">${d.valeur}</text>`;
-      svgContent += `<text x="${x}" y="${H-PAD_B+16}" text-anchor="middle" font-size="10" fill="var(--muted)">${d.label}</text>`;
+      svgContent += `<text x="${x}" y="${H-PAD_B+16}" text-anchor="middle" font-size="12" fill="var(--muted)">${d.label}</text>`;
     });
   }
 
@@ -23494,12 +23483,13 @@ function buildTDGraphique(){
       <div class="card" style="margin-bottom:1rem;padding:1rem;background:linear-gradient(135deg,#1b5e20,#388e3c);color:#fff;border-radius:12px;">
         <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;opacity:.8;margin-bottom:4px;">📊 Traitement de données</div>
         <div style="font-size:18px;font-weight:900;">📊 ${data.titre}</div>
-        <div style="font-size:13px;margin-top:4px;opacity:.85;">${data.type==='barres'?'Diagramme à barres':'Graphique linéaire'} — lis et réponds aux questions</div>
+        <div style="font-size:13px;margin-top:4px;opacity:.85;">${data.type==='barres'?'Diagramme à barres':'Graphique en ligne brisée'} — lis les valeurs sur l'échelle et réponds aux questions</div>
       </div>
       <div class="card" style="padding:1rem;overflow-x:auto;">${svgEl}</div>
       <div class="card" style="padding:1rem;margin-top:0.5rem;">
         <h3 style="color:#1b5e20;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:1rem;">❓ Questions</h3>
         ${qhtml}
+        <div id="tdg-msg" style="display:none;margin-top:0.5rem;padding:8px 12px;border-radius:8px;background:#fff7e6;color:#8a5a00;font-size:13px;font-weight:700;"></div>
         <button class="btn" id="tdg-submit" onclick="validerTDGraphique()" style="width:100%;margin-top:0.5rem;background:#388e3c;">✅ Valider mes réponses</button>
         <div id="tdg-score" style="display:none;margin-top:1rem;" class="geo-score-panel"></div>
       </div>
@@ -23508,10 +23498,30 @@ function buildTDGraphique(){
 
 function tdgSelect(qi, oi){ tdGraphiqueSels[qi] = oi; }
 
+// Quadrillage : une ligne par pas ; étiquettes à chaque pas (un pas sur deux s'il y en a beaucoup)
+function tdgGraduations(data, x0, yTop, x1, graphH){
+  const nb = Math.round(data.max / data.pas), tous = nb <= 14;
+  let s = '';
+  for(let i=0;i<=nb;i++){
+    const y = yTop + graphH - graphH * i / nb, v = i * data.pas;
+    s += `<line x1="${x0}" y1="${y}" x2="${x1}" y2="${y}" stroke="#cfd8e3" stroke-width="1"/>`;
+    if(tous || i % 2 === 0) s += `<text x="${x0-6}" y="${y+4}" text-anchor="end" font-size="12" fill="var(--muted)">${v}</text>`;
+  }
+  return s;
+}
+
 function validerTDGraphique(){
   if(tdGraphiqueSubmitted) return;
+  const data = tdGraphiqueData;
+  const manque = data.questions.map((_,qi)=>qi).filter(qi => tdGraphiqueSels[qi] === undefined);
+  const msg = document.getElementById('tdg-msg');
+  if(manque.length){   // toutes les questions doivent avoir une réponse (rien n'est compté)
+    msg.style.display = 'block';
+    msg.textContent = `Réponds d'abord à ${manque.length > 1 ? 'toutes les questions' : 'la question'} ${manque.map(i=>i+1).join(', ')}.`;
+    return;
+  }
+  msg.style.display = 'none';
   tdGraphiqueSubmitted = true;
-  const data = TD_GRAPHIQUES[tdGraphiqueIdx];
   let score = 0; const total = data.questions.length;
   document.getElementById('tdg-submit').style.display='none';
   data.questions.forEach((q,qi) => {
@@ -23520,10 +23530,11 @@ function validerTDGraphique(){
       const el = document.getElementById(`tdg-opt-${qi}-${oi}`);
       if(el){ el.querySelector('input').disabled=true;
         if(oi===sel&&ok) el.classList.add('correct');
-        else if(oi===sel&&!ok) el.classList.add('incorrect'); }
+        else if(oi===sel&&!ok) el.classList.add('incorrect');
+        else if(oi===q.correct) el.classList.add('reveal'); }
     });
     const expl = document.getElementById(`tdg-expl-${qi}`);
-    if(expl){ expl.style.display='block'; expl.style.background=ok?'#d4f5e9':'#fde8e8'; expl.style.color=ok?'var(--green)':'var(--red)'; expl.innerHTML=(ok?'✅ ':'❌ ')+q.explication; }
+    if(expl){ expl.style.display='block'; expl.style.background=ok?'#d4f5e9':'#eaf1fc'; expl.style.color=ok?'var(--green)':'#1f5fbf'; expl.innerHTML=(ok?'✅ ':'❌ Bonne réponse : <strong>'+q.options[q.correct]+'</strong>. ')+q.explication; }
   });
   const pct = Math.round(score/total*100);
   const color = pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';

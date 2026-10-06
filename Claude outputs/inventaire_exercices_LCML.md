@@ -1810,6 +1810,14 @@ Spécifique :
 - Tests jsdom : parcours (vide → message, 4/5 → message, 3/5 → 1 sauvegarde `td_tableau`, 2 bonnes réponses en bleu), syntaxe 6 fichiers OK. `exercices_maths.js?v=20261006d`.
 - À noter pour « Moyenne et étendue » (`TD_MOYENNES`) : la question « Combien de matchs Lucas a-t-il marqué plus que sa moyenne ? » a pour réponse « 3 matchs » alors que l'explication en compte 4 ; moyennes arrondies (16,3 → 16 ; 11,5 → 11).
 
+### 06/10 — Mathématiques → Traitement de données → Lire un graphique (`td_graphique`, index › renderTDGraphique + exercices_maths.js › genTDGraphique) — sw.js v616
+- Contenu d'origine (3 graphiques, 15 questions) : réponses justes, mais seulement 3 graphiques aux questions fixes et **bonne réponse toujours à la même place** (propositions jamais mélangées) ; « Combien de livres a-t-on lu » (→ lus).
+- **Graduations fausses** : 5 étiquettes arrondies placées à des hauteurs non arrondies (ex. max 12 : « 2 » dessiné à 2,4, « 7 » à 7,2) → l'échelle ne correspondait pas au dessin. **Chaque valeur était écrite au-dessus de la barre ou du point** : rien à lire sur l'échelle.
+- → Graphiques générés : 3 diagrammes à barres (livres lus par mois, sport préféré, buts par équipe) et 3 graphiques en ligne brisée (températures à Waimes, croissance d'un plant de tomate, visiteurs de la bibliothèque) ; quadrillage d'une ligne par pas (1, 2, 5 ou 10), chaque valeur tombe pile sur une ligne, valeurs non écrites (on les lit sur l'échelle) ; 5 questions (le plus, le moins, une lecture, puis écart, seuil, total, évolution « augmenté / diminué », plus forte pousse…) ; propositions mélangées, distracteurs sur le quadrillage ; jamais deux fois le même graphique de suite.
+- Vérification indépendante sur 3 000 graphiques : valeurs relues sur le dessin (hauteur → échelle) = données, étiquettes de l'échelle justes, aucune valeur écrite, 15 000 réponses recalculées : 0 erreur.
+- Questions sans réponse comptées fausses → message, rien n'est compté. Bonne réponse en bleu (#1f5fbf) avec l'explication ; « Nouveau graphique » protégé (600 ms) ; textes du graphique agrandis pour le téléphone. Enregistrement : une fois par graphique (déjà en place). `exercices_maths.js?v=20261006e`.
+- Tests jsdom : parcours (vide → message, 3/5 → 1 sauvegarde `td_graphique`, réponses en bleu), planche de 6 graphiques (Playwright), syntaxe 6 fichiers OK.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2176,7 +2184,7 @@ Spécifique :
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ✅ 06/10 | Lire un tableau | `td_tableau` | index › renderTDTableau |  |
-| ⬜ | Lire un graphique | `td_graphique` | index › renderTDGraphique |  |
+| ✅ 06/10 | Lire un graphique | `td_graphique` | index › renderTDGraphique |  |
 | ⬜ | La moyenne (QCM) | `td_moyenne_qcm` | index › renderTDMoyenneQCM |  |
 | ⬜ | Moyenne et étendue | `td_moyenne` | index › renderTDMoyenne |  |
 | ⬜ | Calcul de la moyenne (Exercices) | `td_moyenne_exercices` | fiches/moyenne_exercices.html | Aucun hasard : mêmes questions, même ordre à chaque partie |
