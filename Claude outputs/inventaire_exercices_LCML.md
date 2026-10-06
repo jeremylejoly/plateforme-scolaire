@@ -1967,6 +1967,15 @@ Spécifique :
 - **Contenu corrigé** : « D'après le texte historique de Jean le Long » (texte absent de la page) → « d'après le texte de cette page » ; question sur la charte d'Albert de Cuyck (1196) sans support → phrase ajoutée au texte ; Tongres et Arlon « reliées par une chaussée » → sur de grandes chaussées (Bavay–Tongres–Cologne) ; question « deux plus anciennes villes » (Namur et Tournai ont aussi des origines romaines) → « la plus ancienne : Tongres » ; Watt « invente » → « améliore » la machine à vapeur ; Van Gogh « à Cuesmes en 1881 » → Borinage vers 1880 ; CO2 « ont doublé » → « plus que doublé » ; Indice Planète Vivante 69 % → 73 % (WWF 2024) ; « in 1973 » → en ; Clovis : « Bruxelles » proposé comme roi → Godefroid de Bouillon. Markdown resté dans le HTML (« **5 grandes périodes** », *pilum*, *oratores*…) → gras / italique. Nouvelle orthographe (connaitre, maitre, maitrise, nait, voutes, apparait, entrainant, évènement).
 - Tests Chromium (fiche dans un cadre) : 54 questions, réponses justes sauf 1 par quiz → bleu + rouge, double clic sans effet, 1 seule sauvegarde 49/54 (91 %), quiz recommencé sans 2e sauvegarde, 9 images chargées ; 390 px sans débordement.
 
+### 06/10 — Éveil → Histoire → La ligne du temps (`hist_ligne_du_temps`, `fiches/ligne-du-temps_5.html`, 3 copies) — sw.js v638
+- **Résultat jamais pris en compte** : `saveResult(score, total, temps, 'ligne_du_temps_5')` (arguments séparés, mauvais identifiant) → objet `{activity:'hist_ligne_du_temps', bookTitle, score, total, pct, date, time}`, une fois par partie terminée, try/catch, `window.parent !== window`.
+- **Quiz : bonne réponse toujours en B** (10/10, propositions jamais mélangées) et souvent la plus longue → propositions mélangées (Fisher–Yates ; A/B/C 681/661/658 sur 200 parties) et réécrites de longueur voisine ; bonne réponse en bleu après une erreur (elle était en vert) ; textes insérés sans `innerHTML`.
+- **« L'an 0 »** présenté comme origine du calendrier (il n'y a pas d'année 0) → « point de départ : la naissance (supposée) de Jésus-Christ ; on passe de l'an 1 av. J.-C. à l'an 1 apr. J.-C. » ; repère « naissance de J.-C. » ; objectif enseignant adapté.
+- **Fin de la Préhistoire** (convention du 06/10) : « jusqu'à l'écriture (≈ −3300) ; dans nos régions, jusqu'à la conquête romaine (−52) » dans la théorie et la synthèse ; Néolithique « ≈ −8000 au Proche-Orient (−5300 chez nous) ».
+- **Contenu** : statuettes « représentent la déesse mère » (hypothèse) → « on pense qu'elles étaient liées à la fertilité » ; Constitution de 1831 « séparation de l'Église et de l'État » → « indépendance des cultes vis-à-vis de l'État » ; Q10 précise que le vote des femmes n'arrive qu'en 1948. Markdown resté dans le HTML (« **5 grandes périodes** », *Niveau P5*…) → gras / italique. Nouvelle orthographe (entrainons, entrainer, maitre, maitrises, renait, évènement…).
+- Étiquettes des défis de manipulation toujours dans le même ordre → mélangées au départ et à chaque « Recommencer » (24 ordres différents sur 30). Frise du calendrier : légendes « avant / après J.-C. » superposées à 390 px → réduites et sur deux lignes.
+- Tests Chromium (fiche dans un cadre) : 10 questions, 1 erreur → rouge + bleu, double clic sans effet, 1 sauvegarde 9/10 (90 %) par partie ; 390 px sans débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2398,7 +2407,7 @@ Spécifique :
 | ⬜ | L'Œil du Temps — Jeu de Kim (Mémoire visuelle) | `kim_histoire` | fiches/kim_histoire.html |  |
 | ✅ 06/10 | La frise chronologique (Interactive) | `fiche_frise` | fiches/frise-chronologique-histoire.html |  |
 | ✅ 06/10 | Le grand voyage du Temps (Carnet d'investigation) | `hist_grand_voyage_temps` | fiches/lecon_frise_historique.html | QCM: bonne réponse en position 1 dans 5/5 questions, options non mélangées ; Aucun hasard : mêmes questions, même ordre à chaque partie |
-| ⬜ | La ligne du temps (Séquence P5–P6) | `hist_ligne_du_temps` | fiches/ligne-du-temps_5.html | QCM: bonne réponse en position 2 dans 10/10 questions, options non mélangées ; Aucun hasard : mêmes questions, même ordre à chaque partie |
+| ✅ 06/10 | La ligne du temps (Séquence P5–P6) | `hist_ligne_du_temps` | fiches/ligne-du-temps_5.html | QCM: bonne réponse en position 2 dans 10/10 questions, options non mélangées ; Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ✅ 06/10 | Les grandes périodes de l'Histoire | `hist_grandes_periodes` | fiches/frise-chronologique-histoire.html |  |
 | ✅ 06/10 | Quiz Préhistoire | `qvgdm_prehistoire` | index › renderQVGDMPrehistoire |  |
 | ✅ 06/10 | Préhistoire — Termes et définitions | `prehistoire_assoc` | index › renderPrehistoireAssoc |  |
