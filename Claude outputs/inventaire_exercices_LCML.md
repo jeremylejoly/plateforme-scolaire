@@ -1901,6 +1901,12 @@ Spécifique :
 - **Validation** : questions sans réponse comptées fausses → message dans la page (numéros des questions manquantes) ; réponses encore modifiables après validation → verrouillées ; garde 600 ms ; enregistrement unique (try/catch). Bonne réponse en bleu (#1f5fbf, classe `reveal`) après une erreur (elle était en vert) ; message « les réponses vertes sont correctes » adapté.
 - Tests Chromium : 400 parties (bonne réponse en A/B/C/D 1330/1291/1316/1263, 9 premières questions différentes), vide → message, 12/13 répondues → « Réponds d'abord à la question 13 », 1 erreur → bleu + rouge, 1 seul enregistrement 12/13 malgré les clics répétés, réponses verrouillées ; capture 390 px sans débordement.
 
+### 06/10 — Éveil → Histoire → L'Antiquité → Qui veut gagner des millions ? (`qvgdm_antiquite`, index › QVGDM_ANTIQUITE_Q / renderQVGDMAntiquite) — sw.js v628
+- **Propositions jamais mélangées, toujours la même partie** (bonne réponse en C dans 9/15 questions) → même moteur que le quiz Préhistoire : **30 questions, 2 par niveau** (difficulté croissante gardée), une tirée par niveau, propositions mélangées (Fisher–Yates ; 50/50 aussi). Bonne réponse strictement la plus longue : 7/30.
+- **Contenu** : « oppidum » demandé deux fois (Q4 donnait Q10) → une seule fois ; « mélange des cultures gauloise et romaine » acceptait aussi « la romanisation » → « la civilisation née du mélange… » (gallo-romaine / gréco-romaine / celtique / égyptienne) ; « province romaine appelée Gallia » (la Gaule comptait plusieurs provinces) → « la Gaule Belgique » ; « Pax Romana » : la bonne réponse n'est plus la seule longue ; « le gaulois écrit » retiré. Nouvelles questions (dont plusieurs belges) : Rome, latin, amphithéâtre, thermes, forum, villa, druides, Belges, Ambiorix et les Éburons, Tongres, voies romaines, Auguste premier empereur, Francs, 476, « les plus braves de tous les Gaulois », durée de la conquête, assassinat de César.
+- **Fin de partie** : carte de fin imbriquée dans une autre carte, réponse en jaune → une seule carte, bonne réponse en bleu (#1f5fbf) ; après une erreur, la bonne proposition est en bleu (elle était en vert). Minuteurs liés à la partie (rejouer / quitter pendant le délai n'avance plus la nouvelle partie) ; paliers qui défilent jusqu'au palier en cours ; espaces insécables (« ? », « av. J.-C. ») ; enregistrement dans un try/catch.
+- Tests Chromium : 60 parties gagnées (30 questions vues, 1 sauvegarde 15/15 par partie, double clic sans effet), répartition A/B/C/D 253/213/210/224 ; partie perdue à la question 7 → bleu + 1 sauvegarde 6/15 ; relance pendant le délai sans effet ; captures 390 px sans débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2337,7 +2343,7 @@ Spécifique :
 | ✅ 06/10 | Quiz Préhistoire | `qvgdm_prehistoire` | index › renderQVGDMPrehistoire |  |
 | ✅ 06/10 | Préhistoire — Termes et définitions | `prehistoire_assoc` | index › renderPrehistoireAssoc |  |
 | ✅ 06/10 | Préhistoire — Campement du Paléolithique | `prehistoire_doc` | index › renderPrehistoireDoc |  |
-| ⬜ | Quiz L'Antiquité | `qvgdm_antiquite` | index › renderQVGDMAntiquite | QCM: bonne réponse en position 3 dans 9/15 questions, options non mélangées |
+| ✅ 06/10 | Quiz L'Antiquité | `qvgdm_antiquite` | index › renderQVGDMAntiquite | QCM: bonne réponse en position 3 dans 9/15 questions, options non mélangées |
 | ⬜ | Antiquité — Termes et définitions | `antiquite_assoc` | index › renderAntiquiteAssoc |  |
 | ⬜ | Antiquité — Document historique | `antiquite_doc` | index › renderAntiquiteDoc |  |
 | ⬜ | Quiz Moyen Âge | `qvgdm_moyen_age` | index › renderQVGDMMoyenAge |  |
