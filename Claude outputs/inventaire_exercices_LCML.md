@@ -1662,6 +1662,15 @@ Spécifique :
 - Orthographe : Entraine-toi, Entrainement complet, entrainement, maitrises.
 - Tests : jsdom (2 000 séries, 4 thèmes, double clic, 8/10 → 1 saveResult, figure de définition cachée pendant la question), node --check OK, rendu des figures (Playwright).
 
+### 06/10 — Polyèdre ou non-polyèdre (`polyedres_reconnaitre`, fiches/polyedres_reconnaitre.html) — sw.js v600
+- Contenu : 15 solides dessinés vérifiés (dessins conformes, polyèdre / non-polyèdre juste).
+- Distracteurs qui étaient aussi de bonnes réponses : « Parallélépipède rectangle » pour le cube (un cube en est un), « Prisme droit » pour le pavé (c'en est un) ; « Prisme droit » comme nom du prisme à base triangulaire alors que les prismes pentagonal et hexagonal sont aussi des prismes droits → « Prisme triangulaire » ; distracteurs revus (prismes entre eux, cône / cône tronqué / cylindre…).
+- « Cylindre couché » proposé comme nom d'un solide (et « Cylindre » absent des choix) → nom « Cylindre » ; les deux cylindres ne sont jamais dans la même série. « Tore (donut) » → « Tore ».
+- Mélange biaisé sort(random) (tirage et noms) → Fisher–Yates.
+- Score arrondi (15 étapes réussies sur 20 → « 8 / 10 ») → score exact sur 20 (1 point par étape) ; enregistrement unique avec try/catch.
+- « Solide suivant » protégé (600 ms) ; étape 2 impossible avant l'étape 1 ; Entrée ; orthographe « entrainement ».
+- Tests : jsdom (3 000 séries, distracteurs tous connus et différents de la réponse, double clic, 18/20 → 1 saveResult), node --check 7 OK, planche des 15 solides et capture 390 px (Playwright).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2077,7 +2086,7 @@ Spécifique :
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Polyèdre ou non-polyèdre | `polyedres_reconnaitre` | fiches/polyedres_reconnaitre.html |  |
+| ✅ 06/10 | Polyèdre ou non-polyèdre | `polyedres_reconnaitre` | fiches/polyedres_reconnaitre.html |  |
 | ⬜ | Patrons de solides | `polyedres_patrons` | fiches/patrons_solides.html |  |
 | ⬜ | Trouve le bon solide (Définitions) | `polyedres_definitions` | fiches/polyedres_definitions.html |  |
 | ⬜ | Trouve les caractéristiques (Définitions) | `polyedres_caracteristiques` | fiches/polyedres_caracteristiques.html |  |
