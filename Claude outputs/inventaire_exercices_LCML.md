@@ -2267,6 +2267,8 @@ Spécifique :
 
 - **06/10 — CEB Sciences 2022 (`ceb_sci_2022`, CEB sciences/ceb_sciences_2022.html, sw.js v723)** : 20 questions vérifiées contre le portfolio PDF (p. 8-19 : cycles cormoran/roussette/crevette, littoral, clé de détermination, oiseaux et graphique Natagora 32/20/16/14/6/5/4/3 %, bouteilles noire/blanche 19 °C à 9 h et 30/25 °C à 13 h, isolation, glaces Arctique/Antarctique) — réponses justes. Même moteur que 2026/2023 → mêmes corrections (sauvegarde unique /20, choix mélangés, bleu, message des questions vides, double clic). Contenu : 1.2 demandait la photo de l'« œuf de roussette », écrit sous la photo → « roussette adulte » (photo A, à déduire) ; 1.4 réponse recopiée de la fiche sans utiliser la clé → « dans quelle couleur de fleurs la bette maritime est-elle classée ? » (autres) ; 2.1 donnait « 32 % » et 2.5 a donnait les valeurs → retirés ; 3.3 b se présentait comme une observation alors que le livret ne donne aucun résultat d'isolation → présentée comme une prévision + explication après réponse ; bonne réponse seule longue (2.2, 3.2, 3.5, 4.1, 4.2, 4.4) → équilibrée ; « En vous basant » → « En te basant ». NO : entrainement, maitriser ; « prêt-e » → « prêt ». Test Playwright 390 px : message « 1.5 », 17/20, 1 seule sauvegarde, pas de débordement.
 
+- **06/10 — CEB Sciences 2021 (`ceb_sci_2021`, CEB sciences/ceb_sciences_2021.html, sw.js v724)** : 20 questions vérifiées contre le portfolio PDF (p. 13-26 : expériences A/B/C sur les plantes, cycle du cerf, épeire, ensembles emboités, cloportes 5/2/1, bouteille modèle A 27 → 29 cm, pièce et clous, fusée 12 m) — réponses justes. Même moteur que 2026/2023/2022 → mêmes corrections (sauvegarde unique /20, choix mélangés, bleu, message des questions vides, double clic). Contenu : 2.4 la bonne réponse énumérait 5 attributs (seule longue) → « quel attribut le cafard et la mouche ont-ils, mais pas le millepatte ? » (3 paires de pattes) ; 3.1 donnait « 5 sur 8 » → retiré ; bonne réponse seule longue ou avec son explication (1.1, 1.2, 2.3, 3.1, 3.2, 3.4, 3.5, 4.2, 4.4) → équilibrée, explications de 3.4 et 4.2 montrées après la réponse ; « boîte emboîtée » → « ensembles emboités » (livret). NO : emboité, entrainement, maitriser ; « prêt-e » → « prêt ». Test Playwright 390 px : message « 1.5 », 17/20, 1 seule sauvegarde, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2820,7 +2822,7 @@ Spécifique :
 | ✅ 06/10 | CEB Sciences 2024 | `ceb_sci_2024` | index › openCEB |  |
 | ✅ 06/10 | CEB Sciences 2023 | `ceb_sci_2023` | index › openCEB |  |
 | ✅ 06/10 | CEB Sciences 2022 | `ceb_sci_2022` | index › openCEB |  |
-| ⬜ | CEB Sciences 2021 | `ceb_sci_2021` | index › openCEB |  |
+| ✅ 06/10 | CEB Sciences 2021 | `ceb_sci_2021` | index › openCEB |  |
 | ⬜ | CEB Sciences 2019 | `ceb_sci_2019` | index › openCEB |  |
 | ⬜ | CEB Sciences 2016 | `ceb_sci_2016` | index › openCEB |  |
 | ⬜ | CEB Sciences 2013 | `ceb_sci_2013` | index › openCEB |  |
