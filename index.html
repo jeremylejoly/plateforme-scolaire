@@ -2499,6 +2499,31 @@ input[type=text].calc-input.incorrect {
 .pt-item-preview-btn:active {
   transform: translateY(0);
 }
+.pt-item-comment-btn {
+  font-size: 11px; font-weight: 700; padding: 4px 10px;
+  border-radius: 999px; background: var(--surface);
+  color: var(--muted); cursor: pointer; white-space: nowrap;
+  border: 1px solid var(--border); transition: all .15s; flex-shrink: 0;
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: inherit;
+}
+.pt-item-comment-btn:hover { border-color: #ea580c; color: #c2410c; transform: translateY(-1px); }
+.pt-item-comment-btn.has-comment { background: #f97316; color: #fff; border-color: #ea580c; }
+.pt-item-comment-btn.has-comment:hover { background: #c2410c; color: #fff; }
+.pt-item-comment-btn.has-class-comment { background: #fff7ed; color: #c2410c; border: 1px dashed #f97316; }
+@media (max-width: 560px) { .pt-cbtn-txt { display: none; } }
+.pt-comment-textarea {
+  width: 100%; box-sizing: border-box; padding: 10px 12px; border: 1.5px solid var(--border);
+  border-radius: 10px; background: var(--surface); color: var(--text);
+  font-family: inherit; font-size: 14px; resize: vertical; min-height: 90px;
+}
+.pt-comment-textarea:focus { outline: none; border-color: var(--purple); }
+.pt-comment-counter { text-align: right; font-size: 11px; color: var(--muted); margin-top: 2px; }
+.pt-comment-class-info { background: #fff7ed; border: 1px dashed #f97316; border-radius: 10px; padding: 8px 10px; margin-bottom: .75rem; font-size: 13px; }
+.pt-comment-info-head { font-weight: 700; color: #c2410c; margin-bottom: 4px; }
+.pt-comment-info-body { white-space: pre-wrap; color: var(--text); }
+.pt-comment-warn { background: #fef9c3; border: 1px solid #fde047; border-radius: 10px; padding: 8px 10px; margin-bottom: .75rem; font-size: 12px; font-weight: 600; color: #854d0e; }
+.pt-comment-view-text { white-space: pre-wrap; word-wrap: break-word; font-size: 16px; line-height: 1.5; background: #fff7ed; border: 2px solid #fdba74; border-radius: 12px; padding: 12px 14px; color: var(--text); }
 .pt-item-highlight {
   animation: ptItemGlow 2.5s ease-out forwards;
 }
@@ -3678,6 +3703,21 @@ input[type=text].calc-input.incorrect {
       }
       return null;
     } catch(e) { console.warn('Firebase loadPlanTravailIndividual error:', e); return null; }
+  };
+  // Commentaires du plan de travail : { class: { idActivité: texte }, students: { élève: { idActivité: texte } } }
+  // Nœud séparé : les plans eux-mêmes ne sont jamais réécrits par les commentaires.
+  window.FB_savePlanTravailComments = async function(cls, comments) {
+    try {
+      await set(ref(db, 'settings/plan_travail_comments/' + cls), comments);
+      return true;
+    } catch(e) { console.warn('Firebase savePlanTravailComments error:', e); return false; }
+  };
+  // Renvoie les données brutes (null si aucun commentaire) ou undefined en cas d'erreur
+  window.FB_loadPlanTravailComments = async function(cls) {
+    try {
+      const snap = await get(ref(db, 'settings/plan_travail_comments/' + cls));
+      return snap.exists() ? snap.val() : null;
+    } catch(e) { console.warn('Firebase loadPlanTravailComments error:', e); return undefined; }
   };
   window.FB_saveStudentPlanProgress = async function(cls, student, progress) {
     try {
@@ -8365,6 +8405,33 @@ input[type=text].calc-input.incorrect {
   </div>
 </div>
 
+<div class="modal-backdrop" id="pt-comment-modal">
+  <div class="modal" style="max-width:480px">
+    <h3>💬 Commentaire</h3>
+    <p id="pt-comment-sub" style="margin-bottom:.75rem;font-weight:700;color:var(--text);"></p>
+    <div id="pt-comment-class-info" class="pt-comment-class-info" style="display:none"></div>
+    <div id="pt-comment-warn" class="pt-comment-warn" style="display:none"></div>
+    <textarea id="pt-comment-text" class="pt-comment-textarea" maxlength="500" rows="4" oninput="ptCommentCount()" placeholder="Ex. : Fais seulement le niveau 1. Relis la leçon avant de commencer."></textarea>
+    <div class="pt-comment-counter"><span id="pt-comment-count">0</span> / 500</div>
+    <p style="font-size:12px;margin:.25rem 0 0;">Le commentaire est enregistré tout de suite, pas besoin de cliquer sur « Enregistrer le plan ».</p>
+    <div class="err-msg" id="pt-comment-error" style="margin-top:.5rem;"></div>
+    <div style="display:flex;gap:8px;margin-top:1rem;flex-wrap:wrap;">
+      <button class="btn btn-primary" id="pt-comment-save" style="flex:1" onclick="ptSaveComment()">💾 Enregistrer</button>
+      <button class="btn" id="pt-comment-delete" onclick="ptDeleteComment()">🗑️ Effacer</button>
+      <button class="btn" onclick="closeModal('pt-comment-modal')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="pt-comment-view-modal" onclick="if(event.target===this)closeModal('pt-comment-view-modal')">
+  <div class="modal" style="max-width:460px">
+    <h3>💬 Message de ton enseignant</h3>
+    <p id="pt-comment-view-act" style="margin-bottom:.75rem;font-weight:700;color:var(--purple);"></p>
+    <div id="pt-comment-view-text" class="pt-comment-view-text"></div>
+    <button class="btn btn-primary" style="width:100%;margin-top:1rem" onclick="closeModal('pt-comment-view-modal')">J'ai compris 👍</button>
+  </div>
+</div>
+
 <div class="modal-backdrop" id="fiche-modal">
   <div class="modal" style="max-width: 420px; border-3 border-neutral-900 shadow-[6px_6px_0px_#1A1A2E]">
     <h3 style="font-family: 'Fredoka', sans-serif; font-weight: 800; font-size: 20px; margin-bottom: 0.5rem;">📁 Ajouter une fiche</h3>
@@ -9615,6 +9682,7 @@ function selectTeacherClass(cls,btn){
   planTravailLoaded = false;
   planTravailAssigned = [];
   planTravailIndividual = {};
+  planTravailComments = { class: {}, students: {} };
   planTravailTarget = 'class';
   document.querySelectorAll('.teacher-class-btn').forEach(b=>b.classList.remove('selected'));
   btn.classList.add('selected');
@@ -9671,6 +9739,7 @@ function openTeacherPanel(){
   planTravailLoaded = false;
   planTravailAssigned = [];
   planTravailIndividual = {};
+  planTravailComments = { class: {}, students: {} };
   planTravailTarget = 'class';
   localStorage.setItem('lq_teacher_session','1');
   localStorage.setItem('lq_teacher_cls', teacherCls);
@@ -32936,6 +33005,7 @@ const PLAN_CATALOGUE = [
 let planTravailAssigned = []; // IDs cochés par l'enseignant (toute la classe)
 let planTravailIndividual = {}; // { studentName: [id1, id2, ...] }
 let planTravailTarget = 'class'; // 'class' ou le nom d'un élève
+let planTravailComments = { class: {}, students: {} }; // commentaires de l'enseignant par activité
 let planTravailLoaded = false;
 let studentPlanProgress = {}; // {id: true/false} côté élève
 
@@ -33069,6 +33139,15 @@ function initRealtimeStudentSync() {
     updateHomePlanCardUI();
   }, (err) => console.warn('Realtime plan_travail_individual error:', err));
 
+  // 3 bis. Observer pour les commentaires de l'enseignant
+  const commentsRef = window.FB_ref(window.FB_DB, 'settings/plan_travail_comments/' + cls);
+  fbStudentListeners.comments = window.FB_onValue(commentsRef, (snap) => {
+    planTravailComments = ptNormComments(snap.exists() ? snap.val() : null);
+    try { localStorage.setItem('lq_plan_travail_comments_' + cls, JSON.stringify(planTravailComments)); } catch(e) {}
+    const el = document.getElementById('plan-student-body');
+    if (el && !el.innerHTML.includes('Chargement…')) renderPlanTravailStudent();
+  }, (err) => console.warn('Realtime plan_travail_comments error:', err));
+
   // 4. Observer pour la progression du plan
   const progressRef = window.FB_ref(window.FB_DB, 'plan_progress/' + cls + '/' + student);
   fbStudentListeners.progress = window.FB_onValue(progressRef, (snap) => {
@@ -33124,6 +33203,7 @@ function loadPlanTravailLocal(targetCls) {
   
   const sInd = localStorage.getItem('lq_plan_travail_individual_' + cls) || (cls === 'lejoly' ? localStorage.getItem('lq_plan_travail_individual') : null);
   planTravailIndividual = sInd ? JSON.parse(sInd) : {};
+  planTravailComments = ptLoadCommentsLocal(cls);
 }
 
 // --- Sauvegarde/chargement progression élève ---
@@ -33937,6 +34017,15 @@ async function _renderPlanTravailInto(el) {
       }
     });
 
+    // Commentaires (nœud séparé)
+    const fbComments = window.FB_loadPlanTravailComments ? await window.FB_loadPlanTravailComments(cls) : undefined;
+    if (fbComments !== undefined) {
+      planTravailComments = ptNormComments(fbComments);
+      try { localStorage.setItem('lq_plan_travail_comments_' + cls, JSON.stringify(planTravailComments)); } catch(e) {}
+    } else {
+      planTravailComments = ptLoadCommentsLocal(cls);
+    }
+
     planTravailLoaded = true;
   }
 
@@ -34053,6 +34142,7 @@ async function _renderPlanTravailInto(el) {
               onchange="ptToggleItem('${item.id}', this.checked)">
             <span class="pt-item-icon">${item.icon}</span>
             <label class="pt-item-label" for="pt-cb-${item.id}" style="cursor:pointer">${item.label}${isMenuEntry ? ' <span style="font-size:11px;color:var(--muted);font-weight:700;">(thème entier — ancien plan, décochez puis choisissez les exercices)</span>' : ''}</label>
+            ${ptCommentBtnHtml(item.id)}
             <button type="button" class="pt-item-preview-btn" onclick="ptTeacherPreviewItem('${item.id}', event)" title="Voir l'activité en direct">👁️ Voir l'activité</button>
           </div>`;
         });
@@ -34357,6 +34447,206 @@ function applySubLocksForScreen(screenId) {
   }
 })();
 
+// ============================================================
+// COMMENTAIRES DU PLAN DE TRAVAIL
+// Commentaire « classe » + commentaire personnel par élève.
+// Côté élève : le commentaire personnel remplace celui de la classe.
+// ============================================================
+const PT_COMMENT_MAX = 500;
+let ptCommentEditing = null; // { id, target }
+
+function ptNormComments(v) {
+  const clean = o => {
+    const r = {};
+    if (o && typeof o === 'object') Object.keys(o).forEach(k => {
+      const t = o[k];
+      if (typeof t === 'string' && t.trim()) r[k] = t;
+    });
+    return r;
+  };
+  const out = { class: {}, students: {} };
+  if (v && typeof v === 'object') {
+    out.class = clean(v.class);
+    if (v.students && typeof v.students === 'object') {
+      Object.keys(v.students).forEach(name => {
+        const c = clean(v.students[name]);
+        if (Object.keys(c).length) out.students[name] = c;
+      });
+    }
+  }
+  return out;
+}
+
+function ptLoadCommentsLocal(cls) {
+  try {
+    const s = localStorage.getItem('lq_plan_travail_comments_' + cls);
+    return ptNormComments(s ? JSON.parse(s) : null);
+  } catch(e) { return ptNormComments(null); }
+}
+
+function ptGetComment(target, id) {
+  const c = planTravailComments || {};
+  if (target === 'class') return (c.class && c.class[id]) || '';
+  return (c.students && c.students[target] && c.students[target][id]) || '';
+}
+
+function ptCommentBtnState(id) {
+  if (ptGetComment(planTravailTarget, id)) return { cls: 'has-comment', title: planTravailTarget === 'class' ? 'Commentaire pour toute la classe (cliquer pour modifier)' : 'Commentaire personnel (cliquer pour modifier)' };
+  if (planTravailTarget !== 'class' && ptGetComment('class', id)) return { cls: 'has-class-comment', title: "Cet élève voit le commentaire de la classe. Cliquer pour écrire un commentaire personnel." };
+  return { cls: '', title: planTravailTarget === 'class' ? 'Écrire un commentaire pour toute la classe' : 'Écrire un commentaire personnel pour ' + planTravailTarget };
+}
+
+function ptCommentBtnHtml(id) {
+  const st = ptCommentBtnState(id);
+  return `<button type="button" class="pt-item-comment-btn ${st.cls}" data-comment-id="${ptEsc(id)}" onclick="ptOpenCommentEditor('${id}', event)" title="${ptEsc(st.title)}">💬<span class="pt-cbtn-txt"> Commentaire</span></button>`;
+}
+
+function ptRefreshCommentBtns(id) {
+  const root = _ptRoot();
+  if (!root) return;
+  const st = ptCommentBtnState(id);
+  root.querySelectorAll('.pt-item-comment-btn[data-comment-id]').forEach(b => {
+    if (b.dataset.commentId !== id) return;
+    b.classList.remove('has-comment', 'has-class-comment');
+    if (st.cls) b.classList.add(st.cls);
+    b.title = st.title;
+  });
+}
+
+function ptFindItem(id) {
+  const masterCatalogue = (typeof getActivitiesMasterRegistry === 'function') ? getActivitiesMasterRegistry() : PLAN_CATALOGUE;
+  for (const sec of masterCatalogue) {
+    const it = sec.items.find(x => x.id === id);
+    if (it) return it;
+  }
+  return null;
+}
+
+// L'activité apparait-elle dans le plan de ce destinataire ?
+function ptIsAssignedFor(target, id) {
+  if (target === 'class') return planTravailAssigned.includes(id);
+  return planTravailAssigned.includes(id) || (planTravailIndividual[target] || []).includes(id);
+}
+
+function ptOpenCommentEditor(id, ev) {
+  if (ev) { ev.preventDefault(); ev.stopPropagation(); }
+  const target = planTravailTarget;
+  ptCommentEditing = { id, target };
+  const item = ptFindItem(id);
+  const label = item ? item.label : id;
+  document.getElementById('pt-comment-sub').textContent = (target === 'class' ? '🌍 Toute la classe' : '👤 ' + target) + ' — ' + label;
+
+  const info = document.getElementById('pt-comment-class-info');
+  const classComment = target !== 'class' ? ptGetComment('class', id) : '';
+  if (classComment) {
+    info.innerHTML = '';
+    const head = document.createElement('div');
+    head.className = 'pt-comment-info-head';
+    head.textContent = '🌍 Commentaire de la classe (remplacé pour cet élève si tu écris un commentaire personnel) :';
+    const body = document.createElement('div');
+    body.className = 'pt-comment-info-body';
+    body.textContent = classComment;
+    info.appendChild(head); info.appendChild(body);
+    info.style.display = '';
+  } else {
+    info.style.display = 'none';
+  }
+
+  const warn = document.getElementById('pt-comment-warn');
+  if (!ptIsAssignedFor(target, id)) {
+    warn.textContent = target === 'class'
+      ? '⚠️ Cette activité n’est pas cochée : les élèves ne verront le commentaire que quand elle sera dans leur plan.'
+      : '⚠️ Cette activité n’est pas dans le plan de cet élève : il ne verra le commentaire que quand elle y sera.';
+    warn.style.display = '';
+  } else {
+    warn.style.display = 'none';
+  }
+
+  const ta = document.getElementById('pt-comment-text');
+  ta.value = ptGetComment(target, id);
+  ptCommentCount();
+  document.getElementById('pt-comment-delete').style.display = ta.value ? '' : 'none';
+  const err = document.getElementById('pt-comment-error');
+  err.style.display = 'none';
+  const saveBtn = document.getElementById('pt-comment-save');
+  if (saveBtn) saveBtn.disabled = false;
+  document.getElementById('pt-comment-modal').classList.add('open');
+  setTimeout(() => { try { ta.focus(); } catch(e) {} }, 50);
+}
+
+function ptCommentCount() {
+  const ta = document.getElementById('pt-comment-text');
+  const c = document.getElementById('pt-comment-count');
+  if (ta && c) c.textContent = ta.value.length;
+}
+
+async function ptPersistComments() {
+  const cls = (typeof teacherCls !== 'undefined' && teacherCls) ? teacherCls : 'lejoly';
+  try { localStorage.setItem('lq_plan_travail_comments_' + cls, JSON.stringify(planTravailComments)); } catch(e) {}
+  if (!window.FB_savePlanTravailComments) return false;
+  return await window.FB_savePlanTravailComments(cls, planTravailComments);
+}
+
+async function ptSaveComment(forceEmpty) {
+  if (!ptCommentEditing) return;
+  const { id, target } = ptCommentEditing;
+  const ta = document.getElementById('pt-comment-text');
+  const text = forceEmpty ? '' : String(ta.value || '').trim().slice(0, PT_COMMENT_MAX);
+  if (!planTravailComments || typeof planTravailComments !== 'object') planTravailComments = { class: {}, students: {} };
+  if (!planTravailComments.class) planTravailComments.class = {};
+  if (!planTravailComments.students) planTravailComments.students = {};
+  const backup = JSON.stringify(planTravailComments);
+  if (target === 'class') {
+    if (text) planTravailComments.class[id] = text; else delete planTravailComments.class[id];
+  } else {
+    const mine = planTravailComments.students[target] || {};
+    if (text) mine[id] = text; else delete mine[id];
+    if (Object.keys(mine).length) planTravailComments.students[target] = mine;
+    else delete planTravailComments.students[target];
+  }
+  const saveBtn = document.getElementById('pt-comment-save');
+  if (saveBtn) saveBtn.disabled = true;
+  const ok = await ptPersistComments();
+  if (saveBtn) saveBtn.disabled = false;
+  if (!ok) {
+    planTravailComments = JSON.parse(backup);
+    try {
+      const cls = (typeof teacherCls !== 'undefined' && teacherCls) ? teacherCls : 'lejoly';
+      localStorage.setItem('lq_plan_travail_comments_' + cls, backup);
+    } catch(e) {}
+    const err = document.getElementById('pt-comment-error');
+    err.textContent = '❌ Le commentaire n’a pas pu être enregistré (connexion Internet ?). Réessaie.';
+    err.style.display = 'block';
+    return;
+  }
+  ptRefreshCommentBtns(id);
+  closeModal('pt-comment-modal');
+  ptCommentEditing = null;
+}
+
+function ptDeleteComment() {
+  ptSaveComment(true);
+}
+
+// Côté élève : commentaire personnel, sinon celui de la classe
+function ptStudentComment(id) {
+  if (state && state.student) {
+    const mine = ptGetComment(state.student, id);
+    if (mine) return mine;
+  }
+  return ptGetComment('class', id);
+}
+
+function ptShowStudentComment(id, ev) {
+  if (ev) { ev.preventDefault(); ev.stopPropagation(); }
+  const text = ptStudentComment(id);
+  if (!text) return;
+  const item = ptFindItem(id);
+  document.getElementById('pt-comment-view-act').textContent = item ? item.label : '';
+  document.getElementById('pt-comment-view-text').textContent = text;
+  document.getElementById('pt-comment-view-modal').classList.add('open');
+}
+
 function ptSaveAndNotify() {
   savePlanTravail();
   const msg = document.getElementById('pt-saved-msg');
@@ -34432,6 +34722,7 @@ function renderPlanTravailStudent() {
           <span class="pt-item-icon">${item.icon}</span>
           <span class="pt-item-label ${isDone ? 'pt-done' : ''}" data-id="${item.id}">${item.label}</span>
           ${scoreBadge}
+          ${ptStudentComment(item.id) ? `<button type="button" class="pt-item-comment-btn has-comment" onclick="ptShowStudentComment('${item.id}', event)" title="Lire le message de ton enseignant">💬<span class="pt-cbtn-txt"> Commentaire</span></button>` : ''}
           <button class="pt-item-link" onclick="planNavigateToId('${item.id}')">→ Aller</button>
         </div>`;
       });
