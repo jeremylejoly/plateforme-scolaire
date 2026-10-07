@@ -25364,10 +25364,41 @@ function renderNumDecomposer(){
   body.innerHTML = html;
 }
 
+// Grands nombres (QCM) : la réponse comptée est le bouton réellement coché à l'écran (plus de dépendance à l'évènement
+// onchange, qui pouvait manquer → réponse juste comptée fausse). Toutes les questions doivent avoir une réponse.
+function lcmlRadioChoisi(name, fallback){
+  const el = document.querySelector(`input[type=radio][name="${name}"]:checked`);
+  if(el && el.parentElement){ const m = /-(\d+)$/.exec(el.parentElement.id || ''); if(m) return Number(m[1]); }
+  return fallback;
+}
+function lcmlQcmIncomplet(prefix, phrases, sels, submitId){
+  const manquantes = [];
+  phrases.forEach((q,i) => {
+    const card = document.getElementById(`${prefix}-card-${i}`);
+    if(sels[i] === undefined){ manquantes.push(i+1); if(card) card.style.borderLeft = '4px solid var(--amber)'; }
+    else if(card) card.style.borderLeft = '';
+  });
+  let msg = document.getElementById(`${prefix}-manque`);
+  if(!manquantes.length){ if(msg) msg.remove(); return false; }
+  if(!msg){
+    msg = document.createElement('div'); msg.id = `${prefix}-manque`;
+    msg.style.cssText = 'margin-top:8px;padding:8px 12px;border-radius:8px;background:#fff4e0;color:#8a5a00;font-weight:700;font-size:14px;text-align:center;';
+    const btn = document.getElementById(submitId); if(btn && btn.parentNode) btn.parentNode.insertBefore(msg, btn.nextSibling);
+  }
+  msg.textContent = manquantes.length === 1
+    ? `✏️ Réponds d'abord à la question ${manquantes[0]}.`
+    : `✏️ Réponds d'abord à toutes les questions (il en reste ${manquantes.length} : ${manquantes.join(', ')}).`;
+  const first = document.getElementById(`${prefix}-card-${manquantes[0]-1}`);
+  if(first && first.scrollIntoView) first.scrollIntoView({behavior:'smooth', block:'center'});
+  return true;
+}
+
 function numDecompSel(i,oi){ if(!numDecomposerSubmitted) numDecomposerSels[i]=oi; }
 
 function validerNumDecomposer(){
   if(numDecomposerSubmitted) return;
+  numDecomposerPhrases.forEach((q,i) => { numDecomposerSels[i] = lcmlRadioChoisi('numdecomp-'+i, numDecomposerSels[i]); });
+  if(lcmlQcmIncomplet('numdecomp', numDecomposerPhrases, numDecomposerSels, 'numdecomp-submit')) return;
   numDecomposerSubmitted = true;
   let score = 0;
   document.getElementById('numdecomp-submit').style.display='none';
@@ -25471,6 +25502,8 @@ function numEcrireSel(i, oi){
 
 function validerNumEcrire(){
   if(numEcrireSubmitted) return;
+  numEcrirePhrases.forEach((q,i) => { numEcrireSels[i] = lcmlRadioChoisi('numecrire-'+i, numEcrireSels[i]); });
+  if(lcmlQcmIncomplet('numecrire', numEcrirePhrases, numEcrireSels, 'numecrire-submit')) return;
   numEcrireSubmitted = true;
   let score = 0;
   document.getElementById('numecrire-submit').style.display = 'none';
@@ -25584,6 +25617,8 @@ function numLireSel(i, oi){
 
 function validerNumLire(){
   if(numLireSubmitted) return;
+  numLirePhrases.forEach((q,i) => { numLireSels[i] = lcmlRadioChoisi('numlire-'+i, numLireSels[i]); });
+  if(lcmlQcmIncomplet('numlire', numLirePhrases, numLireSels, 'numlire-submit')) return;
   numLireSubmitted = true;
   let score = 0;
   document.getElementById('numlire-submit').style.display = 'none';

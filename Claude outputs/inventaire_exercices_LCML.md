@@ -977,6 +977,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - 30 nombres vérifiés par programme : 1 faute d'accord dans l'énoncé, « Deux millions trois cent mille quatre-vingt » → « quatre-vingts » (en fin de nombre).
 - Nouvelle orthographe : traits d'union dans les 30 énoncés (million(s) séparé par des espaces, comme Lire un nombre).
 - Mélanges `sort(random)` → Fisher-Yates.
+- **07/10 (sw.js v740)** — Signalement : une réponse juste comptée fausse, la « bonne réponse » affichée étant celle que l'élève avait cochée (Joshua, 9/10 à 8 h 59). Non reproduit (banque revérifiée : 30 réponses justes, aucune proposition en double ; test en ligne avec de vrais clics : OK). Seule explication cohérente : l'évènement `onchange` du bouton radio non reçu, donc réponse « non donnée » → comptée fausse. Correction (Lire, Écrire, Décomposer un nombre) : la validation lit le bouton **réellement coché à l'écran** ; si une question est sans réponse, message « Réponds d'abord à la question N » (carte en orange), rien n'est compté.
 
 ### 05/10 — Maths › Grands nombres › Décomposer un nombre (`num_decomposer`, index › renderNumDecomposer + exercices_maths.js › NUM_DECOMPOSER_BANQUE) — sw.js v513, exercices_maths.js?v=20261005c
 - 120 décompositions recalculées par programme : 2 erreurs.
