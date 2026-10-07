@@ -142,7 +142,7 @@ function afficherQuestion(){
       <div class="saisie-row">
         <span class="fleche">→</span>
         <input type="text" class="q-input" id="q-inp" placeholder="………"
-          autocomplete="off" autocorrect="off" spellcheck="false"
+          autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
           onkeydown="if(event.key==='Enter') valider()"/>
       </div>
       <div class="correction" id="correction"></div>
@@ -156,8 +156,13 @@ function valider(){
   const q = selection[curIdx];
   const inp = document.getElementById('q-inp');
   if(!inp) return;
+  if(!inp.value.trim()){ inp.focus(); return; } // champ vide : rien n'est compté
   const val = normaliser(inp.value);
-  const ok = (val === normaliser(q.rep));
+  // Le pronom écrit juste avant le trou peut être recopié (« nous commencions », « j'amenais ») — même tolérance que cond/pqpf et passé simple
+  const avant = normaliser(q.p.replace(/<em>.*$/, ''));
+  const dernier = ((avant.match(/(?:^|\s)(\S+)$/) || [,''])[1]);
+  const colle = (a, b) => normaliser(a + (/'$/.test(a) ? '' : ' ') + b);
+  const ok = (val === normaliser(q.rep)) || (!!dernier && /^(j'|je|tu|il|elle|on|nous|vous|ils|elles)$/.test(dernier) && val === colle(dernier, normaliser(q.rep)));
   inp.disabled = true;
   inp.classList.add(ok ? 'correct' : 'incorrect');
   scores.push(ok);

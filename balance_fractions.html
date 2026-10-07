@@ -829,15 +829,15 @@
       <div class="modal-icon" style="animation: none;">⚖️</div>
       <div class="modal-title">Comment jouer ?</div>
       <div class="modal-message" style="text-align: left; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.95rem;">
-        <p>1. **Observe le plateau de gauche** : Il contient des fractions de référence qui pèsent sur la balance.</p>
-        <p>2. **Ajoute des poids à droite** pour équilibrer la balance. **Tu peux utiliser la même fraction plusieurs fois !** Tu peux :</p>
+        <p>1. <strong>Observe le plateau de gauche</strong> : Il contient des fractions de référence qui pèsent sur la balance.</p>
+        <p>2. <strong>Ajoute des poids à droite</strong> pour équilibrer la balance. <strong>Tu peux utiliser la même fraction plusieurs fois !</strong> Tu peux :</p>
         <ul>
-          <li>**Faire glisser** un poids de la boite à outils vers le plateau.</li>
-          <li>**Cliquer** sur un poids pour l'ajouter directement à droite.</li>
+          <li><strong>Faire glisser</strong> un poids de la boite à outils vers le plateau.</li>
+          <li><strong>Cliquer</strong> sur un poids pour l'ajouter directement à droite.</li>
         </ul>
-        <p>3. **Retire un poids** en cliquant dessus directement sur le plateau de droite.</p>
-        <p>4. **Regarde l'aiguille rouge et l'équation** : elles indiquent quel côté est le plus lourd en temps réel !</p>
-        <p>5. **Clique sur Valider** dès que le signe devient vert et égal (`=`) !</p>
+        <p>3. <strong>Retire un poids</strong> en cliquant dessus directement sur le plateau de droite.</p>
+        <p>4. <strong>Regarde l'aiguille rouge et l'équation</strong> : elles indiquent quel côté est le plus lourd en temps réel !</p>
+        <p>5. <strong>Clique sur Valider</strong> dès que le signe devient vert et égal (=) !</p>
       </div>
       <button class="btn-modal btn-modal-success" style="background-color: var(--primary);" onclick="toggleHelpModal(false)">J'ai compris !</button>
     </div>
@@ -1067,6 +1067,7 @@
     // Score : un niveau compte s'il est équilibré à la PREMIÈRE vérification
     let niveauxPremierCoup = {};   // id du niveau → true/false (1re vérification)
     let resultatEnregistre = false;
+    let niveauxEquilibres = {};   // id du niveau → true quand il a été équilibré au moins une fois
 
     // --- INITIALISATION ---
     window.addEventListener('DOMContentLoaded', () => {
@@ -1446,7 +1447,10 @@
       if (isBalanced) {
         // Victoire !
         isWinner = true;
-        if (currentLevelIndex === levels.length - 1) enregistrerResultat();
+        // Enregistrement quand les 5 niveaux ont tous été équilibrés, dans n'importe quel ordre
+        // (avant : seulement en réussissant le niveau 5 → un élève qui sautait au niveau 5 enregistrait 1/5)
+        niveauxEquilibres[lvl.id] = true;
+        if (levels.every(l => niveauxEquilibres[l.id])) enregistrerResultat();
         audio.playWin();
         triggerConfetti();
 
@@ -1468,6 +1472,7 @@
         showModal("🎉 Équilibré !", message, "btn-modal-success", actionBtnText, () => {
           if (isLastLevel) {
             niveauxPremierCoup = {};
+            niveauxEquilibres = {};
             resultatEnregistre = false;
             loadLevel(1);
           } else {

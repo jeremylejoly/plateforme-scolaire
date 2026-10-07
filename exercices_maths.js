@@ -904,6 +904,11 @@ window.LONGUEURS_QCM_BANQUE = [
         ['Elle a augmenté', 'Elle a diminué', 'Elle est restée la même'], `${labels[i1]} : ${v[i1]}${u} ; ${labels[i2]} : ${v[i2]}${u}. Elle a ${v[i2] > v[i1] ? 'augmenté' : 'diminué'} de ${Math.abs(v[i2] - v[i1])}${u}.`));
     }
     melanger(autres).slice(0, 5 - qs.length).forEach(f => qs.push(f()));
+    // Secours : toujours 5 questions (une 2e lecture de valeur sur une autre étiquette)
+    for (const i2 of melanger(labels.map((_, i) => i).filter(i => i !== iL))) {
+      if (qs.length >= 5) break;
+      qs.push(qcm(t.lire(labels[i2]), `${v[i2]}${u}`, numD(v[i2], t.pas, u), `On lit la valeur « ${labels[i2]} » sur l'échelle : ${v[i2]}${u}.`));
+    }
     const maxAxe = t.pas * (Math.floor(mx / t.pas) + 1);
     return { titre: t.titre, type: t.type, axeY: t.axeY, pas: t.pas, max: maxAxe, donnees: D, questions: melanger(qs) };
   };
