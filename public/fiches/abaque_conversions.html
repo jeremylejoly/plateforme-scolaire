@@ -614,7 +614,8 @@ p.lead{font-size:16px; color:var(--ink-soft); max-width:840px;}
   transition: opacity 0.15s;
   z-index: 10;
 }
-.cell.numeration-cell:hover .cell-adjust {
+.cell.numeration-cell:hover .cell-adjust,
+.cell.numeration-cell.active-cell .cell-adjust {
   opacity: 1;
 }
 .adjust-btn {
@@ -854,6 +855,9 @@ footer{padding:26px 0 20px; text-align:center; font-size:13.5px; color:var(--ink
         <div class="abaque-num" id="abaque-numeration-grid">
           <!-- Généré dynamiquement par JS -->
         </div>
+        <!-- Tablette : toucher une case ouvre le clavier numérique (les cases ne sont pas des champs) -->
+        <input type="text" id="numeration-clavier" inputmode="numeric" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="Clavier du tableau"
+               style="position:fixed;left:0;bottom:0;width:1px;height:1px;opacity:0;border:0;padding:0;margin:0;pointer-events:none;">
         
         <div class="options-row">
           <label class="option-label">
@@ -1500,6 +1504,11 @@ function buildNumerationGrid() {
       activeCellIdx = i;
       sndTap();
       highlightActiveCell();
+      // Tablette / téléphone : ouvrir le clavier numérique via le champ invisible
+      if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) {
+        const k = $('numeration-clavier');
+        if (k && document.activeElement !== k) { k.value = ''; try { k.focus({ preventScroll: true }); } catch (err) { k.focus(); } }
+      }
     });
     
     grid.appendChild(cell);
@@ -1695,10 +1704,35 @@ function pressNumerationClear() {
   highlightActiveCell();
 }
 
+// Clavier physique dans l'abaque des grandeurs (avant : clavier virtuel de la page seulement)
+window.addEventListener('keydown', (e) => {
+  if (currentMode !== 'grandeurs') return;
+  if (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+  if (e.key >= '0' && e.key <= '9') { pressConversionDigit(e.key); e.preventDefault(); }
+  else if (e.key === ',' || e.key === '.') { pressConversionDigit(','); e.preventDefault(); }
+  else if (e.key === 'Backspace') { pressConversionDel(); e.preventDefault(); }
+});
+
+// Clavier virtuel de la tablette (champ invisible du tableau de numération)
+(function () {
+  const k = document.getElementById('numeration-clavier');
+  if (!k) return;
+  const envoyer = (ch) => { if (ch >= '0' && ch <= '9') pressNumerationDigit(ch); };
+  k.addEventListener('beforeinput', (e) => {
+    if (e.inputType === 'deleteContentBackward') pressNumerationDel();
+    else if (e.inputType && e.inputType.startsWith('insert') && e.data) for (const ch of e.data) envoyer(ch);
+    e.preventDefault();
+  });
+  k.addEventListener('input', () => { const v = k.value; k.value = ''; for (const ch of v) envoyer(ch); });
+  // Les touches du clavier virtuel de la page ne ferment pas le clavier de la tablette
+  document.addEventListener('pointerdown', (e) => { if (e.target.closest && e.target.closest('#screen-numeration .num-btn, #screen-numeration .adjust-btn')) e.preventDefault(); });
+})();
+
 // Gérer l'écoute clavier globale sur les abaques de numération
 window.addEventListener('keydown', (e) => {
   if (currentMode !== 'numeration') return;
   if (activeCellIdx === -1) return;
+  if (e.key === 'Enter' && e.target && e.target.id === 'numeration-clavier') { e.preventDefault(); e.target.blur(); return; }
   
   let colsCount = numDigits.length;
   

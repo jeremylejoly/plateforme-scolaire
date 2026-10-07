@@ -1309,6 +1309,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - **Aucun résultat enregistré** → enregistrement unique en fin de série (`grandeur_capacites_qcm_sup`) ; double clic sur une proposition (comptait 2 réponses) ou sur « Question suivante » bloqué ; pastilles vert / rouge.
 - Tests jsdom : partie 8 / 10 avec doubles clics → 1 sauvegarde ; abaque (saisie, passage de case, virgule, vidage) ; syntaxe OK.
 - « Conversions de longueurs (QCM — Bis) » avait le même doublon : traité en v563.
+- **07/10 (sw.js v742) — tablette** : la virgule ne se plaçait que par double-clic (peu fiable sur iPad) et le clavier `numeric` n'a pas de virgule → clavier `decimal`, et taper « , » ou « . » place la virgule après la case (ou après la case précédente si la case est vide) ; une seule par ligne ; double-clic conservé. ⌫ sur une case vide efface la case précédente ; flèches ← → ; 3 copies identiques. Tests jsdom : « 3 5 , » → « 35, », virgule via le clavier de tablette, ⌫, double-clic, vidage.
 
 ### 05/10 — Maths › Grandeurs › Les longueurs › Conversions de longueurs QCM (`grandeur_longueurs_qcm`, LONGUEURS_QCM_BANQUE dans exercices_maths.js + index › demarrerLongueursQcm) — sw.js v562
 - 50 questions recalculées par programme (mm, cm, dm, m, dam, hm, km ; ¼ ½ ¾ ⅛) : une seule proposition juste à chaque fois, et c'est bien celle attendue.
@@ -1325,6 +1326,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Jamais deux questions de même valeur dans une série.
 - **Aucun résultat enregistré** → enregistrement unique en fin de série (`grandeur_longueurs_qcm_sup`) ; double clic sur une proposition (comptait 2 réponses) ou sur « Question suivante » bloqué ; pastilles vert / rouge.
 - Tests jsdom : partie 8 / 10 avec doubles clics → 1 sauvegarde ; abaque (saisie, passage de case, virgule, vidage) ; syntaxe OK.
+- **07/10 (sw.js v742) — tablette** : la virgule ne se plaçait que par double-clic (peu fiable sur iPad) et le clavier `numeric` n'a pas de virgule → clavier `decimal`, et taper « , » ou « . » place la virgule après la case (ou après la case précédente si la case est vide) ; une seule par ligne ; double-clic conservé. ⌫ sur une case vide efface la case précédente ; flèches ← → ; 3 copies identiques. Tests jsdom : « 3 5 , » → « 35, », virgule via le clavier de tablette, ⌫, double-clic, vidage.
 
 ### 05/10 — Maths › Grandeurs › Le périmètre › Calcul du périmètre (`grandeur_perimetre_calcul`, PERIMETRE_GENERATEURS dans exercices_maths.js + index › renderPerimetreCalcul / validerPerimetre) — sw.js v564, exercices_maths.js?v=20261005g
 - **Figures impossibles** : le triangle isocèle (21 % des tirages : ex. base 12 m, côtés 5 m), le triangle quelconque (15 % : inégalité triangulaire non respectée) et le trapèze (40 % : petite base parfois plus longue que la grande, côtés incompatibles) pouvaient avoir des mesures qui ne forment aucune figure → mesures toujours constructibles (vérifié sur 3 000 tirages par figure).
@@ -1413,6 +1415,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Message de fin affichant du code LaTeX brut (« $1\\text{ ha} = 1\\text{ hm}^2$ ») → « 1 ha = 1 hm² ». Signe « − » dans les explications. Nouvelle orthographe : maraichères, maraicher, maitrises, entrainer.
 - Tests jsdom : abaque « 3,5 », vide/« 12abc » non comptés, « 6 000 » accepté, partie 8 / 10 avec doubles clics et doubles Entrée → 1 sauvegarde ; capture 390 px ; syntaxe OK.
 - **07/10 (sw.js v741)** — Signalement iPad : « impossible d'écrire dans l'abaque ». Cause : les cases sont des `<td>`, pas des champs → toucher une case n'ouvre aucun clavier sur tablette (les autres abaques — masses, capacités, longueurs — utilisent de vrais `<input>`). Correction : sur écran tactile, toucher une case donne le focus à un champ invisible (`#abaque-clavier`, `inputmode=decimal`) qui ouvre le clavier numérique ; chiffres, virgule/point et effacement sont envoyés dans la case choisie ; les touches du clavier virtuel de la page ne ferment plus le clavier de la tablette. ⌫ sur une case vide efface le dernier chiffre à gauche. Tests jsdom (pointer: coarse) : 7 2 , 5 → « 7,25 », ⌫ → « 7,2 », clavier physique OK, champ réponse OK ; 3 copies identiques.
+
+### 07/10 — Outils › Abaques de conversion « Mes abaques » (`fiches/abaque_conversions.html` + copies racine et public) — sw.js v742
+- Les 3 copies étaient désynchronisées (la version en ligne ne mettait pas `window.currentMode` à jour → le bouton « Retour » du site quittait l'outil au lieu de revenir au choix des abaques) → copie racine (plus récente) reprise partout.
+- Tableau de numération : sur tablette, toucher une case ouvre le clavier numérique (champ invisible `#numeration-clavier`) ; les boutons ▲▼ (visibles au survol seulement) sont maintenant aussi visibles sur la case sélectionnée.
+- Abaque des grandeurs : clavier physique accepté (chiffres, virgule/point, ⌫) — avant, clavier virtuel de la page seulement.
+- Tests jsdom : numération 4 7 → « 47 », clavier physique 9 ; grandeurs 2 5 , 3 puis ⌫ ; syntaxe OK.
 
 ### 05/10 — Maths › Grandeurs › L'aire › L'Arpenteur du Château (`grandeur_aire_formules`, `fiches/aire_formules.html` + copies public et racine) — sw.js v574
 - 50 situations générées (carrés, rectangles, triangles, parallélogrammes, trapèzes) : sur 2 000 séries, l'aire attendue = formule appliquée aux cotes du dessin (0 écart), toujours entière, grande base > petite base.
@@ -1869,6 +1877,7 @@ Spécifique :
 - Vérification complète (le 05/10, seuls les doublons de valeur et le double clic avaient été corrigés) : 50 conversions relues par programme (chaque proposition convertie en mg) : la bonne réponse est toujours égale, les deux autres toujours différentes (0 erreur). Mélange Fisher–Yates déjà en place (≈ 33 % par position sur 2 000 séries), enregistrement unique déjà en place, abaque t → mg correct (colonne « 10 kg »).
 - Bonne réponse en bleu (#1f5fbf) après une erreur (elle était en vert) ; Entrée = question suivante / score final (pas depuis une case de l'abaque).
 - Tests jsdom : faux → bleu, double Entrée sans saut, 9/10 → 1 sauvegarde ; capture 390 px sans défilement horizontal.
+- **07/10 (sw.js v742) — tablette** : la virgule ne se plaçait que par double-clic (peu fiable sur iPad) et le clavier `numeric` n'a pas de virgule → clavier `decimal`, et taper « , » ou « . » place la virgule après la case (ou après la case précédente si la case est vide) ; une seule par ligne ; double-clic conservé. ⌫ sur une case vide efface la case précédente ; flèches ← → ; 3 copies identiques. Tests jsdom : « 3 5 , » → « 35, », virgule via le clavier de tablette, ⌫, double-clic, vidage.
 
 ### 06/10 — Mathématiques → Solides et figures → Les quadrilatères → Évaluation (`quadrilateres_evaluation`, index › startShapeEvaluation + exercices_maths.js) — sw.js v623
 - **Le menu annonçait « 5 formes + 5 vrai/faux » mais seules les 5 formes étaient posées** (`evaluation_vf` jamais utilisé) → les 5 affirmations vrai / faux suivent les 5 formes (score sur 10).

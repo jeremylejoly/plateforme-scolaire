@@ -185,28 +185,51 @@ function shuffle(a){ const r=[...a]; for(let i=r.length-1;i>0;i--){ const j=Math
 const ABAQUE_COLS = [['t',''],['q',''],['','10 kg'],['kg','kg'],['hg',''],['dag',''],['g','g'],['dg',''],['cg',''],['mg','']];
 function abaqueHtml(){
   const head = ABAQUE_COLS.map(([u,c]) => `<th class="${c==='kg'?'kg':c==='g'?'g':''}">${u || `<small>${c}</small>`}</th>`).join('');
-  const row = r => '<tr>' + ABAQUE_COLS.map((_,c) => `<td data-c="${c}"><input inputmode="numeric" maxlength="1" data-r="${r}" data-c="${c}" aria-label="Abaque ligne ${r+1} colonne ${c+1}"></td>`).join('') + '</tr>';
+  const row = r => '<tr>' + ABAQUE_COLS.map((_,c) => `<td data-c="${c}"><input inputmode="decimal" maxlength="1" data-r="${r}" data-c="${c}" aria-label="Abaque ligne ${r+1} colonne ${c+1}"></td>`).join('') + '</tr>';
   return `<div class="abaque-wrap"><div class="abaque-titre">🧮 Mon abaque (brouillon) — écris un chiffre par case</div>
     <table class="abaque"><thead><tr>${head}</tr></thead><tbody>${row(0)}${row(1)}</tbody></table>
-    <div class="abaque-actions">Double-clique sur une case pour y placer la virgule (après la case).<button type="button" onclick="viderAbaque()">Effacer l'abaque</button></div></div>`;
+    <div class="abaque-actions">Tape une virgule (ou double-clique sur la case) pour la placer après la case.<button type="button" onclick="viderAbaque()">Effacer l'abaque</button></div></div>`;
 }
 function viderAbaque(){
   document.querySelectorAll('table.abaque input').forEach(i => i.value='');
   document.querySelectorAll('table.abaque td.virgule').forEach(td => td.classList.remove('virgule'));
 }
+// Virgule : une seule par ligne, placée après la case (si la case est vide, après la case précédente, où se trouve le dernier chiffre)
+function abaqueCase(r, c){ return document.querySelector(`table.abaque input[data-r="${r}"][data-c="${c}"]`); }
+function abaqueVirgule(td, bascule){
+  const row = td.parentElement;
+  const had = td.classList.contains('virgule');
+  row.querySelectorAll('td').forEach(x => x.classList.remove('virgule'));
+  if(!(bascule && had)) td.classList.add('virgule');
+}
+function abaqueVirguleDepuisCase(inp){
+  const r = +inp.dataset.r, c = +inp.dataset.c;
+  const prev = c > 0 ? abaqueCase(r, c-1) : null;
+  const cible = (!inp.value && prev && prev.value) ? prev : inp;
+  abaqueVirgule(cible.closest('td'), false);
+}
 document.addEventListener('input', e => {
   const t = e.target;
   if(!t.matches || !t.matches('table.abaque input')) return;
-  t.value = t.value.replace(/[^0-9]/g,'').slice(-1);
-  if(t.value){ const next = document.querySelector(`table.abaque input[data-r="${t.dataset.r}"][data-c="${+t.dataset.c+1}"]`); if(next) next.focus(); }
+  const brut = t.value;
+  t.value = brut.replace(/[^0-9]/g,'').slice(-1);
+  if(/[,.]/.test(brut)){ abaqueVirguleDepuisCase(t); return; } // virgule tapée (clavier de tablette, par ex.)
+  if(t.value){ const next = abaqueCase(t.dataset.r, +t.dataset.c+1); if(next) next.focus(); }
+});
+// Clavier : virgule / point → virgule après la case ; ⌫ sur une case vide → case précédente effacée ; flèches ← →
+document.addEventListener('keydown', e => {
+  const t = e.target;
+  if(!t.matches || !t.matches('table.abaque input')) return;
+  const r = +t.dataset.r, c = +t.dataset.c;
+  if(e.key === ',' || e.key === '.'){ e.preventDefault(); abaqueVirguleDepuisCase(t); }
+  else if(e.key === 'Backspace' && !t.value){ e.preventDefault(); const prev = abaqueCase(r, c-1); if(prev){ prev.value=''; prev.closest('td').classList.remove('virgule'); prev.focus(); } }
+  else if(e.key === 'ArrowLeft'){ const prev = abaqueCase(r, c-1); if(prev){ e.preventDefault(); prev.focus(); } }
+  else if(e.key === 'ArrowRight'){ const next = abaqueCase(r, c+1); if(next){ e.preventDefault(); next.focus(); } }
 });
 document.addEventListener('dblclick', e => {
   const td = e.target.closest && e.target.closest('table.abaque td');
   if(!td) return;
-  const row = td.parentElement;
-  const had = td.classList.contains('virgule');
-  row.querySelectorAll('td').forEach(x => x.classList.remove('virgule'));
-  if(!had) td.classList.add('virgule');
+  abaqueVirgule(td, true);
 });
 
 let selection=[], curIdx=0, scores=[], saved=false;
