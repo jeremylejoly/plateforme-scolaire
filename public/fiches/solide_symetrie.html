@@ -354,7 +354,18 @@ function studentSegs(){
   studentStrokes().forEach(s=>{ for(let i=0;i<s.pts.length-1;i++) out.push([s.pts[i], s.pts[i+1]]); });
   return out;
 }
-function expectedSegs(){ return curEx().answer.flatMap(s=>strokeSegs(s,true)); }
+// Un côté posé sur l'axe est son propre symétrique : il est déjà dessiné dans le modèle, on ne l'attend pas de l'élève
+// (avant : la « croix » comptait « 1 manquant » à un symétrique parfait)
+function surAxe(p, axis){
+  if(axis.t==='V') return p[0]===axis.pos;
+  if(axis.t==='H') return p[1]===axis.pos;
+  if(axis.t==='O') return p[0]===p[1]; // diagonale y = x
+  return false;
+}
+function expectedSegs(){
+  const ex=curEx();
+  return ex.answer.flatMap(s=>strokeSegs(s,true)).filter(seg=>!(surAxe(seg[0],ex.axis) && surAxe(seg[1],ex.axis)));
+}
 function expectedSet(){
   const set=new Set();
   expectedSegs().forEach(seg=> morceaux(seg[0],seg[1]).forEach(m=> set.add(ekey(m[0],m[1]))));
@@ -369,7 +380,8 @@ function evaluer(){
   const exp=expectedSet(), drawn=drawnSet(), segs=studentSegs();
   let correct=0, missing=0, extra=0;
   expectedSegs().forEach(seg=>{ morceaux(seg[0],seg[1]).every(m=>drawn.has(ekey(m[0],m[1]))) ? correct++ : missing++; });
-  segs.forEach(seg=>{ if(morceaux(seg[0],seg[1]).some(m=>!exp.has(ekey(m[0],m[1])))) extra++; });
+  const ax=curEx().axis;
+  segs.forEach(seg=>{ if(surAxe(seg[0],ax) && surAxe(seg[1],ax)) return; /* repasser sur l'axe n'est ni attendu ni pénalisé */ if(morceaux(seg[0],seg[1]).some(m=>!exp.has(ekey(m[0],m[1])))) extra++; });
   return {correct, missing, extra, vide:segs.length===0, juste:(missing===0 && extra===0 && segs.length>0)};
 }
 

@@ -98,12 +98,7 @@
   <canvas id="confetti-canvas"></canvas>
 
   <div class="w-full max-w-4xl flex flex-col gap-6">
-    <!-- Header Navigation -->
-    <div class="flex items-center justify-between">
-      <button onclick="handleBack();" class="inline-flex items-center gap-2 px-4 py-2 border-2 border-neutral-900 bg-white rounded-xl text-sm font-bold font-nunito text-neutral-600 hover:bg-neutral-50 active:translate-y-0.5 transition-all">
-        ← Retour
-      </button>
-    </div>
+    
 
     <!-- MAIN CARD CONTAINER -->
     <div class="bg-white border-3 border-neutral-900 rounded-[28px] shadow-[6px_6px_0px_#1A1A2E] p-6 md:p-8 relative overflow-hidden">
@@ -586,8 +581,30 @@
     // Navigation and screen control
     function handleBack() {
       playClickSound();
-      if (window.parent && window.parent.closeFicheViewer) {
-        window.parent.closeFicheViewer();
+      if (window.parent) {
+        // Check if we are inside a dedicated screen
+        const activeScreen = window.parent.document.querySelector('.screen.active');
+        const activeId = activeScreen ? activeScreen.id : '';
+        
+        if (activeId === 'screen-conj-subj-imp' || activeId === 'screen-conj-cond-pqpf') {
+          if (typeof window.parent.showScreen === 'function') {
+            window.parent.showScreen('screen-conjugaison');
+          }
+          if (typeof window.parent.renderConjugaisonMenu === 'function') {
+            window.parent.renderConjugaisonMenu();
+          }
+        } else if (activeId === 'screen-homo-complexes') {
+          if (typeof window.parent.showScreen === 'function') {
+            window.parent.showScreen('screen-homophones');
+          }
+          if (typeof window.parent.renderHomophonesMenu === 'function') {
+            window.parent.renderHomophonesMenu();
+          }
+        } else if (typeof window.parent.closeFicheViewer === 'function') {
+          window.parent.closeFicheViewer();
+        } else {
+          window.history.back();
+        }
       } else {
         window.history.back();
       }
@@ -631,8 +648,9 @@
       }
 
       // Sentence layout with dynamic input inside
-      const inputHtml = `<input type="text" id="verb-input" class="border-b-4 border-neutral-900 focus:outline-none text-center font-bold px-2 py-1 text-neutral-800 bg-neutral-50 focus:bg-neutral-100 rounded-md transition-all mx-1 w-48" placeholder="taper ici" autocomplete="off" />`;
-      const verbTip = `<span class="text-neutral-500 font-nunito font-semibold text-sm">(${q.verb})</span>`;
+      const inputHtml = `<input type="text" id="verb-input" class="border-b-4 border-neutral-900 focus:outline-none text-center font-bold px-2 py-1 text-neutral-800 bg-neutral-50 focus:bg-neutral-100 rounded-md transition-all mx-1 w-48" placeholder="taper ici" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">`;
+      // Impératif : la personne est indiquée (toutes les réponses attendues sont à la 2e personne du singulier) — avant, « ayez / prenez / faites » étaient refusés sans que l'élève puisse deviner la personne
+      const verbTip = `<span class="text-neutral-500 font-nunito font-semibold text-sm">(${q.verb}${q.type === 'imp' ? ', tu' : ''})</span>`;
       
       container.innerHTML = `${q.sentenceBefore}${/'\s*$/.test(q.sentenceBefore) ? '' : ' '}${inputHtml} ${verbTip} ${q.sentenceAfter}`;
 

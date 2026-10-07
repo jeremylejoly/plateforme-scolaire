@@ -101,7 +101,7 @@ window.EXERCICES_MATHS = {
   {shape:"trapèze isocèle",svg:"<polygon points=\"20,35 180,35 135,115 65,115\" fill=\"#DBEAFE\" stroke=\"#2563EB\" stroke-width=\"2.5\"/>",chars:["2 angles aigus et 2 angles obtus", "2 paires de côtés parallèles", "4 angles droits", "1 seule paire de côtés parallèles", "Diagonales perpendiculaires"],answers:[0, 3]},
   {shape:"trapèze isocèle",svg:"<polygon points=\"45,55 155,55 175,105 25,105\" fill=\"#DBEAFE\" stroke=\"#2563EB\" stroke-width=\"2.5\"/>",chars:["Tous les côtés opposés sont isométriques", "2 angles aigus et 2 angles obtus", "4 côtés de longueurs différentes", "Au moins 2 angles droits", "4 angles droits"],answers:[1]},
   {shape:"trapèze rectangle",svg:"<polygon points=\"30,50 90,50 170,130 30,130\" fill=\"#DBEAFE\" stroke=\"#2563EB\" stroke-width=\"2.5\"/>",chars:["Au moins 2 angles droits", "1 seule paire de côtés parallèles", "2 paires de côtés parallèles", "4 côtés de longueurs différentes", "4 angles droits"],answers:[0, 1, 3]},
-  {shape:"trapèze rectangle",svg:"<polygon points=\"40,40 110,40 160,130 40,130\" fill=\"#DBEAFE\" stroke=\"#2563EB\" stroke-width=\"2.5\"/>",chars:["1 seule paire de côtés parallèles", "2 angles aigus et 2 angles obtus", "4 côtés de longueurs différentes", "Diagonales perpendiculaires", "Au moins 2 angles droits"],answers:[0, 2, 3, 4]},
+  {shape:"trapèze rectangle",svg:"<polygon points=\"40,40 110,40 160,130 40,130\" fill=\"#DBEAFE\" stroke=\"#2563EB\" stroke-width=\"2.5\"/>",chars:["1 seule paire de côtés parallèles", "2 angles aigus et 2 angles obtus", "4 côtés de longueurs différentes", "4 angles droits", "Au moins 2 angles droits"],answers:[0, 2, 4]},
   {shape:"trapèze rectangle",svg:"<polygon points=\"40,40 165,40 165,125 100,125\" fill=\"#DBEAFE\" stroke=\"#2563EB\" stroke-width=\"2.5\"/>",chars:["Au moins 2 angles droits", "2 paires de côtés parallèles", "1 seule paire de côtés parallèles", "4 côtés isométriques", "Tous les côtés opposés sont isométriques"],answers:[0, 2]},
   {shape:"trapèze quelconque",svg:"<polygon points=\"50,35 115,35 185,125 20,125\" fill=\"#DBEAFE\" stroke=\"#2563EB\" stroke-width=\"2.5\"/>",chars:["1 seule paire de côtés parallèles", "2 paires de côtés parallèles", "Au moins 2 angles droits", "4 côtés de longueurs différentes", "Médianes perpendiculaires"],answers:[0, 3]},
   {shape:"trapèze quelconque",svg:"<polygon points=\"40,40 110,40 180,120 25,120\" fill=\"#DBEAFE\" stroke=\"#2563EB\" stroke-width=\"2.5\"/>",chars:["4 côtés de longueurs différentes", "4 angles droits", "Au moins 2 angles droits", "2 paires de côtés parallèles", "Tous les côtés opposés sont isométriques"],answers:[0]},
@@ -285,9 +285,9 @@ window.DEVINETTES_DECIMAUX_BANQUE = [
   },
   {
     texte: "Je suis un nombre décimal. Mon chiffre des centièmes est égal au produit de mon chiffre des unités par mon chiffre des dixièmes. Ce produit est égal à 8. Qui suis-je ?",
-    opts:["81,18", "42,49", "14,248", "23,18"],
+    opts:["81,18", "42,49", "14,28", "23,18"],
     correct:2,
-    expl: "Dans 14,248, le chiffre des unités est 4 et celui des dixièmes est 2. Leur produit vaut 4 * 2 = 8, ce qui correspond bien au chiffre des centièmes (8)."
+    expl: "Dans 14,28, le chiffre des unités est 4 et celui des dixièmes est 2. Leur produit vaut 4 × 2 = 8, ce qui correspond bien au chiffre des centièmes (8). Dans 42,49, le produit vaut aussi 8, mais le chiffre des centièmes est 9."
   }
 ];
 

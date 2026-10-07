@@ -2963,3 +2963,19 @@ Spécifique :
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ✅ 06/10 (menu) | Le périmètre| `grandeur_perimetre` | index › (?) | (code à localiser) |
+
+## 07/10 — Relecture complète des corrections des 5 et 6 octobre (11 relectures indépendantes : 176 fiches, 18 CEB, exercices d'index.html) — sw.js v745, exercices_maths.js?v=20261007a
+
+Corrigé (GRAVE) :
+- Passé composé avec être (écriture) : « Elle se / Il se » → « Elle s' / Il s' » (la correction affichait « Elle se est levée » et refusait « s'est levée »).
+- Subjonctif & impératif : les 15 impératifs indiquent la personne « (verbe, tu) » (« ayez / prenez / faites » étaient refusés sans indice).
+- Axes de symétrie : un côté posé sur l'axe n'est plus attendu ni pénalisé (la croix comptait « 1 manquant » à un symétrique parfait).
+- Projections de cubes : Pyramide `[[0,1,1],[1,3,1],[1,1,1]]` (10 cubes) et Lettre H barre de hauteur 2 (14 cubes) — une colonne était totalement invisible, réponse indevinable.
+- Accords de l'adjectif : « fraîches » accepté comme « fraiches » (î/û ignorés dans la comparaison).
+- Devinettes décimales n° 10 : réponse `14,28` (14,248 ne respectait pas l'énoncé).
+- Menu « Les quadrilatères » : les 4 cartes ne s'ouvraient plus (guillemets dans l'attribut onclick) → planNavigateTo.
+- Caractéristiques des quadrilatères : « Diagonales perpendiculaires » n'est plus attendue vraie pour un trapèze rectangle.
+
+Corrigé (MOYEN) : champs de saisie libre sans correction automatique (accord_participe, cond/pqpf, passé simple, subj/imp, participe avoir/être/seul, adjectifs de couleur, pluriels, phrases négatives) ; `inputmode=decimal` (mesures agraires) ; `touch-action:none` sur le meuble (échelle act. 2) ; `alert()` → message dans la page (phrases_transfo, vocabulaire-jeu) ; enregistrement unique (expressions-proverbes, lecture rapide, relier décimaux) ; `activity` `vocabulaire_pc_mix_texte` (sans suffixe) ; 19 validateurs de QCM à boutons radio relisent l'état coché (`lcmlRelireRadios`) et Fractions simples affiche « Choisis d'abord une réponse » ; badge de score du plan : un id ne capte plus les résultats d'un autre exercice (`td_moyenne` ← `td_moyenne_qcm`, `grandeur_*_qcm` ← `_abaque`/`_sup`) ; copies racine/public resynchronisées (attribut_cdn, voix passive, homophones complexes, cond_pqpf, subj_imp, adjectifs couleur, calculs_fractions, cycle-eau, savoir_ecouter public).
+Mineur : ÷ au lieu de « : » (parties_calcul, problemes_operations) ; « 4,2 km/h » ; titres CEB 2024/2025 « Entrainement » ; `*infrasons*` ; carte « Maitre Détective » (types de phrases).
+Non corrigé (signalé) : balance_fractions n'enregistre qu'à la réussite du niveau 5 (sous-notation si l'élève saute des niveaux) ; `alert()` restants dans index (conjugaison verrouillée), defi_pemdas (confirm), fabrique-mots, mission_pemdas (chemin inaccessible) ; frise « bronze −3300 » ; carré dessiné en rectangle (angles manquants) ; option « cm » (échelle act. 3) ; heures 24–29 (heure_secondes) ; divisibilité (tableau vide validé) ; durées « 0 h 75 min » ; polyedres_definitions (badge révélateur) ; quelle_question pb 18 ; homophones « 10 phrases » ; CONNECTEURS « En effet » ; mots-caches « OR/CAR » ; tri_mots « ce » ; ligne-du-temps_5 (seuil de glisser) ; quelques graphies anciennes (Entraînement, brûle, dîme, abîment, reconnaît).
