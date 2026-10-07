@@ -854,7 +854,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Sélection bloquée une fois le texte corrigé.
 - Contenu des 5 textes vérifié (60 participes, explications justes). Nouvelle orthographe : déchainé, ile, entrainement.
 
-### 05/10 — Transformation à l'infini…tif (`fiches/orthographe_participe_passe_infinitif.html`, copie unique) — sw.js v495
+### 05/10 — Du verbe à l'infinitif au participe passé…tif (`fiches/orthographe_participe_passe_infinitif.html`, copie unique) — sw.js v495
 - AUCUN résultat enregistré → score sur 10 (1 point par verbe réussi du premier coup), enregistré une fois sous `ortho_participe_infinitif`, affiché en fin de partie.
 - Mélange `sort(random)` → Fisher-Yates ; tirage équilibré 2 verbes du 1er groupe / 3 du 2e / 5 du 3e (avant : ~80 % de 3e groupe, dont des verbes très rares).
 - Verbes hors niveau retirés : moudre, croitre (crû), acquérir, conquérir, concevoir, taire, extraire, exclure, rompre (banque 98).
@@ -1415,6 +1415,9 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Message de fin affichant du code LaTeX brut (« $1\\text{ ha} = 1\\text{ hm}^2$ ») → « 1 ha = 1 hm² ». Signe « − » dans les explications. Nouvelle orthographe : maraichères, maraicher, maitrises, entrainer.
 - Tests jsdom : abaque « 3,5 », vide/« 12abc » non comptés, « 6 000 » accepté, partie 8 / 10 avec doubles clics et doubles Entrée → 1 sauvegarde ; capture 390 px ; syntaxe OK.
 - **07/10 (sw.js v741)** — Signalement iPad : « impossible d'écrire dans l'abaque ». Cause : les cases sont des `<td>`, pas des champs → toucher une case n'ouvre aucun clavier sur tablette (les autres abaques — masses, capacités, longueurs — utilisent de vrais `<input>`). Correction : sur écran tactile, toucher une case donne le focus à un champ invisible (`#abaque-clavier`, `inputmode=decimal`) qui ouvre le clavier numérique ; chiffres, virgule/point et effacement sont envoyés dans la case choisie ; les touches du clavier virtuel de la page ne ferment plus le clavier de la tablette. ⌫ sur une case vide efface le dernier chiffre à gauche. Tests jsdom (pointer: coarse) : 7 2 , 5 → « 7,25 », ⌫ → « 7,2 », clavier physique OK, champ réponse OK ; 3 copies identiques.
+
+### 07/10 — Français › Orthographe › Participe passé › Du verbe à l'infinitif au participe passé (`ortho_participe_infinitif`, `fiches/orthographe_participe_passe_infinitif.html`) — sw.js v744
+- **Consigne fausse** (signalée par Jérémy) : le titre « Transforme à l'infini…tif » / « Transformation à l'infini » faisait croire qu'il fallait écrire l'infinitif, alors que l'exercice donne l'infinitif et demande le participe passé. → Titre, menu, plan de travail et résultats enseignant : « Du verbe à l'infinitif au participe passé » ; consigne explicite ajoutée dans la fiche (« voici un verbe à l'infinitif, écris son participe passé au masculin singulier ») ; compteur « Verbe n / 10 ». v743 : correction automatique du clavier iOS désactivée sur le champ (lu, su, pu, dû… remplacés par iOS).
 
 ### 07/10 — Outils › Abaques de conversion « Mes abaques » (`fiches/abaque_conversions.html` + copies racine et public) — sw.js v742
 - Les 3 copies étaient désynchronisées (la version en ligne ne mettait pas `window.currentMode` à jour → le bouton « Retour » du site quittait l'outil au lieu de revenir au choix des abaques) → copie racine (plus récente) reprise partout.
@@ -2508,7 +2511,7 @@ Spécifique :
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ✅ 05/10 | Détective des participes | `ortho_participe_texte` | fiches/orthographe_participe_passe_texte.html |  |
-| ✅ 05/10 | Transformation à l'infini | `ortho_participe_infinitif` | fiches/orthographe_participe_passe_infinitif.html |  |
+| ✅ 05/10 | Du verbe à l'infinitif au participe passé | `ortho_participe_infinitif` | fiches/orthographe_participe_passe_infinitif.html |  |
 | ✅ 05/10 | PP employé seul | `ortho_participe_seul` | fiches/orthographe_participe_passe_seul.html |  |
 | ✅ 05/10 | PP avec Être | `ortho_participe_etre` | fiches/orthographe_participe_passe_etre.html |  |
 | ✅ 05/10 | PP avec Avoir | `ortho_participe_avoir` | fiches/orthographe_participe_passe_avoir.html |  |
