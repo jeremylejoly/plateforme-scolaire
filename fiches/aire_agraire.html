@@ -760,6 +760,9 @@
           </tbody>
         </table>
       </div>
+      <!-- Champ invisible : sur tablette (iPad), toucher une case ouvre le clavier numérique ; ce qu'on y tape va dans la case choisie -->
+      <input type="text" id="abaque-clavier" inputmode="decimal" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="Clavier de l'abaque"
+             style="position:fixed;left:0;bottom:0;width:1px;height:1px;opacity:0;border:0;padding:0;margin:0;pointer-events:none;">
 
       <!-- Controls & Keypad -->
       <div class="controls-row">
@@ -1128,7 +1131,41 @@
     if (activeCell) {
       activeCell.classList.add('selected');
     }
+    // Tablette / téléphone : les cases ne sont pas des champs, donc aucun clavier ne s'ouvrait (iPad : « impossible
+    // d'écrire dans l'abaque »). On donne le focus à un champ invisible pour ouvrir le clavier numérique.
+    if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) {
+      const k = document.getElementById('abaque-clavier');
+      if (k && document.activeElement !== k) { k.value = ''; try { k.focus({ preventScroll: true }); } catch (e) { k.focus(); } }
+    }
   }
+  // Saisie venant du clavier virtuel (tablette) : chiffres, virgule/point, effacement
+  (function () {
+    const k = document.getElementById('abaque-clavier');
+    if (!k) return;
+    k.addEventListener('beforeinput', (e) => {
+      if (isAnswered) { e.preventDefault(); return; }
+      if (e.inputType === 'deleteContentBackward') { pressNumpadKey('Backspace'); }
+      else if (e.inputType && e.inputType.startsWith('insert') && e.data) {
+        for (const ch of e.data) {
+          if (ch >= '0' && ch <= '9') pressNumpadKey(ch);
+          else if (ch === ',' || ch === '.') pressNumpadKey(',');
+        }
+      }
+      e.preventDefault();
+    });
+    // Secours si beforeinput n'existe pas : on lit la valeur puis on la vide
+    k.addEventListener('input', () => {
+      const v = k.value; k.value = '';
+      if (isAnswered || !v) return;
+      for (const ch of v) {
+        if (ch >= '0' && ch <= '9') pressNumpadKey(ch);
+        else if (ch === ',' || ch === '.') pressNumpadKey(',');
+      }
+    });
+    k.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); k.blur(); } });
+  })();
+  // Les touches du clavier virtuel de la page ne ferment pas le clavier de la tablette
+  document.querySelectorAll('.num-btn').forEach((b) => b.addEventListener('pointerdown', (e) => e.preventDefault()));
   function updateAbaqueDOM() {
     for (let r = 0; r < 3; r++) {
       for (let c = 0; c < 14; c++) {
@@ -1190,12 +1227,11 @@
       let c = selectedCell.col;
       if (key === 'Backspace') {
         sndDel();
+        // Case déjà vide : on efface le dernier chiffre écrit, à gauche (comme un vrai clavier)
+        if (abaqueData[r][c] === '' && !abaqueCommas[r][c] && c > 0 && abaqueData[r][c - 1] !== '') c = c - 1;
         abaqueData[r][c] = '';
         abaqueCommas[r][c] = false;
-        // Move selection left if possible
-        if (c > 0) {
-          selectCell(r, c - 1);
-        }
+        selectCell(r, c);
       } else if (key === ',') {
         sndTap();
         // La virgule se place après le dernier chiffre écrit (avant : sur la case suivante, encore vide,
