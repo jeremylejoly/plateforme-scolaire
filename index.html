@@ -3704,19 +3704,33 @@ input[type=text].calc-input.incorrect {
       return null;
     } catch(e) { console.warn('Firebase loadPlanTravailIndividual error:', e); return null; }
   };
-  // Commentaires du plan de travail : { class: { idActivité: texte }, students: { élève: { idActivité: texte } } }
+  // Commentaires du plan de travail : 'plan_comments/{classe}' = { class: { idActivité: texte }, students: { élève: { idActivité: texte } } }
   // Nœud séparé : les plans eux-mêmes ne sont jamais réécrits par les commentaires.
+  // Règles Firebase : l'enseignant lit tout ; un élève ne peut lire que 'class' et 'students/<un nom>',
+  // jamais la liste complète des commentaires personnels.
   window.FB_savePlanTravailComments = async function(cls, comments) {
+    window.FB_lastCommentError = '';
     try {
-      await set(ref(db, 'settings/plan_travail_comments/' + cls), comments);
+      await set(ref(db, 'plan_comments/' + cls), comments);
       return true;
-    } catch(e) { console.warn('Firebase savePlanTravailComments error:', e); return false; }
+    } catch(e) {
+      console.warn('Firebase savePlanTravailComments error:', e);
+      window.FB_lastCommentError = (e && (e.code || e.message)) || String(e);
+      return false;
+    }
   };
   // Renvoie les données brutes (null si aucun commentaire) ou undefined en cas d'erreur
   window.FB_loadPlanTravailComments = async function(cls) {
     try {
-      const snap = await get(ref(db, 'settings/plan_travail_comments/' + cls));
-      return snap.exists() ? snap.val() : null;
+      const snap = await get(ref(db, 'plan_comments/' + cls));
+      if (snap.exists()) return snap.val();
+      // Ancien emplacement (07/10/2026, lisible par tous les élèves) : reprise puis effacement
+      const old = await get(ref(db, 'settings/plan_travail_comments/' + cls));
+      if (!old.exists()) return null;
+      const val = old.val();
+      await set(ref(db, 'plan_comments/' + cls), val);
+      await remove(ref(db, 'settings/plan_travail_comments/' + cls));
+      return val;
     } catch(e) { console.warn('Firebase loadPlanTravailComments error:', e); return undefined; }
   };
   window.FB_saveStudentPlanProgress = async function(cls, student, progress) {
@@ -9683,6 +9697,7 @@ function selectTeacherClass(cls,btn){
   planTravailAssigned = [];
   planTravailIndividual = {};
   planTravailComments = { class: {}, students: {} };
+  planTravailCommentsReady = false;
   planTravailTarget = 'class';
   document.querySelectorAll('.teacher-class-btn').forEach(b=>b.classList.remove('selected'));
   btn.classList.add('selected');
@@ -9740,6 +9755,7 @@ function openTeacherPanel(){
   planTravailAssigned = [];
   planTravailIndividual = {};
   planTravailComments = { class: {}, students: {} };
+  planTravailCommentsReady = false;
   planTravailTarget = 'class';
   localStorage.setItem('lq_teacher_session','1');
   localStorage.setItem('lq_teacher_cls', teacherCls);
@@ -33006,6 +33022,7 @@ let planTravailAssigned = []; // IDs cochés par l'enseignant (toute la classe)
 let planTravailIndividual = {}; // { studentName: [id1, id2, ...] }
 let planTravailTarget = 'class'; // 'class' ou le nom d'un élève
 let planTravailComments = { class: {}, students: {} }; // commentaires de l'enseignant par activité
+let planTravailCommentsReady = false; // côté enseignant : commentaires bien chargés depuis Firebase
 let planTravailLoaded = false;
 let studentPlanProgress = {}; // {id: true/false} côté élève
 
@@ -33139,14 +33156,24 @@ function initRealtimeStudentSync() {
     updateHomePlanCardUI();
   }, (err) => console.warn('Realtime plan_travail_individual error:', err));
 
-  // 3 bis. Observer pour les commentaires de l'enseignant
-  const commentsRef = window.FB_ref(window.FB_DB, 'settings/plan_travail_comments/' + cls);
-  fbStudentListeners.comments = window.FB_onValue(commentsRef, (snap) => {
-    planTravailComments = ptNormComments(snap.exists() ? snap.val() : null);
-    try { localStorage.setItem('lq_plan_travail_comments_' + cls, JSON.stringify(planTravailComments)); } catch(e) {}
+  // 3 bis. Commentaires de l'enseignant : celui de la classe + UNIQUEMENT les miens
+  // (les commentaires personnels des autres élèves ne sont jamais téléchargés)
+  planTravailComments = ptLoadStudentCommentsLocal(cls, student);
+  const _applyComments = () => {
+    try { localStorage.setItem(ptCommentsCacheKey(cls, student), JSON.stringify(planTravailComments)); } catch(e) {}
     const el = document.getElementById('plan-student-body');
     if (el && !el.innerHTML.includes('Chargement…')) renderPlanTravailStudent();
-  }, (err) => console.warn('Realtime plan_travail_comments error:', err));
+  };
+  fbStudentListeners.commentsClass = window.FB_onValue(window.FB_ref(window.FB_DB, 'plan_comments/' + cls + '/class'), (snap) => {
+    const n = ptNormComments({ class: snap.exists() ? snap.val() : null });
+    planTravailComments = { class: n.class, students: (planTravailComments && planTravailComments.students) || {} };
+    _applyComments();
+  }, (err) => console.warn('Realtime plan_comments/class error:', err));
+  fbStudentListeners.commentsMine = window.FB_onValue(window.FB_ref(window.FB_DB, 'plan_comments/' + cls + '/students/' + student), (snap) => {
+    const n = ptNormComments({ students: { [student]: snap.exists() ? snap.val() : null } });
+    planTravailComments = { class: (planTravailComments && planTravailComments.class) || {}, students: n.students };
+    _applyComments();
+  }, (err) => console.warn('Realtime plan_comments/students error:', err));
 
   // 4. Observer pour la progression du plan
   const progressRef = window.FB_ref(window.FB_DB, 'plan_progress/' + cls + '/' + student);
@@ -33203,7 +33230,10 @@ function loadPlanTravailLocal(targetCls) {
   
   const sInd = localStorage.getItem('lq_plan_travail_individual_' + cls) || (cls === 'lejoly' ? localStorage.getItem('lq_plan_travail_individual') : null);
   planTravailIndividual = sInd ? JSON.parse(sInd) : {};
-  planTravailComments = ptLoadCommentsLocal(cls);
+  // Commentaires : l'élève ne garde sur l'appareil que les siens (classe + personnels)
+  planTravailComments = (typeof state !== 'undefined' && state.role !== 'teacher' && state.student)
+    ? ptLoadStudentCommentsLocal(cls, state.student)
+    : { class: {}, students: {} };
 }
 
 // --- Sauvegarde/chargement progression élève ---
@@ -34017,14 +34047,12 @@ async function _renderPlanTravailInto(el) {
       }
     });
 
-    // Commentaires (nœud séparé)
+    // Commentaires (nœud séparé, jamais gardés sur l'appareil côté enseignant).
+    // S'ils n'ont pas pu être chargés, l'enregistrement est bloqué pour ne pas effacer ceux qui existent.
+    try { localStorage.removeItem('lq_plan_travail_comments_' + cls); } catch(e) {} // ancien cache
     const fbComments = window.FB_loadPlanTravailComments ? await window.FB_loadPlanTravailComments(cls) : undefined;
-    if (fbComments !== undefined) {
-      planTravailComments = ptNormComments(fbComments);
-      try { localStorage.setItem('lq_plan_travail_comments_' + cls, JSON.stringify(planTravailComments)); } catch(e) {}
-    } else {
-      planTravailComments = ptLoadCommentsLocal(cls);
-    }
+    planTravailCommentsReady = (fbComments !== undefined);
+    planTravailComments = ptNormComments(fbComments || null);
 
     planTravailLoaded = true;
   }
@@ -34477,10 +34505,14 @@ function ptNormComments(v) {
   return out;
 }
 
-function ptLoadCommentsLocal(cls) {
+// Cache élève : uniquement le commentaire de la classe + les siens
+function ptCommentsCacheKey(cls, student) { return 'lq_plan_comments_' + cls + '_' + student; }
+function ptLoadStudentCommentsLocal(cls, student) {
+  try { localStorage.removeItem('lq_plan_travail_comments_' + cls); } catch(e) {} // ancien cache (toute la classe)
   try {
-    const s = localStorage.getItem('lq_plan_travail_comments_' + cls);
-    return ptNormComments(s ? JSON.parse(s) : null);
+    const s = localStorage.getItem(ptCommentsCacheKey(cls, student));
+    const n = ptNormComments(s ? JSON.parse(s) : null);
+    return { class: n.class, students: n.students[student] ? { [student]: n.students[student] } : {} };
   } catch(e) { return ptNormComments(null); }
 }
 
@@ -34582,7 +34614,8 @@ function ptCommentCount() {
 
 async function ptPersistComments() {
   const cls = (typeof teacherCls !== 'undefined' && teacherCls) ? teacherCls : 'lejoly';
-  try { localStorage.setItem('lq_plan_travail_comments_' + cls, JSON.stringify(planTravailComments)); } catch(e) {}
+  window.FB_lastCommentError = '';
+  if (!planTravailCommentsReady) { window.FB_lastCommentError = 'not-loaded'; return false; }
   if (!window.FB_savePlanTravailComments) return false;
   return await window.FB_savePlanTravailComments(cls, planTravailComments);
 }
@@ -34610,12 +34643,13 @@ async function ptSaveComment(forceEmpty) {
   if (saveBtn) saveBtn.disabled = false;
   if (!ok) {
     planTravailComments = JSON.parse(backup);
-    try {
-      const cls = (typeof teacherCls !== 'undefined' && teacherCls) ? teacherCls : 'lejoly';
-      localStorage.setItem('lq_plan_travail_comments_' + cls, backup);
-    } catch(e) {}
+    const code = String(window.FB_lastCommentError || '').toLowerCase();
     const err = document.getElementById('pt-comment-error');
-    err.textContent = '❌ Le commentaire n’a pas pu être enregistré (connexion Internet ?). Réessaie.';
+    err.textContent = code === 'not-loaded'
+      ? '❌ Les commentaires n’ont pas pu être chargés. Recharge la page puis réessaie.'
+      : (code.includes('permission')
+        ? '❌ Enregistrement refusé : les règles Firebase doivent être mises à jour (nœud « plan_comments »).'
+        : '❌ Le commentaire n’a pas pu être enregistré (connexion Internet ?). Réessaie.');
     err.style.display = 'block';
     return;
   }
