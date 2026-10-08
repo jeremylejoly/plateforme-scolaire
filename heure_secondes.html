@@ -148,6 +148,8 @@
     color: var(--ink);
     transition: all .15s;
   }
+  /* Tablette : pas de zoom au double-toucher, chaque toucher compte */
+  .btn-adjust, .btn { touch-action: manipulation; -webkit-user-select: none; user-select: none; }
   .btn-adjust:hover {
     background: #e2e8f0;
   }
@@ -450,7 +452,9 @@ function setHands(h,m,s){
   document.getElementById('hHour').setAttribute('transform',`rotate(${hr} 200 200)`);
 }
 
+let animId=0; // une seule animation à la fois (Recommencer pendant une animation)
 function startTrainAndClockAnimation(){
+  const id=++animId;
   locked = true;
   document.getElementById('valider').disabled = true;
   document.querySelector('.answer-panel').classList.add('locked');
@@ -459,6 +463,7 @@ function startTrainAndClockAnimation(){
   let startTime = null;
   
   function spin(timestamp) {
+    if (id !== animId) return; // animation remplacée par une plus récente
     if (!startTime) startTime = timestamp;
     const elapsed = timestamp - startTime;
     
@@ -512,6 +517,9 @@ validerBtn.onclick=()=>{
     return;
   }
   const heureOk = h <= 23 && h % 12 === target.h % 12;
+  // Après validation, la réponse est figée : l'élève ne peut plus modifier les chiffres
+  // pendant que la correction est affichée (sinon il croit avoir écrit la bonne réponse).
+  document.querySelector('.answer-panel').classList.add('locked');
   if(heureOk && m===target.m && s===target.s){
     locked=true;
     feedback.textContent='Bravo, c’est la bonne heure ! 🎉';
@@ -526,14 +534,21 @@ validerBtn.onclick=()=>{
     lives--;buildHearts();
     const pad=n=>String(n).padStart(2,'0');
     const h2=(target.h+12)%24;
-    feedback.textContent=`Pas encore… la bonne réponse était ${pad(target.h)} h ${pad(target.m)} min ${pad(target.s)} s (ou ${pad(h2)} h ${pad(target.m)} min ${pad(target.s)} s).`;
+    const fautes=[];
+    if(!heureOk) fautes.push('les heures');
+    if(m!==target.m) fautes.push('les minutes');
+    if(s!==target.s) fautes.push('les secondes');
+    const quoi=fautes.length===1?fautes[0]:fautes.slice(0,-1).join(', ')+' et '+fautes[fautes.length-1];
+    feedback.innerHTML=`Pas encore… Tu as écrit <b>${pad(h)} h ${pad(m)} min ${pad(s)} s</b>.<br>`
+      +`La bonne réponse était <b>${pad(target.h)} h ${pad(target.m)} min ${pad(target.s)} s</b> (ou ${pad(h2)} h ${pad(target.m)} min ${pad(target.s)} s).<br>`
+      +`Regarde bien ${quoi}.`;
     feedback.className='feedback no';
     if(lives<=0){
       locked=true;
-      { const j=jeton; setTimeout(()=>{ if(j===jeton) endGame(false); }, 1800); }
+      { const j=jeton; setTimeout(()=>{ if(j===jeton) endGame(false); }, 4500); }
     }else{
       locked=true;
-      { const j=jeton; setTimeout(()=>{ if(j===jeton) newQuestion(); },1800); }
+      { const j=jeton; setTimeout(()=>{ if(j===jeton) newQuestion(); },4500); }
     }
   }
 };
