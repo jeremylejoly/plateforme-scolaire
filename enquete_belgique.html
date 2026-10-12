@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>La Course-poursuite du Renard — Plateforme LCML</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+  :root {
+    --purple: #5B4FCF; --purple-light: #EEF0FF; --purple-mid: #C7C2F5;
+    --green: #1A9E75; --green-light: #E2F5EE;
+    --red: #D94F3D; --red-light: #FDECEA;
+    --amber: #F59E0B; --amber-dark: #C97B1A; --amber-light: #FEF3E2;
+    --blue: #1A6FA0; --blue-light: #E2F0FA;
+    --parchment: #F7FAFF;
+    --bg: #FDFBF7; --surface: #FFFFFF; --surface-alt: #F4F1EB;
+    --text: #1A1A2E; --muted: #6B7080; --border: #1A1A2E;
+    --shadow: 4px 4px 0 var(--border); --shadow-sm: 2px 2px 0 var(--border);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; }
+  body { padding: 16px; }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1, h2, h3, .fred { font-family: 'Fredoka', 'Inter', sans-serif; }
+  button { font: inherit; color: inherit; cursor: pointer; touch-action: manipulation; }
+
+  .topbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .topbar .title { flex: 1; min-width: 180px; font-family: 'Fredoka'; font-weight: 700; font-size: 1.25rem; }
+  .btn { border: 2px solid var(--border); border-radius: 12px; background: var(--surface); padding: 10px 14px; min-height: 48px; font-weight: 600; box-shadow: var(--shadow-sm); }
+  .btn:active { transform: translate(2px,2px); box-shadow: none; }
+  .btn.primary { background: var(--purple); color: #fff; }
+  .btn.amber { background: var(--amber-light); }
+  .scalebar { display:flex; margin:8px 0 2px; width:max-content; border:2px solid var(--border); }
+  .scalebar span { width:1.5cm; height:10px; }
+  .scalebar span:nth-child(odd) { background: var(--text); }
+  .scalelbl { display:flex; font-size:.85rem; margin-left:2px; }
+  .scalelbl span { width:1.5cm; transform:translateX(-0.4em); }
+  .scalelbl span:first-child { transform:none; }
+  .scalelbl span:last-child { width:auto; }
+  .clock { font-family: 'Fredoka'; font-weight: 700; font-size: 1.1rem; border: 2px solid var(--border); border-radius: 12px; padding: 8px 12px; background: var(--blue-light); }
+  .clock.late { background: var(--red-light); }
+  .btn .count { display: inline-block; min-width: 22px; padding: 0 6px; margin-left: 4px; border-radius: 999px; background: var(--purple); color: #fff; font-size: .85rem; }
+
+  .card { background: var(--surface); border: 2px solid var(--border); border-radius: 20px; box-shadow: var(--shadow); padding: 22px; }
+  .story.card { background: var(--parchment); }
+
+  .hero { text-align: center; }
+  .hero .owl { font-size: 4.5rem; line-height: 1; }
+  .hero h1 { font-size: 2rem; margin: 10px 0 6px; }
+  .hero p { line-height: 1.55; font-size: 1.05rem; }
+  .rules { text-align: left; background: var(--surface-alt); border-radius: 14px; padding: 14px 18px; margin: 16px 0; line-height: 1.5; }
+  .rules li { margin: 4px 0; }
+  .endings { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 12px 0 18px; }
+  .ending-chip { border: 2px solid var(--border); border-radius: 999px; padding: 6px 12px; font-size: .9rem; background: var(--surface-alt); color: var(--muted); }
+  .ending-chip.found { color: var(--text); background: var(--green-light); }
+  .ending-chip.found.win { background: #FFE9A8; }
+  .start-btns { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+  .para-num { display: inline-flex; align-items: center; justify-content: center; width: 58px; height: 58px; border-radius: 50%; flex-shrink: 0;
+    background: var(--purple); color: #fff; font-family: 'Fredoka'; font-weight: 700; font-size: 1.6rem; border: 2px solid var(--border); box-shadow: var(--shadow-sm); }
+  .para-head { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  .para-head h2 { margin: 0; font-size: 1.35rem; }
+  .story p { font-size: 1.12rem; line-height: 1.7; margin: 0 0 14px; }
+  .story .speech { font-style: italic; }
+  .doc { font-family: 'Fredoka'; background: #FFFBEA; border: 2px solid var(--border); border-radius: 6px; padding: 14px 18px; margin: 0 0 14px; font-size: 1.1rem; line-height: 1.8; }
+  .vocab { background: var(--surface); border-left: 5px solid var(--amber-dark); border-radius: 8px; padding: 8px 12px; margin: 0 0 14px; font-size: .98rem; line-height: 1.5; }
+
+  .clue-found { background: var(--blue-light); border: 2px solid var(--blue); border-radius: 12px; padding: 10px 14px; margin: 4px 0 12px; font-size: 1rem; line-height: 1.45; }
+  .clue-found b { color: var(--blue); }
+  .obj-found { background: var(--green-light); border: 2px solid var(--green); border-radius: 12px; padding: 10px 14px; margin: 4px 0 12px; font-size: 1rem; line-height: 1.45; }
+
+  .choices { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+  .choices .prompt { font-weight: 700; font-family: 'Fredoka'; font-size: 1.1rem; margin: 6px 0 2px; }
+  .choice { display: flex; align-items: center; gap: 12px; text-align: left; width: 100%; border: 2px solid var(--border); border-radius: 14px;
+    background: var(--purple-light); padding: 12px 14px; min-height: 56px; font-size: 1.05rem; font-weight: 600; box-shadow: var(--shadow-sm); }
+  .choice:active { transform: translate(2px,2px); box-shadow: none; }
+  .choice .go { margin-left: auto; flex-shrink: 0; font-family: 'Fredoka'; font-size: .95rem; background: var(--surface); border: 2px solid var(--border); border-radius: 999px; padding: 2px 10px; white-space: nowrap; }
+  .choice.accuse { background: var(--red-light); }
+  .choice.skip { background: var(--surface-alt); }
+  .choice.obj { background: var(--green-light); }
+
+  .enigme { border: 2px solid var(--border); border-radius: 16px; background: var(--amber-light); padding: 16px; margin: 6px 0 16px; }
+  .enigme h3 { margin: 0 0 8px; font-size: 1.15rem; }
+  .enigme .q { font-size: 1.05rem; line-height: 1.55; margin: 0 0 12px; font-weight: 600; }
+  .answer-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+  .answer-row label { font-weight: 600; min-width: 140px; }
+  .answer-row input { width: 120px; font-size: 1.4rem; font-family: 'Fredoka'; text-align: center; padding: 8px; border: 2px solid var(--border); border-radius: 10px; background: #fff; }
+  .answer-row .unit { font-family: 'Fredoka'; font-size: 1.2rem; font-weight: 600; }
+  .qcm { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  .qcm button { text-align: left; border: 2px solid var(--border); border-radius: 12px; background: #fff; padding: 10px 14px; min-height: 52px; font-size: 1.02rem; font-weight: 500; }
+  .qcm button.sel { background: var(--purple); color: #fff; }
+  .qcm button.good { background: var(--green); color: #fff; }
+  .qcm.done button:not(.sel) { opacity: .45; }
+  .feedback { margin-top: 12px; padding: 10px 14px; border-radius: 10px; line-height: 1.5; font-size: 1rem; }
+  .feedback.ok { background: var(--green-light); border: 2px solid var(--green); }
+  .feedback.ko { background: var(--red-light); border: 2px solid var(--red); }
+  .feedback.info { background: var(--surface); border: 2px solid var(--amber-dark); }
+
+  .proofs { list-style: none; padding: 0; margin: 0 0 14px; }
+  .proofs li { background: var(--surface); border: 2px solid var(--border); border-radius: 10px; padding: 8px 12px; margin-bottom: 8px; line-height: 1.45; }
+
+  .ending-box { text-align: center; border: 2px solid var(--border); border-radius: 16px; padding: 16px; margin: 10px 0 14px; }
+  .ending-box.win { background: #FFE9A8; }
+  .ending-box.half { background: var(--blue-light); }
+  .ending-box.lose { background: var(--red-light); }
+  .ending-box .big { font-size: 2.6rem; }
+  .ending-box h3 { margin: 6px 0; font-size: 1.3rem; }
+  .ending-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+  .overlay { position: fixed; inset: 0; background: rgba(26,26,46,.45); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 10; }
+  .overlay.open { display: flex; }
+  .overlay .card { max-width: 560px; width: 100%; max-height: 85vh; overflow: auto; }
+  .carnet-list { list-style: none; padding: 0; margin: 8px 0 14px; }
+  .carnet-list li { border-bottom: 2px dashed var(--purple-mid); padding: 10px 2px; line-height: 1.45; }
+  .muted { color: var(--muted); }
+  .hidden { display: none !important; }
+  @media (max-width: 480px) { body { padding: 10px; } .card { padding: 16px; } .story p { font-size: 1.05rem; } .hero h1 { font-size: 1.6rem; } .answer-row label { min-width: 0; width: 100%; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section id="screen-title" class="card hero">
+    <div class="owl">🦊</div>
+    <h1>La Course-poursuite du Renard</h1>
+    <p class="muted fred">Une enquête dont tu es le héros ou l'héroïne — à travers la Belgique</p>
+    <div class="rules">
+      <ul>
+        <li>🦊 Le Renard a volé le <b>Globe d'or</b> de ton école. À <b>18 h</b>, il quittera la Belgique !</li>
+        <li>🚆 Lis bien chaque devinette pour choisir le bon train : une <b>fausse piste</b> te fait perdre 50 minutes.</li>
+        <li>🔐 Les <b>énigmes</b> te font gagner des indices sur le Renard. En passer une te coute 10 minutes.</li>
+        <li>🕘 Surveille l'<b>horloge</b> en haut de l'écran.</li>
+        <li>⚖️ À la fin, il faudra reconnaitre le Renard… et avoir <b>assez de preuves</b> !</li>
+        <li>💾 La partie est <b>sauvegardée</b> : tu peux la reprendre plus tard.</li>
+      </ul>
+    </div>
+    <div class="fred" style="font-weight:600">Fins découvertes : <span id="endings-count">0</span> / 6</div>
+    <div class="endings" id="endings-list"></div>
+    <div class="start-btns">
+      <button class="btn primary hidden" id="btn-resume" style="font-size:1.1rem;padding:12px 24px">▶ Reprendre ma partie</button>
+      <button class="btn" id="btn-start" style="font-size:1.1rem;padding:12px 24px">Commencer l'enquête</button>
+    </div>
+  </section>
+
+  <section id="screen-story" class="hidden">
+    <div class="topbar">
+      <div class="title">🦊 Le Renard</div>
+      <span class="clock" id="clock">🕘 9 h 00</span>
+      <button class="btn amber" id="btn-carnet">📒 Carnet <span class="count" id="clue-count">0</span></button>
+      <button class="btn" id="btn-menu">⟲ Menu</button>
+    </div>
+    <article class="card story" id="story"></article>
+  </section>
+</div>
+
+<div class="overlay" id="carnet">
+  <div class="card">
+    <ul class="carnet-list hidden" id="sac-list"></ul>
+    <h2 style="margin:0 0 4px">📒 Mes indices</h2>
+    <ul class="carnet-list" id="carnet-list"></ul>
+    <button class="btn primary" id="btn-carnet-close" style="width:100%">Fermer le carnet</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* =====================================================================
+     INDICES
+     PREUVES : indices qui comptent comme preuves à l'arrestation finale.
+     ===================================================================== */
+  const CLUES = {
+    lunettes:  "Un docker d'Anvers a vu le Renard : il porte des <b>lunettes rondes</b>.",
+    sac:       "À Gand, une batelière a remarqué son <b>sac à dos vert</b>.",
+    billet:    "Le billet du Renard : parti de Gand à 11 h 47, arrivé à Namur à 13 h 32.",
+    baskets:   "Le marchand de glaces de Namur se souvient de ses <b>baskets orange</b>.",
+    echarpe:   "Au café de Liège, le Renard a oublié un fil de son <b>écharpe à rayures</b> bleues et blanches.",
+    emballage: "Au Signal de Botrange, un morceau du papier doré qui emballait le Globe d'or.",
+    quai:      "Le bus pour Aix-la-Chapelle, en Allemagne, part à 18 h de la gare d'Eupen."
+  };
+  const PREUVES = ['lunettes', 'sac', 'billet', 'baskets', 'echarpe', 'emballage'];
+  const OBJECTS = {};
+
+  /* L'horloge : base = heure d'arrivée prévue (en minutes depuis minuit),
+     delay = minutes perdues (fausses pistes, énigmes passées). */
+  const LIMIT = 18 * 60;        // le bus part à 18 h
+
+  /* =====================================================================
+     L'HISTOIRE
+     ===================================================================== */
+  const S = {
+    debut: { title: "Le Globe d'or a disparu !", base: 9 * 60,
+      text: [
+        "Lundi, 9 h, à Bruxelles. Ton école vient de gagner le grand concours de géographie des écoles de Belgique. Sur la scène, le trophée brille : le <b>Globe d'or</b>, une petite Terre dorée posée sur un socle de bois.",
+        "Les applaudissements éclatent… et soudain, la lumière s'éteint. Quand elle se rallume, le socle est vide ! À sa place, une carte postale avec un petit renard dessiné :",
+        "<div class='doc'>« Merci pour ce joli globe ! Attrapez-moi si vous pouvez : ce soir, à 18 h, je quitterai la Belgique.<br>— Le Renard »</div>",
+        "Mme Lambert, la directrice, attrape ton bras : <span class='speech'>« Toi qui mènes toutes les enquêtes de l'école ! L'inspectrice Martens nous suit par téléphone : nous, on prend le train. Mais d'abord, une question de l'inspectrice pour son rapport. »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🗺️ Où sommes-nous ?",
+        question: "L'inspectrice demande : « Le vol a eu lieu à Bruxelles. Dans quelle Région se trouve Bruxelles ? »",
+        options: [
+          "Dans la Région flamande",
+          "Dans la Région de Bruxelles-Capitale",
+          "Dans la province du Brabant wallon"
+        ],
+        answer: 1,
+        hint: "La Belgique compte trois Régions : la Région flamande, la Région wallonne… et une troisième qui porte le nom de sa ville. Attention : Bruxelles ne fait partie d'aucune province.",
+        success: "Exact ! Bruxelles forme à elle seule une des trois Régions : la Région de Bruxelles-Capitale. Elle ne fait partie d'aucune des dix provinces.",
+        to: 'carte1', skipTo: 'carte1Passer', skipLabel: "Laisser Mme Lambert répondre"
+      }
+    },
+
+    carte1Passer: { title: "Dix minutes perdues", delay: 10,
+      text: [
+        "Mme Lambert répond à ta place : Bruxelles forme la Région de Bruxelles-Capitale. La discussion avec l'inspectrice vous a fait perdre dix minutes…"
+      ],
+      prompt: "",
+      choices: [ { label: "Lire la carte postale de plus près", to: 'carte1' } ]
+    },
+
+    carte1: { title: "La première carte postale",
+      text: [
+        "Tu retournes la carte postale. Au dos, le Renard a écrit une devinette :",
+        "<div class='doc'>« Je pars vers le <b>nord</b>. Ma prochaine ville est le chef-lieu d'une province qui porte le même nom qu'elle. Sur l'<b>Escaut</b>, elle a l'un des plus grands ports d'Europe. »</div>",
+        "<div class='vocab'>📚 Le <b>chef-lieu</b> d'une province est la ville où siègent ses autorités (le gouverneur, le conseil provincial).</div>"
+      ],
+      prompt: "Quel train prends-tu ?",
+      choices: [
+        { label: "Le train pour Anvers", to: 'anvers' },
+        { label: "Le train pour Bruges", to: 'fauxBruges' },
+        { label: "Le train pour Liège", to: 'fauxLiege' }
+      ]
+    },
+
+    fauxBruges: { title: "Fausse piste à Bruges", delay: 50,
+      text: [
+        "Bruges est bien le chef-lieu d'une province… mais c'est la province de <b>Flandre occidentale</b>, qui ne porte pas le même nom. Et l'Escaut ne passe pas à Bruges !",
+        "Il faut reprendre le train. Tu as perdu 50 minutes."
+      ],
+      prompt: "",
+      choices: [ { label: "Relire la devinette", to: 'carte1' } ]
+    },
+
+    fauxLiege: { title: "Fausse piste à Liège", delay: 50,
+      text: [
+        "Liège est le chef-lieu de la province de Liège… mais la ville se trouve à l'<b>est</b> de Bruxelles, pas au nord. Et c'est la <b>Meuse</b> qui y coule, pas l'Escaut.",
+        "Il faut reprendre le train. Tu as perdu 50 minutes."
+      ],
+      prompt: "",
+      choices: [ { label: "Relire la devinette", to: 'carte1' } ]
+    },
+
+    anvers: { title: "Anvers, le grand port", base: 9 * 60 + 45,
+      text: [
+        "Le train arrive à Anvers, chef-lieu de la province d'Anvers. Au port, d'immenses bateaux chargés de conteneurs glissent sur l'Escaut.",
+        "Un docker en gilet fluo a vu passer quelqu'un avec un paquet doré. <span class='speech'>« Je veux bien t'aider, mais d'abord, une question : mon fils prépare une interro sur la population… »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "👥 La population",
+        question: "Anvers se trouve en Région flamande, la Région la plus peuplée de Belgique. Combien d'habitants environ vivent en Région flamande ?",
+        options: [
+          "Environ 1,3 million d'habitants",
+          "Environ 3,7 millions d'habitants",
+          "Environ 6,9 millions d'habitants"
+        ],
+        answer: 2,
+        hint: "La Belgique compte environ 11,9 millions d'habitants. Plus de la moitié vivent en Région flamande. La Région wallonne en compte environ 3,7 millions et Bruxelles-Capitale environ 1,3 million.",
+        success: "Bravo ! En 2026, la Région flamande compte environ 6,9 millions d'habitants, la Région wallonne environ 3,7 millions et la Région de Bruxelles-Capitale environ 1,3 million. Au total, la Belgique compte environ 11,9 millions d'habitants.",
+        to: 'anversOk', skipTo: 'anversPasser', skipLabel: "Ne pas répondre et chercher ailleurs"
+      }
+    },
+
+    anversOk: { title: "Le témoignage du docker",
+      text: [
+        "<span class='speech'>« Bien joué ! Ton voleur, je l'ai vu : il portait des lunettes rondes. Il a laissé tomber ceci en courant vers la gare. »</span>",
+        "Il te tend une deuxième carte postale."
+      ],
+      clues: ['lunettes'],
+      prompt: "",
+      choices: [ { label: "Lire la deuxième carte postale", to: 'carte2' } ]
+    },
+
+    anversPasser: { title: "Le docker repart", delay: 10,
+      text: [
+        "Le docker hausse les épaules et retourne au travail. En cherchant sur le quai, tu finis par trouver une deuxième carte postale, tombée près d'une grue. Dix minutes perdues."
+      ],
+      prompt: "",
+      choices: [ { label: "Lire la deuxième carte postale", to: 'carte2' } ]
+    },
+
+    carte2: { title: "La deuxième carte postale",
+      text: [
+        "<div class='doc'>« Bravo, tu m'as presque rattrapé ! Ma prochaine étape : le chef-lieu de la <b>Flandre orientale</b>, là où la <b>Lys</b> se jette dans l'Escaut. — Le Renard »</div>"
+      ],
+      prompt: "Quel train prends-tu ?",
+      choices: [
+        { label: "Le train pour Louvain", to: 'fauxLouvain' },
+        { label: "Le train pour Gand", to: 'gand' },
+        { label: "Le train pour Mons", to: 'fauxMons' }
+      ]
+    },
+
+    fauxLouvain: { title: "Fausse piste à Louvain", delay: 50,
+      text: [
+        "Louvain est le chef-lieu du <b>Brabant flamand</b>, pas de la Flandre orientale. Et ni la Lys ni l'Escaut n'y passent : la rivière de Louvain, c'est la Dyle.",
+        "Retour à la gare. Tu as perdu 50 minutes."
+      ],
+      prompt: "",
+      choices: [ { label: "Relire la carte postale", to: 'carte2' } ]
+    },
+
+    fauxMons: { title: "Fausse piste à Mons", delay: 50,
+      text: [
+        "Mons est le chef-lieu du <b>Hainaut</b>, en Région wallonne. Rien à voir avec la Flandre orientale !",
+        "Retour à la gare. Tu as perdu 50 minutes."
+      ],
+      prompt: "",
+      choices: [ { label: "Relire la carte postale", to: 'carte2' } ]
+    },
+
+    gand: { title: "Gand, entre deux cours d'eau", base: 11 * 60 + 55,
+      text: [
+        "Te voici à Gand, chef-lieu de la province de Flandre orientale. Au bord de l'eau, en ville, une batelière amarre sa péniche. Si le Renard est passé par ici, il n'est peut-être pas loin…",
+        "<span class='speech'>« Ici, la Lys rejoint l'Escaut. Tu sais comment on appelle cet endroit ? Si tu trouves, je te dis ce que j'ai vu. »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🌊 Le vocabulaire des cours d'eau",
+        question: "Comment appelle-t-on l'endroit où un cours d'eau se jette dans un autre ?",
+        options: [
+          "Un confluent",
+          "Une embouchure",
+          "Une source"
+        ],
+        answer: 0,
+        hint: "La <b>source</b> est l'endroit où nait un cours d'eau. L'<b>embouchure</b> est l'endroit où il se jette dans la mer. Pour deux cours d'eau qui se rejoignent, le mot commence comme « confondre »…",
+        success: "C'est ça ! À Gand, la Lys se jette dans l'Escaut : c'est un confluent. La Lys est un affluent de l'Escaut.",
+        to: 'gandOk', skipTo: 'gandPasser', skipLabel: "Remercier la batelière et chercher sans aide"
+      }
+    },
+
+    gandOk: { title: "La batelière",
+      text: [
+        "<span class='speech'>« Parfait ! Ton Renard est passé ici en courant, avec un <b>sac à dos vert</b>. Il a jeté un papier dans la poubelle, là-bas. »</span>",
+        "Dans la poubelle, tu trouves un billet de train froissé."
+      ],
+      clues: ['sac'],
+      prompt: "",
+      choices: [ { label: "Examiner le billet de train", to: 'billet' } ]
+    },
+
+    gandPasser: { title: "Recherches au bord de l'eau", delay: 10,
+      text: [
+        "Tu fouilles les alentours. Dans une poubelle, tu trouves un billet de train froissé. Dix minutes perdues."
+      ],
+      prompt: "",
+      choices: [ { label: "Examiner le billet de train", to: 'billet' } ]
+    },
+
+    billet: { title: "Le billet froissé",
+      text: [
+        "<div class='doc'>🚆 Gand-Saint-Pierre → Namur<br>Départ : <b>11 h 47</b> — Changement à Bruxelles — Durée du trajet : <b>1 h 45</b></div>",
+        "<span class='speech'>« Si on sait à quelle heure il est arrivé, on saura s'il est encore là-bas ! »</span> dit Mme Lambert."
+      ],
+      enigme: { kind: 'numbers',
+        title: "⏱️ L'heure d'arrivée",
+        question: "À quelle heure le Renard est-il arrivé à Namur ?",
+        fields: [ { label: "Heures :", answer: 13 }, { label: "Minutes :", answer: 32 } ],
+        hint: "Ajoute d'abord l'heure : 11 h 47 + 1 h = 12 h 47. Ajoute ensuite les 45 minutes : 47 + 45 = 92 minutes, c'est-à-dire 1 h 32 min.",
+        success: "Exact : 11 h 47 + 1 h 45 = 13 h 32. Le Renard est arrivé à Namur à 13 h 32 !",
+        to: 'billetOk', skipTo: 'billetPasser', skipLabel: "Garder le billet sans faire le calcul"
+      }
+    },
+
+    billetOk: { title: "Une preuve dans la poche",
+      text: [
+        "Tu ranges le billet dans ton carnet : c'est une preuve que le Renard est parti vers Namur. Au dos, il a encore griffonné une devinette."
+      ],
+      clues: ['billet'],
+      prompt: "",
+      choices: [ { label: "Lire la devinette", to: 'carte3' } ]
+    },
+
+    billetPasser: { title: "Pas le temps de calculer", delay: 10,
+      text: [
+        "Tu fourres le billet dans ta poche sans faire le calcul. En le retournant, tu découvres que le Renard a griffonné une devinette au dos. Dix minutes perdues."
+      ],
+      prompt: "",
+      choices: [ { label: "Lire la devinette", to: 'carte3' } ]
+    },
+
+    carte3: { title: "La troisième devinette",
+      text: [
+        "<div class='doc'>« Je fonce vers le <b>sud-est</b>, dans la ville où siège le gouvernement de la Région wallonne. La Sambre s'y jette dans la Meuse, au pied d'une grande citadelle. — Le Renard »</div>",
+        "<div class='vocab'>🧭 Les <b>huit directions</b> de la rose des vents : nord, nord-est, est, sud-est, sud, sud-ouest, ouest, nord-ouest.</div>"
+      ],
+      prompt: "Quel train prends-tu ?",
+      choices: [
+        { label: "Le train pour Arlon", to: 'fauxArlon' },
+        { label: "Le train pour Bruges", to: 'fauxBruges2' },
+        { label: "Le train pour Namur", to: 'namur' }
+      ]
+    },
+
+    fauxArlon: { title: "Fausse piste à Arlon", delay: 50,
+      text: [
+        "Arlon est le chef-lieu de la province de <b>Luxembourg</b>, tout au sud du pays. Mais le gouvernement wallon ne siège pas à Arlon, et la Sambre n'y passe pas.",
+        "Demi-tour ! Tu as perdu 50 minutes."
+      ],
+      prompt: "",
+      choices: [ { label: "Relire la devinette", to: 'carte3' } ]
+    },
+
+    fauxBruges2: { title: "Mauvaise direction", delay: 50,
+      text: [
+        "Bruges est au <b>nord-ouest</b> de Gand, et le Renard file vers le sud-est ! En plus, Bruges est en Région flamande.",
+        "Demi-tour ! Tu as perdu 50 minutes."
+      ],
+      prompt: "",
+      choices: [ { label: "Relire la devinette", to: 'carte3' } ]
+    },
+
+    namur: { title: "Namur, au confluent", base: 14 * 60,
+      text: [
+        "Namur ! Au pied de la citadelle, la Sambre se jette dans la Meuse. C'est ici que siège le gouvernement de la Région wallonne.",
+        "Un marchand de glaces a vu le Renard. <span class='speech'>« Il m'a dit en rigolant : “Je descends la Meuse vers l'<b>aval</b>, jusqu'à la prochaine grande ville.” Tu sais où c'est ? »</span>",
+        "<div class='vocab'>📚 La Meuse prend sa source en France, traverse la Belgique, puis coule vers les Pays-Bas. L'<b>amont</b>, c'est du côté de la source ; l'<b>aval</b>, du côté de l'embouchure.</div>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🧭 Vers l'aval",
+        question: "En suivant la Meuse vers l'aval depuis Namur, quelle grande ville atteint-on ?",
+        options: [
+          "Dinant",
+          "Charleroi",
+          "Liège"
+        ],
+        answer: 2,
+        hint: "Dinant est en amont de Namur, du côté de la France. Charleroi n'est pas sur la Meuse, mais sur la Sambre. L'aval, c'est vers les Pays-Bas…",
+        success: "Bravo ! En aval de Namur, la Meuse coule vers Liège, puis vers les Pays-Bas. Dinant, elle, est en amont.",
+        to: 'namurOk', skipTo: 'namurPasser', skipLabel: "Acheter une glace et réfléchir plus tard"
+      }
+    },
+
+    namurOk: { title: "Le marchand de glaces",
+      text: [
+        "<span class='speech'>« Liège, exactement ! Et je vais te dire autre chose : il portait des <b>baskets orange</b>, on ne voyait qu'elles. »</span>"
+      ],
+      clues: ['baskets'],
+      prompt: "Quel train prends-tu ?",
+      choices: [
+        { label: "Le train pour Liège", to: 'liege' },
+        { label: "Le train pour Dinant", to: 'fauxDinant' },
+        { label: "Le train pour Charleroi", to: 'fauxCharleroi' }
+      ]
+    },
+
+    namurPasser: { title: "Une glace à la vanille", delay: 10,
+      text: [
+        "Tu achètes une glace à la vanille en réfléchissant. Le marchand, vexé, ne dit plus rien. Dix minutes perdues… Il faut quand même choisir un train."
+      ],
+      prompt: "Quel train prends-tu ?",
+      choices: [
+        { label: "Le train pour Liège", to: 'liege' },
+        { label: "Le train pour Dinant", to: 'fauxDinant' },
+        { label: "Le train pour Charleroi", to: 'fauxCharleroi' }
+      ]
+    },
+
+    fauxDinant: { title: "Fausse piste à Dinant", delay: 50,
+      text: [
+        "Dinant est sur la Meuse… mais en <b>amont</b> de Namur, du côté de la France. Le Renard, lui, descendait la Meuse vers l'aval !",
+        "Demi-tour ! Tu as perdu 50 minutes."
+      ],
+      prompt: "",
+      choices: [ { label: "Repartir de Namur", to: 'namurRetour' } ]
+    },
+
+    fauxCharleroi: { title: "Fausse piste à Charleroi", delay: 50,
+      text: [
+        "Charleroi est une grande ville du sillon Sambre-et-Meuse… mais elle est sur la <b>Sambre</b>, pas sur la Meuse !",
+        "Demi-tour ! Tu as perdu 50 minutes."
+      ],
+      prompt: "",
+      choices: [ { label: "Repartir de Namur", to: 'namurRetour' } ]
+    },
+
+    namurRetour: { title: "Retour à Namur",
+      text: [
+        "Te revoilà à la gare de Namur. Le Renard descendait la Meuse vers l'aval…"
+      ],
+      prompt: "Quel train prends-tu ?",
+      choices: [
+        { label: "Le train pour Liège", to: 'liege' },
+        { label: "Le train pour Dinant", to: 'fauxDinant' },
+        { label: "Le train pour Charleroi", to: 'fauxCharleroi' }
+      ]
+    },
+
+    liege: { title: "Liège, dans le sillon", base: 15 * 60,
+      text: [
+        "Liège ! La ville s'étend le long de la Meuse, là où l'Ourthe la rejoint. Avec Charleroi et Namur, elle fait partie du <b>sillon Sambre-et-Meuse</b>, un des espaces les plus peuplés de Belgique.",
+        "L'inspectrice Martens t'envoie un message : <span class='speech'>« Une caméra a filmé le Renard entrant dans un café, à 6 cm de la gare sur le plan de la ville. Fais vite ! »</span>",
+        "<div class='doc'>Échelle graphique du plan :<div class='scalebar'><span></span><span></span><span></span></div><div class='scalelbl'><span>0</span><span>250 m</span><span>500 m</span><span>750 m</span></div><small>Chaque case de la barre mesure 1 cm sur le plan.</small></div>"
+      ],
+      enigme: { kind: 'number', answer: 1500, unit: "m",
+        title: "📏 L'échelle du plan",
+        question: "À quelle distance de la gare (en mètres) se trouve le café ?",
+        hint: "Sur l'échelle graphique, chaque centimètre du plan représente 250 m dans la réalité. Pour 6 cm, il faut calculer 6 × 250 m.",
+        success: "Exact : 6 × 250 m = 1 500 m, c'est-à-dire 1,5 km. Tu y cours !",
+        to: 'liegeOk', skipTo: 'liegePasser', skipLabel: "Demander le chemin aux passants"
+      }
+    },
+
+    liegeOk: { title: "Le café",
+      text: [
+        "Tu arrives au café, hors d'haleine. Le Renard vient de partir ! Le serveur te montre la chaise où il était assis : un long fil d'<b>écharpe à rayures</b> bleues et blanches s'est accroché au dossier.",
+        "Sur la table, une quatrième carte postale."
+      ],
+      clues: ['echarpe'],
+      prompt: "",
+      choices: [ { label: "Lire la quatrième carte postale", to: 'carte4' } ]
+    },
+
+    liegePasser: { title: "Perdu dans les rues", delay: 10,
+      text: [
+        "Les passants t'envoient à gauche, puis à droite… Quand tu trouves enfin le café, la table du Renard a déjà été débarrassée. Il ne reste qu'une carte postale. Dix minutes perdues."
+      ],
+      prompt: "",
+      choices: [ { label: "Lire la quatrième carte postale", to: 'carte4' } ]
+    },
+
+    carte4: { title: "La quatrième carte postale",
+      text: [
+        "<div class='doc'>« Avant de partir, je veux voir la Belgique de tout en haut : je monte au <b>point le plus élevé du pays</b>, sur le plateau des Hautes Fagnes. Puis je rejoindrai la ville où siège la Communauté qui parle <b>allemand</b>. — Le Renard »</div>",
+        "Pas de train jusque là-haut : Mme Lambert appelle un taxi."
+      ],
+      prompt: "Où demandes-tu au taxi d'aller ?",
+      choices: [
+        { label: "Au Signal de Botrange", to: 'botrange' },
+        { label: "À Arlon", to: 'fauxArlon2' }
+      ]
+    },
+
+    fauxArlon2: { title: "Mauvais chemin", delay: 50,
+      text: [
+        "Arlon est le chef-lieu de la province de Luxembourg… mais le point le plus élevé de Belgique n'est pas là-bas : il se trouve dans les Hautes Fagnes, dans la province de Liège.",
+        "Demi-tour ! Tu as perdu 50 minutes."
+      ],
+      prompt: "",
+      choices: [ { label: "Relire la carte postale", to: 'carte4' } ]
+    },
+
+    botrange: { title: "Le Signal de Botrange", base: 15 * 60 + 55,
+      text: [
+        "Le taxi grimpe sur le plateau des Hautes Fagnes, couvert de landes et de tourbières. Au sommet, un panneau :",
+        "<div class='doc'>⛰️ Signal de Botrange — <b>694 m</b><br>Point culminant de la Belgique</div>",
+        "<div class='vocab'>📚 Un <b>plateau</b> est une surface assez plane, à une altitude plus ou moins élevée, dans laquelle les cours d'eau sont encaissés.</div>",
+        "Un garde forestier t'arrête : <span class='speech'>« Que veut dire “694 m” sur ce panneau, d'après toi ? »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "⛰️ L'altitude",
+        question: "Ici, l'altitude est de 694 m. Qu'est-ce que cela signifie ?",
+        options: [
+          "Le sommet est à 694 m au-dessus du pied de la colline.",
+          "Le sommet est à 694 m au-dessus du niveau de la mer.",
+          "Il faut marcher 694 m pour arriver au sommet."
+        ],
+        answer: 1,
+        hint: "L'altitude se mesure toujours à partir du même point de départ pour tous les lieux du monde : le niveau de la mer.",
+        success: "Exact ! L'altitude est l'élévation par rapport au niveau de la mer. Le Signal de Botrange, à 694 m, est le point le plus élevé de Belgique.",
+        to: 'botrangeOk', skipTo: 'botrangePasser', skipLabel: "Dire au garde que tu n'as pas le temps"
+      }
+    },
+
+    botrangeOk: { title: "Un papier doré",
+      text: [
+        "<span class='speech'>« Bravo ! Et tiens, un promeneur a laissé tomber ça près de la tour. »</span> Le garde te tend un morceau de papier doré, déchiré : c'est l'emballage du Globe d'or !",
+        "<span class='speech'>« Le promeneur est reparti en bus vers Eupen il y a dix minutes »</span>, ajoute-t-il."
+      ],
+      clues: ['emballage'],
+      prompt: "",
+      choices: [ { label: "Foncer vers Eupen", to: 'eupen' } ]
+    },
+
+    botrangePasser: { title: "Pas le temps", delay: 10,
+      text: [
+        "Le garde te laisse passer en haussant les sourcils. Tu fais le tour du sommet sans rien trouver. Dix minutes perdues… Le Renard a dû filer vers Eupen."
+      ],
+      prompt: "",
+      choices: [ { label: "Foncer vers Eupen", to: 'eupen' } ]
+    },
+
+    eupen: { title: "Eupen", base: 16 * 60 + 20, checkTime: true, margin: 10,
+      text: [
+        "Le taxi arrive à Eupen. Sur les panneaux, tout est écrit en allemand : « Bahnhof », « Rathaus »… Eupen se trouve dans la province de Liège, tout près de la frontière avec l'Allemagne.",
+        "Mme Lambert demande l'heure du bus pour l'Allemagne à une dame. <span class='speech'>« Bien sûr ! Mais dites-moi d'abord : vous savez dans quelle Communauté vous êtes ? »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🗣️ Les Communautés",
+        question: "À Eupen, la langue officielle est l'allemand. Dans quelle Communauté te trouves-tu ?",
+        options: [
+          "La Communauté flamande",
+          "La Communauté française",
+          "La Communauté germanophone"
+        ],
+        answer: 2,
+        hint: "La Belgique compte trois Communautés, une par langue : le néerlandais, le français… et l'allemand. « Germanophone » veut dire « qui parle allemand ».",
+        success: "Bravo ! Eupen est dans la Communauté germanophone. La Belgique compte trois Communautés : la Communauté française (aussi appelée Fédération Wallonie-Bruxelles), la Communauté flamande et la Communauté germanophone.",
+        to: 'eupenOk', skipTo: 'eupenPasser', skipLabel: "Chercher la gare toi-même"
+      }
+    },
+
+    eupenOk: { title: "Le bus de 18 h",
+      text: [
+        "<span class='speech'>« Le bus pour Aix-la-Chapelle, en Allemagne, part de la gare à 18 h. C'est juste là, au bout de la rue ! »</span>",
+        "L'Allemagne est un des quatre pays limitrophes de la Belgique, avec la France, le Luxembourg et les Pays-Bas. (De l'autre côté de la mer du Nord, il y a aussi le Royaume-Uni.) Si le Renard passe la frontière, ce sera bien plus compliqué de l'arrêter !"
+      ],
+      clues: ['quai'],
+      prompt: "",
+      choices: [ { label: "Courir à la gare", to: 'gare' } ]
+    },
+
+    eupenPasser: { title: "À la recherche de la gare", delay: 10,
+      text: [
+        "Tu cherches la gare toi-même… et tu te trompes deux fois de rue. Dix minutes perdues ! Enfin, tu aperçois l'arrêt des bus."
+      ],
+      prompt: "",
+      choices: [ { label: "Courir à la gare", to: 'gare' } ]
+    },
+
+    gare: { title: "La gare d'Eupen", base: 16 * 60 + 30, checkTime: true,
+      text: [
+        "Devant le bus pour Aix-la-Chapelle, trois voyageurs attendent. L'inspectrice Martens arrive en voiture, avec deux policiers.",
+        "<span class='speech'>« Alors, détective : lequel est le Renard ? »</span>",
+        "<div class='doc'>🧍 <b>Voyageur 1</b> : lunettes rondes, sac à dos rouge, baskets orange, pas d'écharpe.<br>🧍 <b>Voyageur 2</b> : lunettes rondes, sac à dos vert, baskets orange, écharpe à rayures bleues et blanches.<br>🧍 <b>Voyageur 3</b> : lunettes carrées, sac à dos vert, bottes noires, écharpe à rayures bleues et blanches.</div>",
+        "Ouvre ton carnet pour comparer avec tes indices !"
+      ],
+      prompt: "Qui désignes-tu à l'inspectrice ?",
+      choices: [
+        { label: "Le voyageur 1", to: 'finVoyageur1', accuse: true },
+        { label: "Le voyageur 2", to: 'preuves', accuse: true },
+        { label: "Le voyageur 3", to: 'finVoyageur3', accuse: true }
+      ]
+    },
+
+    preuves: { title: "Tes preuves",
+      text: [
+        "<span class='speech'>« Le voyageur 2 ? demande l'inspectrice. Qu'est-ce qui te permet de l'affirmer ? »</span>",
+        "Tu ouvres ton carnet."
+      ],
+      dynamic: function (g) {
+        const list = PREUVES.filter(c => g.clues.indexOf(c) !== -1);
+        if (!list.length) return "<p><b>Ton carnet ne contient aucune preuve…</b></p>";
+        return "<p>Tu présentes <b>" + list.length + " preuve" + (list.length > 1 ? "s" : "") + "</b> :</p><ul class='proofs'>" + list.map(c => "<li>🔎 " + CLUES[c] + "</li>").join('') + "</ul>";
+      },
+      auto: function (g) {
+        const n = PREUVES.filter(c => g.clues.indexOf(c) !== -1).length;
+        return n >= 4 ? 'finGagne' : n >= 2 ? 'finMoitie' : 'finSansPreuve';
+      },
+      autoLabel: "Voir la réaction de l'inspectrice"
+    },
+
+    finGagne: { title: "Le Renard est pris !",
+      text: [
+        "L'inspectrice hoche la tête et s'approche du voyageur 2. <span class='speech'>« Monsieur, pouvons-nous voir votre sac à dos vert ? »</span>",
+        "Le voyageur pâlit… et ouvre son sac. Au fond, enveloppé dans un pull : le Globe d'or ! Le Renard soupire : <span class='speech'>« Battu par un enfant qui connait la Belgique par cœur… »</span>",
+        "Le soir même, le Globe d'or trouve sa place dans la vitrine de l'école. Mme Lambert te serre la main : <span class='speech'>« Quatre provinces, les trois Régions et les trois Communautés en une seule journée : bravo, détective ! »</span>"
+      ],
+      ending: { type: 'win', title: "Bravo, détective ! Tu as traversé la Belgique et retrouvé le Globe d'or." }
+    },
+
+    finMoitie: { title: "Le doute",
+      text: [
+        "L'inspectrice hésite. <span class='speech'>« C'est un peu mince pour fouiller ce monsieur… »</span>",
+        "Pendant qu'elle réfléchit, le chauffeur ferme les portes et le bus démarre vers l'Allemagne. Le Globe d'or sera retrouvé des semaines plus tard, grâce à la police allemande."
+      ],
+      ending: { type: 'half', title: "Tu avais trouvé le bon voyageur, mais il te manquait des preuves. Résous plus d'énigmes en chemin !" }
+    },
+
+    finSansPreuve: { title: "Aucune preuve",
+      text: [
+        "<span class='speech'>« Sans aucune preuve, je ne peux pas arrêter quelqu'un ! »</span> répond l'inspectrice.",
+        "Le voyageur 2 te fait un clin d'œil et monte dans le bus. Le Renard a gagné cette fois…"
+      ],
+      ending: { type: 'lose', title: "Ton intuition était bonne, mais un détective doit apporter des preuves. Chaque énigme résolue t'en donne une !" }
+    },
+
+    finVoyageur1: { title: "Erreur sur la personne",
+      text: [
+        "L'inspectrice fouille le sac rouge du voyageur 1 : des sandwichs, un livre et une bouteille d'eau. Pas de Globe d'or !",
+        "Pendant ce temps, un autre voyageur monte tranquillement dans le bus… et la porte se referme."
+      ],
+      ending: { type: 'lose', title: "Le voyageur 1 avait bien des lunettes rondes et des baskets orange… mais quelle était la couleur du sac du Renard ?" }
+    },
+
+    finVoyageur3: { title: "Erreur sur la personne",
+      text: [
+        "L'inspectrice fouille le sac vert du voyageur 3 : des cartes de randonnée et un pull. Pas de Globe d'or !",
+        "Pendant ce temps, un autre voyageur monte tranquillement dans le bus… et la porte se referme."
+      ],
+      ending: { type: 'lose', title: "Le voyageur 3 avait le sac vert et l'écharpe… mais regarde ses lunettes et ses chaussures !" }
+    },
+
+    finTrop: { title: "Trop tard !",
+      text: [
+        "Tu arrives à la gare d'Eupen hors d'haleine… juste à temps pour voir le bus pour l'Allemagne tourner au coin de la rue. Il est 18 h : le Renard a quitté la Belgique.",
+        "Trop de fausses pistes t'ont fait perdre du temps."
+      ],
+      ending: { type: 'lose', title: "Le Renard avait trop d'avance. Relis bien chaque devinette avant de choisir ton train !" }
+    }
+  };
+
+  const ENDINGS = [
+    { id: 'finGagne',      label: "🏆 Le Renard est pris" },
+    { id: 'finMoitie',     label: "🚌 Le bus s'en va" },
+    { id: 'finSansPreuve', label: "😶 Aucune preuve" },
+    { id: 'finVoyageur1',  label: "🎒 Le sac rouge" },
+    { id: 'finVoyageur3',  label: "👓 Les lunettes carrées" },
+    { id: 'finTrop',       label: "⏰ Trop tard" }
+  ];
+  const FIRST = 'debut';
+  const SEED = 1835;
+
+  /* Numéros des paragraphes : mélangés comme dans un vrai livre-jeu (toujours les mêmes). */
+  (function numberParagraphs() {
+    const ids = Object.keys(S).filter(k => k !== FIRST);
+    let seed = SEED;
+    const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+    const nums = ids.map((_, i) => i + 2);
+    for (let i = nums.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [nums[i], nums[j]] = [nums[j], nums[i]]; }
+    S[FIRST].n = 1;
+    ids.forEach((k, i) => { S[k].n = nums[i]; });
+  })();
+
+  /* =====================================================================
+     SAUVEGARDE — par élève, sur l'appareil. Rien n'est envoyé.
+     ===================================================================== */
+  function who() {
+    try {
+      const st = window.parent && window.parent !== window && window.parent.state;
+      if (st && st.student) return '_' + (st.studentCls || '') + '_' + st.student;
+    } catch (e) {}
+    return '';
+  }
+  const KEY_FINS = () => 'lcml_enquete_belgique_fins' + who();
+  const KEY_SAVE = () => 'lcml_enquete_belgique_partie' + who();
+  function readJSON(k, def) { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? def : v; } catch (e) { return def; } }
+  function writeJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function removeKey(k) { try { localStorage.removeItem(k); } catch (e) {} }
+  function loadEndings() { const v = readJSON(KEY_FINS(), []); return Array.isArray(v) ? v.filter(id => S[id]) : []; }
+  function saveEnding(id) {
+    const list = loadEndings();
+    if (list.indexOf(id) === -1) { list.push(id); writeJSON(KEY_FINS(), list); return true; }
+    return false;
+  }
+
+  /* =====================================================================
+     MOTEUR
+     ===================================================================== */
+  let game = null;
+  function newGame() { game = { at: FIRST, clues: [], objects: [], history: [], solved: {}, base: S[FIRST].base || 0, delay: 0 }; }
+  const $ = (id) => document.getElementById(id);
+  const story = $('story');
+  let errors = 0, solvedNow = false;
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+  function has(x) { return game.clues.indexOf(x) !== -1 || game.objects.indexOf(x) !== -1; }
+
+  function renderTitle() {
+    const found = loadEndings();
+    $('endings-count').textContent = found.length;
+    $('endings-list').innerHTML = ENDINGS.map(e => {
+      const ok = found.indexOf(e.id) !== -1;
+      return `<span class="ending-chip ${ok ? 'found' : ''} ${ok && e.id === 'finGagne' ? 'win' : ''}">${ok ? e.label : '❔ ???'}</span>`;
+    }).join('');
+    const save = readJSON(KEY_SAVE(), null);
+    const canResume = save && S[save.at] && !S[save.at].ending;
+    $('btn-resume').classList.toggle('hidden', !canResume);
+    $('btn-start').textContent = canResume ? "Recommencer depuis le début" : (found.length ? "Recommencer l'enquête" : "Commencer l'enquête");
+    $('btn-start').classList.toggle('primary', !canResume);
+    $('screen-title').classList.remove('hidden');
+    $('screen-story').classList.add('hidden');
+  }
+
+  function showStory() { $('screen-title').classList.add('hidden'); $('screen-story').classList.remove('hidden'); }
+
+  function goTo(id, opts) {
+    opts = opts || {};
+    if (!opts.noHistory && game.at !== id) { game.history.push(game.at); game.delayBefore = game.delay; }
+    game.at = id;
+    errors = 0; solvedNow = false;
+    let p = S[id];
+    if (!opts.resume) {
+      if (p.base !== undefined) game.base = p.base;
+      if (p.delay) game.delay += p.delay;
+    }
+    if (p.checkTime && game.base + game.delay + (p.margin || 0) > LIMIT) { id = 'finTrop'; game.at = id; p = S[id]; game.delay = LIMIT - game.base; }
+    const freshClues = [], freshObjs = [];
+    if (!opts.resume) {
+      (p.clues || []).forEach(c => { if (game.clues.indexOf(c) === -1) { game.clues.push(c); freshClues.push(c); } });
+      (p.objects || []).forEach(o => { if (game.objects.indexOf(o) === -1) { game.objects.push(o); freshObjs.push(o); } });
+    }
+    if (p.ending) removeKey(KEY_SAVE()); else writeJSON(KEY_SAVE(), game);
+    renderPara(p, freshClues, freshObjs);
+    updateCount();
+    updateClock();
+    window.scrollTo(0, 0);
+  }
+
+  function renderPara(p, freshClues, freshObjs) {
+    let html = `<div class="para-head"><span class="para-num">${p.n}</span><h2>${p.title}</h2></div>`;
+    html += p.text.map(t => /^<div/.test(t) ? t : `<p>${t}</p>`).join('');
+    if (p.dynamic) html += p.dynamic(game);
+    freshObjs.forEach(o => { html += `<div class="obj-found">🎒 <b>Objet ajouté à ton sac :</b> ${OBJECTS[o]}</div>`; });
+    freshClues.forEach(c => { html += `<div class="clue-found">📒 <b>Nouvel indice noté dans ton carnet :</b> ${CLUES[c]}</div>`; });
+
+    if (p.enigme) {
+      if (game.solved[game.at]) {
+        html += `<div class="feedback ok" style="margin-bottom:12px">✅ Tu as déjà résolu cette énigme.</div>`;
+        html += `<div class="choices">${choiceBtn({ label: "Continuer", to: p.enigme.to })}</div>`;
+      } else {
+        html += renderEnigme(p.enigme);
+        html += `<div class="choices" id="after-enigme"></div>`;
+      }
+    } else if (p.auto) {
+      html += `<div class="choices">${choiceBtn({ label: p.autoLabel || "Continuer", to: p.auto(game) })}</div>`;
+    } else if (p.ending) {
+      const isNew = saveEnding(game.at);
+      const icon = p.ending.type === 'win' ? '🏆' : p.ending.type === 'half' ? '🏃' : '❌';
+      const label = p.ending.type === 'win' ? 'Fin gagnante' : p.ending.type === 'half' ? 'Fin à moitié réussie' : 'Fin ratée';
+      html += `<div class="ending-box ${p.ending.type}"><div class="big">${icon}</div><h3>${label}</h3><p style="margin:6px 0 10px">${p.ending.title}</p>
+        <div class="muted">${isNew ? '✨ Nouvelle fin découverte ! ' : ''}Fins découvertes : ${loadEndings().length} / 6</div></div><div class="ending-actions">`;
+      if (p.ending.type !== 'win' && game.history.length) html += `<button class="btn" data-act="back">↩ Revenir au choix précédent</button>`;
+      html += `<button class="btn primary" data-act="restart">🔄 Recommencer l'enquête</button><button class="btn" data-act="menu">Menu</button></div>`;
+      if (p.ending.type === 'win' && typeof confetti === 'function') setTimeout(() => { try { confetti({ particleCount: 150, spread: 80, origin: { y: .6 } }); } catch (e) {} }, 250);
+    } else {
+      const list = p.choices.filter(c => (!c.requires || has(c.requires)) && (!c.requiresNot || !has(c.requiresNot)));
+      html += `<div class="choices">${p.prompt ? `<div class="prompt">${p.prompt}</div>` : ''}${list.map(choiceBtn).join('')}</div>`;
+    }
+    story.innerHTML = html;
+  }
+
+  function choiceBtn(c) {
+    const cls = c.accuse ? 'accuse' : (c.cls || '');
+    return `<button class="choice ${cls}" data-to="${c.to}">${c.accuse ? '⚖️ ' : ''}${esc(c.label)}<span class="go">Va au ${S[c.to].n}</span></button>`;
+  }
+
+  const inputAttrs = 'type="text" inputmode="numeric" pattern="[0-9]*" maxlength="5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"';
+  function renderEnigme(e) {
+    let h = `<div class="enigme" id="enigme"><h3>${e.title}</h3><p class="q">${e.question}</p>`;
+    if (e.kind === 'number') {
+      h += `<div class="answer-row"><input id="ans-0" ${inputAttrs} aria-label="Réponse">${e.unit ? `<span class="unit">${e.unit}</span>` : ''}</div>`;
+    } else if (e.kind === 'numbers') {
+      e.fields.forEach((f, i) => { h += `<div class="answer-row"><label for="ans-${i}">${f.label}</label><input id="ans-${i}" ${inputAttrs}></div>`; });
+    } else if (e.kind === 'qcm') {
+      h += `<div class="qcm">` + e.options.map((o, i) => `<button type="button" data-opt="${i}">${o}</button>`).join('') + `</div>`;
+    }
+    h += `<button class="btn primary" data-act="check">Valider</button><div id="enigme-fb"></div></div>`;
+    return h;
+  }
+
+  function checkEnigme() {
+    if (solvedNow) return;
+    const e = S[game.at].enigme, fb = $('enigme-fb');
+    let ok = false, said = '';
+    if (e.kind === 'number' || e.kind === 'numbers') {
+      const answers = e.kind === 'number' ? [e.answer] : e.fields.map(f => f.answer);
+      const vals = answers.map((_, i) => ($('ans-' + i).value || '').replace(/\D/g, ''));
+      if (vals.some(v => !v)) { fb.innerHTML = `<div class="feedback info">${answers.length > 1 ? 'Complète <b>toutes</b> les cases' : 'Écris un nombre'} avant de valider.</div>`; return; }
+      ok = vals.every((v, i) => parseInt(v, 10) === answers[i]);
+      said = ` Tu as écrit ${vals.join(' et ')}.`;
+    } else if (e.kind === 'qcm') {
+      const sel = story.querySelector('.qcm button.sel');
+      if (!sel) { fb.innerHTML = `<div class="feedback info">Choisis une réponse avant de valider.</div>`; return; }
+      ok = parseInt(sel.getAttribute('data-opt'), 10) === e.answer;
+    }
+
+    if (ok) {
+      solvedNow = true;
+      game.solved[game.at] = true;
+      writeJSON(KEY_SAVE(), game);
+      story.querySelectorAll('#enigme input').forEach(i => { i.readOnly = true; });
+      const q = story.querySelector('.qcm'); if (q) { q.classList.add('done'); q.querySelector('.sel').classList.add('good'); }
+      story.querySelector('[data-act="check"]').remove();
+      fb.innerHTML = `<div class="feedback ok">✅ ${e.success}</div>`;
+      $('after-enigme').innerHTML = choiceBtn({ label: "Continuer l'enquête", to: e.to });
+      return;
+    }
+    errors++;
+    fb.innerHTML = `<div class="feedback ko">❌ Ce n'est pas ça.${esc(said)}<br>💡 <b>Indice :</b> ${e.hint}</div>`;
+    if (errors >= 2 && !story.querySelector('.choice.skip')) {
+      $('after-enigme').innerHTML = `<button class="choice skip" data-to="${e.skipTo}">${esc(e.skipLabel)}<span class="go">Va au ${S[e.skipTo].n}</span></button>`;
+    }
+  }
+
+  function fmt(m) { const h = Math.floor(m / 60), mn = m % 60; return h + ' h ' + (mn < 10 ? '0' : '') + mn; }
+  function updateClock() {
+    const t = game.base + game.delay;
+    const el = $('clock');
+    el.textContent = '🕘 ' + fmt(t);
+    el.classList.toggle('late', LIMIT - t <= 60);
+  }
+  function updateCount() { $('clue-count').textContent = game ? game.clues.length + game.objects.length : 0; }
+  function openCarnet() {
+    $('sac-list').innerHTML = game.objects.length ? game.objects.map(o => `<li>${OBJECTS[o]}</li>`).join('') : `<li class="muted">Ton sac est vide.</li>`;
+    $('carnet-list').innerHTML = game.clues.length ? game.clues.map(c => `<li>🔎 ${CLUES[c]}</li>`).join('') : `<li class="muted">Aucun indice pour l'instant. Mène l'enquête !</li>`;
+    $('carnet').classList.add('open');
+  }
+
+  story.addEventListener('click', (ev) => {
+    const t = ev.target.closest('button');
+    if (!t) return;
+    if (t.dataset.to) { goTo(t.dataset.to); return; }
+    if (t.dataset.opt !== undefined) {
+      if (solvedNow) return;
+      t.parentNode.querySelectorAll('button').forEach(b => b.classList.toggle('sel', b === t));
+      return;
+    }
+    const act = t.dataset.act;
+    if (act === 'check') checkEnigme();
+    else if (act === 'restart') { newGame(); goTo(FIRST, { noHistory: true }); }
+    else if (act === 'menu') renderTitle();
+    else if (act === 'back') { const prev = game.history.pop(); if (prev) { game.delay = game.delayBefore !== undefined ? game.delayBefore : game.delay; goTo(prev, { noHistory: true }); } }
+  });
+  story.addEventListener('keydown', (ev) => { if (ev.key === 'Enter' && ev.target.tagName === 'INPUT') { ev.preventDefault(); checkEnigme(); } });
+
+  $('btn-start').addEventListener('click', () => { newGame(); showStory(); goTo(FIRST, { noHistory: true }); });
+  $('btn-resume').addEventListener('click', () => {
+    const save = readJSON(KEY_SAVE(), null);
+    if (!save || !S[save.at]) { newGame(); } else {
+      game = { at: save.at, clues: save.clues || [], objects: save.objects || [], history: save.history || [], solved: save.solved || {}, base: save.base || S[FIRST].base, delay: save.delay || 0 };
+    }
+    showStory(); goTo(game.at, { noHistory: true, resume: true });
+  });
+  $('btn-menu').addEventListener('click', renderTitle);
+  $('btn-carnet').addEventListener('click', openCarnet);
+  $('btn-carnet-close').addEventListener('click', () => $('carnet').classList.remove('open'));
+  $('carnet').addEventListener('click', (ev) => { if (ev.target.id === 'carnet') $('carnet').classList.remove('open'); });
+
+  window.__enquete = { S, CLUES, PREUVES, goTo, get game() { return game; }, newGame };
+  renderTitle();
+})();
+</script>
+</body>
+</html>
