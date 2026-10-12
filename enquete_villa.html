@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>La Moissonneuse sabotée — Plateforme LCML</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+  :root {
+    --purple: #5B4FCF; --purple-light: #EEF0FF; --purple-mid: #C7C2F5;
+    --green: #1A9E75; --green-light: #E2F5EE;
+    --red: #D94F3D; --red-light: #FDECEA;
+    --amber: #F59E0B; --amber-dark: #C97B1A; --amber-light: #FEF3E2;
+    --blue: #1A6FA0; --blue-light: #E2F0FA;
+    --parchment: #FBF1E6;
+    --bg: #FDFBF7; --surface: #FFFFFF; --surface-alt: #F4F1EB;
+    --text: #1A1A2E; --muted: #6B7080; --border: #1A1A2E;
+    --shadow: 4px 4px 0 var(--border); --shadow-sm: 2px 2px 0 var(--border);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; }
+  body { padding: 16px; }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1, h2, h3, .fred { font-family: 'Fredoka', 'Inter', sans-serif; }
+  button { font: inherit; color: inherit; cursor: pointer; touch-action: manipulation; }
+
+  .topbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .topbar .title { flex: 1; min-width: 180px; font-family: 'Fredoka'; font-weight: 700; font-size: 1.25rem; }
+  .btn { border: 2px solid var(--border); border-radius: 12px; background: var(--surface); padding: 10px 14px; min-height: 48px; font-weight: 600; box-shadow: var(--shadow-sm); }
+  .btn:active { transform: translate(2px,2px); box-shadow: none; }
+  .btn.primary { background: var(--purple); color: #fff; }
+  .btn.amber { background: var(--amber-light); }
+  .btn .count { display: inline-block; min-width: 22px; padding: 0 6px; margin-left: 4px; border-radius: 999px; background: var(--purple); color: #fff; font-size: .85rem; }
+
+  .card { background: var(--surface); border: 2px solid var(--border); border-radius: 20px; box-shadow: var(--shadow); padding: 22px; }
+  .story.card { background: var(--parchment); }
+
+  .hero { text-align: center; }
+  .hero .owl { font-size: 4.5rem; line-height: 1; }
+  .hero h1 { font-size: 2rem; margin: 10px 0 6px; }
+  .hero p { line-height: 1.55; font-size: 1.05rem; }
+  .rules { text-align: left; background: var(--surface-alt); border-radius: 14px; padding: 14px 18px; margin: 16px 0; line-height: 1.5; }
+  .rules li { margin: 4px 0; }
+  .endings { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 12px 0 18px; }
+  .ending-chip { border: 2px solid var(--border); border-radius: 999px; padding: 6px 12px; font-size: .9rem; background: var(--surface-alt); color: var(--muted); }
+  .ending-chip.found { color: var(--text); background: var(--green-light); }
+  .ending-chip.found.win { background: #FFE9A8; }
+  .start-btns { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+  .para-num { display: inline-flex; align-items: center; justify-content: center; width: 58px; height: 58px; border-radius: 50%; flex-shrink: 0;
+    background: var(--purple); color: #fff; font-family: 'Fredoka'; font-weight: 700; font-size: 1.6rem; border: 2px solid var(--border); box-shadow: var(--shadow-sm); }
+  .para-head { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  .para-head h2 { margin: 0; font-size: 1.35rem; }
+  .story p { font-size: 1.12rem; line-height: 1.7; margin: 0 0 14px; }
+  .story .speech { font-style: italic; }
+  .doc { font-family: 'Fredoka'; background: #FFFBEA; border: 2px solid var(--border); border-radius: 6px; padding: 14px 18px; margin: 0 0 14px; font-size: 1.1rem; line-height: 1.8; }
+  .vocab { background: var(--surface); border-left: 5px solid var(--amber-dark); border-radius: 8px; padding: 8px 12px; margin: 0 0 14px; font-size: .98rem; line-height: 1.5; }
+
+  .clue-found { background: var(--blue-light); border: 2px solid var(--blue); border-radius: 12px; padding: 10px 14px; margin: 4px 0 12px; font-size: 1rem; line-height: 1.45; }
+  .clue-found b { color: var(--blue); }
+  .obj-found { background: var(--green-light); border: 2px solid var(--green); border-radius: 12px; padding: 10px 14px; margin: 4px 0 12px; font-size: 1rem; line-height: 1.45; }
+
+  .choices { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+  .choices .prompt { font-weight: 700; font-family: 'Fredoka'; font-size: 1.1rem; margin: 6px 0 2px; }
+  .choice { display: flex; align-items: center; gap: 12px; text-align: left; width: 100%; border: 2px solid var(--border); border-radius: 14px;
+    background: var(--purple-light); padding: 12px 14px; min-height: 56px; font-size: 1.05rem; font-weight: 600; box-shadow: var(--shadow-sm); }
+  .choice:active { transform: translate(2px,2px); box-shadow: none; }
+  .choice .go { margin-left: auto; flex-shrink: 0; font-family: 'Fredoka'; font-size: .95rem; background: var(--surface); border: 2px solid var(--border); border-radius: 999px; padding: 2px 10px; white-space: nowrap; }
+  .choice.accuse { background: var(--red-light); }
+  .choice.skip { background: var(--surface-alt); }
+  .choice.obj { background: var(--green-light); }
+
+  .enigme { border: 2px solid var(--border); border-radius: 16px; background: var(--amber-light); padding: 16px; margin: 6px 0 16px; }
+  .enigme h3 { margin: 0 0 8px; font-size: 1.15rem; }
+  .enigme .q { font-size: 1.05rem; line-height: 1.55; margin: 0 0 12px; font-weight: 600; }
+  .answer-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+  .answer-row label { font-weight: 600; min-width: 140px; }
+  .answer-row input { width: 120px; font-size: 1.4rem; font-family: 'Fredoka'; text-align: center; padding: 8px; border: 2px solid var(--border); border-radius: 10px; background: #fff; }
+  .answer-row .unit { font-family: 'Fredoka'; font-size: 1.2rem; font-weight: 600; }
+  .qcm { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  .qcm button { text-align: left; border: 2px solid var(--border); border-radius: 12px; background: #fff; padding: 10px 14px; min-height: 52px; font-size: 1.02rem; font-weight: 500; }
+  .qcm button.sel { background: var(--purple); color: #fff; }
+  .qcm button.good { background: var(--green); color: #fff; }
+  .qcm.done button:not(.sel) { opacity: .45; }
+  .feedback { margin-top: 12px; padding: 10px 14px; border-radius: 10px; line-height: 1.5; font-size: 1rem; }
+  .feedback.ok { background: var(--green-light); border: 2px solid var(--green); }
+  .feedback.ko { background: var(--red-light); border: 2px solid var(--red); }
+  .feedback.info { background: var(--surface); border: 2px solid var(--amber-dark); }
+
+  .proofs { list-style: none; padding: 0; margin: 0 0 14px; }
+  .proofs li { background: var(--surface); border: 2px solid var(--border); border-radius: 10px; padding: 8px 12px; margin-bottom: 8px; line-height: 1.45; }
+
+  .ending-box { text-align: center; border: 2px solid var(--border); border-radius: 16px; padding: 16px; margin: 10px 0 14px; }
+  .ending-box.win { background: #FFE9A8; }
+  .ending-box.half { background: var(--blue-light); }
+  .ending-box.lose { background: var(--red-light); }
+  .ending-box .big { font-size: 2.6rem; }
+  .ending-box h3 { margin: 6px 0; font-size: 1.3rem; }
+  .ending-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+  .overlay { position: fixed; inset: 0; background: rgba(26,26,46,.45); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 10; }
+  .overlay.open { display: flex; }
+  .overlay .card { max-width: 560px; width: 100%; max-height: 85vh; overflow: auto; }
+  .carnet-list { list-style: none; padding: 0; margin: 8px 0 14px; }
+  .carnet-list li { border-bottom: 2px dashed var(--purple-mid); padding: 10px 2px; line-height: 1.45; }
+  .muted { color: var(--muted); }
+  .hidden { display: none !important; }
+  @media (max-width: 480px) { body { padding: 10px; } .card { padding: 16px; } .story p { font-size: 1.05rem; } .hero h1 { font-size: 1.6rem; } .answer-row label { min-width: 0; width: 100%; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section id="screen-title" class="card hero">
+    <div class="owl">🌾</div>
+    <h1>La Moissonneuse sabotée</h1>
+    <p class="muted fred">Une enquête dont tu es le héros ou l'héroïne — dans une villa gallo-romaine</p>
+    <div class="rules">
+      <ul>
+        <li>⏳ Le sablier magique va t'envoyer en l'an <b>150</b>, près de Tongres, dans l'Empire romain. Pour revenir, il faudra résoudre l'enquête !</li>
+        <li>📖 Lis chaque paragraphe attentivement, puis <b>choisis</b> où aller.</li>
+        <li>🔐 Les <b>énigmes</b> te font gagner des indices. Plus tu en résous, plus tu as de preuves.</li>
+        <li>🎒 Certains <b>objets</b> ouvrent de nouveaux chemins. Tout est noté dans ton carnet.</li>
+        <li>⚖️ À la fin, tu devras <b>accuser</b> le coupable devant le maitre de la villa… avec assez de preuves !</li>
+        <li>💾 La partie est <b>sauvegardée</b> : tu peux la reprendre plus tard.</li>
+      </ul>
+    </div>
+    <div class="fred" style="font-weight:600">Fins découvertes : <span id="endings-count">0</span> / 6</div>
+    <div class="endings" id="endings-list"></div>
+    <div class="start-btns">
+      <button class="btn primary hidden" id="btn-resume" style="font-size:1.1rem;padding:12px 24px">▶ Reprendre ma partie</button>
+      <button class="btn" id="btn-start" style="font-size:1.1rem;padding:12px 24px">Commencer l'enquête</button>
+    </div>
+  </section>
+
+  <section id="screen-story" class="hidden">
+    <div class="topbar">
+      <div class="title">🌾 La Moissonneuse sabotée</div>
+      <button class="btn amber" id="btn-carnet">📒 Carnet <span class="count" id="clue-count">0</span></button>
+      <button class="btn" id="btn-menu">⟲ Menu</button>
+    </div>
+    <article class="card story" id="story"></article>
+  </section>
+</div>
+
+<div class="overlay" id="carnet">
+  <div class="card">
+    <h2 style="margin:0 0 4px">🎒 Mon sac</h2>
+    <ul class="carnet-list" id="sac-list"></ul>
+    <h2 style="margin:0 0 4px">📒 Mes indices</h2>
+    <ul class="carnet-list" id="carnet-list"></ul>
+    <button class="btn primary" id="btn-carnet-close" style="width:100%">Fermer le carnet</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* =====================================================================
+     INDICES ET OBJETS
+     PREUVES : indices qui comptent comme preuves devant le maitre de la villa.
+     ===================================================================== */
+  const CLUES = {
+    dents:    "Les dents de fer de la moissonneuse ont été arrachées avec une grosse pince de forgeron.",
+    pince:    "Hier soir, Quintus le marchand a emprunté la grande pince du forgeron « pour réparer une roue ». Elle est revenue pleine de paille de blé.",
+    mensonge: "Quintus dit avoir apporté 400 litres de vin dans 12 amphores de 25 litres : c'est impossible, cela ne fait que 300 litres. Est-il vraiment marchand de vin ?",
+    tablette: "Dans la chambre de Quintus, une tablette de cire : « Si la récolte de Verus est perdue, l'armée achètera mon blé. Tu auras ta part. — G. A. »",
+    plomb:    "Au temple de Mercure, une petite plaque de plomb signée « Q. V. » demande au dieu que la récolte de Verus soit perdue.",
+    agent:    "Au forum de Tongres, un marchand de grain affirme que Quintus travaille pour Gnaeus Atilius, le propriétaire de la villa voisine.",
+    cape:     "Un paysan a vu, cette nuit, un homme en cape rouge tourner autour de la grange avec une lampe.",
+    alibiBellicus:  "Bellicus, l'intendant, a passé la nuit à soigner une vache malade dans l'étable, avec deux ouvriers.",
+    alibiCobnertus: "Cobnertus, le forgeron, n'avait plus sa grande pince hier soir : il l'avait prêtée."
+  };
+  const PREUVES = ['dents', 'pince', 'mensonge', 'tablette', 'plomb', 'agent', 'cape'];
+
+  const OBJECTS = {
+    lampe:  "🪔 Une lampe à huile en terre cuite, pour y voir clair dans les pièces sombres.",
+    denier: "🪙 Un denier d'argent, pour payer le charretier qui va au marché de Tongres."
+  };
+
+  /* =====================================================================
+     L'HISTOIRE
+     ===================================================================== */
+  const S = {
+    classe: { title: "Encore le sablier !",
+      text: [
+        "Jeudi, cours d'histoire. Mme Lambert, la directrice, a posé le vieux sablier sur son bureau, à côté d'une boite de petits objets romains prêtés par un musée : un bout de tuile, une pièce de monnaie, un morceau d'amphore.",
+        "<span class='speech'>« Aujourd'hui, nous parlons de la période gallo-romaine. Et cette fois, personne ne touche au sablier ! »</span>",
+        "Mais à la récréation, la classe est vide… Le sable se met à briller dès que tu effleures le sablier. Tout tourne, tourne… et tu atterris dans l'herbe, au bord d'une route pavée."
+      ],
+      prompt: "",
+      choices: [ { label: "Se relever et regarder autour de soi", to: 'arrivee' } ]
+    },
+
+    arrivee: { title: "Au bord de la voie romaine",
+      text: [
+        "La route est faite de cailloux bien tassés, légèrement bombée pour que l'eau de pluie s'écoule : c'est une <b>voie romaine</b>. Un chariot tiré par des bœufs passe en grinçant. Au bord de la route se dresse une colonne de pierre gravée :",
+        "<div class='doc'>ATVATVCA TVNGRORVM<br>M · P · VI</div>",
+        "<div class='vocab'>📚 Une <b>borne milliaire</b> indique la distance jusqu'à une ville. <b>Atuatuca Tungrorum</b> est le nom romain de Tongres, souvent considérée comme la plus ancienne ville de Belgique. « M · P » veut dire <i>milia passuum</i>, « milliers de pas ». Le pas romain se compte sur deux enjambées et mesure environ 1,5 m : un <b>mille romain</b> (1 000 pas) fait donc environ 1,5 km.</div>"
+      ],
+      enigme: { kind: 'number', answer: 9, unit: "km",
+        title: "🛣️ La borne milliaire",
+        question: "D'après la borne, tu es à VI milles de Tongres. Un mille romain mesure environ 1,5 km. À combien de kilomètres environ es-tu de Tongres ?",
+        hint: "VI = 5 + 1 = 6 milles. Il faut ensuite calculer 6 × 1,5 km : c'est 6 km + la moitié de 6 km.",
+        success: "Exact : VI = 6 milles, et 6 × 1,5 km = 9 km. Tu es à environ 9 km de Tongres.",
+        to: 'ateula', skipTo: 'ateula', skipLabel: "Laisser tomber le calcul et suivre la route"
+      }
+    },
+
+    ateula: { title: "Ateula",
+      text: [
+        "Une fille de ton âge court vers toi. Elle porte une tunique de laine et une broche de bronze, une <b>fibule</b>, sur l'épaule.",
+        "<span class='speech'>« Salut ! Mon père, Caius Iulius Verus, est le maitre de la villa, là-bas. Mon nom romain, c'est Iulia, comme lui. Mais ma mère est née ici, et tout le monde m'appelle Ateula, le nom d'ici qu'elle m'a donné ! Moi, je parle latin… et un peu la vieille langue de ma grand-mère. »</span>",
+        "Elle te montre une pièce d'argent : <span class='speech'>« Regarde ce que j'ai : un denier, avec la tête de l'empereur Antonin ! »</span>",
+        "Toi, tu sais que tu es en l'an <b>150 après J.-C.</b>… mais ici, personne ne compte les années de cette façon !"
+      ],
+      enigme: { kind: 'qcm',
+        title: "📜 Quelle période ?",
+        question: "Tu es en l'an 150 après J.-C. Dans quelle période de l'histoire te trouves-tu ?",
+        options: [
+          "La Préhistoire",
+          "L'Antiquité",
+          "Le Moyen Âge"
+        ],
+        answer: 1,
+        hint: "Le Moyen Âge commence en 476, avec la chute de l'Empire romain d'Occident. La Préhistoire se termine vers 3500 av. J.-C., avec l'invention de l'écriture au Proche-Orient.",
+        success: "Bravo ! L'Antiquité va de l'invention de l'écriture (vers 3500 av. J.-C.) à la chute de l'Empire romain d'Occident (476). En 150, nos régions font partie de l'Empire romain depuis environ deux siècles.",
+        to: 'ateulaOk', skipTo: 'ateulaKo', skipLabel: "Hausser les épaules"
+      }
+    },
+
+    ateulaOk: { title: "Un cadeau",
+      text: [
+        "<span class='speech'>« Tu sais plein de choses, toi ! Tiens, garde ce denier, il te portera chance. »</span>",
+        "Puis son sourire disparait. <span class='speech'>« Il faut que je te raconte. Demain, c'est la moisson. Mais ce matin, on a trouvé notre moissonneuse cassée ! Sans elle, il faudra des jours pour couper le blé à la main… et un orage arrive. Mon père doit livrer du blé à l'armée romaine qui garde la frontière du Rhin. Si la récolte est perdue, nous serons ruinés ! »</span>"
+      ],
+      objects: ['denier'],
+      prompt: "",
+      choices: [ { label: "Accompagner Ateula jusqu'à la villa", to: 'villa' } ]
+    },
+
+    ateulaKo: { title: "Une mauvaise nouvelle",
+      text: [
+        "Ateula range sa pièce. Son sourire disparait.",
+        "<span class='speech'>« Il faut que je te raconte. Demain, c'est la moisson. Mais ce matin, on a trouvé notre moissonneuse cassée ! Sans elle, il faudra des jours pour couper le blé à la main… et un orage arrive. Mon père doit livrer du blé à l'armée romaine qui garde la frontière du Rhin. Si la récolte est perdue, nous serons ruinés ! »</span>"
+      ],
+      prompt: "",
+      choices: [ { label: "Accompagner Ateula jusqu'à la villa", to: 'villa' } ]
+    },
+
+    villa: { title: "La villa",
+      text: [
+        "La <b>villa</b> est un grand domaine agricole. La maison du maitre est en pierre, couverte de tuiles rouges, avec une longue galerie à colonnes. Autour d'une grande cour s'alignent les granges, l'étable, la forge et les logements des ouvriers. Tout autour s'étendent les champs de blé.",
+        "<div class='vocab'>📚 Avant la conquête romaine, les Gaulois vivaient dans des maisons en bois et en torchis, couvertes de chaume. Les villas en pierre et en tuiles se sont répandues avec la <b>romanisation</b>, c'est-à-dire quand les habitants de nos régions ont adopté la façon de vivre des Romains.</div>",
+        "Ce soir, le maitre réunira tout le monde dans la grande salle. C'est là que tu devras désigner le coupable."
+      ],
+      prompt: "Où vas-tu ?",
+      choices: [
+        { label: "🌾 La grange, où se trouve la moissonneuse", to: 'grange' },
+        { label: "♨️ Les bains de la villa", to: 'thermes' },
+        { label: "🔨 La forge", to: 'forge' },
+        { label: "🏺 Le chariot du marchand, dans la cour", to: 'cellier' },
+        { label: "🚪 La chambre des invités", to: 'chambre' },
+        { label: "🏛️ Le petit temple au bord du champ", to: 'fanum' },
+        { label: "🌱 Les champs", to: 'champ' },
+        { label: "🛒 Le marché de Tongres", to: 'charrette' },
+        { label: "C'est décidé : j'accuse le coupable devant le maitre de la villa", to: 'conseil', accuse: true }
+      ]
+    },
+
+    grange: { title: "La moissonneuse",
+      text: [
+        "Dans la grange se trouve la fierté de la villa : la <b>moissonneuse</b>. C'est une grande caisse en bois, posée sur deux roues, avec deux longs bras à l'arrière.",
+        "<div class='vocab'>📚 Cette machine gauloise était utilisée surtout dans le nord de la Gaule, notamment chez les Trévires, un peuple de nos régions. Un bloc de pierre sculpté qui la représente a été retrouvé à Montauban-sous-Buzenol, en Gaume. On peut le voir au musée gaumais de Virton.</div>",
+        "La porte de la grange ne se ferme qu'avec un simple loquet : n'importe qui a pu entrer. Ateula soupire : <span class='speech'>« Tu sais au moins comment elle marche ? »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🌾 La moissonneuse gallo-romaine",
+        question: "Comment fonctionne la moissonneuse gallo-romaine ?",
+        options: [
+          "Un moteur la fait avancer et des lames tournent pour couper le blé.",
+          "Un bœuf la pousse ; à l'avant, une rangée de dents arrache les épis, qui tombent dans la caisse.",
+          "Deux ouvriers la portent et secouent le blé au-dessus de la caisse."
+        ],
+        answer: 1,
+        hint: "Il n'y a pas de moteur dans l'Antiquité ! Les deux longs bras à l'arrière servent à atteler un animal, qui pousse la machine devant lui.",
+        success: "Exact ! Un bœuf pousse la caisse ; les dents de fer, à l'avant, arrachent les épis, qui tombent dans la caisse. C'est une vraie innovation pour la production agricole !",
+        to: 'grangeOk', skipTo: 'grangePasser', skipLabel: "Ne pas s'attarder sur la machine"
+      }
+    },
+
+    grangeOk: { title: "Les dents arrachées",
+      text: [
+        "Maintenant que tu sais comment elle marche, tu vois tout de suite le problème : il ne reste plus une seule dent de fer à l'avant de la caisse !",
+        "En regardant de près, tu remarques des traces sur le bois : les dents ont été arrachées avec une grosse pince, comme celle d'un forgeron. Et le voleur les a emportées…"
+      ],
+      clues: ['dents'],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Aller voir le forgeron", to: 'forge' },
+        { label: "Retourner dans la cour de la villa", to: 'villa' }
+      ]
+    },
+
+    grangePasser: { title: "Une machine cassée",
+      text: [
+        "Tu fais le tour de la machine sans trop comprendre ce qui manque. Tant pis !"
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner dans la cour de la villa", to: 'villa' } ]
+    },
+
+    thermes: { title: "Les bains",
+      text: [
+        "Les bains de la villa sont un petit luxe à la romaine. Dans une salle, l'eau est froide ; dans une autre, elle est chaude, et le sol est tiède sous tes pieds. Un homme y vérifie la chaleur de la salle : c'est <b>Bellicus</b>, l'intendant, qui dirige le travail de la ferme.",
+        "<span class='speech'>« Ne traine pas dans mes jambes ! Ou alors, dis-moi comment le sol de cette salle peut être chaud. »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "♨️ Un sol chaud",
+        question: "Comment s'appelle le système de chauffage par le sol des bains et des villas romaines ?",
+        options: [
+          "L'aqueduc",
+          "Le forum",
+          "L'hypocauste"
+        ],
+        answer: 2,
+        hint: "L'aqueduc amène l'eau ; le forum est une place publique. Le mot que tu cherches vient du grec et veut dire « chauffé par en dessous ».",
+        success: "Bravo ! L'hypocauste : un feu chauffe l'air, qui circule sous le sol posé sur de petits piliers.",
+        to: 'thermesOk', skipTo: 'thermesKo', skipLabel: "Sortir des bains"
+      }
+    },
+
+    thermesOk: { title: "L'intendant",
+      text: [
+        "Bellicus sourit pour la première fois. <span class='speech'>« Bien ! Pour la moissonneuse, je n'y suis pour rien : j'ai passé toute la nuit dans l'étable avec deux ouvriers, à soigner une vache malade. Mais je n'aime pas ce marchand en cape rouge, Quintus, arrivé hier avec son chariot d'amphores. Il pose trop de questions sur notre récolte. »</span>",
+        "Il te tend une petite lampe en terre cuite : <span class='speech'>« Prends ça. Certaines pièces de la villa sont bien sombres. »</span>"
+      ],
+      clues: ['alibiBellicus'],
+      objects: ['lampe'],
+      prompt: "",
+      choices: [ { label: "Retourner dans la cour de la villa", to: 'villa' } ]
+    },
+
+    thermesKo: { title: "L'intendant grogne",
+      text: [
+        "<span class='speech'>« Bon, laisse-moi travailler ! »</span> grogne Bellicus. Il a l'air bien nerveux… Il a les clés de toute la villa, après tout."
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Retourner dans la cour de la villa", to: 'villa' },
+        { label: "Accuser Bellicus : il a les clés de toute la villa !", to: 'finBellicus', accuse: true }
+      ]
+    },
+
+    forge: { title: "La forge",
+      text: [
+        "Dans la forge, il fait une chaleur terrible. <b>Cobnertus</b>, le forgeron, tape sur un fer rouge. Près de la porte, des tonneaux de bois sont empilés.",
+        "<span class='speech'>« Les tonneaux ? Chez nous, les Gaulois, on en fabrique depuis longtemps. C'est plus solide qu'une amphore ! Les Romains d'ici en veulent tous, maintenant. Allez, devine : qu'est-ce qui vient de chez nous, et qu'est-ce qui vient de chez eux ? »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🤝 Gaulois et Romains",
+        question: "Lequel de ces éléments vient des Gaulois et a été adopté dans l'Empire romain ?",
+        options: [
+          "Le tonneau en bois",
+          "La langue latine",
+          "Les bains chauffés par le sol"
+        ],
+        answer: 0,
+        hint: "La langue latine et les bains chauffés viennent de Rome : ce sont les Gaulois qui les ont adoptés. Cobnertus vient de te parler d'un objet qu'on fabrique « chez nous »…",
+        success: "Exact ! Les Gaulois utilisaient déjà des tonneaux en bois, et leur usage s'est répandu dans l'Empire. Dans l'autre sens, les Gaulois ont adopté la langue latine, les bains, les maisons en pierre… C'est la <b>civilisation gallo-romaine</b> : un mélange des deux cultures.",
+        to: 'forgeOk', skipTo: 'forgeKo', skipLabel: "Laisser le forgeron travailler"
+      }
+    },
+
+    forgeOk: { title: "La pince du forgeron",
+      text: [
+        "Cobnertus essuie son front. <span class='speech'>« Tu me plais, toi. Écoute : hier soir, le marchand, Quintus, m'a emprunté ma grande pince. Pour réparer une roue de son chariot, qu'il disait. Elle est revenue ce matin… pleine de paille de blé ! Drôle de roue, hein ? »</span>",
+        "Il te lance une pièce d'argent : <span class='speech'>« Et prends ce denier. Si tu vas au marché de Tongres, le charretier t'emmènera pour ce prix. »</span>"
+      ],
+      clues: ['pince', 'alibiCobnertus'],
+      objects: ['denier'],
+      prompt: "",
+      choices: [ { label: "Retourner dans la cour de la villa", to: 'villa' } ]
+    },
+
+    forgeKo: { title: "Le forgeron se tait",
+      text: [
+        "Cobnertus hausse les épaules et retourne à son enclume. Sur son établi, tu remarques une grosse pince couverte de paille de blé… Bizarre."
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Retourner dans la cour de la villa", to: 'villa' },
+        { label: "Accuser Cobnertus : sa pince est pleine de paille !", to: 'finCobnertus', accuse: true }
+      ]
+    },
+
+    cellier: { title: "Le chariot du marchand",
+      text: [
+        "Dans la cour, un chariot est chargé de grandes jarres de terre cuite au long cou : des <b>amphores</b>. Un homme en <b>cape rouge</b> les compte : c'est <b>Quintus</b>, le marchand.",
+        "<span class='speech'>« Ah, on est curieux, hein ? Ces amphores viennent du sud de l'Empire. On les remplit de vin et d'huile d'olive, des produits qu'on ne peut pas faire pousser ici. »</span>",
+        "Il ajoute, très fier : <span class='speech'>« Cette année, j'ai apporté à Verus 12 amphores de vin, de 25 litres chacune. En tout, 400 litres ! »</span>"
+      ],
+      enigme: { kind: 'number', answer: 300, unit: "litres",
+        title: "🏺 Les comptes du marchand",
+        question: "Combien de litres de vin contiennent vraiment 12 amphores de 25 litres ?",
+        hint: "Il faut calculer 12 × 25. Astuce : 10 × 25 = 250, et 2 × 25 = 50.",
+        success: "Exact : 12 × 25 L = 300 L, et pas 400 L ! Un vrai marchand de vin ne se tromperait pas autant dans ses comptes…",
+        to: 'cellierOk', skipTo: 'cellierKo', skipLabel: "Le laisser à ses comptes"
+      }
+    },
+
+    cellierOk: { title: "Un drôle de marchand",
+      text: [
+        "Quintus se trompe de 100 litres ! Est-il vraiment marchand de vin ? Il a remarqué ton air soupçonneux et s'est arrêté de compter."
+      ],
+      clues: ['mensonge'],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Faire comme si de rien n'était et retourner dans la cour", to: 'villa' },
+        { label: "L'accuser tout de suite devant tout le monde", to: 'finFuite', accuse: true }
+      ]
+    },
+
+    cellierKo: { title: "Des amphores",
+      text: [
+        "Tu laisses Quintus compter ses amphores. Il te regarde partir du coin de l'œil."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner dans la cour de la villa", to: 'villa' } ]
+    },
+
+    chambre: { title: "La chambre des invités",
+      text: [
+        "Pendant que Quintus est dans la cour, tu te glisses dans la chambre où il dort. Les volets sont fermés et il fait tout noir."
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Allumer la lampe à huile", to: 'chambreLampe', requires: 'lampe', cls: 'obj' },
+        { label: "Fouiller à tâtons", to: 'chambreNoir', requiresNot: 'lampe' },
+        { label: "Ressortir", to: 'villa' }
+      ]
+    },
+
+    chambreNoir: { title: "À tâtons",
+      text: [
+        "Tu cherches à tâtons… et tu renverses un pot qui se brise par terre ! Des pas approchent : tu t'enfuis sans avoir rien trouvé. Il te faudrait de la lumière."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner dans la cour de la villa", to: 'villa' } ]
+    },
+
+    chambreLampe: { title: "La tablette de cire",
+      text: [
+        "La petite flamme éclaire la chambre. Sur un coffre, tu trouves une <b>tablette de cire</b> : deux planchettes de bois couvertes de cire, sur lesquelles on écrit en creusant avec une pointe, le stylet.",
+        "<div class='doc'>« Si la récolte de Verus est perdue, l'armée achètera mon blé. Tu auras ta part. — G. A. »</div>",
+        "« G. A. »… Ateula pâlit : <span class='speech'>« Gnaeus Atilius ! C'est le maitre de la villa voisine. Lui aussi vend du blé à l'armée ! »</span>"
+      ],
+      clues: ['tablette'],
+      prompt: "",
+      choices: [ { label: "Ressortir discrètement", to: 'villa' } ]
+    },
+
+    fanum: { title: "Le petit temple",
+      text: [
+        "Au bord du champ se dresse un petit temple carré, un <b>fanum</b>. À l'intérieur, la statue d'un dieu avec un chapeau ailé et une bourse : c'est <b>Mercure</b>, le dieu romain du commerce et des voyageurs. Jules César appelait « Mercure » le grand dieu des Gaulois : il lui donnait le nom du dieu romain qui lui ressemblait le plus. D'après lui, c'est le dieu que les Gaulois honoraient le plus.",
+        "<div class='vocab'>📚 Les Gaulois et les Romains croyaient en de nombreux dieux (le <b>polythéisme</b>). Après la conquête, les Gaulois ont souvent donné à leurs dieux le nom d'un dieu romain qui leur ressemblait. Et dans l'autre sens, des cavaliers romains ont adopté <b>Épona</b>, la déesse gauloise des chevaux.</div>",
+        "Au pied de la statue, des offrandes : des fleurs, des pièces… et une petite plaque de plomb roulée. Tu la déroules :",
+        "<div class='doc'>« Mercure, fais que la récolte de Verus soit perdue. — Q. V. »</div>",
+        "<span class='speech'>« Q. V. ? »</span> murmure Ateula. <span class='speech'>« Quintus… Vettius ! C'est le nom complet du marchand ! »</span>"
+      ],
+      clues: ['plomb'],
+      prompt: "",
+      choices: [ { label: "Retourner dans la cour de la villa", to: 'villa' } ]
+    },
+
+    champ: { title: "Les champs de blé",
+      text: [
+        "Dans les champs, un vieux paysan regarde le ciel gris. <span class='speech'>« Ici, on cultive le blé et on élève des bêtes depuis toujours, bien avant l'arrivée des Romains ! Mais est-ce que tout est encore pareil aujourd'hui, à ton avis ? »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🌱 Ce qui change, ce qui continue",
+        question: "Depuis le Néolithique, qu'est-ce qui CONTINUE dans nos régions, à l'époque gallo-romaine ?",
+        options: [
+          "Les gens vivent de la chasse et de la cueillette, en se déplaçant sans arrêt.",
+          "Les gens n'échangent rien avec les autres régions.",
+          "L'agriculture et l'élevage restent les principales activités."
+        ],
+        answer: 2,
+        hint: "Au Néolithique, les premiers agriculteurs de nos régions cultivent la terre et élèvent des animaux. Regarde autour de toi : que font les gens de la villa ?",
+        success: "Bravo ! Depuis le Néolithique, il y a des milliers d'années, l'agriculture et l'élevage continuent : c'est une <b>continuité</b>. Ce qui <b>change</b>, c'est que nos régions font maintenant partie de l'Empire romain : on y fait du commerce sur de longues distances, avec des routes, de la monnaie et de nouveaux produits.",
+        to: 'champOk', skipTo: 'champKo', skipLabel: "Souhaiter une bonne moisson au paysan"
+      }
+    },
+
+    champOk: { title: "Une cape rouge dans la nuit",
+      text: [
+        "<span class='speech'>« Tu as l'esprit vif ! Alors je te le dis : cette nuit, je ne dormais pas. J'ai vu une petite lumière bouger près de la grange. Un homme en cape rouge, avec une lampe, qui tournait autour de la grange. »</span>"
+      ],
+      clues: ['cape'],
+      prompt: "",
+      choices: [ { label: "Retourner dans la cour de la villa", to: 'villa' } ]
+    },
+
+    champKo: { title: "Le paysan",
+      text: [
+        "<span class='speech'>« Merci, mon enfant. »</span> Le vieux paysan retourne à son travail."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner dans la cour de la villa", to: 'villa' } ]
+    },
+
+    charrette: { title: "Le charretier",
+      text: [
+        "Un charretier va partir vers Tongres, à environ 9 km, avec des sacs de laine. <span class='speech'>« Tu veux venir ? C'est un denier. »</span>"
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Payer avec ton denier et monter", to: 'tongres', requires: 'denier', cls: 'obj' },
+        { label: "Tu n'as pas d'argent : rester à la villa", to: 'villa', requiresNot: 'denier' },
+        { label: "Rester à la villa", to: 'villa', requires: 'denier' }
+      ]
+    },
+
+    tongres: { title: "Le forum de Tongres",
+      text: [
+        "Le charretier te dépose sur le <b>forum</b>, la grande place de Tongres. On y vend de tout : des poteries rouges et brillantes, de la laine, des jambons, des amphores…",
+        "Tu demandes à un marchand de grain s'il connait Quintus Vettius. Il rit : <span class='speech'>« Tu parles bien latin, pour un enfant de la campagne ! Moi, je mélange encore des mots gaulois et des mots latins. Je te réponds si tu devines lequel est gaulois… »</span>",
+        "<div class='vocab'>📚 Le français vient surtout du latin parlé en Gaule. Mais une centaine de mots environ viennent de la langue gauloise.</div>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🗣️ Les langues",
+        question: "Lequel de ces mots français vient de la langue gauloise ?",
+        options: [
+          "Mur",
+          "Porte",
+          "Chêne"
+        ],
+        answer: 2,
+        hint: "« Mur » vient du latin <i>murus</i>, « porte » du latin <i>porta</i>. Le mot gaulois désigne un arbre…",
+        success: "Exact ! « Chêne » vient du gaulois, comme « charrue », « alouette » ou « mouton ». Mais la plupart des mots français viennent du latin, comme « mur » et « porte ».",
+        to: 'tongresOk', skipTo: 'tongresKo', skipLabel: "Sourire et changer de sujet"
+      }
+    },
+
+    tongresOk: { title: "Le marchand de grain",
+      text: [
+        "<span class='speech'>« Bien ! Quintus Vettius ? Ce n'est pas un marchand de vin ! Il travaille pour Gnaeus Atilius, le voisin de ta villa : il s'occupe de vendre son blé. »</span>",
+        "Tu reprends vite la charrette vers la villa."
+      ],
+      clues: ['agent'],
+      prompt: "",
+      choices: [ { label: "Retourner à la villa", to: 'villa' } ]
+    },
+
+    tongresKo: { title: "Retour à la villa",
+      text: [
+        "Le marchand de grain hausse les épaules et retourne à ses sacs. Tu reprends la charrette vers la villa."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner à la villa", to: 'villa' } ]
+    },
+
+    conseil: { title: "La grande salle",
+      text: [
+        "Le soir, Caius Iulius Verus réunit tout le monde dans la grande salle, éclairée par des lampes à huile. Bellicus l'intendant, Cobnertus le forgeron et Quintus le marchand sont là. Au loin, l'orage approche.",
+        "<span class='speech'>« Ma fille dit que tu as mené l'enquête, dit Verus. Alors, qui a cassé ma moissonneuse ? »</span>"
+      ],
+      prompt: "Qui accuses-tu ?",
+      choices: [
+        { label: "Bellicus, l'intendant", to: 'finBellicus', accuse: true },
+        { label: "Cobnertus, le forgeron", to: 'finCobnertus', accuse: true },
+        { label: "Quintus, le marchand", to: 'preuves', accuse: true }
+      ]
+    },
+
+    preuves: { title: "Tes preuves",
+      text: [
+        "<span class='speech'>« Quintus ? Mon invité ? s'étonne Verus. As-tu des preuves ? »</span>",
+        "Tu ouvres ton carnet."
+      ],
+      dynamic: function (g) {
+        const list = PREUVES.filter(c => g.clues.indexOf(c) !== -1);
+        if (!list.length) return "<p><b>Ton carnet ne contient aucune preuve contre Quintus…</b></p>";
+        return "<p>Tu présentes <b>" + list.length + " preuve" + (list.length > 1 ? "s" : "") + "</b> :</p><ul class='proofs'>" + list.map(c => "<li>🔎 " + CLUES[c] + "</li>").join('') + "</ul>";
+      },
+      auto: function (g) {
+        const n = PREUVES.filter(c => g.clues.indexOf(c) !== -1).length;
+        return n >= 4 ? 'finGagne' : n >= 2 ? 'finMoitie' : 'finSansPreuve';
+      },
+      autoLabel: "Voir la réaction du maitre"
+    },
+
+    finGagne: { title: "La moisson est sauvée !",
+      text: [
+        "Plus tu parles, plus Quintus devient pâle. Verus envoie Bellicus fouiller le chariot. Il revient avec une amphore sans vin… qui tinte quand on la secoue. À l'intérieur : toutes les dents de fer de la moissonneuse !",
+        "Quintus baisse la tête : <span class='speech'>« C'est Gnaeus Atilius qui m'a payé. Si ta récolte était perdue, l'armée aurait acheté son blé à lui… »</span>",
+        "Toute la nuit, Cobnertus remet les dents en place à la forge. À l'aube, avant que l'orage éclate, le bœuf pousse la moissonneuse dans le champ, et les épis tombent dans la caisse. Ateula te saute au cou.",
+        "Le sable du sablier se met à briller… et tu te retrouves en classe. Mme Lambert te regarde, étonnée : <span class='speech'>« Tu en fais une tête ! Tiens, savais-tu qu'on peut voir une reconstitution de la moissonneuse gallo-romaine à l'archéoparc de Malagne, à Rochefort ? Et que deux siècles plus tard, Tongres aura un évêque, saint Servais ? Les premiers chrétiens arrivent dans nos régions… »</span>"
+      ],
+      ending: { type: 'win', title: "Bravo, détective ! Grâce à toi, la moisson de la villa est sauvée." }
+    },
+
+    finMoitie: { title: "Le doute",
+      text: [
+        "Verus fronce les sourcils. <span class='speech'>« C'est un peu léger pour accuser un invité… »</span>",
+        "Pendant la discussion, Quintus s'en va discrètement. On entend son chariot partir dans la nuit. Le lendemain, l'orage abime le blé : une partie de la récolte est perdue.",
+        "Le sablier se met à briller, et tu te retrouves en classe…"
+      ],
+      ending: { backTo: 'villa', type: 'half', title: "Tu avais trouvé le bon coupable, mais il te fallait plus de preuves. Visite tous les lieux de la villa !" }
+    },
+
+    finSansPreuve: { title: "Pas assez de preuves",
+      text: [
+        "<span class='speech'>« Accuser mon invité avec si peu de preuves ? »</span> Verus est furieux. Quintus, lui, sourit.",
+        "Le lendemain, il repart tranquillement avec son chariot… et la moissonneuse reste cassée.",
+        "Le sablier se met à briller, et tu te retrouves en classe…"
+      ],
+      ending: { backTo: 'villa', type: 'lose', title: "Ton intuition était peut-être bonne, mais il faut des preuves. Explore tous les lieux : beaucoup d'énigmes et de découvertes t'en donnent une !" }
+    },
+
+    finFuite: { title: "Fuite sous l'orage",
+      text: [
+        "<span class='speech'>« Vous n'êtes pas un vrai marchand ! »</span>",
+        "Quintus pâlit, saute sur son chariot et fouette ses mules. Le temps que Bellicus arrive, il a disparu sur la voie romaine, avec ses amphores… et tout ce qu'elles cachaient.",
+        "Le sablier se met à briller, et tu te retrouves en classe…"
+      ],
+      ending: { type: 'lose', title: "En l'accusant trop tôt, tu as prévenu le coupable. Rassemble tes preuves en silence, puis accuse-le devant le maitre de la villa !" }
+    },
+
+    finBellicus: { title: "L'intendant accusé",
+      text: [
+        "<span class='speech'>« C'est Bellicus ! Il a les clés de toute la villa ! »</span>",
+        "Bellicus devient rouge. Deux ouvriers se lèvent : <span class='speech'>« Il a passé toute la nuit avec nous dans l'étable, à soigner la vache ! »</span>",
+        "Verus te regarde, déçu. Le sablier se met à briller, et tu te retrouves en classe…"
+      ],
+      ending: { type: 'lose', title: "Avoir les clés ne suffit pas : Bellicus était dans l'étable toute la nuit. Qui rôdait près de la grange ?" }
+    },
+
+    finCobnertus: { title: "Le forgeron accusé",
+      text: [
+        "<span class='speech'>« C'est Cobnertus ! Sa pince est pleine de paille de blé ! »</span>",
+        "Le forgeron éclate d'un grand rire : <span class='speech'>« Je l'avais prêtée hier soir ! Demande donc à qui… »</span> Mais tu ne lui as jamais posé la question.",
+        "Le sablier se met à briller, et tu te retrouves en classe…"
+      ],
+      ending: { type: 'lose', title: "La pince de Cobnertus était bien un indice… mais qui l'avait empruntée ? Il fallait gagner sa confiance." }
+    }
+  };
+
+  const ENDINGS = [
+    { id: 'finGagne',      label: "🏆 La moisson est sauvée" },
+    { id: 'finMoitie',     label: "🌧️ Le doute" },
+    { id: 'finSansPreuve', label: "😶 Pas assez de preuves" },
+    { id: 'finFuite',      label: "🏃 Fuite sous l'orage" },
+    { id: 'finBellicus',   label: "🗝️ L'intendant accusé" },
+    { id: 'finCobnertus',  label: "🔨 Le forgeron accusé" }
+  ];
+
+  /* Numéros des paragraphes : mélangés comme dans un vrai livre-jeu (toujours les mêmes). */
+  (function numberParagraphs() {
+    const ids = Object.keys(S).filter(k => k !== 'classe');
+    let seed = 150;
+    const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+    const nums = ids.map((_, i) => i + 2);
+    for (let i = nums.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [nums[i], nums[j]] = [nums[j], nums[i]]; }
+    S.classe.n = 1;
+    ids.forEach((k, i) => { S[k].n = nums[i]; });
+  })();
+
+  /* =====================================================================
+     SAUVEGARDE — par élève, sur l'appareil. Rien n'est envoyé.
+     ===================================================================== */
+  function who() {
+    try {
+      const st = window.parent && window.parent !== window && window.parent.state;
+      if (st && st.student) return '_' + (st.studentCls || '') + '_' + st.student;
+    } catch (e) {}
+    return '';
+  }
+  const KEY_FINS = () => 'lcml_enquete_villa_fins' + who();
+  const KEY_SAVE = () => 'lcml_enquete_villa_partie' + who();
+  function readJSON(k, def) { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? def : v; } catch (e) { return def; } }
+  function writeJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function removeKey(k) { try { localStorage.removeItem(k); } catch (e) {} }
+  function loadEndings() { const v = readJSON(KEY_FINS(), []); return Array.isArray(v) ? v.filter(id => S[id]) : []; }
+  function saveEnding(id) {
+    const list = loadEndings();
+    if (list.indexOf(id) === -1) { list.push(id); writeJSON(KEY_FINS(), list); return true; }
+    return false;
+  }
+
+  /* =====================================================================
+     MOTEUR
+     ===================================================================== */
+  let game = null;
+  function newGame() { game = { at: 'classe', clues: [], objects: [], history: [], solved: {} }; }
+  const $ = (id) => document.getElementById(id);
+  const story = $('story');
+  let errors = 0, solvedNow = false;
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+  function has(x) { return game.clues.indexOf(x) !== -1 || game.objects.indexOf(x) !== -1; }
+
+  function renderTitle() {
+    const found = loadEndings();
+    $('endings-count').textContent = found.length;
+    $('endings-list').innerHTML = ENDINGS.map(e => {
+      const ok = found.indexOf(e.id) !== -1;
+      return `<span class="ending-chip ${ok ? 'found' : ''} ${ok && e.id === 'finGagne' ? 'win' : ''}">${ok ? e.label : '❔ ???'}</span>`;
+    }).join('');
+    const save = readJSON(KEY_SAVE(), null);
+    const canResume = save && S[save.at] && !S[save.at].ending;
+    $('btn-resume').classList.toggle('hidden', !canResume);
+    $('btn-start').textContent = canResume ? "Recommencer depuis le début" : (found.length ? "Recommencer l'enquête" : "Commencer l'enquête");
+    $('btn-start').classList.toggle('primary', !canResume);
+    $('screen-title').classList.remove('hidden');
+    $('screen-story').classList.add('hidden');
+  }
+
+  function showStory() { $('screen-title').classList.add('hidden'); $('screen-story').classList.remove('hidden'); }
+
+  function goTo(id, opts) {
+    opts = opts || {};
+    if (!opts.noHistory && game.at !== id) game.history.push(game.at);
+    game.at = id;
+    errors = 0; solvedNow = false;
+    const p = S[id];
+    const freshClues = [], freshObjs = [];
+    if (!opts.resume) {
+      (p.clues || []).forEach(c => { if (game.clues.indexOf(c) === -1) { game.clues.push(c); freshClues.push(c); } });
+      (p.objects || []).forEach(o => { if (game.objects.indexOf(o) === -1) { game.objects.push(o); freshObjs.push(o); } });
+    }
+    if (p.ending) removeKey(KEY_SAVE()); else writeJSON(KEY_SAVE(), game);
+    renderPara(p, freshClues, freshObjs);
+    updateCount();
+    window.scrollTo(0, 0);
+  }
+
+  function renderPara(p, freshClues, freshObjs) {
+    let html = `<div class="para-head"><span class="para-num">${p.n}</span><h2>${p.title}</h2></div>`;
+    html += p.text.map(t => /^<div/.test(t) ? t : `<p>${t}</p>`).join('');
+    if (p.dynamic) html += p.dynamic(game);
+    freshObjs.forEach(o => { html += `<div class="obj-found">🎒 <b>Objet ajouté à ton sac :</b> ${OBJECTS[o]}</div>`; });
+    freshClues.forEach(c => { html += `<div class="clue-found">📒 <b>Nouvel indice noté dans ton carnet :</b> ${CLUES[c]}</div>`; });
+
+    if (p.enigme) {
+      if (game.solved[game.at]) {
+        html += `<div class="feedback ok" style="margin-bottom:12px">✅ Tu as déjà résolu cette énigme.</div>`;
+        html += `<div class="choices">${choiceBtn({ label: "Continuer", to: p.enigme.to })}</div>`;
+      } else {
+        html += renderEnigme(p.enigme);
+        html += `<div class="choices" id="after-enigme"></div>`;
+      }
+    } else if (p.auto) {
+      html += `<div class="choices">${choiceBtn({ label: p.autoLabel || "Continuer", to: p.auto(game) })}</div>`;
+    } else if (p.ending) {
+      const isNew = saveEnding(game.at);
+      const icon = p.ending.type === 'win' ? '🏆' : p.ending.type === 'half' ? '🏃' : '❌';
+      const label = p.ending.type === 'win' ? 'Fin gagnante' : p.ending.type === 'half' ? 'Fin à moitié réussie' : 'Fin ratée';
+      html += `<div class="ending-box ${p.ending.type}"><div class="big">${icon}</div><h3>${label}</h3><p style="margin:6px 0 10px">${p.ending.title}</p>
+        <div class="muted">${isNew ? '✨ Nouvelle fin découverte ! ' : ''}Fins découvertes : ${loadEndings().length} / 6</div></div><div class="ending-actions">`;
+      if (p.ending.type !== 'win' && p.ending.backTo) html += `<button class="btn" data-act="backTo" data-target="${p.ending.backTo}">↩ Retourner enquêter</button>`;
+      else if (p.ending.type !== 'win' && !p.ending.noBack && game.history.length) html += `<button class="btn" data-act="back">↩ Revenir au choix précédent</button>`;
+      html += `<button class="btn primary" data-act="restart">🔄 Recommencer l'enquête</button><button class="btn" data-act="menu">Menu</button></div>`;
+      if (p.ending.type === 'win' && typeof confetti === 'function') setTimeout(() => { try { confetti({ particleCount: 150, spread: 80, origin: { y: .6 } }); } catch (e) {} }, 250);
+    } else {
+      const list = p.choices.filter(c => (!c.requires || has(c.requires)) && (!c.requiresNot || !has(c.requiresNot)));
+      html += `<div class="choices">${p.prompt ? `<div class="prompt">${p.prompt}</div>` : ''}${list.map(choiceBtn).join('')}</div>`;
+    }
+    story.innerHTML = html;
+  }
+
+  function choiceBtn(c) {
+    const cls = c.accuse ? 'accuse' : (c.cls || '');
+    return `<button class="choice ${cls}" data-to="${c.to}">${c.accuse ? '⚖️ ' : ''}${esc(c.label)}<span class="go">Va au ${S[c.to].n}</span></button>`;
+  }
+
+  const inputAttrs = 'type="text" inputmode="numeric" pattern="[0-9]*" maxlength="5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"';
+  function renderEnigme(e) {
+    let h = `<div class="enigme" id="enigme"><h3>${e.title}</h3><p class="q">${e.question}</p>`;
+    if (e.kind === 'number') {
+      h += `<div class="answer-row"><input id="ans-0" ${inputAttrs} aria-label="Réponse">${e.unit ? `<span class="unit">${e.unit}</span>` : ''}</div>`;
+    } else if (e.kind === 'numbers') {
+      e.fields.forEach((f, i) => { h += `<div class="answer-row"><label for="ans-${i}">${f.label}</label><input id="ans-${i}" ${inputAttrs}></div>`; });
+    } else if (e.kind === 'qcm') {
+      h += `<div class="qcm">` + e.options.map((o, i) => `<button type="button" data-opt="${i}">${o}</button>`).join('') + `</div>`;
+    }
+    h += `<button class="btn primary" data-act="check">Valider</button><div id="enigme-fb"></div></div>`;
+    return h;
+  }
+
+  function checkEnigme() {
+    if (solvedNow) return;
+    const e = S[game.at].enigme, fb = $('enigme-fb');
+    let ok = false, said = '';
+    if (e.kind === 'number' || e.kind === 'numbers') {
+      const answers = e.kind === 'number' ? [e.answer] : e.fields.map(f => f.answer);
+      const vals = answers.map((_, i) => ($('ans-' + i).value || '').replace(/\D/g, ''));
+      if (vals.some(v => !v)) { fb.innerHTML = `<div class="feedback info">${answers.length > 1 ? 'Complète <b>toutes</b> les cases' : 'Écris un nombre'} avant de valider.</div>`; return; }
+      ok = vals.every((v, i) => parseInt(v, 10) === answers[i]);
+      said = ` Tu as écrit ${vals.join(' et ')}.`;
+    } else if (e.kind === 'qcm') {
+      const sel = story.querySelector('.qcm button.sel');
+      if (!sel) { fb.innerHTML = `<div class="feedback info">Choisis une réponse avant de valider.</div>`; return; }
+      ok = parseInt(sel.getAttribute('data-opt'), 10) === e.answer;
+    }
+
+    if (ok) {
+      solvedNow = true;
+      game.solved[game.at] = true;
+      writeJSON(KEY_SAVE(), game);
+      story.querySelectorAll('#enigme input').forEach(i => { i.readOnly = true; });
+      const q = story.querySelector('.qcm'); if (q) { q.classList.add('done'); q.querySelector('.sel').classList.add('good'); }
+      story.querySelector('[data-act="check"]').remove();
+      fb.innerHTML = `<div class="feedback ok">✅ ${e.success}</div>`;
+      $('after-enigme').innerHTML = choiceBtn({ label: "Continuer l'enquête", to: e.to });
+      return;
+    }
+    errors++;
+    fb.innerHTML = `<div class="feedback ko">❌ Ce n'est pas ça.${esc(said)}<br>💡 <b>Indice :</b> ${e.hint}</div>`;
+    if (errors >= 2 && !story.querySelector('.choice.skip')) {
+      $('after-enigme').innerHTML = `<button class="choice skip" data-to="${e.skipTo}">${esc(e.skipLabel)}<span class="go">Va au ${S[e.skipTo].n}</span></button>`;
+    }
+  }
+
+  function updateCount() { $('clue-count').textContent = game ? game.clues.length + game.objects.length : 0; }
+  function openCarnet() {
+    $('sac-list').innerHTML = game.objects.length ? game.objects.map(o => `<li>${OBJECTS[o]}</li>`).join('') : `<li class="muted">Ton sac est vide.</li>`;
+    $('carnet-list').innerHTML = game.clues.length ? game.clues.map(c => `<li>🔎 ${CLUES[c]}</li>`).join('') : `<li class="muted">Aucun indice pour l'instant. Mène l'enquête !</li>`;
+    $('carnet').classList.add('open');
+  }
+
+  story.addEventListener('click', (ev) => {
+    const t = ev.target.closest('button');
+    if (!t) return;
+    if (t.dataset.to) { goTo(t.dataset.to); return; }
+    if (t.dataset.opt !== undefined) {
+      if (solvedNow) return;
+      t.parentNode.querySelectorAll('button').forEach(b => b.classList.toggle('sel', b === t));
+      return;
+    }
+    const act = t.dataset.act;
+    if (act === 'check') checkEnigme();
+    else if (act === 'restart') { newGame(); goTo('classe', { noHistory: true }); }
+    else if (act === 'menu') renderTitle();
+    else if (act === 'back') { let prev = game.history.pop(); while (prev && S[prev].auto) prev = game.history.pop(); if (prev) goTo(prev, { noHistory: true }); }
+    else if (act === 'backTo') goTo(t.dataset.target, { noHistory: true });
+  });
+  story.addEventListener('keydown', (ev) => { if (ev.key === 'Enter' && ev.target.tagName === 'INPUT') { ev.preventDefault(); checkEnigme(); } });
+
+  $('btn-start').addEventListener('click', () => { newGame(); showStory(); goTo('classe', { noHistory: true }); });
+  $('btn-resume').addEventListener('click', () => {
+    const save = readJSON(KEY_SAVE(), null);
+    if (!save || !S[save.at]) { newGame(); } else {
+      game = { at: save.at, clues: save.clues || [], objects: save.objects || [], history: save.history || [], solved: save.solved || {} };
+    }
+    showStory(); goTo(game.at, { noHistory: true, resume: true });
+  });
+  $('btn-menu').addEventListener('click', renderTitle);
+  $('btn-carnet').addEventListener('click', openCarnet);
+  $('btn-carnet-close').addEventListener('click', () => $('carnet').classList.remove('open'));
+  $('carnet').addEventListener('click', (ev) => { if (ev.target.id === 'carnet') $('carnet').classList.remove('open'); });
+
+  window.__enquete = { S, CLUES, PREUVES, goTo, get game() { return game; }, newGame };
+  renderTitle();
+})();
+</script>
+</body>
+</html>

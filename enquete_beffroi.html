@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Le Mystère du beffroi — Plateforme LCML</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+  :root {
+    --purple: #5B4FCF; --purple-light: #EEF0FF; --purple-mid: #C7C2F5;
+    --green: #1A9E75; --green-light: #E2F5EE;
+    --red: #D94F3D; --red-light: #FDECEA;
+    --amber: #F59E0B; --amber-dark: #C97B1A; --amber-light: #FEF3E2;
+    --blue: #1A6FA0; --blue-light: #E2F0FA;
+    --parchment: #FBF3DF;
+    --bg: #FDFBF7; --surface: #FFFFFF; --surface-alt: #F4F1EB;
+    --text: #1A1A2E; --muted: #6B7080; --border: #1A1A2E;
+    --shadow: 4px 4px 0 var(--border); --shadow-sm: 2px 2px 0 var(--border);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; }
+  body { padding: 16px; }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1, h2, h3, .fred { font-family: 'Fredoka', 'Inter', sans-serif; }
+  button { font: inherit; color: inherit; cursor: pointer; touch-action: manipulation; }
+
+  .topbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .topbar .title { flex: 1; min-width: 180px; font-family: 'Fredoka'; font-weight: 700; font-size: 1.25rem; }
+  .btn { border: 2px solid var(--border); border-radius: 12px; background: var(--surface); padding: 10px 14px; min-height: 48px; font-weight: 600; box-shadow: var(--shadow-sm); }
+  .btn:active { transform: translate(2px,2px); box-shadow: none; }
+  .btn.primary { background: var(--purple); color: #fff; }
+  .btn.amber { background: var(--amber-light); }
+  .btn .count { display: inline-block; min-width: 22px; padding: 0 6px; margin-left: 4px; border-radius: 999px; background: var(--purple); color: #fff; font-size: .85rem; }
+
+  .card { background: var(--surface); border: 2px solid var(--border); border-radius: 20px; box-shadow: var(--shadow); padding: 22px; }
+  .story.card { background: var(--parchment); }
+
+  .hero { text-align: center; }
+  .hero .owl { font-size: 4.5rem; line-height: 1; }
+  .hero h1 { font-size: 2rem; margin: 10px 0 6px; }
+  .hero p { line-height: 1.55; font-size: 1.05rem; }
+  .rules { text-align: left; background: var(--surface-alt); border-radius: 14px; padding: 14px 18px; margin: 16px 0; line-height: 1.5; }
+  .rules li { margin: 4px 0; }
+  .endings { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 12px 0 18px; }
+  .ending-chip { border: 2px solid var(--border); border-radius: 999px; padding: 6px 12px; font-size: .9rem; background: var(--surface-alt); color: var(--muted); }
+  .ending-chip.found { color: var(--text); background: var(--green-light); }
+  .ending-chip.found.win { background: #FFE9A8; }
+  .start-btns { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+  .para-num { display: inline-flex; align-items: center; justify-content: center; width: 58px; height: 58px; border-radius: 50%; flex-shrink: 0;
+    background: var(--purple); color: #fff; font-family: 'Fredoka'; font-weight: 700; font-size: 1.6rem; border: 2px solid var(--border); box-shadow: var(--shadow-sm); }
+  .para-head { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  .para-head h2 { margin: 0; font-size: 1.35rem; }
+  .story p { font-size: 1.12rem; line-height: 1.7; margin: 0 0 14px; }
+  .story .speech { font-style: italic; }
+  .doc { font-family: 'Fredoka'; background: #FFFBEA; border: 2px solid var(--border); border-radius: 6px; padding: 14px 18px; margin: 0 0 14px; font-size: 1.1rem; line-height: 1.8; }
+  .vocab { background: var(--surface); border-left: 5px solid var(--amber-dark); border-radius: 8px; padding: 8px 12px; margin: 0 0 14px; font-size: .98rem; line-height: 1.5; }
+
+  .clue-found { background: var(--blue-light); border: 2px solid var(--blue); border-radius: 12px; padding: 10px 14px; margin: 4px 0 12px; font-size: 1rem; line-height: 1.45; }
+  .clue-found b { color: var(--blue); }
+  .obj-found { background: var(--green-light); border: 2px solid var(--green); border-radius: 12px; padding: 10px 14px; margin: 4px 0 12px; font-size: 1rem; line-height: 1.45; }
+
+  .choices { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+  .choices .prompt { font-weight: 700; font-family: 'Fredoka'; font-size: 1.1rem; margin: 6px 0 2px; }
+  .choice { display: flex; align-items: center; gap: 12px; text-align: left; width: 100%; border: 2px solid var(--border); border-radius: 14px;
+    background: var(--purple-light); padding: 12px 14px; min-height: 56px; font-size: 1.05rem; font-weight: 600; box-shadow: var(--shadow-sm); }
+  .choice:active { transform: translate(2px,2px); box-shadow: none; }
+  .choice .go { margin-left: auto; flex-shrink: 0; font-family: 'Fredoka'; font-size: .95rem; background: var(--surface); border: 2px solid var(--border); border-radius: 999px; padding: 2px 10px; white-space: nowrap; }
+  .choice.accuse { background: var(--red-light); }
+  .choice.skip { background: var(--surface-alt); }
+  .choice.obj { background: var(--green-light); }
+
+  .enigme { border: 2px solid var(--border); border-radius: 16px; background: var(--amber-light); padding: 16px; margin: 6px 0 16px; }
+  .enigme h3 { margin: 0 0 8px; font-size: 1.15rem; }
+  .enigme .q { font-size: 1.05rem; line-height: 1.55; margin: 0 0 12px; font-weight: 600; }
+  .answer-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+  .answer-row label { font-weight: 600; min-width: 140px; }
+  .answer-row input { width: 120px; font-size: 1.4rem; font-family: 'Fredoka'; text-align: center; padding: 8px; border: 2px solid var(--border); border-radius: 10px; background: #fff; }
+  .answer-row .unit { font-family: 'Fredoka'; font-size: 1.2rem; font-weight: 600; }
+  .qcm { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  .qcm button { text-align: left; border: 2px solid var(--border); border-radius: 12px; background: #fff; padding: 10px 14px; min-height: 52px; font-size: 1.02rem; font-weight: 500; }
+  .qcm button.sel { background: var(--purple); color: #fff; }
+  .qcm button.good { background: var(--green); color: #fff; }
+  .qcm.done button:not(.sel) { opacity: .45; }
+  .feedback { margin-top: 12px; padding: 10px 14px; border-radius: 10px; line-height: 1.5; font-size: 1rem; }
+  .feedback.ok { background: var(--green-light); border: 2px solid var(--green); }
+  .feedback.ko { background: var(--red-light); border: 2px solid var(--red); }
+  .feedback.info { background: var(--surface); border: 2px solid var(--amber-dark); }
+
+  .proofs { list-style: none; padding: 0; margin: 0 0 14px; }
+  .proofs li { background: var(--surface); border: 2px solid var(--border); border-radius: 10px; padding: 8px 12px; margin-bottom: 8px; line-height: 1.45; }
+
+  .ending-box { text-align: center; border: 2px solid var(--border); border-radius: 16px; padding: 16px; margin: 10px 0 14px; }
+  .ending-box.win { background: #FFE9A8; }
+  .ending-box.half { background: var(--blue-light); }
+  .ending-box.lose { background: var(--red-light); }
+  .ending-box .big { font-size: 2.6rem; }
+  .ending-box h3 { margin: 6px 0; font-size: 1.3rem; }
+  .ending-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+  .overlay { position: fixed; inset: 0; background: rgba(26,26,46,.45); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 10; }
+  .overlay.open { display: flex; }
+  .overlay .card { max-width: 560px; width: 100%; max-height: 85vh; overflow: auto; }
+  .carnet-list { list-style: none; padding: 0; margin: 8px 0 14px; }
+  .carnet-list li { border-bottom: 2px dashed var(--purple-mid); padding: 10px 2px; line-height: 1.45; }
+  .muted { color: var(--muted); }
+  .hidden { display: none !important; }
+  @media (max-width: 480px) { body { padding: 10px; } .card { padding: 16px; } .story p { font-size: 1.05rem; } .hero h1 { font-size: 1.6rem; } .answer-row label { min-width: 0; width: 100%; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section id="screen-title" class="card hero">
+    <div class="owl">🏰</div>
+    <h1>Le Mystère du beffroi</h1>
+    <p class="muted fred">Une enquête dont tu es le héros ou l'héroïne — Bruges, au Moyen Âge</p>
+    <div class="rules">
+      <ul>
+        <li>⏳ Un sablier magique va t'envoyer au <b>Moyen Âge</b>. Pour revenir, il faudra résoudre l'enquête !</li>
+        <li>📖 Lis chaque paragraphe attentivement, puis <b>choisis</b> où aller.</li>
+        <li>🔐 Les <b>énigmes</b> te font gagner des indices. Plus tu en résous, plus tu as de preuves.</li>
+        <li>🎒 Certains <b>objets</b> ouvrent de nouveaux chemins. Tout est noté dans ton carnet.</li>
+        <li>⚖️ À la fin, tu devras <b>accuser</b> le voleur devant les échevins… avec assez de preuves !</li>
+        <li>💾 La partie est <b>sauvegardée</b> : tu peux la reprendre plus tard.</li>
+      </ul>
+    </div>
+    <div class="fred" style="font-weight:600">Fins découvertes : <span id="endings-count">0</span> / 7</div>
+    <div class="endings" id="endings-list"></div>
+    <div class="start-btns">
+      <button class="btn primary hidden" id="btn-resume" style="font-size:1.1rem;padding:12px 24px">▶ Reprendre ma partie</button>
+      <button class="btn" id="btn-start" style="font-size:1.1rem;padding:12px 24px">Commencer l'enquête</button>
+    </div>
+  </section>
+
+  <section id="screen-story" class="hidden">
+    <div class="topbar">
+      <div class="title">🏰 Le Mystère du beffroi</div>
+      <button class="btn amber" id="btn-carnet">📒 Carnet <span class="count" id="clue-count">0</span></button>
+      <button class="btn" id="btn-menu">⟲ Menu</button>
+    </div>
+    <article class="card story" id="story"></article>
+  </section>
+</div>
+
+<div class="overlay" id="carnet">
+  <div class="card">
+    <h2 style="margin:0 0 4px">🎒 Mon sac</h2>
+    <ul class="carnet-list" id="sac-list"></ul>
+    <h2 style="margin:0 0 4px">📒 Mes indices</h2>
+    <ul class="carnet-list" id="carnet-list"></ul>
+    <button class="btn primary" id="btn-carnet-close" style="width:100%">Fermer le carnet</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* =====================================================================
+     INDICES ET OBJETS
+     PREUVES : indices qui comptent comme preuves au procès final.
+     ===================================================================== */
+  const CLUES = {
+    vin:       "Le guetteur Wouter s'est endormi après avoir bu le vin épicé offert par un pèlerin.",
+    eperon:    "Une griffure d'éperon sur les marches du beffroi : le voleur est un cavalier, comme un chevalier ou un écuyer.",
+    griffure:  "Une drôle de griffure sur les marches du beffroi…",
+    bottes:    "Maitre Pieter a vu le pèlerin porter des bottes de cavalier sous sa robe.",
+    mensonge:  "Le pèlerin ment : à pied, il faut environ 80 jours pour revenir de Compostelle, pas deux semaines !",
+    blason:    "À l'écurie, la selle du « pèlerin » porte le blason de sire Gauthier de Noirval : un lion d'argent sur fond bleu.",
+    cheval:    "148 chevaux sont entrés hier, 147 sont sortis : le cheval de guerre de l'auberge est resté en ville.",
+    cavalier:  "Un paysan a vu un cavalier arriver hier soir du château de sire Gauthier et enfiler une robe de pèlerin devant la porte de la ville.",
+    acte:      "Ce matin, un messager a demandé à frère Anselme de recopier un faux acte qui donne la foire à sire Gauthier.",
+    alibiPieter:  "Maitre Pieter et toute sa guilde ont passé la nuit aux Halles à préparer la foire.",
+    alibiAnselme: "Frère Anselme n'a pas quitté le monastère de la nuit : les moines prient ensemble à minuit."
+  };
+  const PREUVES = ['vin', 'eperon', 'bottes', 'mensonge', 'blason', 'cheval', 'cavalier', 'acte'];
+
+  const OBJECTS = {
+    laissez:  "📜 Un laissez-passer qui ouvre les portes de la ville.",
+    lanterne: "🏮 La lanterne de Wouter, pour éclairer les endroits sombres."
+  };
+
+  /* =====================================================================
+     L'HISTOIRE
+     ===================================================================== */
+  const S = {
+    classe: { title: "Un drôle de sablier",
+      text: [
+        "Mercredi, cours d'histoire. Mme Lambert, la directrice, est venue en classe avec un vieux sablier trouvé dans la vitrine de l'école. Elle le pose sur ton banc.",
+        "<span class='speech'>« Il parait qu'il vient de Bruges et qu'il a plus de six-cents ans, dit-elle. Surtout, ne le retourne pas ! »</span>",
+        "Bien sûr… tu le retournes. Le sable se met à briller, la classe tourne, tourne… et tu tombes sur des pavés, au milieu d'une foule qui crie, de chevaux et de charrettes."
+      ],
+      prompt: "",
+      choices: [ { label: "Ouvrir les yeux", to: 'arrivee' } ]
+    },
+
+    arrivee: { title: "Où suis-je ?",
+      text: [
+        "Autour de toi, des maisons à colombages, des marchands en tunique, des femmes en longue robe, un moine en habit brun. Au-dessus des toits se dresse une grande tour de pierre : un <b>beffroi</b>.",
+        "Sur la place, un crieur public lit à voix haute le parchemin cloué sur la porte des Halles :",
+        "<div class='doc'>« Oyez, oyez ! La grande foire de printemps de la ville de Bruges ouvrira demain, à midi. »<br>Fait en l'an de grâce <b>MCCCI</b>.</div>"
+      ],
+      enigme: { kind: 'number', answer: 1301,
+        title: "🔢 En quelle année es-tu ?",
+        question: "Sur le parchemin, l'année est écrite en chiffres romains : MCCCI. Écris-la en chiffres arabes.",
+        hint: "M = 1 000, C = 100, I = 1. Additionne : M + C + C + C + I.",
+        success: "Exact : M (1 000) + CCC (300) + I (1) = 1301. Tu es au <b>Moyen Âge</b>, qui va de 476 (chute de l'Empire romain d'Occident) à 1492 (arrivée de Christophe Colomb aux Amériques).",
+        to: 'echevin', skipTo: 'echevin', skipLabel: "Demander l'année à un passant"
+      }
+    },
+
+    echevin: { title: "L'échevin désespéré",
+      text: [
+        "Au pied du beffroi, un homme richement vêtu se tient la tête. Une chaine d'argent brille sur sa poitrine : c'est <b>messire Lodewijk</b>, un des <b>échevins</b> qui dirigent la ville.",
+        "<div class='vocab'>📚 <b>Les échevins</b> sont des bourgeois choisis pour gouverner la ville et rendre la justice.</div>",
+        "<span class='speech'>« Malheur ! Le grand sceau de Bruges a été volé cette nuit dans le beffroi ! Sans lui, nous ne pouvons sceller aucun contrat : les marchands étrangers vont repartir. Et sire Gauthier de Noirval, le seigneur voisin, attend qu'on échoue pour attirer la foire sur ses terres ! »</span>",
+        "Il te regarde de haut en bas.",
+        "<span class='speech'>« Tu dis que tu peux m'aider ? Prouve-moi d'abord que tu sais à quoi sert notre beffroi. »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🏰 Le beffroi",
+        question: "Que garde-t-on dans le beffroi d'une ville ?",
+        options: [
+          "Les récoltes que les paysans doivent au seigneur",
+          "La charte, le sceau et les archives de la ville",
+          "Les armes et le trésor du seigneur"
+        ],
+        answer: 1,
+        hint: "Le beffroi est la tour des <b>bourgeois</b>, le symbole de leurs libertés. La tour du seigneur, c'est le donjon de son château.",
+        success: "Bravo ! Le beffroi garde la charte (les libertés de la ville), le sceau et les archives. Il sert aussi de tour de guet.",
+        to: 'echevinOk', skipTo: 'echevinKo', skipLabel: "Avouer que tu ne sais pas"
+      }
+    },
+
+    echevinOk: { title: "Un laissez-passer",
+      text: [
+        "<span class='speech'>« Bien répondu ! Tu as l'air d'en savoir plus que mes gardes. »</span>",
+        "Messire Lodewijk te tend un parchemin roulé, scellé de son sceau personnel.",
+        "<span class='speech'>« Ce laissez-passer t'ouvrira les portes de la ville. Demain à midi, nous nous réunirons aux Halles avec sire Gauthier. Trouve le voleur d'ici là ! »</span>"
+      ],
+      objects: ['laissez'],
+      prompt: "",
+      choices: [ { label: "Partir enquêter sur la Grand-Place", to: 'place' } ]
+    },
+
+    echevinKo: { title: "Débrouille-toi",
+      text: [
+        "Messire Lodewijk hausse les épaules.",
+        "<span class='speech'>« Un enfant qui ne connait même pas le beffroi… Bon, enquête si tu veux, mais ne compte pas sur moi. Demain à midi, nous nous réunirons aux Halles avec sire Gauthier. »</span>",
+        "Tant pis : tu devras trouver de l'aide ailleurs."
+      ],
+      prompt: "",
+      choices: [ { label: "Partir enquêter sur la Grand-Place", to: 'place' } ]
+    },
+
+    place: { title: "La Grand-Place",
+      text: [
+        "La Grand-Place grouille de monde : on monte des étals pour la foire. D'un côté se dresse le <b>beffroi</b>, au-dessus des <b>Halles</b> où l'on vend le drap. Une ruelle mène à l'<b>auberge du Cygne</b>, une autre au <b>monastère</b>. Plus loin, on aperçoit les remparts et la <b>porte</b> de la ville.",
+        "Le soleil descend déjà. Demain à midi, aux Halles, tu devras désigner le voleur devant les échevins."
+      ],
+      prompt: "Où vas-tu ?",
+      choices: [
+        { label: "🔔 Le beffroi, là où le sceau a disparu", to: 'beffroi' },
+        { label: "🧵 Les Halles, chez les drapiers", to: 'halles' },
+        { label: "🍺 L'auberge du Cygne", to: 'auberge' },
+        { label: "⛪ Le monastère", to: 'monastere' },
+        { label: "🚪 La porte de la ville", to: 'porte' },
+        { label: "C'est décidé : demain à midi, j'accuse le voleur devant les échevins", to: 'tribunal', accuse: true }
+      ]
+    },
+
+    beffroi: { title: "Au pied du beffroi",
+      text: [
+        "La porte du beffroi est ouverte. Assis sur une marche, un homme maigre fixe le sol, honteux : c'est <b>Wouter</b>, le guetteur. C'est lui qui veille en haut de la tour et sonne la cloche en cas d'incendie ou de danger.",
+        "Derrière lui, l'escalier en colimaçon monte dans le noir."
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Parler à Wouter", to: 'wouter' },
+        { label: "Monter l'escalier avec la lanterne", to: 'escalier', requires: 'lanterne', cls: 'obj' },
+        { label: "Monter l'escalier dans le noir", to: 'noir', requiresNot: 'lanterne' },
+        { label: "Retourner sur la Grand-Place", to: 'place' },
+        { label: "Accuser Wouter : c'était à lui de surveiller le sceau !", to: 'finWouter', accuse: true }
+      ]
+    },
+
+    wouter: { title: "Le guetteur",
+      text: [
+        "<span class='speech'>« Je n'ai rien volé, je le jure ! Hier soir, un pèlerin est monté me voir. Il revenait de Saint-Jacques-de-Compostelle, disait-il, et voulait remercier la ville de son accueil. Il m'a offert un gobelet de vin épicé… »</span>",
+        "Wouter baisse la tête.",
+        "<span class='speech'>« Après, plus rien. Je me suis réveillé à l'aube, la tête lourde, et le coffre du sceau était ouvert. Tiens, prends ma lanterne : l'escalier est noir comme un four. »</span>"
+      ],
+      clues: ['vin'],
+      objects: ['lanterne'],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Monter l'escalier avec la lanterne", to: 'escalier', cls: 'obj' },
+        { label: "Retourner sur la Grand-Place", to: 'place' }
+      ]
+    },
+
+    noir: { title: "Dans le noir",
+      text: [
+        "Tu montes à tâtons. Il fait si noir que tu ne vois même pas tes mains. Au bout de quelques marches, tu trébuches et redescends sur les fesses. Aïe !",
+        "Sans lumière, impossible d'examiner l'escalier."
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Parler au guetteur", to: 'wouter' },
+        { label: "Retourner sur la Grand-Place", to: 'place' }
+      ]
+    },
+
+    escalier: { title: "L'escalier",
+      text: [
+        "À la lumière de la lanterne, tu montes lentement. Sur une marche en bois, tu découvres une longue griffure toute fraiche, comme celle que ferait la pointe d'un éperon.",
+        "<div class='vocab'>📚 Un <b>éperon</b> est une pièce de métal fixée au talon de la botte. Le cavalier s'en sert pour faire avancer son cheval.</div>",
+        "Tout en haut, dans la salle des archives, le coffre est grand ouvert. La charte de la ville est toujours là… mais le sceau a disparu."
+      ],
+      enigme: { kind: 'qcm',
+        title: "🔎 La griffure",
+        question: "Au Moyen Âge, qui portait des éperons ?",
+        options: [
+          "Les moines copistes",
+          "Les serfs qui travaillent aux champs",
+          "Les cavaliers, comme les chevaliers et les écuyers"
+        ],
+        answer: 2,
+        hint: "Un éperon sert à diriger un cheval. Qui, au Moyen Âge, combattait à cheval ? Pense à la formation du page, puis de l'écuyer.",
+        success: "Exactement ! Le voleur portait des éperons : c'est un cavalier.",
+        to: 'eperonOk', skipTo: 'eperonPasser', skipLabel: "Ne pas t'attarder sur cette griffure"
+      }
+    },
+
+    eperonOk: { title: "Une piste",
+      text: [
+        "Tu notes soigneusement ta découverte. Le voleur n'est pas n'importe qui : il monte à cheval et porte des éperons, comme un chevalier ou un écuyer.",
+        "Tu redescends l'escalier."
+      ],
+      clues: ['eperon'],
+      prompt: "Où vas-tu ?",
+      choices: [
+        { label: "Retourner sur la Grand-Place", to: 'place' }
+      ]
+    },
+
+    eperonPasser: { title: "Une griffure",
+      text: [
+        "Tu notes quand même la griffure dans ton carnet, sans trop savoir ce qu'elle veut dire, puis tu redescends."
+      ],
+      clues: ['griffure'],
+      prompt: "",
+      choices: [ { label: "Retourner sur la Grand-Place", to: 'place' } ]
+    },
+
+    halles: { title: "Les Halles",
+      text: [
+        "Sous les grandes arcades des Halles, les drapiers déroulent leurs pièces de drap rouge, bleu et vert. Le drap de Flandre est célèbre dans toute l'Europe !",
+        "Un homme bourru compte ses rouleaux : c'est <b>Maitre Pieter</b>, le doyen de la <b>guilde</b> des drapiers.",
+        "<div class='vocab'>📚 Une <b>guilde</b> (ou corporation) rassemble les artisans ou les marchands d'un même métier.</div>",
+        "<span class='speech'>« Le sceau ? Les échevins nous accablent de taxes, et tu voudrais que je les aide ? Bon… Aide-moi d'abord à faire mes comptes, et on verra. »</span>"
+      ],
+      enigme: { kind: 'number', answer: 6, unit: "aunes",
+        title: "🧵 Les comptes du drapier",
+        question: "Cette pièce de drap mesure 24 aunes (une aune mesure environ 70 cm). Maitre Pieter en a déjà vendu les <b>3/4</b>. Combien d'aunes lui reste-t-il à vendre ?",
+        hint: "Cherche d'abord 1/4 de 24 : 24 ÷ 4 = 6. Les 3/4, c'est donc 3 × 6 = 18 aunes vendues. Combien en reste-t-il sur 24 ?",
+        success: "Exact : 3/4 de 24 = 18 aunes vendues, et 24 − 18 = 6 aunes à vendre.",
+        to: 'pieterOk', skipTo: 'pieterKo', skipLabel: "Laisser Maitre Pieter à ses comptes"
+      }
+    },
+
+    pieterOk: { title: "Le témoignage du drapier",
+      text: [
+        "Maitre Pieter grogne, mais il a l'air content.",
+        "<span class='speech'>« Pas mal du tout ! Écoute : cette nuit, toute la guilde était ici, aux Halles, pour préparer les étals de la foire. Personne n'est sorti. Mais à l'aube, j'ai vu passer un pèlerin qui marchait vers l'auberge du Cygne. Sa robe s'est soulevée… et dessous, il portait de belles bottes de cavalier. Drôle de pèlerin, hein ? »</span>"
+      ],
+      clues: ['bottes', 'alibiPieter'],
+      prompt: "Où vas-tu ?",
+      choices: [
+        { label: "Courir à l'auberge du Cygne", to: 'auberge' },
+        { label: "Retourner sur la Grand-Place", to: 'place' }
+      ]
+    },
+
+    pieterKo: { title: "Le drapier se fâche",
+      text: [
+        "<span class='speech'>« Même pas capable de compter du drap ! Va-t'en, j'ai du travail. »</span>",
+        "Maitre Pieter te tourne le dos. Il est bien grognon… Aurait-il quelque chose à cacher ?"
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Retourner sur la Grand-Place", to: 'place' },
+        { label: "Accuser Maitre Pieter : il déteste les échevins !", to: 'finPieter', accuse: true }
+      ]
+    },
+
+    auberge: { title: "L'auberge du Cygne",
+      text: [
+        "L'auberge sent la soupe aux choux et le feu de bois. Des marchands venus d'Italie et d'Allemagne discutent bruyamment.",
+        "Près de la cheminée, un homme en robe de pèlerin mange seul. Une coquille Saint-Jacques est cousue sur son chapeau et un long bâton de marche, le <b>bourdon</b>, est posé contre sa chaise. Il ne lâche pas son bâton des yeux.",
+        "Au fond de la cour, on aperçoit l'écurie."
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Parler au pèlerin", to: 'pelerin' },
+        { label: "Visiter discrètement l'écurie", to: 'ecurie' },
+        { label: "Retourner sur la Grand-Place", to: 'place' }
+      ]
+    },
+
+    pelerin: { title: "Le pèlerin",
+      text: [
+        "Le pèlerin te sourit, mais ses yeux restent froids.",
+        "<span class='speech'>« Je m'appelle Hugues. Je reviens de Saint-Jacques-de-Compostelle, en Espagne. Je suis parti de là-bas il y a deux semaines à peine, à pied, comme tout bon pèlerin ! »</span>",
+        "Tu te souviens de ton cours de géographie : entre Compostelle et Bruges, il y a environ 2 000 km. Un marcheur parcourt environ 25 km par jour."
+      ],
+      enigme: { kind: 'number', answer: 80, unit: "jours",
+        title: "🥾 Le voyage du pèlerin",
+        question: "Combien de jours faut-il, à pied, pour parcourir 2 000 km à raison de 25 km par jour ?",
+        hint: "Il faut chercher combien de fois 25 km entrent dans 2 000 km : c'est une division, 2 000 ÷ 25. Astuce : en 100 km, il y a 4 fois 25 km.",
+        success: "Exact : 2 000 ÷ 25 = 80 jours, soit plus de 11 semaines ! Il est impossible de faire ce trajet en deux semaines à pied.",
+        to: 'mensonge', skipTo: 'pelerinPasser', skipLabel: "Hocher la tête poliment"
+      }
+    },
+
+    mensonge: { title: "Un menteur !",
+      text: [
+        "Quatre-vingts jours de marche, et non deux semaines ! Le pèlerin ment… À moins qu'il ne soit pas venu à pied ?",
+        "Hugues voit ton air songeur et serre son bourdon un peu plus fort."
+      ],
+      clues: ['mensonge'],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Faire comme si de rien n'était et continuer l'enquête", to: 'auberge' },
+        { label: "L'accuser ici, tout de suite, devant tout le monde", to: 'finFuite', accuse: true }
+      ]
+    },
+
+    pelerinPasser: { title: "Une belle histoire",
+      text: [
+        "Tu hoches la tête poliment. Le pèlerin te raconte encore ses aventures sur les routes, puis se replonge dans sa soupe."
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Visiter l'écurie", to: 'ecurie' },
+        { label: "Retourner sur la Grand-Place", to: 'place' }
+      ]
+    },
+
+    ecurie: { title: "L'écurie",
+      text: [
+        "Dans l'écurie, entre deux mules fatiguées, piaffe un magnifique cheval noir, grand et musclé : un <b>destrier</b>, un cheval de guerre de chevalier !",
+        "<span class='speech'>« C'est la monture du pèlerin, chuchote le garçon d'écurie. Bizarre, un pèlerin à cheval… Il part demain à midi, quand la foule de la foire envahira les rues. »</span>",
+        "Sur la selle, quelqu'un a jeté une couverture. Tu la soulèves : en dessous, un blason est brodé, <b>un lion d'argent sur fond bleu</b>.",
+        "<span class='speech'>« Ça ? C'est le blason de sire Gauthier de Noirval, dit le garçon. Tout le monde le connait par ici. »</span>"
+      ],
+      clues: ['blason'],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Retourner dans la salle de l'auberge", to: 'auberge' },
+        { label: "Retourner sur la Grand-Place", to: 'place' }
+      ]
+    },
+
+    monastere: { title: "Le monastère",
+      text: [
+        "Au monastère, un vieux moine à la tonsure toute ronde t'accueille dans le <b>scriptorium</b>, la salle où les moines recopient les livres à la main, à la plume d'oie. C'est <b>frère Anselme</b>, le copiste.",
+        "<span class='speech'>« Un enfant qui enquête ? Voyons d'abord si tu as bien écouté en classe. Dis-moi : à quelle partie de l'Église est-ce que j'appartiens ? »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "⛪ Le clergé",
+        question: "Frère Anselme est un moine : il vit dans un monastère et obéit à une règle. Il fait partie…",
+        options: [
+          "du clergé séculier",
+          "du clergé régulier",
+          "de la bourgeoisie"
+        ],
+        answer: 1,
+        hint: "« Régulier » vient du latin <i>regula</i>, la règle. Le clergé séculier, ce sont les prêtres qui vivent au milieu des gens, dans le « siècle ».",
+        success: "Bravo ! Les moines forment le clergé régulier, car ils vivent selon une règle. Les prêtres des paroisses forment le clergé séculier.",
+        to: 'anselmeOk', skipTo: 'anselmeKo', skipLabel: "Rougir et repartir"
+      }
+    },
+
+    anselmeOk: { title: "Le faux acte",
+      text: [
+        "<span class='speech'>« Bonne réponse ! Écoute bien. Un sceau, c'est comme la signature de la ville : qui le possède peut fabriquer de faux documents qui auront l'air vrais. »</span>",
+        "Il baisse la voix.",
+        "<span class='speech'>« Ce matin, un messager est venu me demander de recopier un acte bien étrange. On y lisait que Bruges donnait sa foire à sire Gauthier de Noirval ! Il ne manquait plus que… le sceau de la ville. J'ai refusé, bien sûr. Moi, je n'ai pas quitté le monastère de la nuit : nous prions tous ensemble à minuit. »</span>",
+        "Il trempe sa plume dans l'encre, écrit quelques lignes sur un parchemin, puis va les faire sceller par l'abbé.",
+        "<span class='speech'>« Tiens, voici un laissez-passer scellé du sceau de notre abbé. Il t'ouvrira les portes de la ville. »</span>"
+      ],
+      clues: ['acte', 'alibiAnselme'],
+      objects: ['laissez'],
+      prompt: "",
+      choices: [ { label: "Retourner sur la Grand-Place", to: 'place' } ]
+    },
+
+    anselmeKo: { title: "Le moine est occupé",
+      text: [
+        "<span class='speech'>« Reviens quand tu auras révisé tes leçons, mon enfant, j'ai un livre à terminer. »</span>",
+        "Frère Anselme se penche à nouveau sur son parchemin. Il a l'air de cacher quelque chose sous sa manche… ou alors c'est juste son mouchoir ?"
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Retourner sur la Grand-Place", to: 'place' },
+        { label: "Accuser frère Anselme : il cache quelque chose !", to: 'finAnselme', accuse: true }
+      ]
+    },
+
+    porte: { title: "La porte de la ville",
+      text: [
+        "La ville est entourée de remparts, avec de grosses portes qu'on ferme la nuit. Un garde en cotte de mailles surveille les allées et venues. Sur sa table, un gros registre : il y note tous ceux qui entrent et qui sortent.",
+        "Au-delà de la porte s'étendent les champs, un moulin et quelques chaumières."
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Montrer ton laissez-passer et lire le registre", to: 'registre', requires: 'laissez', cls: 'obj' },
+        { label: "Demander à lire le registre", to: 'refus', requiresNot: 'laissez' },
+        { label: "Sortir dans la campagne", to: 'campagne' },
+        { label: "Retourner sur la Grand-Place", to: 'place' }
+      ]
+    },
+
+    refus: { title: "Le garde refuse",
+      text: [
+        "<span class='speech'>« Le registre ? Sans laissez-passer d'un échevin ou de l'abbé, pas question ! »</span>",
+        "Il faudra trouver quelqu'un qui te fasse confiance…"
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Sortir dans la campagne", to: 'campagne' },
+        { label: "Retourner sur la Grand-Place", to: 'place' }
+      ]
+    },
+
+    registre: { title: "Le registre de la porte",
+      text: [
+        "Le garde lit ton parchemin et te laisse consulter le registre. Les nombres sont écrits en chiffres romains :",
+        "<div class='doc'>Hier — chevaux entrés en ville : <b>CXLVIII</b><br>Hier — chevaux sortis de la ville : <b>CXLVII</b></div>"
+      ],
+      enigme: { kind: 'numbers',
+        title: "🐴 Les comptes du garde",
+        question: "Écris ces deux nombres en chiffres arabes.",
+        fields: [ { label: "Chevaux entrés :", answer: 148 }, { label: "Chevaux sortis :", answer: 147 } ],
+        hint: "C = 100, L = 50, X = 10, V = 5, I = 1. Quand un petit chiffre est placé <b>avant</b> un plus grand, on le soustrait : XL = 50 − 10 = 40.",
+        success: "Exact : CXLVIII = 100 + 40 + 8 = 148 et CXLVII = 100 + 40 + 7 = 147.",
+        to: 'chevalOk', skipTo: 'registrePasser', skipLabel: "Rendre le registre au garde"
+      }
+    },
+
+    chevalOk: { title: "Un cheval de trop",
+      text: [
+        "148 chevaux sont entrés et seulement 147 sont sortis : un cheval est resté en ville.",
+        "<span class='speech'>« Je me souviens de lui, dit le garde. Un grand cheval noir, un vrai destrier, arrivé hier soir. Son cavalier est à l'auberge du Cygne. »</span>"
+      ],
+      clues: ['cheval'],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Sortir dans la campagne", to: 'campagne' },
+        { label: "Retourner sur la Grand-Place", to: 'place' }
+      ]
+    },
+
+    registrePasser: { title: "Des chiffres compliqués",
+      text: [
+        "Ces chiffres romains te donnent le tournis. Tu rends le registre au garde, qui ricane."
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Sortir dans la campagne", to: 'campagne' },
+        { label: "Retourner sur la Grand-Place", to: 'place' }
+      ]
+    },
+
+    campagne: { title: "Dans la campagne",
+      text: [
+        "Hors des remparts, un paysan en tunique rapiécée pousse une charrette de sacs de blé vers le moulin. Il cultive les terres d'un seigneur.",
+        "<span class='speech'>« Encore des taxes ! se plaint-il. Je dois payer pour utiliser le moulin du seigneur, et en plus donner la dime à l'Église. Bon, c'est vrai, en échange, le seigneur nous protège et rend la justice au village… À la dernière moisson, j'ai récolté 250 sacs de blé, et je ne sais même pas combien il faut en donner. »</span>",
+        "<div class='vocab'>📚 Le seigneur et les paysans ont des <b>obligations réciproques</b> : le seigneur protège les paysans et rend la justice ; en échange, ils lui paient des taxes et lui doivent des corvées. La <b>dime</b>, elle, est l'impôt versé à l'Église : un dixième (1/10) des récoltes.</div>"
+      ],
+      enigme: { kind: 'number', answer: 25, unit: "sacs",
+        title: "🌾 La dime du paysan",
+        question: "Combien de sacs de blé le paysan doit-il donner à l'Église pour la dime ?",
+        hint: "Un dixième, c'est diviser par 10 : 250 ÷ 10 = ?",
+        success: "Exact : 1/10 de 250 sacs = 25 sacs pour l'Église.",
+        to: 'paysanOk', skipTo: 'paysanKo', skipLabel: "Souhaiter bon courage au paysan"
+      }
+    },
+
+    paysanOk: { title: "Le témoin de la nuit",
+      text: [
+        "<span class='speech'>« 25 sacs ! Merci beaucoup ! Pour te remercier, je vais te raconter une chose étrange. »</span>",
+        "<span class='speech'>« Hier soir, juste avant qu'on ferme les portes de la ville, j'ai vu arriver un cavalier sur un grand cheval noir. Il venait du château de sire Gauthier de Noirval, là-bas, derrière les champs. Devant la porte, il est descendu de cheval… et il a enfilé une robe de pèlerin ! »</span>"
+      ],
+      clues: ['cavalier'],
+      prompt: "",
+      choices: [ { label: "Retourner en ville, sur la Grand-Place", to: 'place' } ]
+    },
+
+    paysanKo: { title: "Le paysan grommelle",
+      text: [
+        "<span class='speech'>« Bah, personne ne sait compter par ici… »</span> Le paysan reprend sa route vers le moulin en grommelant."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner en ville, sur la Grand-Place", to: 'place' } ]
+    },
+
+    tribunal: { title: "Le procès aux Halles",
+      text: [
+        "Le lendemain, à midi, les échevins sont réunis aux Halles. Les marchands se pressent pour écouter. Au premier rang, un grand seigneur à la barbe noire sourit : c'est <b>sire Gauthier de Noirval</b>. Son blason, un lion d'argent sur fond bleu, est brodé sur sa cape.",
+        "Dans la foule, tu reconnais Wouter, Maitre Pieter, frère Anselme… et le pèlerin, appuyé sur son bourdon, tout près de la sortie.",
+        "Messire Lodewijk se tourne vers toi : <span class='speech'>« Alors ? Qui a volé le sceau de Bruges ? »</span>"
+      ],
+      prompt: "Qui accuses-tu ?",
+      choices: [
+        { label: "Wouter, le guetteur", to: 'finWouter', accuse: true },
+        { label: "Maitre Pieter, le drapier", to: 'finPieter', accuse: true },
+        { label: "Frère Anselme, le moine copiste", to: 'finAnselme', accuse: true },
+        { label: "Hugues, le pèlerin", to: 'preuves', accuse: true }
+      ]
+    },
+
+    preuves: { title: "Tes preuves",
+      text: [
+        "<span class='speech'>« Le pèlerin ? s'exclame messire Lodewijk. Mais c'est un saint homme ! As-tu des preuves ? »</span>",
+        "Tu ouvres ton carnet devant les échevins."
+      ],
+      dynamic: function (g) {
+        const list = PREUVES.filter(c => g.clues.indexOf(c) !== -1);
+        if (!list.length) return "<p><b>Ton carnet ne contient aucune preuve contre le pèlerin…</b></p>";
+        return "<p>Tu présentes <b>" + list.length + " preuve" + (list.length > 1 ? "s" : "") + "</b> :</p><ul class='proofs'>" + list.map(c => "<li>🔎 " + CLUES[c] + "</li>").join('') + "</ul>";
+      },
+      auto: function (g) {
+        const n = PREUVES.filter(c => g.clues.indexOf(c) !== -1).length;
+        return n >= 4 ? 'finGagne' : n >= 2 ? 'finMoitie' : 'finSansPreuve';
+      },
+      autoLabel: "Voir la réaction des échevins"
+    },
+
+    finGagne: { title: "Le sceau retrouvé !",
+      text: [
+        "Plus tu parles, plus les visages se tournent vers le pèlerin. Soudain, il bondit vers la sortie… mais Wouter et Maitre Pieter lui barrent le chemin !",
+        "Messire Lodewijk saisit le bourdon du faux pèlerin et arrache le pommeau : le bâton est creux. Il en fait glisser un objet enveloppé dans un chiffon… <b>le grand sceau de Bruges !</b>",
+        "Démasqué, l'homme avoue : <span class='speech'>« Je ne suis pas pèlerin. Je suis Robert, l'écuyer de sire Gauthier. Mon seigneur voulait sceller un faux acte pour voler la foire de Bruges… »</span>",
+        "Sire Gauthier, tout pâle, s'enfuit sous les huées de la foule. La foire peut commencer ! Du haut du beffroi, Wouter fait sonner la cloche à toute volée.",
+        "Messire Lodewijk regarde la griffure de ton carnet en souriant : <span class='speech'>« Des éperons… Les chevaliers en sont si fiers ! Un jour, les gens des villes de Flandre leur en feront voir de toutes les couleurs. »</span>",
+        "Dans ta poche, le sablier se met à briller. La Grand-Place tourne, tourne… et tu te retrouves à ton banc, en classe. Mme Lambert te regarde, étonnée : <span class='speech'>« Tu en fais une tête ! On dirait que tu as vu un fantôme du Moyen Âge… Tiens, sais-tu qu'en 1302, à Courtrai, les milices des villes flamandes ont battu les chevaliers du roi de France ? On a ramassé tant d'éperons sur le champ de bataille qu'on l'appelle la bataille des Éperons d'or ! »</span>"
+      ],
+      ending: { type: 'win', title: "Bravo, détective ! Grâce à tes preuves, Bruges a retrouvé son sceau et sa foire." }
+    },
+
+    finMoitie: { title: "Le pèlerin s'éclipse",
+      text: [
+        "Les échevins se regardent, hésitants. <span class='speech'>« C'est un peu léger… »</span>, murmure l'un d'eux.",
+        "Pendant qu'ils discutent, le pèlerin se glisse dans la foule de la foire. Le temps qu'on le cherche, il a déjà galopé hors de la ville, son bourdon à la main.",
+        "Le sablier se met à briller et tu te retrouves en classe, sans savoir si Bruges a retrouvé son sceau…"
+      ],
+      ending: { backTo: 'place', type: 'half', title: "Tu avais démasqué le bon suspect, mais il te fallait plus de preuves. Visite tous les lieux et résous toutes les énigmes !" }
+    },
+
+    finSansPreuve: { title: "Pas assez de preuves",
+      text: [
+        "<span class='speech'>« Accuser un pèlerin avec si peu de preuves ? Quelle honte ! »</span> s'indignent les échevins.",
+        "Sire Gauthier éclate de rire. Pendant que tout le monde te gronde, le pèlerin quitte tranquillement les Halles.",
+        "Le sablier se met à briller et tu te retrouves en classe, la tête basse."
+      ],
+      ending: { backTo: 'place', type: 'lose', title: "Ton intuition était peut-être bonne, mais un détective doit toujours apporter des preuves." }
+    },
+
+    finFuite: { title: "Fuite au galop",
+      text: [
+        "<span class='speech'>« Menteur ! Vous n'êtes pas un vrai pèlerin ! »</span>",
+        "Toute l'auberge se tourne vers vous. Le pèlerin se lève d'un bond, renverse la table devant toi, court jusqu'à l'écurie… et s'enfuit au galop sur un grand cheval noir, son bourdon sous le bras.",
+        "Le sablier se met à briller et tu te retrouves en classe. Tu ne sauras jamais ce qu'il cachait…"
+      ],
+      ending: { type: 'lose', title: "En l'accusant trop tôt, tu as prévenu le voleur. Rassemble tes preuves en silence, puis accuse-le devant les échevins !" }
+    },
+
+    finWouter: { title: "Le guetteur accusé",
+      text: [
+        "<span class='speech'>« C'est Wouter ! C'était à lui de surveiller le sceau ! »</span>",
+        "Le pauvre guetteur est emmené par les gardes. Mais on a beau fouiller sa maison de fond en comble, on ne trouve rien : Wouter était seulement endormi.",
+        "Le sablier se met à briller et tu te retrouves en classe, avec un drôle de remords."
+      ],
+      ending: { type: 'lose', title: "Wouter n'a pas bien fait son travail, mais il n'est pas un voleur. Pourquoi s'est-il endormi, à ton avis ?" }
+    },
+
+    finPieter: { title: "Le drapier accusé",
+      text: [
+        "<span class='speech'>« C'est Maitre Pieter ! Il déteste les échevins ! »</span>",
+        "Le drapier devient rouge de colère. Toute sa guilde se lève pour le défendre : ils ont passé la nuit ensemble aux Halles, à préparer la foire.",
+        "Le sablier se met à briller et tu te retrouves en classe, sous les huées des drapiers."
+      ],
+      ending: { type: 'lose', title: "Être grognon ne fait pas de quelqu'un un voleur. Maitre Pieter avait un témoignage précieux à te donner…" }
+    },
+
+    finAnselme: { title: "Le moine accusé",
+      text: [
+        "<span class='speech'>« C'est frère Anselme ! Il cachait quelque chose sous sa manche ! »</span>",
+        "Le vieux moine sort… son mouchoir. Tous les moines du monastère témoignent : cette nuit, il priait avec eux à minuit.",
+        "Le sablier se met à briller et tu te retrouves en classe, les joues rouges."
+      ],
+      ending: { type: 'lose', title: "Frère Anselme savait des choses importantes sur le sceau. Il fallait d'abord gagner sa confiance !" }
+    }
+  };
+
+  const ENDINGS = [
+    { id: 'finGagne',      label: "🏆 Le sceau retrouvé" },
+    { id: 'finMoitie',     label: "🏃 Le pèlerin s'éclipse" },
+    { id: 'finSansPreuve', label: "😶 Pas assez de preuves" },
+    { id: 'finFuite',      label: "🐎 Fuite au galop" },
+    { id: 'finWouter',     label: "🔔 Le guetteur accusé" },
+    { id: 'finPieter',     label: "🧵 Le drapier accusé" },
+    { id: 'finAnselme',    label: "📜 Le moine accusé" }
+  ];
+
+  /* Numéros des paragraphes : mélangés comme dans un vrai livre-jeu (toujours les mêmes). */
+  (function numberParagraphs() {
+    const ids = Object.keys(S).filter(k => k !== 'classe');
+    let seed = 1301;
+    const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+    const nums = ids.map((_, i) => i + 2);
+    for (let i = nums.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [nums[i], nums[j]] = [nums[j], nums[i]]; }
+    S.classe.n = 1;
+    ids.forEach((k, i) => { S[k].n = nums[i]; });
+  })();
+
+  /* =====================================================================
+     SAUVEGARDE — par élève, sur l'appareil. Rien n'est envoyé.
+     ===================================================================== */
+  function who() {
+    try {
+      const st = window.parent && window.parent !== window && window.parent.state;
+      if (st && st.student) return '_' + (st.studentCls || '') + '_' + st.student;
+    } catch (e) {}
+    return '';
+  }
+  const KEY_FINS = () => 'lcml_enquete_beffroi_fins' + who();
+  const KEY_SAVE = () => 'lcml_enquete_beffroi_partie' + who();
+  function readJSON(k, def) { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? def : v; } catch (e) { return def; } }
+  function writeJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function removeKey(k) { try { localStorage.removeItem(k); } catch (e) {} }
+  function loadEndings() { const v = readJSON(KEY_FINS(), []); return Array.isArray(v) ? v.filter(id => S[id]) : []; }
+  function saveEnding(id) {
+    const list = loadEndings();
+    if (list.indexOf(id) === -1) { list.push(id); writeJSON(KEY_FINS(), list); return true; }
+    return false;
+  }
+
+  /* =====================================================================
+     MOTEUR
+     ===================================================================== */
+  let game = null;
+  function newGame() { game = { at: 'classe', clues: [], objects: [], history: [], solved: {} }; }
+  const $ = (id) => document.getElementById(id);
+  const story = $('story');
+  let errors = 0, solvedNow = false;
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+  function has(x) { return game.clues.indexOf(x) !== -1 || game.objects.indexOf(x) !== -1; }
+
+  function renderTitle() {
+    const found = loadEndings();
+    $('endings-count').textContent = found.length;
+    $('endings-list').innerHTML = ENDINGS.map(e => {
+      const ok = found.indexOf(e.id) !== -1;
+      return `<span class="ending-chip ${ok ? 'found' : ''} ${ok && e.id === 'finGagne' ? 'win' : ''}">${ok ? e.label : '❔ ???'}</span>`;
+    }).join('');
+    const save = readJSON(KEY_SAVE(), null);
+    const canResume = save && S[save.at] && !S[save.at].ending;
+    $('btn-resume').classList.toggle('hidden', !canResume);
+    $('btn-start').textContent = canResume ? "Recommencer depuis le début" : (found.length ? "Recommencer l'enquête" : "Commencer l'enquête");
+    $('btn-start').classList.toggle('primary', !canResume);
+    $('screen-title').classList.remove('hidden');
+    $('screen-story').classList.add('hidden');
+  }
+
+  function showStory() { $('screen-title').classList.add('hidden'); $('screen-story').classList.remove('hidden'); }
+
+  function goTo(id, opts) {
+    opts = opts || {};
+    if (!opts.noHistory && game.at !== id) game.history.push(game.at);
+    game.at = id;
+    errors = 0; solvedNow = false;
+    const p = S[id];
+    const freshClues = [], freshObjs = [];
+    if (!opts.resume) {
+      (p.clues || []).forEach(c => { if (game.clues.indexOf(c) === -1) { game.clues.push(c); freshClues.push(c); } });
+      (p.objects || []).forEach(o => { if (game.objects.indexOf(o) === -1) { game.objects.push(o); freshObjs.push(o); } });
+    }
+    if (p.ending) removeKey(KEY_SAVE()); else writeJSON(KEY_SAVE(), game);
+    renderPara(p, freshClues, freshObjs);
+    updateCount();
+    window.scrollTo(0, 0);
+  }
+
+  function renderPara(p, freshClues, freshObjs) {
+    let html = `<div class="para-head"><span class="para-num">${p.n}</span><h2>${p.title}</h2></div>`;
+    html += p.text.map(t => /^<div/.test(t) ? t : `<p>${t}</p>`).join('');
+    if (p.dynamic) html += p.dynamic(game);
+    freshObjs.forEach(o => { html += `<div class="obj-found">🎒 <b>Objet ajouté à ton sac :</b> ${OBJECTS[o]}</div>`; });
+    freshClues.forEach(c => { html += `<div class="clue-found">📒 <b>Nouvel indice noté dans ton carnet :</b> ${CLUES[c]}</div>`; });
+
+    if (p.enigme) {
+      if (game.solved[game.at]) {
+        html += `<div class="feedback ok" style="margin-bottom:12px">✅ Tu as déjà résolu cette énigme.</div>`;
+        html += `<div class="choices">${choiceBtn({ label: "Continuer", to: p.enigme.to })}</div>`;
+      } else {
+        html += renderEnigme(p.enigme);
+        html += `<div class="choices" id="after-enigme"></div>`;
+      }
+    } else if (p.auto) {
+      html += `<div class="choices">${choiceBtn({ label: p.autoLabel || "Continuer", to: p.auto(game) })}</div>`;
+    } else if (p.ending) {
+      const isNew = saveEnding(game.at);
+      const icon = p.ending.type === 'win' ? '🏆' : p.ending.type === 'half' ? '🏃' : '❌';
+      const label = p.ending.type === 'win' ? 'Fin gagnante' : p.ending.type === 'half' ? 'Fin à moitié réussie' : 'Fin ratée';
+      html += `<div class="ending-box ${p.ending.type}"><div class="big">${icon}</div><h3>${label}</h3><p style="margin:6px 0 10px">${p.ending.title}</p>
+        <div class="muted">${isNew ? '✨ Nouvelle fin découverte ! ' : ''}Fins découvertes : ${loadEndings().length} / 7</div></div><div class="ending-actions">`;
+      if (p.ending.type !== 'win' && p.ending.backTo) html += `<button class="btn" data-act="backTo" data-target="${p.ending.backTo}">↩ Retourner enquêter</button>`;
+      else if (p.ending.type !== 'win' && !p.ending.noBack && game.history.length) html += `<button class="btn" data-act="back">↩ Revenir au choix précédent</button>`;
+      html += `<button class="btn primary" data-act="restart">🔄 Recommencer l'enquête</button><button class="btn" data-act="menu">Menu</button></div>`;
+      if (p.ending.type === 'win' && typeof confetti === 'function') setTimeout(() => { try { confetti({ particleCount: 150, spread: 80, origin: { y: .6 } }); } catch (e) {} }, 250);
+    } else {
+      const list = p.choices.filter(c => (!c.requires || has(c.requires)) && (!c.requiresNot || !has(c.requiresNot)));
+      html += `<div class="choices">${p.prompt ? `<div class="prompt">${p.prompt}</div>` : ''}${list.map(choiceBtn).join('')}</div>`;
+    }
+    story.innerHTML = html;
+  }
+
+  function choiceBtn(c) {
+    const cls = c.accuse ? 'accuse' : (c.cls || '');
+    return `<button class="choice ${cls}" data-to="${c.to}">${c.accuse ? '⚖️ ' : ''}${esc(c.label)}<span class="go">Va au ${S[c.to].n}</span></button>`;
+  }
+
+  const inputAttrs = 'type="text" inputmode="numeric" pattern="[0-9]*" maxlength="5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"';
+  function renderEnigme(e) {
+    let h = `<div class="enigme" id="enigme"><h3>${e.title}</h3><p class="q">${e.question}</p>`;
+    if (e.kind === 'number') {
+      h += `<div class="answer-row"><input id="ans-0" ${inputAttrs} aria-label="Réponse">${e.unit ? `<span class="unit">${e.unit}</span>` : ''}</div>`;
+    } else if (e.kind === 'numbers') {
+      e.fields.forEach((f, i) => { h += `<div class="answer-row"><label for="ans-${i}">${f.label}</label><input id="ans-${i}" ${inputAttrs}></div>`; });
+    } else if (e.kind === 'qcm') {
+      h += `<div class="qcm">` + e.options.map((o, i) => `<button type="button" data-opt="${i}">${o}</button>`).join('') + `</div>`;
+    }
+    h += `<button class="btn primary" data-act="check">Valider</button><div id="enigme-fb"></div></div>`;
+    return h;
+  }
+
+  function checkEnigme() {
+    if (solvedNow) return;
+    const e = S[game.at].enigme, fb = $('enigme-fb');
+    let ok = false, said = '';
+    if (e.kind === 'number' || e.kind === 'numbers') {
+      const answers = e.kind === 'number' ? [e.answer] : e.fields.map(f => f.answer);
+      const vals = answers.map((_, i) => ($('ans-' + i).value || '').replace(/\D/g, ''));
+      if (vals.some(v => !v)) { fb.innerHTML = `<div class="feedback info">${answers.length > 1 ? 'Complète <b>toutes</b> les cases' : 'Écris un nombre'} avant de valider.</div>`; return; }
+      ok = vals.every((v, i) => parseInt(v, 10) === answers[i]);
+      said = ` Tu as écrit ${vals.join(' et ')}.`;
+    } else if (e.kind === 'qcm') {
+      const sel = story.querySelector('.qcm button.sel');
+      if (!sel) { fb.innerHTML = `<div class="feedback info">Choisis une réponse avant de valider.</div>`; return; }
+      ok = parseInt(sel.getAttribute('data-opt'), 10) === e.answer;
+    }
+
+    if (ok) {
+      solvedNow = true;
+      game.solved[game.at] = true;
+      writeJSON(KEY_SAVE(), game);
+      story.querySelectorAll('#enigme input').forEach(i => { i.readOnly = true; });
+      const q = story.querySelector('.qcm'); if (q) { q.classList.add('done'); q.querySelector('.sel').classList.add('good'); }
+      story.querySelector('[data-act="check"]').remove();
+      fb.innerHTML = `<div class="feedback ok">✅ ${e.success}</div>`;
+      $('after-enigme').innerHTML = choiceBtn({ label: "Continuer l'enquête", to: e.to });
+      return;
+    }
+    errors++;
+    fb.innerHTML = `<div class="feedback ko">❌ Ce n'est pas ça.${esc(said)}<br>💡 <b>Indice :</b> ${e.hint}</div>`;
+    if (errors >= 2 && !story.querySelector('.choice.skip')) {
+      $('after-enigme').innerHTML = `<button class="choice skip" data-to="${e.skipTo}">${esc(e.skipLabel)}<span class="go">Va au ${S[e.skipTo].n}</span></button>`;
+    }
+  }
+
+  function updateCount() { $('clue-count').textContent = game ? game.clues.length + game.objects.length : 0; }
+  function openCarnet() {
+    $('sac-list').innerHTML = game.objects.length ? game.objects.map(o => `<li>${OBJECTS[o]}</li>`).join('') : `<li class="muted">Ton sac est vide.</li>`;
+    $('carnet-list').innerHTML = game.clues.length ? game.clues.map(c => `<li>🔎 ${CLUES[c]}</li>`).join('') : `<li class="muted">Aucun indice pour l'instant. Mène l'enquête !</li>`;
+    $('carnet').classList.add('open');
+  }
+
+  story.addEventListener('click', (ev) => {
+    const t = ev.target.closest('button');
+    if (!t) return;
+    if (t.dataset.to) { goTo(t.dataset.to); return; }
+    if (t.dataset.opt !== undefined) {
+      if (solvedNow) return;
+      t.parentNode.querySelectorAll('button').forEach(b => b.classList.toggle('sel', b === t));
+      return;
+    }
+    const act = t.dataset.act;
+    if (act === 'check') checkEnigme();
+    else if (act === 'restart') { newGame(); goTo('classe', { noHistory: true }); }
+    else if (act === 'menu') renderTitle();
+    else if (act === 'back') { let prev = game.history.pop(); while (prev && S[prev].auto) prev = game.history.pop(); if (prev) goTo(prev, { noHistory: true }); }
+    else if (act === 'backTo') goTo(t.dataset.target, { noHistory: true });
+  });
+  story.addEventListener('keydown', (ev) => { if (ev.key === 'Enter' && ev.target.tagName === 'INPUT') { ev.preventDefault(); checkEnigme(); } });
+
+  $('btn-start').addEventListener('click', () => { newGame(); showStory(); goTo('classe', { noHistory: true }); });
+  $('btn-resume').addEventListener('click', () => {
+    const save = readJSON(KEY_SAVE(), null);
+    if (!save || !S[save.at]) { newGame(); } else {
+      game = { at: save.at, clues: save.clues || [], objects: save.objects || [], history: save.history || [], solved: save.solved || {} };
+    }
+    showStory(); goTo(game.at, { noHistory: true, resume: true });
+  });
+  $('btn-menu').addEventListener('click', renderTitle);
+  $('btn-carnet').addEventListener('click', openCarnet);
+  $('btn-carnet-close').addEventListener('click', () => $('carnet').classList.remove('open'));
+  $('carnet').addEventListener('click', (ev) => { if (ev.target.id === 'carnet') $('carnet').classList.remove('open'); });
+
+  window.__enquete = { S, CLUES, PREUVES, goTo, get game() { return game; }, newGame };
+  renderTitle();
+})();
+</script>
+</body>
+</html>
