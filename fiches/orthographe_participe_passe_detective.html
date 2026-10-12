@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Le Détective du participe passé</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&family=Fraunces:opsz,wght@9..144,800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1c2752; --ink:#2b3459; --muted:#5d6788;
+    --blue:#2f5bd9; --blue-soft:#e8effc; --blue-line:#cfdcf6;
+    --yellow:#f7dc5c; --yellow-ink:#7a5b00;
+    --teal:#46ad99; --green:#3a9b52; --green-soft:#e3f5e7;
+    --red:#d64545; --red-soft:#fdeaea;
+    --orange-soft:#fff5ea; --orange-line:#f5cfa3; --orange-ink:#a8461b;
+    --card:#ffffff; --bg:#eef3fb;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{min-height:100%}
+  body{
+    font-family:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+    color:var(--ink);
+    background-color:var(--bg);
+    background-image:radial-gradient(#c9d3e6 1px, transparent 1.2px);
+    background-size:22px 22px;
+    -webkit-tap-highlight-color:transparent;
+  }
+  button{font-family:inherit;cursor:pointer;touch-action:manipulation}
+  .hidden{display:none !important}
+
+  /* ---------- Accueil ---------- */
+  #start{max-width:760px;margin:0 auto;padding:4vh 16px 30px;text-align:center}
+  .badge-icon{
+    width:76px;height:76px;margin:0 auto 18px;border-radius:26px;background:var(--yellow);
+    display:flex;align-items:center;justify-content:center;transform:rotate(3deg);
+    box-shadow:0 14px 30px -12px rgba(160,130,0,.55);
+  }
+  .kicker{color:var(--blue);font-weight:800;letter-spacing:.14em;font-size:13px;text-transform:uppercase}
+  h1{font-family:'Fraunces',Georgia,serif;color:var(--navy);font-size:clamp(24px,4vw,34px);line-height:1.1;margin:6px 0 10px}
+  .lead{font-size:clamp(15px,1.8vw,17px);color:var(--ink);max-width:620px;margin:0 auto}
+  .steps-card{
+    margin:22px auto 22px;background:var(--card);border-radius:18px;padding:16px 20px;text-align:left;
+    box-shadow:0 18px 40px -22px rgba(28,39,82,.35);border:1px solid #e6ebf5;
+  }
+  .steps-card h2{font-size:17px;color:var(--navy);margin-bottom:10px}
+  .steps-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}
+  .step-li{display:flex;gap:10px;align-items:flex-start;font-size:15px;line-height:1.4}
+  .num{flex:0 0 30px;height:30px;border-radius:50%;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:15px}
+  .num.n0{background:#8b5cf6} .num.n1{background:var(--blue)} .num.n2{background:var(--teal)}
+  .play{
+    background:var(--blue);color:#fff;border:none;border-radius:14px;padding:12px 26px;font-size:17px;font-weight:800;
+    display:inline-flex;align-items:center;gap:12px;box-shadow:0 12px 24px -10px rgba(47,91,217,.7);
+  }
+  .play:active{transform:translateY(2px)}
+  .bank-info{margin-top:12px;color:var(--muted);font-size:13px}
+  .record{margin-top:4px;color:var(--muted);font-size:13px}
+
+  /* ---------- Barre du haut ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:5;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);
+    border-bottom:2px solid var(--blue-line);
+  }
+  .topbar-in{max-width:900px;margin:0 auto;padding:6px 16px;display:flex;align-items:center;gap:8px}
+  .brand{display:flex;align-items:center;gap:6px;font-weight:800;color:var(--navy);font-size:15px;margin-right:auto}
+  .pill{border-radius:10px;padding:4px 10px;font-weight:800;font-size:14px;white-space:nowrap}
+  .pill.score{background:var(--blue-soft);color:var(--blue)}
+  .pill.count{background:#fdf6cf;color:var(--yellow-ink)}
+  .rule-btn{
+    height:32px;padding:0 10px;border-radius:10px;border:2px solid var(--blue-line);background:#fff;color:var(--blue);
+    display:flex;align-items:center;gap:5px;font-weight:800;font-size:13px;
+  }
+
+  /* ---------- Carte de jeu ---------- */
+  #game{padding:0 12px 24px}
+  .card{
+    max-width:900px;margin:12px auto 0;background:var(--card);border-radius:20px;padding:14px 20px 16px;
+    box-shadow:0 8px 0 #c9d3f7, 0 20px 40px -26px rgba(28,39,82,.4);
+  }
+  .sentence-box{background:var(--blue-soft);border:2px solid var(--blue-line);border-radius:14px;padding:10px 16px;margin-bottom:12px}
+  .sentence-label{color:var(--blue);font-weight:800;letter-spacing:.12em;font-size:11px;margin-bottom:2px}
+  .sentence{font-size:clamp(17px,2.3vw,21px);font-weight:700;color:var(--navy);line-height:1.35}
+  .blank{white-space:nowrap}
+  .filled{white-space:nowrap;border-radius:6px;padding:0 5px}
+  .filled.ok{background:var(--green-soft);color:var(--green)}
+  .filled.ko{background:var(--red-soft);color:var(--red)}
+
+  .step-title{display:flex;align-items:center;gap:8px;margin:2px 0 7px;font-size:clamp(15px,1.8vw,17px);font-weight:800;color:var(--navy)}
+  .step-title .num{flex:0 0 26px;height:26px;font-size:14px}
+  .opts{display:grid;gap:8px;margin-bottom:8px}
+  .opts.three{grid-template-columns:repeat(3,1fr)}
+  .opts.two{grid-template-columns:repeat(2,1fr)}
+  .opts.forms3{grid-template-columns:repeat(3,1fr)}
+  .opts.forms4{grid-template-columns:repeat(4,1fr)}
+  .opt{
+    background:#fff;border:2px solid #dfe7f6;border-radius:12px;padding:8px 12px;min-height:44px;
+    font-size:clamp(14px,1.6vw,15px);font-weight:800;color:var(--navy);text-align:left;line-height:1.25;
+    transition:transform .08s, border-color .15s, background .15s;
+  }
+  .opts.two .opt,.opts.forms3 .opt,.opts.forms4 .opt{text-align:center;font-size:clamp(15px,1.9vw,17px)}
+  .opt:active{transform:scale(.98)}
+  .opt:disabled{cursor:default}
+  .opt.right{background:var(--green-soft);border-color:var(--green);color:#1f6b33}
+  .opt.wrong{background:var(--red-soft);border-color:var(--red);color:#8f2424}
+  .opt.faded{opacity:.55}
+  .opt small{display:block;font-weight:500;color:var(--muted);font-size:.85em;margin-top:1px}
+  .opt.right small,.opt.wrong small{color:inherit}
+
+  .note{border-radius:10px;padding:6px 12px;margin-bottom:10px;display:flex;gap:8px;align-items:flex-start;font-size:14px;line-height:1.4}
+  .note .ico{font-size:15px;line-height:1.35}
+  .note b.t{margin-right:4px}
+  .note.hint{background:var(--orange-soft);border:2px solid var(--orange-line)}
+  .note.hint b.t{color:var(--orange-ink)}
+  .note.good{background:var(--green-soft);border:2px solid #b5e0bf}
+  .note.good b.t{color:var(--green)}
+
+  .next-row{text-align:right}
+  .next{background:var(--navy);color:#fff;border:none;border-radius:12px;padding:9px 20px;font-size:15px;font-weight:800}
+  .next:active{transform:translateY(2px)}
+
+  /* ---------- Résultats ---------- */
+  #end{max-width:860px;margin:0 auto;padding:20px 12px 40px}
+  .end-card{background:#fff;border-radius:28px;padding:clamp(20px,4vw,40px);box-shadow:0 14px 0 #c9d3f7, 0 30px 50px -30px rgba(28,39,82,.4);text-align:center}
+  .end-emoji{font-size:44px}
+  .end-score{font-family:'Fraunces',Georgia,serif;font-size:40px;color:var(--navy);margin:2px 0}
+  .end-msg{font-size:16px;margin-bottom:4px}
+  .end-time{color:var(--muted);margin-bottom:14px;font-size:14px}
+  .recap{text-align:left;border-top:2px solid #eef1f8;margin-top:10px}
+  .recap-row{display:flex;gap:12px;padding:7px 4px;border-bottom:1px solid #eef1f8;font-size:15px;line-height:1.4}
+  .recap-row .mk{flex:0 0 28px;font-size:20px}
+  .recap-row .sub{color:var(--muted);font-size:13px}
+  .end-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:26px}
+  .ghost{background:#fff;color:var(--navy);border:2px solid var(--blue-line);border-radius:18px;padding:12px 20px;font-size:15px;font-weight:800}
+
+  /* ---------- Règle ---------- */
+  .modal-bg{position:fixed;inset:0;background:rgba(20,28,60,.5);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20}
+  .modal{background:#fff;border-radius:24px;max-width:640px;width:100%;max-height:90vh;overflow:auto;padding:26px 28px}
+  .modal h3{font-family:'Fraunces',Georgia,serif;color:var(--navy);font-size:26px;margin-bottom:12px}
+  .modal p{font-size:17px;line-height:1.5;margin-bottom:12px}
+  .rule-line{display:flex;gap:12px;align-items:flex-start;background:var(--blue-soft);border-radius:14px;padding:12px 14px;margin-bottom:10px;font-size:17px;line-height:1.45}
+  .rule-line .l{flex:0 0 34px;height:34px;border-radius:10px;background:var(--blue);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center}
+  .modal .warn{background:var(--orange-soft);border:2px solid var(--orange-line);border-radius:14px;padding:12px 14px;font-size:16.5px;line-height:1.45;margin:14px 0}
+  .modal .close{margin-top:6px;width:100%}
+
+  @media (max-width:760px){
+    .steps-row{grid-template-columns:1fr}
+    .opts.three{grid-template-columns:1fr}
+    .opts.forms4{grid-template-columns:repeat(2,1fr)}
+    .brand span,.rule-btn span{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= ACCUEIL ================= -->
+<section id="start">
+  <div class="badge-icon" aria-hidden="true">
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1c2752" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7.5"/><path d="m21 21-4.6-4.6"/><path d="m8 11 2.2 2.2L14.5 9"/></svg>
+  </div>
+  <div class="kicker">Mission grammaticale</div>
+  <h1>Le Détective du participe passé</h1>
+  <p class="lead">Repère l'auxiliaire, trouve où se cache le CDV, puis choisis le bon accord du participe passé !</p>
+
+  <div class="steps-card">
+    <h2>Ton enquête, étape par étape</h2>
+    <div class="steps-row">
+      <div class="step-li"><div class="num n0">1</div><div>Trouve l'<b>auxiliaire</b> : <b>être</b> ou <b>avoir</b> ?</div></div>
+      <div class="step-li"><div class="num n1">2</div><div>Avec <b>avoir</b> : le CDV est-il <b>avant</b> le verbe, <b>après</b> le verbe, ou n'y a-t-il <b>pas de CDV</b> ?</div></div>
+      <div class="step-li"><div class="num n2">3</div><div>Choisis enfin le participe passé bien accordé.</div></div>
+    </div>
+  </div>
+
+  <button class="play" id="btn-start">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M7 4.5v15l12-7.5z"/></svg>
+    Commencer l'enquête
+  </button>
+  <div class="bank-info" id="bank-info"></div>
+  <div class="record" id="record"></div>
+</section>
+
+<!-- ================= JEU ================= -->
+<section id="game" class="hidden">
+  <div class="topbar" style="margin:0 -12px">
+    <div class="topbar-in">
+      <div class="brand">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><circle cx="11" cy="11" r="7.5"/><path d="m21 21-4.6-4.6"/></svg>
+        <span>Détective du participe</span>
+      </div>
+      <div class="pill score" id="pill-score">Score : 0</div>
+      <div class="pill count" id="pill-count">Phrase : 1/10</div>
+      <button class="rule-btn" id="btn-rule" aria-label="Revoir la règle">📖 <span>Règle</span></button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sentence-box">
+      <div class="sentence-label">🔎 LA PHRASE MYSTÈRE</div>
+      <div class="sentence" id="sentence"></div>
+    </div>
+
+    <div class="step-title"><div class="num n0">1</div>Étape 1 — Quel est l'auxiliaire ?</div>
+    <div class="opts two" id="opts0"></div>
+    <div id="note0"></div>
+
+    <div id="step1" class="hidden">
+      <div class="step-title"><div class="num n1">2</div>Étape 2 — Où est le CDV ?</div>
+      <div class="opts three" id="opts1"></div>
+      <div id="note1"></div>
+    </div>
+
+    <div id="step2" class="hidden">
+      <div class="step-title"><div class="num n2" id="num-accord">3</div><span id="title-accord">Étape 3 — Quel est le bon accord ?</span></div>
+      <div class="opts forms4" id="opts2"></div>
+      <div id="note2"></div>
+    </div>
+
+    <div class="next-row hidden" id="next-row"><button class="next" id="btn-next">Phrase suivante →</button></div>
+  </div>
+</section>
+
+<!-- ================= FIN ================= -->
+<section id="end" class="hidden">
+  <div class="end-card">
+    <div class="end-emoji" id="end-emoji">🏆</div>
+    <div class="end-score" id="end-score">0 / 20</div>
+    <div class="end-msg" id="end-msg"></div>
+    <div class="end-time" id="end-time"></div>
+    <div class="recap" id="recap"></div>
+    <div class="end-actions">
+      <button class="play" id="btn-again">🔄 Nouvelle enquête (10 autres phrases)</button>
+      <button class="ghost" id="btn-rule2">📖 Revoir la règle</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RÈGLE ================= -->
+<div class="modal-bg hidden" id="modal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="rule-title">
+    <h3 id="rule-title">📖 La règle du détective</h3>
+    <p><b>1. Je repère l'auxiliaire.</b></p>
+    <div class="rule-line"><div class="l" style="background:#8b5cf6">É</div><div>Avec l'auxiliaire <b>ÊTRE</b> → le participe passé <b>s'accorde avec le sujet</b>.<br><i>Les filles sont arrivées. Mon frère et ma sœur sont allés au cinéma.</i></div></div>
+    <p><b>2. Avec l'auxiliaire AVOIR</b>, je cherche le CDV en posant la question :<br><b>« avoir + participe passé + quoi ? / qui ? »</b></p>
+    <div class="rule-line"><div class="l">A</div><div>Le CDV est placé <b>AVANT</b> le verbe → le participe passé <b>s'accorde avec le CDV</b>.<br><i>Les pommes que j'ai mangées. Ces fleurs, je les ai cueillies.</i></div></div>
+    <div class="rule-line"><div class="l">B</div><div>Le CDV est placé <b>APRÈS</b> le verbe → <b>pas d'accord</b>.<br><i>J'ai mangé des pommes.</i></div></div>
+    <div class="rule-line"><div class="l">C</div><div><b>Pas de CDV</b> (seulement un CIV ou un autre complément) → <b>pas d'accord</b>.<br><i>Elles ont parlé à leurs amies. Elles ont ri.</i></div></div>
+    <div class="warn">⚠️ <b>Pièges</b><br>• Avec être, cherche bien le sujet : il peut être placé après le verbe (<i>Quand sont parties tes cousines ?</i>). Un masculin et un féminin ensemble → masculin pluriel.<br>• Avec avoir, on n'accorde <b>jamais avec le sujet</b> : <i>Les joueuses ont gagné.</i><br>• Un <b>CIV</b> répond à « à qui ? à quoi ? de quoi ? ». Les pronoms <b>lui</b> et <b>leur</b> sont des CIV : ils ne provoquent pas l'accord.<br>• « que », « l' », « les » placés avant le verbe sont souvent des CDV : cherche le mot qu'ils remplacent !</div>
+    <button class="play close" id="btn-close">J'ai compris</button>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   BANQUE DE PHRASES
+   c   : A = CDV avant, B = CDV après, C = pas de CDV
+   pp  : participe passé au masculin singulier
+   f   : féminin singulier si irrégulier (sinon pp + e)
+   g   : genre/nombre du CDV (catégorie A seulement)
+   cdv : le CDV ; ref : ce que le pronom remplace ; q : quoi / qui
+   note: explication pour la catégorie C
+   ============================================================ */
+const BANK = [
+  // ---------- A : CDV placé AVANT le verbe ----------
+  {c:'A', s:"Les pommes que j'ai {v} étaient délicieuses.", v:'manger', pp:'mangé', g:'fp', cdv:'que', ref:'les pommes'},
+  {c:'A', s:"La lettre que Léa a {v} est arrivée hier.", v:'écrire', pp:'écrit', f:'écrite', g:'fs', cdv:'que', ref:'la lettre'},
+  {c:'A', s:"Les dessins que tu as {v} sont affichés en classe.", v:'colorier', pp:'colorié', g:'mp', cdv:'que', ref:'les dessins'},
+  {c:'A', s:"Cette histoire, je l'ai {v} trois fois.", v:'lire', pp:'lu', g:'fs', cdv:"l'", ref:'cette histoire'},
+  {c:'A', s:"Mes chaussures ? Je les ai {v} dans l'armoire.", v:'ranger', pp:'rangé', g:'fp', cdv:'les', ref:'mes chaussures'},
+  {c:'A', s:"Les cadeaux que Mamie nous a {v} nous ont ravis.", v:'offrir', pp:'offert', f:'offerte', g:'mp', cdv:'que', ref:'les cadeaux'},
+  {c:'A', s:"La chanson que nous avons {v} a plu au public.", v:'chanter', pp:'chanté', g:'fs', cdv:'que', ref:'la chanson'},
+  {c:'A', s:"Les exercices que la maitresse a {v} sont sur ton banc.", v:'corriger', pp:'corrigé', g:'mp', cdv:'que', ref:'les exercices'},
+  {c:'A', s:"Ta clé ? Je l'ai {v} sous le tapis.", v:'trouver', pp:'trouvé', g:'fs', cdv:"l'", ref:'ta clé'},
+  {c:'A', s:"Quelles fleurs as-tu {v} ce matin ?", v:'cueillir', pp:'cueilli', g:'fp', cdv:'quelles fleurs'},
+  {c:'A', s:"Combien de livres as-tu {v} à la bibliothèque ?", v:'emprunter', pp:'emprunté', g:'mp', cdv:'combien de livres'},
+  {c:'A', s:"Les photos que Papa a {v} sont magnifiques.", v:'prendre', pp:'pris', f:'prise', g:'fp', cdv:'que', ref:'les photos'},
+  {c:'A', s:"La table que nous avons {v} sèche dans le jardin.", v:'repeindre', pp:'repeint', f:'repeinte', g:'fs', cdv:'que', ref:'la table'},
+  {c:'A', s:"Les biscuits, ma sœur les a {v} au four.", v:'cuire', pp:'cuit', f:'cuite', g:'mp', cdv:'les', ref:'les biscuits'},
+  {c:'A', s:"La porte que tu as {v} laisse entrer le froid.", v:'ouvrir', pp:'ouvert', f:'ouverte', g:'fs', cdv:'que', ref:'la porte'},
+  {c:'A', s:"Les erreurs que j'ai {v} m'ont fait perdre des points.", v:'commettre', pp:'commis', f:'commise', g:'fp', cdv:'que', ref:'les erreurs'},
+  {c:'A', s:"Le gâteau que tu as {v} sent très bon.", v:'préparer', pp:'préparé', g:'ms', cdv:'que', ref:'le gâteau'},
+  {c:'A', s:"Ce film, nous l'avons {v} hier soir.", v:'regarder', pp:'regardé', g:'ms', cdv:"l'", ref:'ce film'},
+  {c:'A', s:"Les vaches que le fermier a {v} se reposent dans le pré.", v:'nourrir', pp:'nourri', g:'fp', cdv:'que', ref:'les vaches', q:'qui'},
+  {c:'A', s:"Ces règles, l'arbitre nous les a {v} avant le match.", v:'expliquer', pp:'expliqué', g:'fp', cdv:'les', ref:'ces règles'},
+  {c:'A', s:"La tarte que Maman a {v} est encore chaude.", v:'couper', pp:'coupé', g:'fs', cdv:'que', ref:'la tarte'},
+  {c:'A', s:"Les élèves que le directeur a {v} sont très fiers.", v:'féliciter', pp:'félicité', g:'mp', cdv:'que', ref:'les élèves', q:'qui'},
+  {c:'A', s:"Où sont les billes que je t'ai {v} ?", v:'prêter', pp:'prêté', g:'fp', cdv:'que', ref:'les billes'},
+  {c:'A', s:"Cette cabane, mes grands-parents l'ont {v} eux-mêmes.", v:'construire', pp:'construit', f:'construite', g:'fs', cdv:"l'", ref:'cette cabane'},
+  {c:'A', s:"Les chatons que nous avons {v} dorment dans un panier.", v:'adopter', pp:'adopté', g:'mp', cdv:'que', ref:'les chatons', q:'qui'},
+  {c:'A', s:"Quelle route avez-vous {v} pour venir ?", v:'prendre', pp:'pris', f:'prise', g:'fs', cdv:'quelle route'},
+
+  // ---------- B : CDV placé APRÈS le verbe ----------
+  {c:'B', s:"J'ai {v} des pommes délicieuses.", v:'manger', pp:'mangé', cdv:'des pommes délicieuses'},
+  {c:'B', s:"Léa a {v} une longue lettre à sa cousine.", v:'écrire', pp:'écrit', f:'écrite', cdv:'une longue lettre'},
+  {c:'B', s:"Nous avons {v} la cathédrale de Tournai.", v:'visiter', pp:'visité', cdv:'la cathédrale de Tournai'},
+  {c:'B', s:"Les enfants ont {v} une cabane dans les bois.", v:'construire', pp:'construit', f:'construite', cdv:'une cabane'},
+  {c:'B', s:"Ma sœur a {v} des photos du coucher de soleil.", v:'prendre', pp:'pris', f:'prise', cdv:'des photos du coucher de soleil'},
+  {c:'B', s:"Les joueuses ont {v} la finale.", v:'gagner', pp:'gagné', cdv:'la finale', subj:true},
+  {c:'B', s:"Elles ont {v} les fenêtres de la classe.", v:'ouvrir', pp:'ouvert', f:'ouverte', cdv:'les fenêtres de la classe', subj:true},
+  {c:'B', s:"Grand-mère a {v} des gaufres pour le gouter.", v:'cuire', pp:'cuit', f:'cuite', cdv:'des gaufres'},
+  {c:'B', s:"Les pompiers ont {v} une petite fille.", v:'sauver', pp:'sauvé', cdv:'une petite fille', q:'qui'},
+  {c:'B', s:"Tu as {v} tes lunettes sur la table.", v:'oublier', pp:'oublié', cdv:'tes lunettes'},
+  {c:'B', s:"Mes parents ont {v} une nouvelle voiture.", v:'acheter', pp:'acheté', cdv:'une nouvelle voiture'},
+  {c:'B', s:"Les élèves ont {v} leurs poésies devant la classe.", v:'réciter', pp:'récité', cdv:'leurs poésies'},
+  {c:'B', s:"Julie a {v} les volets de sa chambre.", v:'repeindre', pp:'repeint', f:'repeinte', cdv:'les volets de sa chambre'},
+  {c:'B', s:"Les filles ont {v} des fraises dans le potager.", v:'cueillir', pp:'cueilli', cdv:'des fraises', subj:true},
+  {c:'B', s:"Nous avons {v} toutes les bandes dessinées de la bibliothèque.", v:'lire', pp:'lu', cdv:'toutes les bandes dessinées de la bibliothèque'},
+  {c:'B', s:"Le chat a {v} une souris.", v:'attraper', pp:'attrapé', cdv:'une souris'},
+  {c:'B', s:"Mes cousines ont {v} leurs valises très tôt.", v:'faire', pp:'fait', f:'faite', cdv:'leurs valises', subj:true},
+  {c:'B', s:"Le facteur a {v} les colis ce matin.", v:'apporter', pp:'apporté', cdv:'les colis'},
+
+  // ---------- C : PAS de CDV (CIV ou autre complément) ----------
+  {c:'C', s:"Les filles ont {v} pendant tout le film.", v:'rire', pp:'ri', subj:true, note:"Avoir ri quoi ? On ne peut pas répondre : il n'y a pas de CDV. « pendant tout le film » dit quand."},
+  {c:'C', s:"Nous avons {v} à nos voisines.", v:'parler', pp:'parlé', note:"Avoir parlé à qui ? « à nos voisines » : c'est un CIV (il y a « à »), pas un CDV."},
+  {c:'C', s:"Mes amies m'ont {v} hier soir.", v:'téléphoner', pp:'téléphoné', subj:true, note:"Avoir téléphoné à qui ? « m' » (= à moi) : c'est un CIV, pas un CDV."},
+  {c:'C', s:"Ces plantes ont {v} très vite.", v:'pousser', pp:'poussé', subj:true, note:"Avoir poussé quoi ? On ne peut pas répondre : il n'y a pas de CDV. « très vite » dit comment."},
+  {c:'C', s:"Les athlètes ont {v} pendant deux heures.", v:'courir', pp:'couru', note:"Avoir couru quoi ? Pas de CDV. « pendant deux heures » dit combien de temps."},
+  {c:'C', s:"Ma tante a {v} dans la chambre d'amis.", v:'dormir', pp:'dormi', subj:true, note:"Avoir dormi quoi ? Pas de CDV. « dans la chambre d'amis » dit où."},
+  {c:'C', s:"Ces histoires ont {v} à tous les élèves.", v:'plaire', pp:'plu', subj:true, note:"Avoir plu à qui ? « à tous les élèves » : c'est un CIV, pas un CDV."},
+  {c:'C', s:"Mes tantes ? Je leur ai {v} aussitôt.", v:'répondre', pp:'répondu', note:"Avoir répondu à qui ? « leur » (= à mes tantes) : c'est un CIV, pas un CDV."},
+  {c:'C', s:"Les enfants ont {v} à leurs parents.", v:'obéir', pp:'obéi', note:"Avoir obéi à qui ? « à leurs parents » : c'est un CIV, pas un CDV."},
+  {c:'C', s:"Mes sœurs ont {v} dans le jardin tout l'après-midi.", v:'jouer', pp:'joué', subj:true, note:"Avoir joué quoi ? Pas de CDV. « dans le jardin » dit où et « tout l'après-midi » dit quand."},
+  {c:'C', s:"Les spectatrices ont {v} très fort.", v:'applaudir', pp:'applaudi', subj:true, note:"Avoir applaudi qui ? quoi ? La phrase ne le dit pas : il n'y a pas de CDV. « très fort » dit comment."},
+  {c:'C', s:"Il a {v} toute la nuit.", v:'pleuvoir', pp:'plu', note:"Avoir plu quoi ? Pas de CDV. « toute la nuit » dit combien de temps."},
+  {c:'C', s:"Mes amies ? Je leur ai {v} de mon voyage.", v:'parler', pp:'parlé', note:"Avoir parlé à qui ? « leur » ; de quoi ? « de mon voyage » : ce sont deux CIV, aucun CDV."},
+  {c:'C', s:"Les élèves ont {v} longtemps avant de répondre.", v:'réfléchir', pp:'réfléchi', note:"Avoir réfléchi quoi ? Pas de CDV. « longtemps » dit combien de temps."},
+  {c:'C', s:"Les mésanges ont {v} dès le lever du soleil.", v:'chanter', pp:'chanté', subj:true, note:"Avoir chanté quoi ? Pas de CDV. « dès le lever du soleil » dit quand."},
+  {c:'C', s:"Ces lunettes ont {v} à mon grand-père.", v:'appartenir', pp:'appartenu', subj:true, note:"Avoir appartenu à qui ? « à mon grand-père » : c'est un CIV, pas un CDV."},
+  {c:'C', s:"Les randonneuses ont {v} jusqu'au village.", v:'marcher', pp:'marché', subj:true, note:"Avoir marché quoi ? Pas de CDV. « jusqu'au village » dit où."},
+  {c:'C', s:"Ma grand-mère a {v} à ses petites-filles.", v:'sourire', pp:'souri', note:"Avoir souri à qui ? « à ses petites-filles » : c'est un CIV, pas un CDV."},
+
+  // ---------- E : auxiliaire ÊTRE (accord avec le sujet) ----------
+  {c:'E', s:"Les filles sont {v} en retard ce matin.", v:'arriver', pp:'arrivé', g:'fp', suj:'les filles'},
+  {c:'E', s:"Ma petite sœur est {v} en 2018.", v:'naitre', pp:'né', g:'fs', suj:'ma petite sœur'},
+  {c:'E', s:"Les touristes allemands sont {v} à Bruges en train.", v:'venir', pp:'venu', g:'mp', suj:'les touristes allemands'},
+  {c:'E', s:"Lucie est {v} de la piscine à midi.", v:'sortir', pp:'sorti', g:'fs', suj:'Lucie'},
+  {c:'E', s:"Mon grand-père est {v} en vacances en Ardenne.", v:'partir', pp:'parti', g:'ms', suj:'mon grand-père'},
+  {c:'E', s:"Les feuilles des arbres sont {v} en automne.", v:'tomber', pp:'tombé', g:'fp', suj:'les feuilles des arbres'},
+  {c:'E', s:"Mes cousins sont {v} dormir à la maison.", v:'venir', pp:'venu', g:'mp', suj:'mes cousins'},
+  {c:'E', s:"La neige est {v} toute la nuit.", v:'tomber', pp:'tombé', g:'fs', suj:'la neige'},
+  {c:'E', s:"Les garçons de sixième sont {v} au musée.", v:'aller', pp:'allé', g:'mp', suj:'les garçons de sixième'},
+  {c:'E', s:"Ma tante est {v} au dernier étage de la tour.", v:'monter', pp:'monté', g:'fs', suj:'ma tante'},
+  {c:'E', s:"Les chanteuses sont {v} sur scène sous les applaudissements.", v:'entrer', pp:'entré', g:'fp', suj:'les chanteuses'},
+  {c:'E', s:"Le train est {v} à l'heure.", v:'arriver', pp:'arrivé', g:'ms', suj:'le train'},
+  {c:'E', s:"Mes parents sont {v} du grenier avec un vieux coffre.", v:'descendre', pp:'descendu', g:'mp', suj:'mes parents'},
+  {c:'E', s:"Mes amies sont {v} à la maison après l'école.", v:'rester', pp:'resté', g:'fp', suj:'mes amies'},
+  {c:'E', s:"Quand sont {v} tes cousines ?", v:'partir', pp:'parti', g:'fp', suj:'tes cousines', note:"Le sujet est placé après le verbe : qui est parti ? « tes cousines »."},
+  {c:'E', s:"Cette chenille est {v} un magnifique papillon.", v:'devenir', pp:'devenu', g:'fs', suj:'cette chenille', note:"« un magnifique papillon » n'est pas un CDV : avec être, on accorde avec le sujet."},
+  {c:'E', s:"Les hirondelles sont {v} au printemps.", v:'revenir', pp:'revenu', g:'fp', suj:'les hirondelles'},
+  {c:'E', s:"Mon frère et ma sœur sont {v} au cinéma.", v:'aller', pp:'allé', g:'mp', suj:'mon frère et ma sœur', note:"Un masculin et un féminin ensemble → masculin pluriel."},
+  {c:'E', s:"Julie et Emma étaient {v} avant nous.", v:'arriver', pp:'arrivé', g:'fp', suj:'Julie et Emma'},
+  {c:'E', s:"Le chat est {v} par la fenêtre.", v:'sortir', pp:'sorti', g:'ms', suj:'le chat'},
+  {c:'E', s:"Les jonquilles sont {v} de terre en mars.", v:'sortir', pp:'sorti', g:'fp', suj:'les jonquilles'},
+  {c:'E', s:"Notre équipe est {v} première du tournoi.", v:'arriver', pp:'arrivé', g:'fs', suj:'notre équipe'},
+  {c:'E', s:"Les pompiers sont {v} très vite.", v:'venir', pp:'venu', g:'mp', suj:'les pompiers'},
+  {c:'E', s:"Mes grands-parents sont {v} en Espagne pour l'été.", v:'partir', pp:'parti', g:'mp', suj:'mes grands-parents'},
+  {c:'E', s:"La balle est {v} dans le jardin du voisin.", v:'tomber', pp:'tombé', g:'fs', suj:'la balle'},
+  {c:'E', s:"Les nageuses sont {v} dans l'eau froide.", v:'entrer', pp:'entré', g:'fp', suj:'les nageuses'},
+  {c:'E', s:"Le bébé panda est {v} au zoo d'Anvers.", v:'naitre', pp:'né', g:'ms', suj:'le bébé panda'},
+  {c:'E', s:"Mes voisines sont {v} de vacances hier.", v:'rentrer', pp:'rentré', g:'fp', suj:'mes voisines'},
+  {c:'E', s:"Lucas, tu es {v} bien tard !", v:'rentrer', pp:'rentré', g:'ms', suj:'tu (Lucas)', note:"« tu » désigne Lucas, un garçon : masculin singulier."},
+  {c:'E', s:"Les filles, vous êtes {v} les premières !", v:'arriver', pp:'arrivé', g:'fp', suj:'vous (les filles)', note:"« vous » désigne les filles : féminin pluriel."},
+  {c:'E', s:"Elle est {v} pilote d'avion.", v:'devenir', pp:'devenu', g:'fs', suj:'elle', note:"« pilote d'avion » n'est pas un CDV : avec être, on accorde avec le sujet."},
+  {c:'E', s:"Mon frère et moi, nous sommes {v} à la maison.", v:'rester', pp:'resté', g:'mp', suj:'nous (mon frère et moi)', note:"« nous » = mon frère et moi : au moins un garçon, donc masculin pluriel."},
+  {c:'E', s:"Les lettres sont {v} ce matin.", v:'arriver', pp:'arrivé', g:'fp', suj:'les lettres'},
+  {c:'E', s:"Mamie est {v} nous voir dimanche.", v:'venir', pp:'venu', g:'fs', suj:'Mamie'},
+  {c:'E', s:"Ce vieux chêne est {v} pendant la tempête.", v:'tomber', pp:'tombé', g:'ms', suj:'ce vieux chêne'}
+];
+BANK.forEach((it, i) => it.id = i);
+
+const ROUND = 10;                             // 10 phrases par enquête
+// Environ 35 % de phrases avec ÊTRE : 3 ou 4 par enquête (une fois sur deux)
+function roundPlan(){
+  const nE = Math.random() < 0.5 ? 3 : 4;
+  const nAvoir = ROUND - nE;                  // 7 ou 6
+  return {E:nE, A: nAvoir === 7 ? 3 : 2, B:2, C:2};
+}
+const AUX = [
+  {k:'etre',  label:"Auxiliaire ÊTRE"},
+  {k:'avoir', label:"Auxiliaire AVOIR"}
+];
+const STEP1 = [
+  {k:'A', label:"A — CDV placé AVANT le verbe"},
+  {k:'B', label:"B — CDV placé APRÈS le verbe"},
+  {k:'C', label:"C — PAS de CDV", sub:"(CIV ou autre complément)"}
+];
+const GENRE = {ms:'masculin singulier', fs:'féminin singulier', mp:'masculin pluriel', fp:'féminin pluriel'};
+
+/* ---------- Petits outils ---------- */
+const $ = id => document.getElementById(id);
+function shuffle(a){ a = a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function store(k, v){ try{ if(v===undefined) return JSON.parse(localStorage.getItem(k)); localStorage.setItem(k, JSON.stringify(v)); }catch(e){ return null; } }
+function forms(it){
+  const ms = it.pp, fs = it.f || (it.pp + 'e');
+  const mp = /s$/.test(ms) ? ms : ms + 's';
+  return {ms, fs, mp, fp: fs + 's'};
+}
+function isEtre(it){ return it.c === 'E'; }
+function answerOf(it){ const f = forms(it); return (it.c === 'A' || it.c === 'E') ? f[it.g] : f.ms; }
+function auxWord(it){ // le mot juste avant le participe : « sont », « ai », « as-tu », « l'avons »…
+  const w = it.s.split('{v}')[0].trim().split(/\s+/).pop();
+  return w.replace(/^.*'/, '').replace(/-(tu|vous|il|elle|nous|ils|elles)$/, '');
+}
+function maxPoints(it){ return isEtre(it) ? 2 : 3; }
+
+/* ---------- Tirage : on fait le tour de la banque avant de répéter ---------- */
+const DECK_KEY = 'lcml_pp_cdv_deck2';
+function drawRound(){
+  const plan = roundPlan();
+  let deck = store(DECK_KEY) || {};
+  const picked = [];
+  ['A','B','C','E'].forEach(cat => {
+    const ids = BANK.filter(it => it.c === cat).map(it => it.id);
+    let pile = Array.isArray(deck[cat]) ? deck[cat].filter(id => ids.includes(id)) : [];
+    let n = 0;
+    while (n < plan[cat]) {
+      if (!pile.length) pile = shuffle(ids.filter(id => !picked.some(p => p.id === id)));
+      picked.push(BANK[pile.shift()]); n++;
+    }
+    deck[cat] = pile;
+  });
+  store(DECK_KEY, deck);
+  return shuffle(picked);
+}
+
+/* ---------- État ---------- */
+let S = null;
+
+function startRound(){
+  S = {qs: drawRound(), i: 0, score: 0, log: [], saved: false};
+  S.max = S.qs.reduce((t, it) => t + maxPoints(it), 0);
+  $('start').classList.add('hidden'); $('end').classList.add('hidden'); $('game').classList.remove('hidden');
+  showQuestion();
+}
+
+function sentenceHTML(it, filled, ok){
+  const parts = it.s.split('{v}');
+  const esc = t => t.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  const mid = filled
+    ? `<span class="filled ${ok?'ok':'ko'}">${filled}</span>`
+    : `<span class="blank">(${it.v}) …</span>`;
+  return esc(parts[0]) + mid + esc(parts[1]);
+}
+
+function makeOpts(box, list, onPick, key){
+  box.innerHTML = '';
+  list.forEach(op => {
+    const b = document.createElement('button');
+    b.className = 'opt'; b.dataset.k = op.k;
+    b.innerHTML = op.label + (op.sub ? `<small>${op.sub}</small>` : '');
+    b.addEventListener('click', () => onPick(op.k));
+    box.appendChild(b);
+  });
+}
+function markOpts(box, right, chosen){
+  [...box.children].forEach(b => {
+    b.disabled = true;
+    if (b.dataset.k === right) b.classList.add('right');
+    else if (b.dataset.k === chosen) b.classList.add('wrong');
+    else b.classList.add('faded');
+  });
+}
+function noteHTML(ok, title, txt){
+  return ok
+    ? `<div class="note good"><span class="ico">✅</span><div><b class="t">${title}</b>${txt}</div></div>`
+    : `<div class="note hint"><span class="ico">💡</span><div><b class="t">Indice du détective</b>${txt}</div></div>`;
+}
+function reveal(id){
+  $(id).classList.remove('hidden');
+  setTimeout(() => $(id).scrollIntoView({behavior:'smooth', block:'nearest'}), 120);
+}
+
+function showQuestion(){
+  const it = S.qs[S.i];
+  S.cur = {};
+  $('pill-score').textContent = 'Score : ' + S.score;
+  $('pill-count').textContent = 'Phrase : ' + (S.i+1) + '/' + S.qs.length;
+  $('sentence').innerHTML = sentenceHTML(it);
+  ['note0','note1','note2'].forEach(id => $(id).innerHTML = '');
+  ['step1','step2','next-row'].forEach(id => $(id).classList.add('hidden'));
+  makeOpts($('opts0'), AUX, answer0);
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* Étape 1 : l'auxiliaire */
+function answer0(k){
+  if (S.cur.p0) return;
+  const it = S.qs[S.i];
+  const right = isEtre(it) ? 'etre' : 'avoir';
+  const ok = k === right;
+  S.cur.p0 = k; S.cur.ok0 = ok;
+  if (ok) S.score++;
+  $('pill-score').textContent = 'Score : ' + S.score;
+  markOpts($('opts0'), right, k);
+  const aux = auxWord(it);
+  const txt = isEtre(it)
+    ? `« ${aux} » est une forme du verbe <b>être</b> : le participe passé va s'accorder avec le sujet.`
+    : `« ${aux} » est une forme du verbe <b>avoir</b> : cherchons le CDV !`;
+  $('note0').innerHTML = noteHTML(ok, 'Bien repéré !', txt);
+  if (isEtre(it)) {
+    $('num-accord').textContent = '2';
+    $('title-accord').textContent = 'Étape 2 — Quel est le bon accord ?';
+    buildAccord(it);
+  } else {
+    makeOpts($('opts1'), STEP1, answer1);
+    reveal('step1');
+  }
+}
+
+/* Étape 2 (avoir) : où est le CDV ? */
+function hint1(it){
+  const q = it.q || 'quoi';
+  if (it.c === 'A') {
+    return `Avoir ${it.pp} ${q} ? « ${it.cdv} »` + (it.ref ? ` (mis pour « ${it.ref} »)` : '') + `, placé <b>AVANT</b> le verbe !`;
+  }
+  if (it.c === 'B') return `Avoir ${it.pp} ${q} ? « ${it.cdv} », placé <b>APRÈS</b> le verbe.`;
+  return it.note;
+}
+function answer1(k){
+  if (S.cur.p1 || !S.cur.p0) return;
+  const it = S.qs[S.i];
+  const ok = k === it.c;
+  S.cur.p1 = k; S.cur.ok1 = ok;
+  if (ok) S.score++;
+  $('pill-score').textContent = 'Score : ' + S.score;
+  markOpts($('opts1'), it.c, k);
+  $('note1').innerHTML = noteHTML(ok, 'Bien vu, détective !', hint1(it));
+  $('num-accord').textContent = '3';
+  $('title-accord').textContent = 'Étape 3 — Quel est le bon accord ?';
+  buildAccord(it);
+}
+
+/* Dernière étape : l'accord */
+function buildAccord(it){
+  const f = forms(it);
+  const uniq = [...new Set([f.ms, f.fs, f.mp, f.fp])];
+  $('opts2').className = 'opts ' + (uniq.length === 4 ? 'forms4' : 'forms3');
+  makeOpts($('opts2'), shuffle(uniq).map(w => ({k:w, label:w})), answer2);
+  reveal('step2');
+}
+function explain2(it, ans){
+  if (it.c === 'E') {
+    let t = `Avec l'auxiliaire <b>être</b>, le participe passé s'accorde avec le sujet « ${it.suj} » (${GENRE[it.g]}) → <b>${ans}</b>.`;
+    if (it.note) t += ' ' + it.note;
+    else if (it.g === 'ms') t += ` Le sujet est masculin singulier : on n'ajoute rien !`;
+    return t;
+  }
+  if (it.c === 'A') {
+    const who = it.ref ? `« ${it.cdv} » (mis pour « ${it.ref} », ${GENRE[it.g]})` : `« ${it.cdv} » (${GENRE[it.g]})`;
+    let t = `Le CDV ${who} est placé avant le verbe : le participe passé s'accorde avec lui → <b>${ans}</b>.`;
+    if (it.g === 'ms') t += ` Ici, le CDV est masculin singulier : on n'ajoute rien !`;
+    return t;
+  }
+  let t = it.c === 'B'
+    ? `Le CDV est placé après le verbe : le participe passé ne s'accorde pas → <b>${ans}</b>.`
+    : `Il n'y a pas de CDV : le participe passé ne s'accorde pas → <b>${ans}</b>.`;
+  if (it.subj) t += ` Attention : avec <b>avoir</b>, on n'accorde jamais avec le sujet.`;
+  return t;
+}
+function answer2(w){
+  const it = S.qs[S.i];
+  if (S.cur.p2 || !S.cur.p0 || (!isEtre(it) && !S.cur.p1)) return;
+  const ans = answerOf(it);
+  const ok = w === ans;
+  S.cur.p2 = w;
+  if (ok) S.score++;
+  $('pill-score').textContent = 'Score : ' + S.score;
+  markOpts($('opts2'), ans, w);
+  $('sentence').innerHTML = sentenceHTML(it, ans, ok);
+  $('note2').innerHTML = noteHTML(ok, 'Accord parfait !', explain2(it, ans));
+  S.log.push({it, ok0: S.cur.ok0, p0: S.cur.p0, ok1: isEtre(it) ? true : S.cur.ok1, p1: S.cur.p1, ok2: ok, p2: w, ans});
+  $('btn-next').textContent = S.i + 1 < S.qs.length ? 'Phrase suivante →' : 'Voir mon résultat →';
+  $('next-row').classList.remove('hidden');
+  setTimeout(() => $('next-row').scrollIntoView({behavior:'smooth', block:'nearest'}), 120);
+}
+
+function next(){
+  if (!S.cur.p2) return;
+  S.i++;
+  if (S.i < S.qs.length) showQuestion(); else finish();
+}
+
+function finish(){
+  const max = S.max;
+  $('game').classList.add('hidden'); $('end').classList.remove('hidden');
+  $('end-score').textContent = S.score + ' / ' + max;
+  const pct = S.score / max;
+  $('end-emoji').textContent = pct === 1 ? '🏆' : pct >= .8 ? '🌟' : pct >= .5 ? '🔍' : '🧩';
+  $('end-msg').textContent = pct === 1 ? 'Enquête parfaite ! Aucun accord ne t\'échappe.'
+    : pct >= .8 ? 'Très belle enquête, détective !'
+    : pct >= .5 ? 'Bonne piste ! Relis les indices ci-dessous et recommence.'
+    : 'Courage ! Revois la règle (📖) puis lance une nouvelle enquête.';
+  $('end-time').textContent = '1 point par étape réussie';
+
+  const L = {A:'CDV avant', B:'CDV après', C:'pas de CDV'};
+  const LA = {etre:'être', avoir:'avoir'};
+  $('recap').innerHTML = S.log.map(r => {
+    const all = r.ok0 && r.ok1 && r.ok2;
+    const errs = [];
+    if (!r.ok0) errs.push(`Auxiliaire : tu as choisi « ${LA[r.p0]} », c'était « ${isEtre(r.it) ? 'être' : 'avoir'} ».`);
+    if (!r.ok1) errs.push(`CDV : tu as choisi « ${L[r.p1]} », c'était « ${L[r.it.c]} ».`);
+    if (!r.ok2) errs.push(`Accord : tu as choisi « ${r.p2} ».`);
+    return `<div class="recap-row"><div class="mk">${all ? '✅' : '❌'}</div><div>${sentenceHTML(r.it, r.ans, r.ok2)}` +
+      (errs.length ? `<div class="sub">${errs.join(' ')}</div>` : '') + `</div></div>`;
+  }).join('');
+
+  const best = store('lcml_pp_cdv_best_pct') || 0;
+  if (pct > best) store('lcml_pp_cdv_best_pct', pct);
+
+  // Envoi du résultat à la page enseignant (uniquement quand l'exercice est intégré au site)
+  if (!S.saved) {
+    S.saved = true;
+    try {
+      if (window.parent && window.parent !== window && window.parent.saveResult) {
+        window.parent.saveResult({
+          activity: 'ortho_participe_cdv',
+          bookTitle: 'Le Détective du participe passé (être / avoir, CDV / CIV)',
+          score: S.score, total: max, pct: Math.round(pct * 100),
+          date: new Date().toLocaleDateString('fr-BE'),
+          time: new Date().toLocaleTimeString('fr-BE', {hour:'2-digit', minute:'2-digit'})
+        });
+      }
+    } catch (e) {}
+  }
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function openRule(){ $('modal').classList.remove('hidden'); }
+function closeRule(){ $('modal').classList.add('hidden'); }
+
+/* ---------- Démarrage ---------- */
+$('btn-start').addEventListener('click', startRound);
+$('btn-again').addEventListener('click', startRound);
+$('btn-next').addEventListener('click', next);
+$('btn-rule').addEventListener('click', openRule);
+$('btn-rule2').addEventListener('click', openRule);
+$('btn-close').addEventListener('click', closeRule);
+$('modal').addEventListener('click', e => { if (e.target.id === 'modal') closeRule(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeRule(); });
+
+const nE0 = BANK.filter(isEtre).length;
+$('bank-info').textContent = BANK.length + ' phrases dans la banque (' + (BANK.length - nE0) + ' avec avoir, ' + nE0 + ' avec être) — ' + ROUND + ' phrases par enquête, jamais les mêmes d\'une enquête à l\'autre.';
+const best0 = store('lcml_pp_cdv_best_pct');
+if (best0) $('record').textContent = '🏅 Ton meilleur score : ' + Math.round(best0 * 100) + ' %';
+</script>
+</body>
+</html>

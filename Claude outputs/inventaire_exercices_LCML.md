@@ -2516,6 +2516,7 @@ Spécifique :
 | ✅ 05/10 | PP avec Être | `ortho_participe_etre` | fiches/orthographe_participe_passe_etre.html |  |
 | ✅ 05/10 | PP avec Avoir | `ortho_participe_avoir` | fiches/orthographe_participe_passe_avoir.html |  |
 | ✅ 05/10 | L'Accord parfait (Participe passé) | `ortho_participe_accord` | fiches/accord_participe.html |  |
+| ✅ 12/10 | Le Détective du participe passé (nouveau) | `ortho_participe_cdv` | fiches/orthographe_participe_passe_detective.html |  |
 | ✅ 05/10 | Les pluriels particuliers | `ortho_pluriels` | fiches/orthographe_pluriels_particuliers.html |  |
 | ✅ 05/10 | Accord des adjectifs de couleur | `ortho_adjectifs_couleur` | fiches/orthographe_adjectifs_couleur.html |  |
 
@@ -2993,3 +2994,13 @@ Non corrigé (signalé) : balance_fractions n'enregistre qu'à la réussite du n
 - Non traité (décision pédagogique) : cycle de l'eau (leçon) toujours assignable dans le plan ; retenue vide comptée fausse (calcul écrit) ; alertes de la page enseignant (sans impact élève).
 - Grammaire › Le verbe (fonction) et Le sujet — « Reconstituer les textes » (10 textes) : une étiquette glissée depuis la liste vidait la case portant le même numéro que l'étiquette (un verbe déjà placé retournait dans la liste). Le glisser-déposer distingue maintenant l'origine (liste / case) ; testé en jsdom sur les 10 textes (ancien code : bug reproduit, nouveau : 0 anomalie). sw.js v748.
 - Durées › Quelle heure est-il ? (avec secondes) (08/10, signalement : réponse comptée fausse alors que la correction affichait la réponse de l'élève) : le calcul de la correction est juste (60 parcours simulés en jsdom, formats 03 h / 15 h / 00 h pour midi : 0 refus). Mais après une erreur, les chiffres restaient modifiables pendant que la correction s'affichait (1,8 s) : l'élève pouvait recopier la bonne réponse et croire l'avoir donnée. Maintenant : réponse figée après validation, la correction affiche « Tu as écrit … » à côté de la bonne réponse et nomme la partie fausse (heures / minutes / secondes), affichée 4,5 s ; boutons +/− sans zoom au double-toucher (touch-action: manipulation) ; Recommencer pendant l'animation ne déverrouille plus trop tôt. Copies public et racine synchronisées. sw.js v749.
+
+## 12/10 — Nouvel exercice : « Le Détective du participe passé » (Orthographe › Participe passé) — sw.js v756
+
+- `fiches/orthographe_participe_passe_detective.html`, identifiant `ortho_participe_cdv`, logo `assets/logos/ortho_participe_detective.png` (+ .svg).
+- Étape 1 : auxiliaire être / avoir. Étape 2 (avoir) : CDV avant / après / pas de CDV (CIV ou autre complément), ordre A-B-C fixe. Dernière étape : choix de l'accord parmi 3-4 formes. 1 point par étape, l'indice n'apparait que dans la correction.
+- 97 phrases : 62 avec avoir (26 CDV avant, 18 après, 18 sans CDV) et 35 avec être (65 % / 35 % demandé par Jérémy) ; 10 phrases par enquête (3 ou 4 avec être), pas de répétition avant d'avoir fait le tour de la banque. Pas de chrono. Écartés volontairement : « en », participe + infinitif, « fait » + infinitif, verbes pronominaux.
+- index.html : titres, écran `screen-ortho-participe-passe-detective`, carte dans `renderParticipePasseMenu()`, liste des activités connues, rubrique parente `ortho_participe_passe`, plan de travail (Orthographe — Règles & Accords).
+- Testé : 6 enquêtes simulées (réponses justes, 0 erreur JS), affichage sans défilement à 1280×720, iPad paysage dans l'iframe (≈ 620 px) et iPad portrait. À confirmer sur un vrai iPad.
+- Sur les classes existantes, la carte est visible des élèves dès la mise en ligne (non masquée par défaut, comme les autres exercices).
+
