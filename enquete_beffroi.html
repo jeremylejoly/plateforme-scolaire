@@ -661,7 +661,7 @@
         "Pendant qu'ils discutent, le pèlerin se glisse dans la foule de la foire. Le temps qu'on le cherche, il a déjà galopé hors de la ville, son bourdon à la main.",
         "Le sablier se met à briller et tu te retrouves en classe, sans savoir si Bruges a retrouvé son sceau…"
       ],
-      ending: { type: 'half', title: "Tu avais démasqué le bon suspect, mais il te fallait plus de preuves. Visite tous les lieux et résous toutes les énigmes !" }
+      ending: { backTo: 'place', type: 'half', title: "Tu avais démasqué le bon suspect, mais il te fallait plus de preuves. Visite tous les lieux et résous toutes les énigmes !" }
     },
 
     finSansPreuve: { title: "Pas assez de preuves",
@@ -670,7 +670,7 @@
         "Sire Gauthier éclate de rire. Pendant que tout le monde te gronde, le pèlerin quitte tranquillement les Halles.",
         "Le sablier se met à briller et tu te retrouves en classe, la tête basse."
       ],
-      ending: { type: 'lose', title: "Ton intuition était peut-être bonne, mais un détective doit toujours apporter des preuves." }
+      ending: { backTo: 'place', type: 'lose', title: "Ton intuition était peut-être bonne, mais un détective doit toujours apporter des preuves." }
     },
 
     finFuite: { title: "Fuite au galop",
@@ -823,7 +823,8 @@
       const label = p.ending.type === 'win' ? 'Fin gagnante' : p.ending.type === 'half' ? 'Fin à moitié réussie' : 'Fin ratée';
       html += `<div class="ending-box ${p.ending.type}"><div class="big">${icon}</div><h3>${label}</h3><p style="margin:6px 0 10px">${p.ending.title}</p>
         <div class="muted">${isNew ? '✨ Nouvelle fin découverte ! ' : ''}Fins découvertes : ${loadEndings().length} / 7</div></div><div class="ending-actions">`;
-      if (p.ending.type !== 'win' && game.history.length) html += `<button class="btn" data-act="back">↩ Revenir au choix précédent</button>`;
+      if (p.ending.type !== 'win' && p.ending.backTo) html += `<button class="btn" data-act="backTo" data-target="${p.ending.backTo}">↩ Retourner enquêter</button>`;
+      else if (p.ending.type !== 'win' && !p.ending.noBack && game.history.length) html += `<button class="btn" data-act="back">↩ Revenir au choix précédent</button>`;
       html += `<button class="btn primary" data-act="restart">🔄 Recommencer l'enquête</button><button class="btn" data-act="menu">Menu</button></div>`;
       if (p.ending.type === 'win' && typeof confetti === 'function') setTimeout(() => { try { confetti({ particleCount: 150, spread: 80, origin: { y: .6 } }); } catch (e) {} }, 250);
     } else {
@@ -906,7 +907,8 @@
     if (act === 'check') checkEnigme();
     else if (act === 'restart') { newGame(); goTo('classe', { noHistory: true }); }
     else if (act === 'menu') renderTitle();
-    else if (act === 'back') { const prev = game.history.pop(); if (prev) goTo(prev, { noHistory: true }); }
+    else if (act === 'back') { let prev = game.history.pop(); while (prev && S[prev].auto) prev = game.history.pop(); if (prev) goTo(prev, { noHistory: true }); }
+    else if (act === 'backTo') goTo(t.dataset.target, { noHistory: true });
   });
   story.addEventListener('keydown', (ev) => { if (ev.key === 'Enter' && ev.target.tagName === 'INPUT') { ev.preventDefault(); checkEnigme(); } });
 

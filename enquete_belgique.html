@@ -679,7 +679,7 @@
         "L'inspectrice hésite. <span class='speech'>« C'est un peu mince pour fouiller ce monsieur… »</span>",
         "Pendant qu'elle réfléchit, le chauffeur ferme les portes et le bus démarre vers l'Allemagne. Le Globe d'or sera retrouvé des semaines plus tard, grâce à la police allemande."
       ],
-      ending: { type: 'half', title: "Tu avais trouvé le bon voyageur, mais il te manquait des preuves. Résous plus d'énigmes en chemin !" }
+      ending: { noBack: true, type: 'half', title: "Tu avais trouvé le bon voyageur, mais il te manquait des preuves. Résous plus d'énigmes en chemin !" }
     },
 
     finSansPreuve: { title: "Pas assez de preuves",
@@ -687,7 +687,7 @@
         "<span class='speech'>« Avec si peu de preuves, je ne peux pas arrêter quelqu'un ! »</span> répond l'inspectrice.",
         "Le voyageur 2 te fait un clin d'œil et monte dans le bus. Le Renard a gagné cette fois…"
       ],
-      ending: { type: 'lose', title: "Ton intuition était bonne, mais un détective doit apporter des preuves. Résous les énigmes en chemin : la plupart t'en donnent une !" }
+      ending: { noBack: true, type: 'lose', title: "Ton intuition était bonne, mais un détective doit apporter des preuves. Résous les énigmes en chemin : la plupart t'en donnent une !" }
     },
 
     finVoyageur1: { title: "Erreur sur la personne",
@@ -711,7 +711,7 @@
         "Tu arrives à la gare d'Eupen hors d'haleine… juste à temps pour voir le bus pour l'Allemagne tourner au coin de la rue. Il est 18 h : le Renard a quitté la Belgique.",
         "Trop de fausses pistes t'ont fait perdre du temps."
       ],
-      ending: { type: 'lose', title: "Le Renard avait trop d'avance. Relis bien chaque devinette avant de choisir ton train !" }
+      ending: { noBack: true, type: 'lose', title: "Le Renard avait trop d'avance. Relis bien chaque devinette avant de choisir ton train !" }
     }
   };
 
@@ -835,7 +835,8 @@
       const label = p.ending.type === 'win' ? 'Fin gagnante' : p.ending.type === 'half' ? 'Fin à moitié réussie' : 'Fin ratée';
       html += `<div class="ending-box ${p.ending.type}"><div class="big">${icon}</div><h3>${label}</h3><p style="margin:6px 0 10px">${p.ending.title}</p>
         <div class="muted">${isNew ? '✨ Nouvelle fin découverte ! ' : ''}Fins découvertes : ${loadEndings().length} / 6</div></div><div class="ending-actions">`;
-      if (p.ending.type !== 'win' && game.history.length) html += `<button class="btn" data-act="back">↩ Revenir au choix précédent</button>`;
+      if (p.ending.type !== 'win' && p.ending.backTo) html += `<button class="btn" data-act="backTo" data-target="${p.ending.backTo}">↩ Retourner enquêter</button>`;
+      else if (p.ending.type !== 'win' && !p.ending.noBack && game.history.length) html += `<button class="btn" data-act="back">↩ Revenir au choix précédent</button>`;
       html += `<button class="btn primary" data-act="restart">🔄 Recommencer l'enquête</button><button class="btn" data-act="menu">Menu</button></div>`;
       if (p.ending.type === 'win' && typeof confetti === 'function') setTimeout(() => { try { confetti({ particleCount: 150, spread: 80, origin: { y: .6 } }); } catch (e) {} }, 250);
     } else {
@@ -925,7 +926,7 @@
     if (act === 'check') checkEnigme();
     else if (act === 'restart') { newGame(); goTo(FIRST, { noHistory: true }); }
     else if (act === 'menu') renderTitle();
-    else if (act === 'back') { const prev = game.history.pop(); if (prev) { game.delay = game.delayBefore !== undefined ? game.delayBefore : game.delay; goTo(prev, { noHistory: true }); } }
+    else if (act === 'back') { let prev = game.history.pop(); while (prev && S[prev].auto) prev = game.history.pop(); if (prev) { game.delay = game.delayBefore !== undefined ? game.delayBefore : game.delay; goTo(prev, { noHistory: true }); } }
   });
   story.addEventListener('keydown', (ev) => { if (ev.key === 'Enter' && ev.target.tagName === 'INPUT') { ev.preventDefault(); checkEnigme(); } });
 

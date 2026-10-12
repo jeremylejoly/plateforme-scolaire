@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Le Coureur trop calme — Plateforme LCML</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+  :root {
+    --purple: #5B4FCF; --purple-light: #EEF0FF; --purple-mid: #C7C2F5;
+    --green: #1A9E75; --green-light: #E2F5EE;
+    --red: #D94F3D; --red-light: #FDECEA;
+    --amber: #F59E0B; --amber-dark: #C97B1A; --amber-light: #FEF3E2;
+    --blue: #1A6FA0; --blue-light: #E2F0FA;
+    --parchment: #F3FBF6;
+    --bg: #FDFBF7; --surface: #FFFFFF; --surface-alt: #F4F1EB;
+    --text: #1A1A2E; --muted: #6B7080; --border: #1A1A2E;
+    --shadow: 4px 4px 0 var(--border); --shadow-sm: 2px 2px 0 var(--border);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; }
+  body { padding: 16px; }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1, h2, h3, .fred { font-family: 'Fredoka', 'Inter', sans-serif; }
+  button { font: inherit; color: inherit; cursor: pointer; touch-action: manipulation; }
+
+  .topbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .topbar .title { flex: 1; min-width: 180px; font-family: 'Fredoka'; font-weight: 700; font-size: 1.25rem; }
+  .btn { border: 2px solid var(--border); border-radius: 12px; background: var(--surface); padding: 10px 14px; min-height: 48px; font-weight: 600; box-shadow: var(--shadow-sm); }
+  .btn:active { transform: translate(2px,2px); box-shadow: none; }
+  .btn.primary { background: var(--purple); color: #fff; }
+  .btn.amber { background: var(--amber-light); }
+  .btn .count { display: inline-block; min-width: 22px; padding: 0 6px; margin-left: 4px; border-radius: 999px; background: var(--purple); color: #fff; font-size: .85rem; }
+
+  .card { background: var(--surface); border: 2px solid var(--border); border-radius: 20px; box-shadow: var(--shadow); padding: 22px; }
+  .story.card { background: var(--parchment); }
+
+  .hero { text-align: center; }
+  .hero .owl { font-size: 4.5rem; line-height: 1; }
+  .hero h1 { font-size: 2rem; margin: 10px 0 6px; }
+  .hero p { line-height: 1.55; font-size: 1.05rem; }
+  .rules { text-align: left; background: var(--surface-alt); border-radius: 14px; padding: 14px 18px; margin: 16px 0; line-height: 1.5; }
+  .rules li { margin: 4px 0; }
+  .endings { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 12px 0 18px; }
+  .ending-chip { border: 2px solid var(--border); border-radius: 999px; padding: 6px 12px; font-size: .9rem; background: var(--surface-alt); color: var(--muted); }
+  .ending-chip.found { color: var(--text); background: var(--green-light); }
+  .ending-chip.found.win { background: #FFE9A8; }
+  .start-btns { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+  .para-num { display: inline-flex; align-items: center; justify-content: center; width: 58px; height: 58px; border-radius: 50%; flex-shrink: 0;
+    background: var(--purple); color: #fff; font-family: 'Fredoka'; font-weight: 700; font-size: 1.6rem; border: 2px solid var(--border); box-shadow: var(--shadow-sm); }
+  .para-head { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  .para-head h2 { margin: 0; font-size: 1.35rem; }
+  .story p { font-size: 1.12rem; line-height: 1.7; margin: 0 0 14px; }
+  .story .speech { font-style: italic; }
+  .doc { font-family: 'Fredoka'; background: #FFFBEA; border: 2px solid var(--border); border-radius: 6px; padding: 14px 18px; margin: 0 0 14px; font-size: 1.1rem; line-height: 1.8; }
+  .vocab { background: var(--surface); border-left: 5px solid var(--amber-dark); border-radius: 8px; padding: 8px 12px; margin: 0 0 14px; font-size: .98rem; line-height: 1.5; }
+
+  .clue-found { background: var(--blue-light); border: 2px solid var(--blue); border-radius: 12px; padding: 10px 14px; margin: 4px 0 12px; font-size: 1rem; line-height: 1.45; }
+  .clue-found b { color: var(--blue); }
+  .obj-found { background: var(--green-light); border: 2px solid var(--green); border-radius: 12px; padding: 10px 14px; margin: 4px 0 12px; font-size: 1rem; line-height: 1.45; }
+
+  .choices { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+  .choices .prompt { font-weight: 700; font-family: 'Fredoka'; font-size: 1.1rem; margin: 6px 0 2px; }
+  .choice { display: flex; align-items: center; gap: 12px; text-align: left; width: 100%; border: 2px solid var(--border); border-radius: 14px;
+    background: var(--purple-light); padding: 12px 14px; min-height: 56px; font-size: 1.05rem; font-weight: 600; box-shadow: var(--shadow-sm); }
+  .choice:active { transform: translate(2px,2px); box-shadow: none; }
+  .choice .go { margin-left: auto; flex-shrink: 0; font-family: 'Fredoka'; font-size: .95rem; background: var(--surface); border: 2px solid var(--border); border-radius: 999px; padding: 2px 10px; white-space: nowrap; }
+  .choice.accuse { background: var(--red-light); }
+  .choice.skip { background: var(--surface-alt); }
+  .choice.obj { background: var(--green-light); }
+
+  .enigme { border: 2px solid var(--border); border-radius: 16px; background: var(--amber-light); padding: 16px; margin: 6px 0 16px; }
+  .enigme h3 { margin: 0 0 8px; font-size: 1.15rem; }
+  .enigme .q { font-size: 1.05rem; line-height: 1.55; margin: 0 0 12px; font-weight: 600; }
+  .answer-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+  .answer-row label { font-weight: 600; min-width: 140px; }
+  .answer-row input { width: 120px; font-size: 1.4rem; font-family: 'Fredoka'; text-align: center; padding: 8px; border: 2px solid var(--border); border-radius: 10px; background: #fff; }
+  .answer-row .unit { font-family: 'Fredoka'; font-size: 1.2rem; font-weight: 600; }
+  .qcm { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  .qcm button { text-align: left; border: 2px solid var(--border); border-radius: 12px; background: #fff; padding: 10px 14px; min-height: 52px; font-size: 1.02rem; font-weight: 500; }
+  .qcm button.sel { background: var(--purple); color: #fff; }
+  .qcm button.good { background: var(--green); color: #fff; }
+  .qcm.done button:not(.sel) { opacity: .45; }
+  .feedback { margin-top: 12px; padding: 10px 14px; border-radius: 10px; line-height: 1.5; font-size: 1rem; }
+  .feedback.ok { background: var(--green-light); border: 2px solid var(--green); }
+  .feedback.ko { background: var(--red-light); border: 2px solid var(--red); }
+  .feedback.info { background: var(--surface); border: 2px solid var(--amber-dark); }
+
+  .proofs { list-style: none; padding: 0; margin: 0 0 14px; }
+  .proofs li { background: var(--surface); border: 2px solid var(--border); border-radius: 10px; padding: 8px 12px; margin-bottom: 8px; line-height: 1.45; }
+
+  .ending-box { text-align: center; border: 2px solid var(--border); border-radius: 16px; padding: 16px; margin: 10px 0 14px; }
+  .ending-box.win { background: #FFE9A8; }
+  .ending-box.half { background: var(--blue-light); }
+  .ending-box.lose { background: var(--red-light); }
+  .ending-box .big { font-size: 2.6rem; }
+  .ending-box h3 { margin: 6px 0; font-size: 1.3rem; }
+  .ending-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+  .overlay { position: fixed; inset: 0; background: rgba(26,26,46,.45); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 10; }
+  .overlay.open { display: flex; }
+  .overlay .card { max-width: 560px; width: 100%; max-height: 85vh; overflow: auto; }
+  .carnet-list { list-style: none; padding: 0; margin: 8px 0 14px; }
+  .carnet-list li { border-bottom: 2px dashed var(--purple-mid); padding: 10px 2px; line-height: 1.45; }
+  .muted { color: var(--muted); }
+  .hidden { display: none !important; }
+  @media (max-width: 480px) { body { padding: 10px; } .card { padding: 16px; } .story p { font-size: 1.05rem; } .hero h1 { font-size: 1.6rem; } .answer-row label { min-width: 0; width: 100%; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section id="screen-title" class="card hero">
+    <div class="owl">🏃</div>
+    <h1>Le Coureur trop calme</h1>
+    <p class="muted fred">Une enquête dont tu es le héros ou l'héroïne — le jour du cross de l'école</p>
+    <div class="rules">
+      <ul>
+        <li>🏃 Le vainqueur du cross a-t-il triché ? À toi de mener l'enquête… comme un ou une scientifique !</li>
+        <li>⏱️ Mesure, calcule, compare : le <b>pouls</b>, la <b>respiration</b> et le <b>chronomètre</b> sont tes meilleurs outils.</li>
+        <li>🔐 Les <b>énigmes</b> te font gagner des preuves. Plus tu en résous, plus ton dossier est solide.</li>
+        <li>📒 Les indices sont notés dans ton <b>carnet</b>, et certains objets ouvrent de nouveaux chemins.</li>
+        <li>⚖️ Attention : accuser quelqu'un <b>sans preuve</b> n'est pas juste !</li>
+        <li>💾 La partie est <b>sauvegardée</b> : tu peux la reprendre plus tard.</li>
+      </ul>
+    </div>
+    <div class="fred" style="font-weight:600">Fins découvertes : <span id="endings-count">0</span> / 5</div>
+    <div class="endings" id="endings-list"></div>
+    <div class="start-btns">
+      <button class="btn primary hidden" id="btn-resume" style="font-size:1.1rem;padding:12px 24px">▶ Reprendre ma partie</button>
+      <button class="btn" id="btn-start" style="font-size:1.1rem;padding:12px 24px">Commencer l'enquête</button>
+    </div>
+  </section>
+
+  <section id="screen-story" class="hidden">
+    <div class="topbar">
+      <div class="title">🏃 Le Coureur trop calme</div>
+      <button class="btn amber" id="btn-carnet">📒 Carnet <span class="count" id="clue-count">0</span></button>
+      <button class="btn" id="btn-menu">⟲ Menu</button>
+    </div>
+    <article class="card story" id="story"></article>
+  </section>
+</div>
+
+<div class="overlay" id="carnet">
+  <div class="card">
+    <h2 style="margin:0 0 4px">🎒 Mon sac</h2>
+    <ul class="carnet-list" id="sac-list"></ul>
+    <h2 style="margin:0 0 4px">📒 Mes indices</h2>
+    <ul class="carnet-list" id="carnet-list"></ul>
+    <button class="btn primary" id="btn-carnet-close" style="width:100%">Fermer le carnet</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* =====================================================================
+     INDICES ET OBJETS
+     PREUVES : indices qui comptent comme preuves devant Mme Lambert.
+     ===================================================================== */
+  const CLUES = {
+    pouls:       "À l'arrivée, le cœur de Malik battait à 168 battements par minute, celui d'Arthur à seulement 104.",
+    souffle:     "Juste après l'arrivée, Arthur respirait 22 fois par minute, comme au repos. Malik, lui, respirait 48 fois par minute.",
+    chrono:      "Entre le contrôle 1 et l'arrivée, Arthur a mis 2 minutes, Malik 4 minutes. Malik est pourtant le coureur le plus rapide de l'école !",
+    tampon:      "Au contrôle 2, M. Janssens n'a jamais vu passer Arthur : sa carte de course n'a pas le tampon n° 2.",
+    temoin:      "Vers 10 h 04, le cuisinier a vu un enfant en casquette bleue marcher tranquillement dans le petit bois, puis se mettre à courir vers l'arrivée.",
+    aiguilles:   "Dans les rainures des semelles d'Arthur, des aiguilles de pin. Il n'y a des pins que dans le petit bois, hors du parcours.",
+    repos:       "Hier, au cours de gym, le pouls d'Arthur au repos était en moyenne de 88 battements par minute : à l'arrivée, il était à peine plus élevé.",
+    explication: "Tu sais expliquer pourquoi, pendant un effort, le cœur bat plus vite et la respiration s'accélère.",
+    alibiZoe:    "Zoé est tombée dans une flaque au contrôle 2 : l'infirmière a soigné son genou. C'est pour ça que ses chaussures sont pleines de boue.",
+    alibiMalik:  "M. Janssens a bien vu passer Malik au contrôle 2 : son tampon est juste effacé par la sueur."
+  };
+  const PREUVES = ['pouls', 'souffle', 'chrono', 'tampon', 'temoin', 'aiguilles', 'repos'];
+
+  const OBJECTS = {
+    loupe: "🔍 La loupe de l'infirmière, pour observer les petits détails."
+  };
+
+  /* =====================================================================
+     L'HISTOIRE
+     ===================================================================== */
+  const S = {
+    depart: { title: "Le cross de l'école",
+      text: [
+        "Vendredi, 10 h. C'est le grand cross de l'école dans le parc : une boucle de 1 200 m dans l'herbe et la boue, avec deux postes de contrôle. À chaque poste, un adulte donne un coup de tampon sur la carte de course des coureurs.",
+        "<div class='doc'>🏁 Départ → 🟡 Contrôle 1 (l'étang, 400 m) → 🟢 Contrôle 2 (la prairie, 900 m) → 🏁 Arrivée (1 200 m)<br>⚠️ Interdit de couper par le petit bois !</div>",
+        "Tu es au chronomètre avec M. Diallo, le professeur de gym. Premiers à l'arrivée : Arthur, à 10 h 05, en pleine forme… puis Malik, le plus rapide de l'école, à 10 h 06, rouge et trempé de sueur… puis Zoé, à 10 h 07, couverte de boue.",
+        "Malik proteste, tout essoufflé : <span class='speech'>« C'est… pas possible… Arthur… n'était pas devant moi… »</span>",
+        "M. Diallo te tend sa feuille : <span class='speech'>« Vite, avant qu'ils se reposent ! J'ai compté les battements de leur cœur pendant 15 secondes, au poignet. Combien cela fait-il par minute ? »</span>",
+        "<div class='doc'>Malik : 42 battements en 15 secondes<br>Arthur : 26 battements en 15 secondes</div>"
+      ],
+      enigme: { kind: 'numbers',
+        title: "❤️ Le pouls à l'arrivée",
+        question: "Calcule le nombre de battements du cœur par minute pour chaque coureur.",
+        fields: [ { label: "Malik (par minute) :", answer: 168 }, { label: "Arthur (par minute) :", answer: 104 } ],
+        hint: "Dans une minute, il y a 4 fois 15 secondes. Il faut donc multiplier chaque nombre par 4.",
+        success: "Exact : 42 × 4 = 168 et 26 × 4 = 104. Le cœur de Malik bat très vite après l'effort. Celui d'Arthur, beaucoup moins…",
+        to: 'departOk', skipTo: 'departKo', skipLabel: "Laisser M. Diallo calculer"
+      }
+    },
+
+    departOk: { title: "Un cœur bien calme",
+      text: [
+        "<span class='speech'>« Au repos, le cœur d'un enfant de ton âge bat en général entre 60 et 100 fois par minute, explique M. Diallo. Après une course comme celle-là, il peut monter vers 170, 180, parfois plus. Arthur a gagné… mais son cœur bat à peine plus vite qu'au repos. Bizarre ! »</span>",
+        "Il te donne le chronomètre : <span class='speech'>« Compte vite leurs mouvements respiratoires pendant 30 secondes. Une inspiration et une expiration, ça fait un mouvement. »</span>"
+      ],
+      clues: ['pouls'],
+      prompt: "",
+      choices: [ { label: "Observer la respiration d'Arthur et de Malik", to: 'souffle' } ]
+    },
+
+    departKo: { title: "M. Diallo calcule",
+      text: [
+        "M. Diallo fait le calcul lui-même, mais il est occupé avec les autres coureurs qui arrivent. Le temps qu'il revienne, Arthur et Malik se sont déjà reposés : impossible de mesurer leur respiration maintenant.",
+        "Il note sur sa feuille : Malik 168 battements par minute, Arthur 104. Puis il la range dans sa poche, l'air songeur."
+      ],
+      prompt: "",
+      choices: [ { label: "Aller trouver Mme Lambert près du podium", to: 'parc' } ]
+    },
+
+    souffle: { title: "Les mouvements respiratoires",
+      text: [
+        "Tu regardes le ventre et la poitrine des deux coureurs monter et descendre, le chronomètre à la main.",
+        "<div class='doc'>Malik : 24 mouvements respiratoires en 30 secondes<br>Arthur : 11 mouvements respiratoires en 30 secondes</div>",
+        "Tu remarques aussi que le T-shirt de Malik est trempé de sueur. Celui d'Arthur est presque sec."
+      ],
+      enigme: { kind: 'number', answer: 22, unit: "par minute",
+        title: "🫁 La respiration d'Arthur",
+        question: "Combien de mouvements respiratoires Arthur fait-il en une minute ?",
+        hint: "Une minute, c'est 2 fois 30 secondes. Il faut donc multiplier par 2.",
+        success: "Exact : 11 × 2 = 22 mouvements par minute. C'est un rythme de repos pour un enfant de ton âge (environ 15 à 25 par minute). Malik, lui, en fait 24 × 2 = 48 : il respire très vite après l'effort !",
+        to: 'souffleOk', skipTo: 'souffleKo', skipLabel: "Rendre le chronomètre à M. Diallo"
+      }
+    },
+
+    souffleOk: { title: "Un drôle de vainqueur",
+      text: [
+        "Après une course de 1 200 m, tout le monde devrait être essoufflé… sauf quelqu'un qui n'a pas couru tout le parcours !",
+        "Mais attention : en enquête, on n'accuse pas sans avoir rassemblé des preuves. Il faut enquêter dans le parc."
+      ],
+      clues: ['souffle'],
+      prompt: "",
+      choices: [ { label: "Aller trouver Mme Lambert près du podium", to: 'parc' } ]
+    },
+
+    souffleKo: { title: "Trop tard",
+      text: [
+        "Tu rends le chronomètre. Quelques minutes plus tard, tout le monde a repris son souffle : impossible de mesurer quoi que ce soit maintenant."
+      ],
+      prompt: "",
+      choices: [ { label: "Aller trouver Mme Lambert près du podium", to: 'parc' } ]
+    },
+
+    parc: { title: "Le podium",
+      text: [
+        "Près du podium, Mme Lambert, la directrice, tient les trois médailles. Arthur sourit sous sa casquette bleue, Malik est déçu, Zoé frotte ses chaussures pleines de boue. Ni Malik ni Zoé ne portent de casquette.",
+        "<span class='speech'>« Malik dit qu'Arthur a triché, Arthur dit que non… Je remettrai les médailles à 11 h. D'ici là, mène l'enquête, détective ! »</span>"
+      ],
+      prompt: "Où vas-tu ?",
+      choices: [
+        { label: "🟡 Le contrôle 1, près de l'étang", to: 'c1' },
+        { label: "🟢 Le contrôle 2, dans la prairie", to: 'c2' },
+        { label: "🩹 L'infirmerie", to: 'infirmerie' },
+        { label: "🍽️ La cantine, au bord du petit bois", to: 'cantine' },
+        { label: "👟 Les vestiaires", to: 'vestiaires' },
+        { label: "🤸 La salle de gym", to: 'gym' },
+        { label: "C'est décidé : je donne mes conclusions à Mme Lambert", to: 'podium', accuse: true }
+      ]
+    },
+
+    c1: { title: "Le contrôle 1",
+      text: [
+        "Près de l'étang, Mme Rossi, une maman bénévole, range son tampon. Elle a noté l'heure de passage de chaque coureur.",
+        "<div class='doc'>Contrôle 1 (400 m)<br>Malik : 10 h 02 — Arthur : 10 h 03 — Zoé : 10 h 03</div>",
+        "Tu regardes aussi tes notes de l'arrivée : Arthur à <b>10 h 05</b>, Malik à <b>10 h 06</b>."
+      ],
+      enigme: { kind: 'numbers',
+        title: "⏱️ Du contrôle 1 à l'arrivée",
+        question: "Combien de minutes chaque coureur a-t-il mis pour aller du contrôle 1 jusqu'à l'arrivée ?",
+        fields: [ { label: "Arthur (minutes) :", answer: 2 }, { label: "Malik (minutes) :", answer: 4 } ],
+        hint: "Arthur : de 10 h 03 à 10 h 05. Malik : de 10 h 02 à 10 h 06. Compte les minutes entre les deux heures.",
+        success: "Exact : Arthur a mis 2 minutes et Malik 4 minutes pour les 800 derniers mètres. Arthur aurait donc couru deux fois plus vite que le coureur le plus rapide de l'école ?",
+        to: 'c1Ok', skipTo: 'c1Ko', skipLabel: "Remercier Mme Rossi et repartir"
+      }
+    },
+
+    c1Ok: { title: "Deux fois plus rapide ?",
+      text: [
+        "Mme Rossi fronce les sourcils : <span class='speech'>« C'est presque impossible ! Au contrôle 1, Arthur était derrière Malik, et il avait déjà l'air fatigué. »</span>"
+      ],
+      clues: ['chrono'],
+      prompt: "",
+      choices: [ { label: "Retourner au podium", to: 'parc' } ]
+    },
+
+    c1Ko: { title: "Des heures et des minutes",
+      text: [
+        "Tu notes les heures sans faire le calcul et tu repars."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner au podium", to: 'parc' } ]
+    },
+
+    c2: { title: "Le contrôle 2",
+      text: [
+        "Dans la prairie, tu trouves M. Janssens, un grand-père bénévole. Avant sa retraite, il était kinésithérapeute. Il fait des exercices de respiration en attendant la fin du cross.",
+        "<span class='speech'>« Tu viens pour les tampons ? D'abord, une question de kiné ! Quand tu inspires, que fait ton diaphragme, ce grand muscle sous les poumons ? »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🫁 Le diaphragme",
+        question: "Que se passe-t-il quand tu inspires ?",
+        options: [
+          "Le diaphragme se contracte et s'abaisse, la cage thoracique s'agrandit, et l'air entre dans les poumons.",
+          "Le diaphragme remonte, la cage thoracique se resserre, et l'air entre dans les poumons.",
+          "Le diaphragme ne bouge pas : c'est le cœur qui pousse l'air dans les poumons."
+        ],
+        answer: 0,
+        hint: "Pour que l'air entre, il faut faire de la place dans la cage thoracique. Le diaphragme, en forme de dôme, s'aplatit vers le bas quand il se contracte.",
+        success: "Bravo ! À l'inspiration, le diaphragme se contracte et descend, les côtes se soulèvent et la cage thoracique s'agrandit : l'air entre. À l'expiration, le diaphragme se relâche et remonte : l'air ressort.",
+        to: 'c2Ok', skipTo: 'c2Ko', skipLabel: "Dire que tu n'as pas le temps"
+      }
+    },
+
+    c2Ok: { title: "Le registre des tampons",
+      text: [
+        "<span class='speech'>« Parfait ! Voilà mon registre. Malik est passé le premier : je l'ai vu, même si son tampon a été effacé par la sueur. Zoé est passée juste après… et elle est tombée dans la grosse flaque, la pauvre ! Mais Arthur ? Je ne l'ai jamais vu passer ici. »</span>",
+        "Tu vérifies : la carte de course d'Arthur n'a pas de tampon n° 2."
+      ],
+      clues: ['tampon', 'alibiMalik'],
+      prompt: "",
+      choices: [ { label: "Retourner au podium", to: 'parc' } ]
+    },
+
+    c2Ko: { title: "Pas le temps",
+      text: [
+        "M. Janssens hausse les épaules et reprend ses exercices de respiration. Tant pis pour le registre."
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Retourner au podium", to: 'parc' },
+        { label: "Accuser Malik : son tampon n° 2 est illisible !", to: 'finMalik', accuse: true }
+      ]
+    },
+
+    infirmerie: { title: "L'infirmerie",
+      text: [
+        "À l'infirmerie, Mme Fontaine, l'infirmière, range un pansement. Au mur, une grande affiche montre le système respiratoire.",
+        "<span class='speech'>« Tu cherches Zoé ? Elle est passée tout à l'heure. Mais dis-moi d'abord : tu connais le trajet de l'air dans le corps ? »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🌬️ Le trajet de l'air",
+        question: "Dans quel ordre l'air passe-t-il quand on inspire ?",
+        options: [
+          "Bronches → nez ou bouche → trachée → alvéoles des poumons",
+          "Nez ou bouche → trachée → bronches → alvéoles des poumons",
+          "Nez ou bouche → œsophage → estomac → poumons"
+        ],
+        answer: 1,
+        hint: "L'œsophage, c'est le chemin des aliments, pas celui de l'air ! L'air entre par le nez ou la bouche, descend par un tuyau rigide, puis se divise en deux…",
+        success: "Exact ! Nez ou bouche → trachée → bronches → alvéoles, au fond des poumons. C'est dans les alvéoles que le dioxygène passe dans le sang et que le dioxyde de carbone en sort.",
+        to: 'infirmerieOk', skipTo: 'infirmerieKo', skipLabel: "Avouer que tu ne sais plus"
+      }
+    },
+
+    infirmerieOk: { title: "Le genou de Zoé",
+      text: [
+        "<span class='speech'>« Très bien ! Pour Zoé : elle est tombée dans la flaque du contrôle 2. J'ai désinfecté son genou. C'est pour ça qu'elle est pleine de boue. »</span>",
+        "Elle te montre une autre affiche, celle du cœur et des vaisseaux sanguins. <span class='speech'>« Et si tu réponds encore à une question, je te prête ma loupe. »</span>"
+      ],
+      clues: ['alibiZoe'],
+      prompt: "",
+      choices: [ { label: "Regarder l'affiche du cœur", to: 'affiche' } ]
+    },
+
+    infirmerieKo: { title: "Une infirmière occupée",
+      text: [
+        "<span class='speech'>« Révise ta leçon, alors ! »</span> sourit Mme Fontaine, avant de retourner soigner un élève qui s'est tordu la cheville."
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Retourner au podium", to: 'parc' },
+        { label: "Accuser Zoé : ses chaussures sont pleines de boue !", to: 'finZoe', accuse: true }
+      ]
+    },
+
+    affiche: { title: "L'affiche du cœur",
+      text: [
+        "<div class='vocab'>📚 Le <b>cœur</b> est un muscle qui fonctionne comme une pompe : il fait circuler le <b>sang</b> dans tout le corps, à travers les <b>vaisseaux sanguins</b>.</div>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "❤️ Artères et veines",
+        question: "Quel est le rôle des artères ?",
+        options: [
+          "Elles transportent le sang du cœur vers les organes.",
+          "Elles ramènent le sang des organes vers le cœur.",
+          "Elles transportent l'air jusqu'aux poumons."
+        ],
+        answer: 0,
+        hint: "Regarde le sens des flèches sur l'affiche : il y a deux sortes de vaisseaux sanguins. Les uns emmènent le sang loin du cœur, les autres le lui rapportent. Le mot « artère » est écrit à côté des flèches qui partent du cœur.",
+        success: "Bravo ! Les artères partent du cœur et apportent le sang aux organes ; les veines ramènent le sang vers le cœur.",
+        to: 'afficheOk', skipTo: 'afficheKo', skipLabel: "Laisser l'affiche pour plus tard"
+      }
+    },
+
+    afficheOk: { title: "La loupe",
+      text: [
+        "<span class='speech'>« Bien joué ! Tiens, voici ma loupe. Rapporte-la-moi après ton enquête. »</span>"
+      ],
+      objects: ['loupe'],
+      prompt: "",
+      choices: [ { label: "Retourner au podium", to: 'parc' } ]
+    },
+
+    afficheKo: { title: "Pas de loupe",
+      text: [
+        "Mme Fontaine garde sa loupe. Tu pourras revenir plus tard."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner au podium", to: 'parc' } ]
+    },
+
+    cantine: { title: "La cantine",
+      text: [
+        "À la cantine, M. Benali, le cuisinier, prépare des pâtes pour midi. Par la fenêtre, on voit le petit bois, juste derrière.",
+        "<span class='speech'>« Des pâtes, dans un repas équilibré, c'est de l'énergie pour les muscles ! Mais pour que les muscles en profitent, les aliments font tout un voyage… Tu sais où les nutriments passent dans le sang ? »</span>",
+        "<div class='vocab'>📚 Pendant la digestion, la plupart des aliments sont transformés en <b>nutriments</b>, assez petits pour passer dans le sang. Les glandes salivaires, le foie et le pancréas aident à digérer.</div>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🍝 Le voyage des aliments",
+        question: "À quel endroit la plupart des nutriments passent-ils dans le sang ?",
+        options: [
+          "Dans l'estomac",
+          "Dans l'intestin grêle",
+          "Dans le gros intestin (côlon)"
+        ],
+        answer: 1,
+        hint: "Dans le gros intestin (côlon), c'est surtout l'eau qui est absorbée. L'estomac, lui, brasse et transforme les aliments. Les nutriments passent dans le sang juste après l'estomac…",
+        success: "Exact ! Les nutriments sont absorbés dans l'intestin grêle et passent dans le sang, qui les apporte à tous les organes, et notamment aux muscles. L'eau, elle, est absorbée dans le gros intestin (côlon).",
+        to: 'cantineOk', skipTo: 'cantineKo', skipLabel: "Laisser M. Benali cuisiner"
+      }
+    },
+
+    cantineOk: { title: "Le témoin",
+      text: [
+        "<span class='speech'>« Bravo ! Et tiens, puisque tu enquêtes : vers 10 h 04, j'ai vu par la fenêtre un enfant avec une casquette bleue marcher tranquillement dans le petit bois. Juste avant d'en sortir, il s'est mis à courir vers l'arrivée. »</span>",
+        "Tu te souviens : Arthur porte une casquette bleue."
+      ],
+      clues: ['temoin'],
+      prompt: "",
+      choices: [ { label: "Retourner au podium", to: 'parc' } ]
+    },
+
+    cantineKo: { title: "Des pâtes",
+      text: [
+        "M. Benali retourne à ses casseroles en chantonnant."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner au podium", to: 'parc' } ]
+    },
+
+    vestiaires: { title: "Les vestiaires",
+      text: [
+        "Dans les vestiaires, les coureurs ont laissé leurs baskets pour enfiler leurs chaussures de ville. Chaque paire porte un nom."
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Examiner les semelles avec la loupe", to: 'semelles', requires: 'loupe', cls: 'obj' },
+        { label: "Regarder les semelles à l'œil nu", to: 'semellesFlou', requiresNot: 'loupe' },
+        { label: "Retourner au podium", to: 'parc' }
+      ]
+    },
+
+    semellesFlou: { title: "Trop petit",
+      text: [
+        "Tu vois de la terre sur plusieurs semelles, mais c'est trop petit pour savoir d'où elle vient. Il te faudrait une loupe."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner au podium", to: 'parc' } ]
+    },
+
+    semelles: { title: "Des aiguilles de pin",
+      text: [
+        "Sous la loupe, tout devient clair :",
+        "<div class='doc'>👟 Malik : un peu d'herbe de la prairie.<br>👟 Zoé : de la boue de la flaque du contrôle 2.<br>👟 Arthur : des <b>aiguilles de pin</b> coincées dans les rainures de la semelle !</div>",
+        "Or il n'y a pas un seul pin sur le parcours du cross. Les seuls pins du parc sont dans le petit bois…"
+      ],
+      clues: ['aiguilles'],
+      prompt: "",
+      choices: [ { label: "Retourner au podium", to: 'parc' } ]
+    },
+
+    gym: { title: "La salle de gym",
+      text: [
+        "Dans la salle de gym, le carnet de M. Diallo est resté sur le banc. Hier, au cours de gym, chaque élève a mesuré son pouls au repos, trois fois de suite, pour en calculer la moyenne.",
+        "<div class='doc'>Arthur — pouls au repos : 84 — 88 — 92 battements par minute</div>",
+        "La case « moyenne » est encore vide."
+      ],
+      enigme: { kind: 'number', answer: 88, unit: "par minute",
+        title: "📊 La moyenne",
+        question: "Quelle est la moyenne des trois mesures du pouls d'Arthur au repos ?",
+        hint: "Pour faire la moyenne, additionne les trois mesures, puis divise le total par 3 : (84 + 88 + 92) ÷ 3.",
+        success: "Exact : 84 + 88 + 92 = 264, et 264 ÷ 3 = 88. Au repos, le cœur d'Arthur bat en moyenne 88 fois par minute.",
+        to: 'gymOk', skipTo: 'gymKo', skipLabel: "Reposer le carnet"
+      }
+    },
+
+    gymOk: { title: "Presque au repos",
+      text: [
+        "Au repos, 88 battements par minute… et à l'arrivée, seulement 104 ! Après avoir couru 1 200 m à fond, son cœur aurait dû battre beaucoup plus vite. Arthur n'a sans doute pas couru tout le parcours."
+      ],
+      clues: ['repos'],
+      prompt: "",
+      choices: [ { label: "Retourner au podium", to: 'parc' } ]
+    },
+
+    gymKo: { title: "Le carnet",
+      text: [
+        "Tu reposes le carnet sur le banc. Les chiffres, ce sera pour plus tard."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner au podium", to: 'parc' } ]
+    },
+
+    podium: { title: "Tes conclusions",
+      text: [
+        "Il est 11 h. Tout le monde se rassemble autour du podium. Mme Lambert se tourne vers toi :",
+        "<span class='speech'>« Avant de m'expliquer qui a triché, montre-moi que tu as compris. Pourquoi le cœur et la respiration s'accélèrent-ils quand on court ? »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🔗 Les systèmes travaillent ensemble",
+        question: "Pourquoi, pendant un effort, le cœur bat-il plus vite et la respiration s'accélère-t-elle ?",
+        options: [
+          "Parce que l'estomac a besoin de plus d'air pour digérer.",
+          "Parce que les muscles qui travaillent ont besoin de plus de dioxygène et de nutriments, apportés par le sang, et doivent rejeter plus de dioxyde de carbone.",
+          "Parce que le sang devient plus lourd quand on court."
+        ],
+        answer: 1,
+        hint: "Pense à ce que le sang transporte : des nutriments venus de l'intestin grêle, du dioxygène venu des poumons… et du dioxyde de carbone qu'il faut ramener vers les poumons.",
+        success: "Bravo ! Les muscles qui travaillent ont besoin de plus de dioxygène et de nutriments. Le cœur bat plus vite pour envoyer plus de sang, et on respire plus vite pour faire entrer plus de dioxygène et rejeter plus de dioxyde de carbone par les poumons. D'autres déchets, eux, sont évacués dans les urines. Les systèmes respiratoire, digestif et circulatoire travaillent ensemble !",
+        to: 'podiumOk', skipTo: 'podiumKo', skipLabel: "Dire que tu préfères passer directement aux conclusions"
+      }
+    },
+
+    podiumOk: { title: "Qui a triché ?",
+      text: [
+        "Mme Lambert hoche la tête. <span class='speech'>« Bien expliqué. Alors, qui a triché ? »</span>"
+      ],
+      clues: ['explication'],
+      prompt: "Qui désignes-tu ?",
+      choices: [
+        { label: "Malik", to: 'finMalik', accuse: true },
+        { label: "Zoé", to: 'finZoe', accuse: true },
+        { label: "Arthur", to: 'preuves', accuse: true }
+      ]
+    },
+
+    podiumKo: { title: "Qui a triché ?",
+      text: [
+        "<span class='speech'>« Bon… Alors, qui a triché ? »</span> demande Mme Lambert."
+      ],
+      prompt: "Qui désignes-tu ?",
+      choices: [
+        { label: "Malik", to: 'finMalik', accuse: true },
+        { label: "Zoé", to: 'finZoe', accuse: true },
+        { label: "Arthur", to: 'preuves', accuse: true }
+      ]
+    },
+
+    preuves: { title: "Tes preuves",
+      text: [
+        "<span class='speech'>« Arthur ? Le vainqueur ? Qu'est-ce qui te permet de le dire ? »</span>",
+        "Tu ouvres ton carnet."
+      ],
+      dynamic: function (g) {
+        const list = PREUVES.filter(c => g.clues.indexOf(c) !== -1);
+        if (!list.length) return "<p><b>Ton carnet ne contient aucune preuve…</b></p>";
+        return "<p>Tu présentes <b>" + list.length + " preuve" + (list.length > 1 ? "s" : "") + "</b> :</p><ul class='proofs'>" + list.map(c => "<li>🔎 " + CLUES[c] + "</li>").join('') + "</ul>";
+      },
+      auto: function (g) {
+        const n = PREUVES.filter(c => g.clues.indexOf(c) !== -1).length;
+        return n >= 4 ? 'finGagne' : n >= 2 ? 'finMoitie' : 'finSansPreuve';
+      },
+      autoLabel: "Voir la réaction de Mme Lambert"
+    },
+
+    finGagne: { title: "La vérité",
+      text: [
+        "Mme Lambert emmène Arthur à l'écart, près des vestiaires, et t'invite à venir avec eux. Arthur baisse les yeux. <span class='speech'>« C'est vrai… Au contrôle 1, j'étais fatigué. J'ai marché dans le petit bois et je n'ai couru que la fin. Je voulais tellement gagner une médaille pour montrer à mon grand-père… »</span>",
+        "Mme Lambert pose la main sur son épaule : <span class='speech'>« Merci d'avoir dit la vérité, Arthur. Ce qui compte, c'est de faire de son mieux, honnêtement. »</span>",
+        "Au podium, la médaille d'or revient à Malik, l'argent à Zoé et le bronze à Noé, arrivé quatrième. Arthur, lui, promet de s'entrainer pour le prochain cross… sans raccourci !",
+        "<span class='speech'>« Bravo, détective, ajoute Mme Lambert. Tu as mené ton enquête avec le pouls, la respiration et le chronomètre, comme on le fait en sciences ! »</span>"
+      ],
+      ending: { type: 'win', title: "Bravo, détective ! Tes mesures et tes preuves ont fait triompher le fair-play." }
+    },
+
+    finMoitie: { title: "Le doute",
+      text: [
+        "Mme Lambert hésite. <span class='speech'>« C'est un peu léger pour retirer une médaille à quelqu'un… »</span>",
+        "Arthur garde sa médaille d'or, et Malik repart, déçu. Personne ne saura jamais vraiment ce qui s'est passé."
+      ],
+      ending: { backTo: 'parc', type: 'half', title: "Tu avais la bonne piste, mais il te fallait plus de preuves. Visite tous les lieux du parc !" }
+    },
+
+    finSansPreuve: { title: "Pas assez de preuves",
+      text: [
+        "<span class='speech'>« Accuser le vainqueur avec si peu de preuves ? Ce n'est pas juste ! »</span> dit Mme Lambert.",
+        "Arthur garde sa médaille d'or, et Malik repart, déçu."
+      ],
+      ending: { backTo: 'parc', type: 'lose', title: "Ton intuition était peut-être bonne, mais il faut des preuves. Les mesures et les témoins t'en donnent !" }
+    },
+
+    finMalik: { title: "Une erreur",
+      text: [
+        "<span class='speech'>« C'est Malik qui a triché ! Son tampon n° 2 est illisible ! »</span>",
+        "M. Janssens accourt : <span class='speech'>« Mais non, je l'ai vu passer ! C'est la sueur qui a effacé l'encre. Il courait si vite ! »</span>",
+        "Malik est vexé, et Mme Lambert te regarde, déçue."
+      ],
+      ending: { type: 'lose', title: "Le tampon de Malik était effacé par la sueur… et la sueur, qui aide le corps à se refroidir, c'est justement le signe d'un vrai effort !" }
+    },
+
+    finZoe: { title: "Une erreur",
+      text: [
+        "<span class='speech'>« C'est Zoé ! Ses chaussures sont pleines de boue : elle est passée par le bois ! »</span>",
+        "L'infirmière secoue la tête : <span class='speech'>« Cette boue vient de la flaque du contrôle 2. Zoé y est tombée, et j'ai soigné son genou ! »</span>",
+        "Zoé a les larmes aux yeux. Mme Lambert te regarde, déçue."
+      ],
+      ending: { type: 'lose', title: "La boue de Zoé venait du parcours officiel. Il fallait chercher des traces qui viennent du petit bois…" }
+    }
+  };
+
+  const ENDINGS = [
+    { id: 'finGagne',      label: "🏅 Le fair-play triomphe" },
+    { id: 'finMoitie',     label: "🤔 Le doute" },
+    { id: 'finSansPreuve', label: "😶 Pas assez de preuves" },
+    { id: 'finMalik',      label: "💧 Le tampon effacé" },
+    { id: 'finZoe',        label: "🥾 La boue de Zoé" }
+  ];
+
+  const FIRST = 'depart';
+
+  /* Numéros des paragraphes : mélangés comme dans un vrai livre-jeu (toujours les mêmes). */
+  (function numberParagraphs() {
+    const ids = Object.keys(S).filter(k => k !== FIRST);
+    let seed = 1200;
+    const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+    const nums = ids.map((_, i) => i + 2);
+    for (let i = nums.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [nums[i], nums[j]] = [nums[j], nums[i]]; }
+    S[FIRST].n = 1;
+    ids.forEach((k, i) => { S[k].n = nums[i]; });
+  })();
+
+  /* =====================================================================
+     SAUVEGARDE — par élève, sur l'appareil. Rien n'est envoyé.
+     ===================================================================== */
+  function who() {
+    try {
+      const st = window.parent && window.parent !== window && window.parent.state;
+      if (st && st.student) return '_' + (st.studentCls || '') + '_' + st.student;
+    } catch (e) {}
+    return '';
+  }
+  const KEY_FINS = () => 'lcml_enquete_cross_fins' + who();
+  const KEY_SAVE = () => 'lcml_enquete_cross_partie' + who();
+  function readJSON(k, def) { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? def : v; } catch (e) { return def; } }
+  function writeJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function removeKey(k) { try { localStorage.removeItem(k); } catch (e) {} }
+  function loadEndings() { const v = readJSON(KEY_FINS(), []); return Array.isArray(v) ? v.filter(id => S[id]) : []; }
+  function saveEnding(id) {
+    const list = loadEndings();
+    if (list.indexOf(id) === -1) { list.push(id); writeJSON(KEY_FINS(), list); return true; }
+    return false;
+  }
+
+  /* =====================================================================
+     MOTEUR
+     ===================================================================== */
+  let game = null;
+  function newGame() { game = { at: FIRST, clues: [], objects: [], history: [], solved: {} }; }
+  const $ = (id) => document.getElementById(id);
+  const story = $('story');
+  let errors = 0, solvedNow = false;
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+  function has(x) { return game.clues.indexOf(x) !== -1 || game.objects.indexOf(x) !== -1; }
+
+  function renderTitle() {
+    const found = loadEndings();
+    $('endings-count').textContent = found.length;
+    $('endings-list').innerHTML = ENDINGS.map(e => {
+      const ok = found.indexOf(e.id) !== -1;
+      return `<span class="ending-chip ${ok ? 'found' : ''} ${ok && e.id === 'finGagne' ? 'win' : ''}">${ok ? e.label : '❔ ???'}</span>`;
+    }).join('');
+    const save = readJSON(KEY_SAVE(), null);
+    const canResume = save && S[save.at] && !S[save.at].ending;
+    $('btn-resume').classList.toggle('hidden', !canResume);
+    $('btn-start').textContent = canResume ? "Recommencer depuis le début" : (found.length ? "Recommencer l'enquête" : "Commencer l'enquête");
+    $('btn-start').classList.toggle('primary', !canResume);
+    $('screen-title').classList.remove('hidden');
+    $('screen-story').classList.add('hidden');
+  }
+
+  function showStory() { $('screen-title').classList.add('hidden'); $('screen-story').classList.remove('hidden'); }
+
+  function goTo(id, opts) {
+    opts = opts || {};
+    if (!opts.noHistory && game.at !== id) game.history.push(game.at);
+    game.at = id;
+    errors = 0; solvedNow = false;
+    const p = S[id];
+    const freshClues = [], freshObjs = [];
+    if (!opts.resume) {
+      (p.clues || []).forEach(c => { if (game.clues.indexOf(c) === -1) { game.clues.push(c); freshClues.push(c); } });
+      (p.objects || []).forEach(o => { if (game.objects.indexOf(o) === -1) { game.objects.push(o); freshObjs.push(o); } });
+    }
+    if (p.ending) removeKey(KEY_SAVE()); else writeJSON(KEY_SAVE(), game);
+    renderPara(p, freshClues, freshObjs);
+    updateCount();
+    window.scrollTo(0, 0);
+  }
+
+  function renderPara(p, freshClues, freshObjs) {
+    let html = `<div class="para-head"><span class="para-num">${p.n}</span><h2>${p.title}</h2></div>`;
+    html += p.text.map(t => /^<div/.test(t) ? t : `<p>${t}</p>`).join('');
+    if (p.dynamic) html += p.dynamic(game);
+    freshObjs.forEach(o => { html += `<div class="obj-found">🎒 <b>Objet ajouté à ton sac :</b> ${OBJECTS[o]}</div>`; });
+    freshClues.forEach(c => { html += `<div class="clue-found">📒 <b>Nouvel indice noté dans ton carnet :</b> ${CLUES[c]}</div>`; });
+
+    if (p.enigme) {
+      if (game.solved[game.at]) {
+        html += `<div class="feedback ok" style="margin-bottom:12px">✅ Tu as déjà résolu cette énigme.</div>`;
+        html += `<div class="choices">${choiceBtn({ label: "Continuer", to: p.enigme.to })}</div>`;
+      } else {
+        html += renderEnigme(p.enigme);
+        html += `<div class="choices" id="after-enigme"></div>`;
+      }
+    } else if (p.auto) {
+      html += `<div class="choices">${choiceBtn({ label: p.autoLabel || "Continuer", to: p.auto(game) })}</div>`;
+    } else if (p.ending) {
+      const isNew = saveEnding(game.at);
+      const icon = p.ending.type === 'win' ? '🏆' : p.ending.type === 'half' ? '🏃' : '❌';
+      const label = p.ending.type === 'win' ? 'Fin gagnante' : p.ending.type === 'half' ? 'Fin à moitié réussie' : 'Fin ratée';
+      html += `<div class="ending-box ${p.ending.type}"><div class="big">${icon}</div><h3>${label}</h3><p style="margin:6px 0 10px">${p.ending.title}</p>
+        <div class="muted">${isNew ? '✨ Nouvelle fin découverte ! ' : ''}Fins découvertes : ${loadEndings().length} / 5</div></div><div class="ending-actions">`;
+      if (p.ending.type !== 'win' && p.ending.backTo) html += `<button class="btn" data-act="backTo" data-target="${p.ending.backTo}">↩ Retourner enquêter</button>`;
+      else if (p.ending.type !== 'win' && !p.ending.noBack && game.history.length) html += `<button class="btn" data-act="back">↩ Revenir au choix précédent</button>`;
+      html += `<button class="btn primary" data-act="restart">🔄 Recommencer l'enquête</button><button class="btn" data-act="menu">Menu</button></div>`;
+      if (p.ending.type === 'win' && typeof confetti === 'function') setTimeout(() => { try { confetti({ particleCount: 150, spread: 80, origin: { y: .6 } }); } catch (e) {} }, 250);
+    } else {
+      const list = p.choices.filter(c => (!c.requires || has(c.requires)) && (!c.requiresNot || !has(c.requiresNot)));
+      html += `<div class="choices">${p.prompt ? `<div class="prompt">${p.prompt}</div>` : ''}${list.map(choiceBtn).join('')}</div>`;
+    }
+    story.innerHTML = html;
+  }
+
+  function choiceBtn(c) {
+    const cls = c.accuse ? 'accuse' : (c.cls || '');
+    return `<button class="choice ${cls}" data-to="${c.to}">${c.accuse ? '⚖️ ' : ''}${esc(c.label)}<span class="go">Va au ${S[c.to].n}</span></button>`;
+  }
+
+  const inputAttrs = 'type="text" inputmode="numeric" pattern="[0-9]*" maxlength="5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"';
+  function renderEnigme(e) {
+    let h = `<div class="enigme" id="enigme"><h3>${e.title}</h3><p class="q">${e.question}</p>`;
+    if (e.kind === 'number') {
+      h += `<div class="answer-row"><input id="ans-0" ${inputAttrs} aria-label="Réponse">${e.unit ? `<span class="unit">${e.unit}</span>` : ''}</div>`;
+    } else if (e.kind === 'numbers') {
+      e.fields.forEach((f, i) => { h += `<div class="answer-row"><label for="ans-${i}">${f.label}</label><input id="ans-${i}" ${inputAttrs}></div>`; });
+    } else if (e.kind === 'qcm') {
+      h += `<div class="qcm">` + e.options.map((o, i) => `<button type="button" data-opt="${i}">${o}</button>`).join('') + `</div>`;
+    }
+    h += `<button class="btn primary" data-act="check">Valider</button><div id="enigme-fb"></div></div>`;
+    return h;
+  }
+
+  function checkEnigme() {
+    if (solvedNow) return;
+    const e = S[game.at].enigme, fb = $('enigme-fb');
+    let ok = false, said = '';
+    if (e.kind === 'number' || e.kind === 'numbers') {
+      const answers = e.kind === 'number' ? [e.answer] : e.fields.map(f => f.answer);
+      const vals = answers.map((_, i) => ($('ans-' + i).value || '').replace(/\D/g, ''));
+      if (vals.some(v => !v)) { fb.innerHTML = `<div class="feedback info">${answers.length > 1 ? 'Complète <b>toutes</b> les cases' : 'Écris un nombre'} avant de valider.</div>`; return; }
+      ok = vals.every((v, i) => parseInt(v, 10) === answers[i]);
+      said = ` Tu as écrit ${vals.join(' et ')}.`;
+    } else if (e.kind === 'qcm') {
+      const sel = story.querySelector('.qcm button.sel');
+      if (!sel) { fb.innerHTML = `<div class="feedback info">Choisis une réponse avant de valider.</div>`; return; }
+      ok = parseInt(sel.getAttribute('data-opt'), 10) === e.answer;
+    }
+
+    if (ok) {
+      solvedNow = true;
+      game.solved[game.at] = true;
+      writeJSON(KEY_SAVE(), game);
+      story.querySelectorAll('#enigme input').forEach(i => { i.readOnly = true; });
+      const q = story.querySelector('.qcm'); if (q) { q.classList.add('done'); q.querySelector('.sel').classList.add('good'); }
+      story.querySelector('[data-act="check"]').remove();
+      fb.innerHTML = `<div class="feedback ok">✅ ${e.success}</div>`;
+      $('after-enigme').innerHTML = choiceBtn({ label: "Continuer l'enquête", to: e.to });
+      return;
+    }
+    errors++;
+    fb.innerHTML = `<div class="feedback ko">❌ Ce n'est pas ça.${esc(said)}<br>💡 <b>Indice :</b> ${e.hint}</div>`;
+    if (errors >= 2 && !story.querySelector('.choice.skip')) {
+      $('after-enigme').innerHTML = `<button class="choice skip" data-to="${e.skipTo}">${esc(e.skipLabel)}<span class="go">Va au ${S[e.skipTo].n}</span></button>`;
+    }
+  }
+
+  function updateCount() { $('clue-count').textContent = game ? game.clues.length + game.objects.length : 0; }
+  function openCarnet() {
+    $('sac-list').innerHTML = game.objects.length ? game.objects.map(o => `<li>${OBJECTS[o]}</li>`).join('') : `<li class="muted">Ton sac est vide.</li>`;
+    $('carnet-list').innerHTML = game.clues.length ? game.clues.map(c => `<li>🔎 ${CLUES[c]}</li>`).join('') : `<li class="muted">Aucun indice pour l'instant. Mène l'enquête !</li>`;
+    $('carnet').classList.add('open');
+  }
+
+  story.addEventListener('click', (ev) => {
+    const t = ev.target.closest('button');
+    if (!t) return;
+    if (t.dataset.to) { goTo(t.dataset.to); return; }
+    if (t.dataset.opt !== undefined) {
+      if (solvedNow) return;
+      t.parentNode.querySelectorAll('button').forEach(b => b.classList.toggle('sel', b === t));
+      return;
+    }
+    const act = t.dataset.act;
+    if (act === 'check') checkEnigme();
+    else if (act === 'restart') { newGame(); goTo(FIRST, { noHistory: true }); }
+    else if (act === 'menu') renderTitle();
+    else if (act === 'back') { let prev = game.history.pop(); while (prev && S[prev].auto) prev = game.history.pop(); if (prev) goTo(prev, { noHistory: true }); }
+    else if (act === 'backTo') goTo(t.dataset.target, { noHistory: true });
+  });
+  story.addEventListener('keydown', (ev) => { if (ev.key === 'Enter' && ev.target.tagName === 'INPUT') { ev.preventDefault(); checkEnigme(); } });
+
+  $('btn-start').addEventListener('click', () => { newGame(); showStory(); goTo(FIRST, { noHistory: true }); });
+  $('btn-resume').addEventListener('click', () => {
+    const save = readJSON(KEY_SAVE(), null);
+    if (!save || !S[save.at]) { newGame(); } else {
+      game = { at: save.at, clues: save.clues || [], objects: save.objects || [], history: save.history || [], solved: save.solved || {} };
+    }
+    showStory(); goTo(game.at, { noHistory: true, resume: true });
+  });
+  $('btn-menu').addEventListener('click', renderTitle);
+  $('btn-carnet').addEventListener('click', openCarnet);
+  $('btn-carnet-close').addEventListener('click', () => $('carnet').classList.remove('open'));
+  $('carnet').addEventListener('click', (ev) => { if (ev.target.id === 'carnet') $('carnet').classList.remove('open'); });
+
+  window.__enquete = { S, CLUES, PREUVES, goTo, get game() { return game; }, newGame };
+  renderTitle();
+})();
+</script>
+</body>
+</html>
