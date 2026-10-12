@@ -20873,6 +20873,19 @@ function rhStartDrag(e, pcId){
   const pt = rhSvgPoint(svg, e);
   rhDrag = { id:pcId, dir:pc.dir, startX:pt.x, startY:pt.y, origX:pc.x, origY:pc.y, curDelta:0 };
   rhSel = pcId;
+  // Tablette : la suite du geste (touchmove / touchend) est envoyée à l'élément touché,
+  // même quand rhRender() l'a retiré de la page — elle n'arrive alors plus au document.
+  // On l'écoute donc directement sur cet élément.
+  if(e.type === 'touchstart' && e.target && e.target.addEventListener){
+    const t = e.target;
+    const onMove = ev => rhOnDragMove(ev);
+    const done = () => { t.removeEventListener('touchmove', onMove); t.removeEventListener('touchend', onEnd); t.removeEventListener('touchcancel', onCancel); };
+    const onEnd = ev => { done(); rhOnDragEnd(ev); };
+    const onCancel = () => { done(); if(rhDrag){ rhDrag = null; rhSel = null; rhRender(); } };
+    t.addEventListener('touchmove', onMove, {passive:false});
+    t.addEventListener('touchend', onEnd, {passive:false});
+    t.addEventListener('touchcancel', onCancel, {passive:false});
+  }
   rhRender();
 }
 
@@ -20978,6 +20991,50 @@ function rhApplyMove(id, totalDelta, fromX, fromY){
   rhRender();
 }
 
+// ===== DESSIN DES VÉHICULES =====
+// Assombrit (f<0) ou éclaircit (f>0) une couleur hexadécimale
+function rhShade(hex,f){
+  const n=parseInt(hex.slice(1),16); let r=n>>16, g=n>>8&255, b=n&255;
+  const t=f<0?0:255, k=Math.abs(f);
+  r=Math.round(r+(t-r)*k); g=Math.round(g+(t-g)*k); b=Math.round(b+(t-b)*k);
+  return '#'+((1<<24)|(r<<16)|(g<<8)|b).toString(16).slice(1);
+}
+function rhEl(parent,tag,attrs){ const e=rhMk(tag); for(const k in attrs) e.setAttribute(k,attrs[k]); parent.appendChild(e); return e; }
+// Dessine un véhicule à l'horizontale (avant vers la droite) dans un repère L × W,
+// puis le fait pivoter d'un quart de tour s'il est vertical. Renvoie le groupe <g>.
+function rhDrawVehicle(svg, pc, col, highlight){
+  const L=pc.len*RH_S-4, W=RH_S-4, rx=rhPx(pc.x)+2, ry=rhPy(pc.y)+2;
+  const g=rhEl(svg,'g',{transform: pc.dir==='h' ? 'translate('+rx+','+ry+')' : 'translate('+(rx+W)+','+ry+') rotate(90)'});
+  const dark=rhShade(col,-0.35), light=rhShade(col,0.3), glass='#bfe3f2', glassD='#7fb3c9', tire='#1f1f2b';
+  // Zone de prise invisible couvrant toute la case (le toucher fonctionne aussi entre les roues)
+  rhEl(g,'rect',{x:0,y:0,width:L,height:W,fill:'transparent'});
+  const wheels=fs=>fs.forEach(f=>{ rhEl(g,'rect',{x:L*f,y:1,width:16,height:7,rx:3,fill:tire}); rhEl(g,'rect',{x:L*f,y:W-8,width:16,height:7,rx:3,fill:tire}); });
+  const sel = highlight ? {stroke:'#fff','stroke-width':3} : {stroke:dark,'stroke-width':2};
+  if(pc.len===2){
+    // Voiture
+    wheels([0.2,0.72]);
+    rhEl(g,'rect',Object.assign({x:2,y:4,width:L-4,height:W-8,rx:16,fill:col},sel));
+    rhEl(g,'rect',{x:L*0.74,y:10,width:L*0.2,height:W-20,rx:6,fill:light,opacity:0.45});
+    rhEl(g,'path',{d:'M'+(L*0.6)+',9 L'+(L*0.7)+',12 L'+(L*0.7)+','+(W-12)+' L'+(L*0.6)+','+(W-9)+' Z',fill:glass,stroke:glassD,'stroke-width':1});
+    rhEl(g,'rect',{x:L*0.3,y:10,width:L*0.29,height:W-20,rx:6,fill:light});
+    rhEl(g,'path',{d:'M'+(L*0.29)+',9 L'+(L*0.2)+',12 L'+(L*0.2)+','+(W-12)+' L'+(L*0.29)+','+(W-9)+' Z',fill:glass,stroke:glassD,'stroke-width':1});
+    rhEl(g,'rect',{x:4,y:8,width:3,height:8,rx:1.5,fill:'#c0392b'}); rhEl(g,'rect',{x:4,y:W-16,width:3,height:8,rx:1.5,fill:'#c0392b'});
+  } else {
+    // Camion : une seule silhouette, remorque à l'arrière, cabine à l'avant
+    const cab=L*0.27, tl=L-cab;
+    wheels([0.1,0.24,0.5,0.82]);
+    rhEl(g,'rect',Object.assign({x:2,y:3,width:L-4,height:W-6,rx:9,fill:col},sel));
+    for(let i=1;i<5;i++){ const x=2+(tl-4)*i/5; rhEl(g,'line',{x1:x,y1:7,x2:x,y2:W-7,stroke:dark,'stroke-width':1.5,opacity:0.45}); }
+    rhEl(g,'rect',{x:6,y:7,width:tl-12,height:5,rx:2.5,fill:light,opacity:0.5});
+    rhEl(g,'line',{x1:tl,y1:4,x2:tl,y2:W-4,stroke:dark,'stroke-width':3});
+    rhEl(g,'rect',{x:tl+4,y:9,width:cab*0.4,height:W-18,rx:4,fill:light});
+    rhEl(g,'path',{d:'M'+(tl+cab*0.5)+',9 L'+(tl+cab*0.72)+',12 L'+(tl+cab*0.72)+','+(W-12)+' L'+(tl+cab*0.5)+','+(W-9)+' Z',fill:glass,stroke:glassD,'stroke-width':1});
+  }
+  // Phares
+  rhEl(g,'rect',{x:L-8,y:8,width:4,height:8,rx:2,fill:'#fff6b0'}); rhEl(g,'rect',{x:L-8,y:W-16,width:4,height:8,rx:2,fill:'#fff6b0'});
+  return g;
+}
+
 function rhRenderWithGhost(dragId, origX, origY, delta){
   // Rendu avec la pièce fantôme à la position glissée
   const saved = rhPieces.map(p => ({...p}));
@@ -21070,48 +21127,17 @@ function rhRender(){
     });
   }
 
-  // === DESSIN DES PIÈCES ===
+  // === DESSIN DES PIÈCES (véhicules vus du dessus) ===
   rhPieces.forEach(pc=>{
-    const w=pc.dir==='h'?pc.len*RH_S-4:RH_S-4;
-    const h=pc.dir==='v'?pc.len*RH_S-4:RH_S-4;
-    const rx=rhPx(pc.x)+2, ry=rhPy(pc.y)+2;
     const col=pc.isPlayer?'#E74C3C':(RH_PCOLS[pc.id]||'#4A90D9');
     const isDragging = rhDrag && rhDrag.id === pc.id;
     const isSel = rhSel === pc.id;
-
-    const rect=rhMk('rect');
-    rect.setAttribute('x',rx);rect.setAttribute('y',ry);
-    rect.setAttribute('width',w);rect.setAttribute('height',h);
-    rect.setAttribute('fill',col);
-    rect.setAttribute('rx',8);
-    rect.setAttribute('opacity', isDragging ? '0.75' : '1');
-    if(isSel || isDragging){
-      rect.setAttribute('stroke','#fff');
-      rect.setAttribute('stroke-width','3');
-    }
-
-    rect.style.cursor = pc.dir === 'h' ? 'ew-resize' : 'ns-resize';
-    rect.addEventListener('mousedown', e => rhStartDrag(e, pc.id));
-    rect.addEventListener('touchstart', e => rhStartDrag(e, pc.id), {passive:false});
-    svg.appendChild(rect);
-
-    // Reflet lumineux
-    const shine=rhMk('rect');
-    shine.setAttribute('x',rx+4);shine.setAttribute('y',ry+4);
-    shine.setAttribute('width',w-8);shine.setAttribute('height',Math.min(10,h/3));
-    shine.setAttribute('fill','rgba(255,255,255,0.2)');shine.setAttribute('rx',4);
-    svg.appendChild(shine);
-
-    // Emoji voiture rouge
-    if(pc.isPlayer){
-      const lbl=rhMk('text');
-      lbl.setAttribute('x',rx+w/2);lbl.setAttribute('y',ry+h/2+6);
-      lbl.setAttribute('text-anchor','middle');
-      lbl.setAttribute('fill','rgba(255,255,255,0.9)');
-      lbl.setAttribute('font-size','22');
-      lbl.textContent='🚗';
-      svg.appendChild(lbl);
-    }
+    // Le groupe entier (carrosserie, vitres, roues…) reçoit le clic / le toucher
+    const g = rhDrawVehicle(svg, pc, col, isSel || isDragging);
+    g.setAttribute('opacity', isDragging ? '0.8' : '1');
+    g.style.cursor = pc.dir === 'h' ? 'ew-resize' : 'ns-resize';
+    g.addEventListener('mousedown', e => rhStartDrag(e, pc.id));
+    g.addEventListener('touchstart', e => rhStartDrag(e, pc.id), {passive:false});
   });
 
   // Message d'aide selon le mode
