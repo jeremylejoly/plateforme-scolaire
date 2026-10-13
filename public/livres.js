@@ -8855,7 +8855,7 @@ window.LIVRES = [
         "text": "Que fait Hisse près de la tombe de sa mère Eida ?",
         "options": [
           "Elle cueille des fleurs pour le chef Agnar",
-          "Elle s'entraîne en secret au tir à l'arc",
+          "Elle s'entraine en secret au tir à l'arc",
           "Elle cache des pièces d'or volées dans la maison",
           "Elle parle à sa mère et prie le dieu des Frisons"
         ],
@@ -8919,7 +8919,7 @@ window.LIVRES = [
         "text": "Qui aide Frode à préparer la fuite de Hisse ?",
         "options": [
           "Sa mère Runa",
-          "Torleif, son ami d'entraînement",
+          "Torleif, son ami d'entrainement",
           "Cilia, la vieille esclave saxe",
           "L'oncle Asgeir"
         ],
@@ -8966,10 +8966,10 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Comment Hisse retrouve-t-elle des commerçants de Frise ?",
         "options": [
-          "Elle reconnaît leur bateau à voile rayée dans le port",
+          "Elle reconnait leur bateau à voile rayée dans le port",
           "Un marchand rouquin les lui présente",
           "Elle entend un homme et une femme parler frison",
-          "Knut connaît leur nom et leur échoppe"
+          "Knut connait leur nom et leur échoppe"
         ],
         "correct": 2,
         "answer": 2,
@@ -9062,7 +9062,7 @@ window.LIVRES = [
         "correct": 1,
         "answer": 1,
         "points": 1,
-        "explanation": "Incognito : sans se faire reconnaître."
+        "explanation": "Incognito : sans se faire reconnaitre."
       },
       {
         "id": "q16",
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261014t';
+window.LIVRES_VERSION = '20261014u';
