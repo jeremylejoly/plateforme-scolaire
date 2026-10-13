@@ -4614,7 +4614,7 @@ window.LIVRES = [
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle langue Gauthier reconnaît-il quand Bleuenn parle ?",
+        "text": "Quelle langue Gauthier reconnait-il quand Bleuenn parle ?",
         "options": [
           "Le breton ancien, que parlait son grand-père",
           "L'anglais, appris par les marins du port",
@@ -4624,7 +4624,7 @@ window.LIVRES = [
         "correct": 2,
         "answer": 2,
         "points": 1,
-        "explanation": "Gauthier reconnaît le normand, la langue de sa mère."
+        "explanation": "Gauthier reconnait le normand, la langue de sa mère."
       },
       {
         "id": "q6",
@@ -4755,7 +4755,7 @@ window.LIVRES = [
           "sent fort l'odeur de la mer et des algues",
           "a des reflets brillants et irisés, comme une perle",
           "est très lourd et difficile à porter dans la poche",
-          "est cassé en plusieurs morceaux et abîmé"
+          "est cassé en plusieurs morceaux et abimé"
         ],
         "correct": 1,
         "answer": 1,
@@ -4768,14 +4768,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Gauthier arrive en Bretagne avec son père, un chaudronnier venu de Normandie. Il tombe amoureux de Bleuenn, une jeune lavandière qui, les nuits de pleine lune, parle une langue étrange et veut se jeter à la mer. Gauthier reconnaît le normand, et il comprend que Bleuenn est Anna, la fille d'un capitaine disparu en mer. Après la rencontre avec son père sur la plage, Bleuenn n'a plus de cauchemars.",
-          "Gauthier arrive en Bretagne avec son père, un chaudronnier venu de Normandie. Il tombe amoureux de Bleuenn, une jeune lavandière qui, les nuits de pleine lune, parle une langue étrange et veut se jeter à la mer. Gauthier reconnaît le normand, et il comprend que Bleuenn est la sœur qu'il a perdue quand il était petit. Il repart en Normandie avec elle et son père, et Bleuenn ne fait plus jamais de cauchemars.",
+          "Gauthier arrive en Bretagne avec son père, un chaudronnier venu de Normandie. Il tombe amoureux de Bleuenn, une jeune lavandière qui, les nuits de pleine lune, parle une langue étrange et veut se jeter à la mer. Gauthier reconnait le normand, et il comprend que Bleuenn est Anna, la fille d'un capitaine disparu en mer. Après la rencontre avec son père sur la plage, Bleuenn n'a plus de cauchemars.",
+          "Gauthier arrive en Bretagne avec son père, un chaudronnier venu de Normandie. Il tombe amoureux de Bleuenn, une jeune lavandière qui, les nuits de pleine lune, parle une langue étrange et veut se jeter à la mer. Gauthier reconnait le normand, et il comprend que Bleuenn est la sœur qu'il a perdue quand il était petit. Il repart en Normandie avec elle et son père, et Bleuenn ne fait plus jamais de cauchemars.",
           "Gauthier arrive en Bretagne avec son père, un pêcheur venu d'Irlande. Il tombe amoureux de Bleuenn, une jeune lavandière qui, les nuits de pleine lune, parle une langue étrange et veut se jeter à la mer. Le père Loïk comprend que Bleuenn est Anna, la fille d'un capitaine disparu en mer. Bleuenn décide alors de s'appeler Anna et de quitter le village."
         ],
         "correct": 0,
         "answer": 0,
         "points": 1,
-        "explanation": "Seul le résumé A est correct. Gauthier reconnaît le normand, la langue de sa mère. La médaille ANNA prouve que Bleuenn est la fille du capitaine. Elle garde son prénom et Gauthier reste à Kerbellec avec elle."
+        "explanation": "Seul le résumé A est correct. Gauthier reconnait le normand, la langue de sa mère. La médaille ANNA prouve que Bleuenn est la fille du capitaine. Elle garde son prénom et Gauthier reste à Kerbellec avec elle."
       }
     ]
   },
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261014b';
+window.LIVRES_VERSION = '20261014c';
