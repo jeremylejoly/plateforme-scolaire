@@ -13873,7 +13873,7 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Que croit Tom en se réveillant, le troisième jour des grandes vacances ?",
         "options": [
-          "Qu'il est devenu un robot en boîtes de conserve",
+          "Qu'il est devenu un robot en boites de conserve",
           "Qu'il est devenu invisible aux yeux de ses parents",
           "Qu'il s'est changé en abricot géant",
           "Qu'il a perdu la mémoire pendant la nuit"
@@ -13881,7 +13881,7 @@ window.LIVRES = [
         "correct": 0,
         "answer": 0,
         "points": 1,
-        "explanation": "Tom se voit couvert de boîtes de conserve coupées en deux, comme « une pile de boîtes de cassoulet ». Il a beau se pincer, rien ne change."
+        "explanation": "Tom se voit couvert de boites de conserve coupées en deux, comme « une pile de boites de cassoulet ». Il a beau se pincer, rien ne change."
       },
       {
         "id": "q2",
@@ -13922,7 +13922,7 @@ window.LIVRES = [
         "text": "Qu'est-ce qui rend Aïka différente des autres enfants du quartier ?",
         "options": [
           "Elle adore les fruits au sirop depuis toujours",
-          "Elle vient d'arriver dans le quartier et ne connaît personne",
+          "Elle vient d'arriver dans le quartier et ne connait personne",
           "Elle n'a pas envie de fruits au sirop et reste normale",
           "Elle est déguisée en robot, mais pour s'amuser"
         ],
@@ -13945,7 +13945,7 @@ window.LIVRES = [
         "correct": 1,
         "answer": 1,
         "points": 1,
-        "explanation": "À la sortie, Aïka rejoint son père. Tom le reconnaît : l'homme qui prenait des notes et le père d'Aïka sont la même personne."
+        "explanation": "À la sortie, Aïka rejoint son père. Tom le reconnait : l'homme qui prenait des notes et le père d'Aïka sont la même personne."
       },
       {
         "id": "q6",
@@ -14065,7 +14065,7 @@ window.LIVRES = [
         "correct": 2,
         "answer": 2,
         "points": 1,
-        "explanation": "S'éclipser, c'est partir vite, sans se faire remarquer, comme le soleil qui disparaît pendant une éclipse."
+        "explanation": "S'éclipser, c'est partir vite, sans se faire remarquer, comme le soleil qui disparait pendant une éclipse."
       },
       {
         "id": "q15",
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261015a';
+window.LIVRES_VERSION = '20261015b';
