@@ -2552,7 +2552,6 @@ input[type=text].calc-input.incorrect {
 .pt-st-done { background:var(--green-light); color:var(--green); }
 .pt-st-started { background:var(--amber-light); color:var(--amber); }
 .pt-st-todo { background:var(--bg); color:var(--muted); }
-.pt-st-manual { background:#ede9fe; color:#6d28d9; }
 .pt-item .pt-st { min-width:86px; justify-content:center; }
 @media (max-width:560px){ .pt-item .pt-st { min-width:0; } .pt-item .pt-st-txt { display:none; } }
 /* Onglets du plan (enseignant) */
@@ -35210,8 +35209,8 @@ function ptAssignTs(student, id, classList, indList) {
 }
 
 // --- État d'un exercice pour un élève
-// state : 'done' (fini avec score), 'vu' (activité sans score ouverte), 'manuel' (coché à la main, ancien système),
-//         'started' (ouvert mais pas fini), 'todo'
+// state : 'done' (fini avec score), 'vu' (activité sans score ouverte), 'started' (ouvert mais pas fini), 'todo'
+// Les anciennes coches faites à la main par l'élève (valeur true) sont ignorées (décision de Jérémy, 13/10/2026).
 function ptItemStatus(id, ctx) {
   const since = ctx.assignTs ? Math.floor(ctx.assignTs / 60000) * 60000 : 0; // les heures des résultats sont à la minute
   const noScore = ptIsNoScore(id);
@@ -35226,17 +35225,15 @@ function ptItemStatus(id, ctx) {
   let st;
   if (noScore) {
     if ((opened && opened >= since) || (autoTs && autoTs >= since) || attempts.length) st = 'vu';
-    else if (v === true && !since) st = 'manuel';
     else st = 'todo';
   } else if (attempts.length) st = 'done';
   else if (autoTs && autoTs >= since) st = 'done';          // coché automatiquement, résultat pas encore chargé
-  else if (v === true && !since) st = 'manuel';
   else if (opened && opened >= since) st = 'started';
   else st = 'todo';
   const doneTs = last ? resultTimestamp(last) : (st === 'vu' ? (opened || autoTs) : (st === 'done' ? autoTs : 0));
   return { state: st, best, last, attempts, doneTs, opened, noScore, assignTs: ctx.assignTs || 0 };
 }
-function ptIsCompleted(st) { return st === 'done' || st === 'vu' || st === 'manuel'; }
+function ptIsCompleted(st) { return st === 'done' || st === 'vu'; }
 
 function ptFmtDate(ts) {
   if (!ts) return '';
@@ -35328,7 +35325,6 @@ function ptStudentStatusHtml(s) {
   const map = {
     done:    ['pt-st-done', '✅', 'Fini'],
     vu:      ['pt-st-done', '✅', 'Fait'],
-    manuel:  ['pt-st-done', '✅', 'Fait'],
     started: ['pt-st-started', '⏳', 'Commencé'],
     todo:    ['pt-st-todo', '⬜', 'À faire']
   };
@@ -35418,7 +35414,6 @@ function ptTeacherStatusChip(s) {
   const map = {
     done:    ['pt-st-done', '✅', 'Fini' + (s.doneTs ? ' le ' + ptFmtDate(s.doneTs) : '')],
     vu:      ['pt-st-done', '✅', 'Ouvert' + (s.doneTs ? ' le ' + ptFmtDate(s.doneTs) : '') + ' (sans score)'],
-    manuel:  ['pt-st-manual', '✋', "Coché par l'élève (ancien système)"],
     started: ['pt-st-started', '⏳', 'Commencé' + (s.opened ? ' le ' + ptFmtDate(s.opened) : '') + ', pas fini'],
     todo:    ['pt-st-todo', '⬜', 'Pas encore fait']
   };
@@ -35526,7 +35521,7 @@ async function ptRenderResumeInto(el) {
     const cols = [...colSet].sort((a, b) => cIdx[a].order - cIdx[b].order);
     const mbtn = (m, t) => `<button type="button" class="pt-grp-chip ${ptGridMode === m ? 'active' : ''}" onclick="ptSetGridMode('${m}')">${t}</button>`;
     html += `<div class="pt-res-toolbar">${mbtn('ind', '👤 Travail individuel')}${mbtn('class', '🌍 Plan de la classe')}${mbtn('all', '📚 Tout')}${refreshBtn}</div>
-      <div class="pt-res-legend">✅ fait (avec le score) · ⏳ commencé, pas fini · ⬜ pas encore fait · ✋ coché par l’élève (ancien système) · case grise : pas donné à cet élève. Clique sur un prénom pour le détail.</div>`;
+      <div class="pt-res-legend">✅ fait (avec le score) · ⏳ commencé, pas fini · ⬜ pas encore fait · case grise : pas donné à cet élève. Clique sur un prénom pour le détail.</div>`;
     if (!cols.length) {
       html += '<div class="card pt-nav-empty">Aucun exercice à afficher pour ce choix.</div>';
     } else {
@@ -35545,7 +35540,7 @@ async function ptRenderResumeInto(el) {
           if (!s) { html += '<td class="pt-grid-na"></td>'; return; }
           let cell;
           if (s.state === 'done' && s.best) cell = `✅<div class="pt-grid-pct ${ptScoreClass(s.best.pct || 0)}">${s.best.pct}%</div>`;
-          else if (ptIsCompleted(s.state)) cell = s.state === 'manuel' ? '✋' : '✅';
+          else if (ptIsCompleted(s.state)) cell = '✅';
           else cell = s.state === 'started' ? '⏳' : '⬜';
           html += `<td class="pt-grid-cell">${cell}</td>`;
         });
