@@ -12527,7 +12527,7 @@ window.LIVRES = [
         "correct": 2,
         "answer": 2,
         "points": 1,
-        "explanation": "Guillaume trébuche sur une racine. Cindy lui tend la main, mais elle est entraînée avec lui dans la rivière."
+        "explanation": "Guillaume trébuche sur une racine. Cindy lui tend la main, mais elle est entrainée avec lui dans la rivière."
       },
       {
         "id": "q7",
@@ -12615,7 +12615,7 @@ window.LIVRES = [
         "correct": 0,
         "answer": 0,
         "points": 1,
-        "explanation": "Quand l'eau chauffe, elle s'évapore : elle se transforme en vapeur et disparaît. Barthélémy disparaît de la même façon."
+        "explanation": "Quand l'eau chauffe, elle s'évapore : elle se transforme en vapeur et disparait. Barthélémy disparait de la même façon."
       },
       {
         "id": "q14",
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261014w';
+window.LIVRES_VERSION = '20261014x';
