@@ -11756,7 +11756,7 @@ window.LIVRES = [
         "options": [
           "Nadir, un garçon qui joue au foot sur la place",
           "Un vieux policier du commissariat de la ville",
-          "Un camionneur qui connaît très bien les singes magots",
+          "Un camionneur qui connait très bien les singes magots",
           "Un jeune étudiant qui fait ses études à Paris"
         ],
         "correct": 0,
@@ -11794,7 +11794,7 @@ window.LIVRES = [
         "correct": 3,
         "answer": 3,
         "points": 1,
-        "explanation": "Noah se souvient de Jolicœur, le singe du livre « Sans famille » que son maître avait lu en classe."
+        "explanation": "Noah se souvient de Jolicœur, le singe du livre « Sans famille » que son maitre avait lu en classe."
       },
       {
         "id": "q6",
@@ -11818,7 +11818,7 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Qui lit le carnet rouge aux deux garçons ?",
         "options": [
-          "Lalla Fatna, la vieille dame qui connaît tout le monde",
+          "Lalla Fatna, la vieille dame qui connait tout le monde",
           "Le policier qui voulait parler à Noah au commissariat",
           "Un étudiant rencontré au café",
           "L'homme aux gros sourcils qui voulait acheter Cœurjol"
@@ -11832,17 +11832,17 @@ window.LIVRES = [
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment la maman de Noah le reconnaît-elle à la fin ?",
+        "text": "Comment la maman de Noah le reconnait-elle à la fin ?",
         "options": [
           "Elle voit que le carnet rouge est le sien",
           "Lalla Fatna lui a donné l'adresse de Noah",
-          "Elle reconnaît la main de Fatma qu'il porte au cou",
+          "Elle reconnait la main de Fatma qu'il porte au cou",
           "Elle compare son visage avec la photo déchirée"
         ],
         "correct": 0,
         "answer": 0,
         "points": 1,
-        "explanation": "Isia a vu Cœurjol jouer avec le carnet. Quand Noah le lui tend, elle reconnaît son propre carnet et comprend que c'est son fils."
+        "explanation": "Isia a vu Cœurjol jouer avec le carnet. Quand Noah le lui tend, elle reconnait son propre carnet et comprend que c'est son fils."
       },
       {
         "id": "q9",
@@ -11872,7 +11872,7 @@ window.LIVRES = [
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : il part sans bruit, avec un morceau de pain, la photo et la chaîne avec la main de Fatma."
+        "explanation": "VRAI : il part sans bruit, avec un morceau de pain, la photo et la chaine avec la main de Fatma."
       },
       {
         "id": "q12",
@@ -11939,13 +11939,13 @@ window.LIVRES = [
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
           "Noah, un garçon de onze ans qui vit dans un village près de Marrakech, apprend qu'il n'est pas le fils de ses parents. Il part seul à Marrakech pour chercher sa vraie mère et rencontre Nadir, qui devient son ami. Dans une ferme abandonnée, Noah apprivoise un petit singe et trouve un carnet rouge. Avec Nadir, il découvre un trésor caché dans la ferme, et il l'utilise pour retrouver sa maman.",
-          "Noah, un garçon de onze ans qui vit dans un village près de Marrakech, apprend qu'il n'est pas le fils de ses parents. Il part seul à Marrakech pour chercher sa vraie mère et rencontre Nadir, qui devient son ami. Dans une ferme abandonnée, Noah apprivoise un petit singe et trouve un carnet rouge. Avec Nadir, il découvre un trafic de singes, et une femme qui les aide reconnaît son carnet : c'est Isia, sa maman.",
+          "Noah, un garçon de onze ans qui vit dans un village près de Marrakech, apprend qu'il n'est pas le fils de ses parents. Il part seul à Marrakech pour chercher sa vraie mère et rencontre Nadir, qui devient son ami. Dans une ferme abandonnée, Noah apprivoise un petit singe et trouve un carnet rouge. Avec Nadir, il découvre un trafic de singes, et une femme qui les aide reconnait son carnet : c'est Isia, sa maman.",
           "Noah, un garçon de onze ans qui vit dans un village près de Marrakech, apprend qu'il n'est pas le fils de ses parents. Il part seul à Marrakech pour chercher son vrai père et rencontre Nadir, qui devient son ami. Dans une ferme abandonnée, Noah trouve un carnet rouge et vend son petit singe pour payer le voyage. Avec Nadir, il découvre un trafic de singes, mais il ne retrouve jamais sa famille."
         ],
         "correct": 1,
         "answer": 1,
         "points": 1,
-        "explanation": "Seul le résumé B est correct. Les « magots » sont des singes, pas un trésor. Noah refuse de vendre Cœurjol. Les garçons font arrêter les trafiquants, et Isia reconnaît son carnet : elle est la maman de Noah."
+        "explanation": "Seul le résumé B est correct. Les « magots » sont des singes, pas un trésor. Noah refuse de vendre Cœurjol. Les garçons font arrêter les trafiquants, et Isia reconnait son carnet : elle est la maman de Noah."
       }
     ]
   },
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261014u';
+window.LIVRES_VERSION = '20261014v';
