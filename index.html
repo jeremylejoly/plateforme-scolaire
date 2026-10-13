@@ -34405,6 +34405,7 @@ async function _renderPlanTravailInto(el) {
       <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
         <button type="button" class="btn btn-sm" onclick="ptNewPlan()">🆕 Nouveau plan ${planTravailTarget === 'class' ? 'pour toute la classe' : 'pour ' + ptEsc(planTravailTarget)}</button>
         <span style="font-size:12px;color:var(--muted);">Tout ce qui est coché repart de zéro : rien de fait, aucun ancien score.</span>
+        <button type="button" class="btn btn-sm" style="margin-left:auto;" onclick="ptClearAllIndividual()">🧹 Décocher tous les plans individuels</button>
       </div>
     </div>
 
@@ -35396,6 +35397,19 @@ function ptNewPlan() {
   }
   ptSaveAndNotify();
   alert('✅ Nouveau plan enregistré : tout est vierge pour ' + (isClass ? 'toute la classe' : planTravailTarget) + '.');
+}
+// Vide en une fois le plan individuel de TOUS les élèves (le plan de la classe n'est pas touché). Enregistré aussitôt.
+function ptClearAllIndividual() {
+  const names = Object.keys(planTravailIndividual || {}).filter(k => (planTravailIndividual[k] || []).length);
+  const n = names.reduce((t, k) => t + planTravailIndividual[k].length, 0);
+  if (!n) { alert('Aucun élève n’a d’exercice dans son plan individuel.'); return; }
+  if (!confirm('Décocher tous les plans individuels ?\n\n' + n + ' exercice(s) seront retirés du plan individuel de ' + names.length + ' élève(s) : ' + names.join(', ') + '.\n\nLe plan de toute la classe n’est pas touché. Le plan sera enregistré tout de suite.')) return;
+  planTravailIndividual = {};
+  ptDirty = true;
+  ptSaveAndNotify();
+  const el = ptActiveRoot();
+  if (el) _renderPlanTravailInto(el);
+  alert('✅ Tous les plans individuels sont vides.');
 }
 function ptOpenResumeStudent(name) { ptView = 'summary'; ptResumeStudent = name; const el = ptActiveRoot(); if (el) _renderPlanTravailInto(el); }
 function ptEditStudentPlan(name) { planTravailTarget = name; ptView = 'assign'; ptResumeStudent = null; const el = ptActiveRoot(); if (el) _renderPlanTravailInto(el); }
