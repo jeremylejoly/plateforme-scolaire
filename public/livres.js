@@ -29,13 +29,13 @@ window.LIVRES = [
         "options": [
           "Dans un grand hôtel au centre d'Auckland",
           "Dans un joli chalet en bois au milieu des montagnes du Jura",
-          "Dans une cabane sur pilotis, sur l'île de Great Barrier",
+          "Dans une cabane sur pilotis, sur l'ile de Great Barrier",
           "Dans l'hôpital où elle a été opérée"
         ],
         "correct": 2,
         "answer": 2,
         "points": 1,
-        "explanation": "Elle vit depuis un mois dans une petite « cabane » au bord de la mer, sur l'île de Great Barrier."
+        "explanation": "Elle vit depuis un mois dans une petite « cabane » au bord de la mer, sur l'ile de Great Barrier."
       },
       {
         "id": "q3",
@@ -91,7 +91,7 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Que se passe-t-il pendant la partie de pêche avec Bill ?",
         "options": [
-          "Le moteur tombe en panne loin de l'île",
+          "Le moteur tombe en panne loin de l'ile",
           "Une énorme vague fait chavirer le Zodiac et le moteur",
           "Quelqu'un tire sur le bateau depuis la côte",
           "Tobby mord Bill en sautant dans l'eau"
@@ -167,7 +167,7 @@ window.LIVRES = [
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Pour aller sur l'île de Great Barrier, la famille doit prendre un cargo de marchandises.",
+        "text": "Pour aller sur l'ile de Great Barrier, la famille doit prendre un cargo de marchandises.",
         "correct": true,
         "answer": true,
         "points": 1,
@@ -195,7 +195,7 @@ window.LIVRES = [
         "type": "mcq",
         "text": "« Les antipodes, on appelle ça. » Que sont les « antipodes » ?",
         "options": [
-          "Les îles où vivent les manchots",
+          "Les iles où vivent les manchots",
           "L'endroit exactement de l'autre côté de la Terre",
           "Les régions où on roule à gauche",
           "Les pays lointains où il fait chaud pendant toute l'année"
@@ -227,9 +227,9 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Alice et son papa partent en Nouvelle-Zélande pour rejoindre sa maman, blessée dans un accident de parapente. Sur l'île de Great Barrier, un grand Maori tatoué, Pita, fait très peur à Alice. Pendant une partie de pêche avec le vieux Bill, quelqu'un tire sur leur bateau depuis la côte. Alice découvre que Pita pleure son ami le dauphin, tué par des pêcheurs, et ils finissent par devenir amis.",
-          "Alice et son papa partent en Nouvelle-Zélande pour rejoindre sa maman, blessée dans un accident de parapente. Sur l'île de Great Barrier, un grand Maori tatoué, Pita, fait très peur à Alice. Pendant une partie de pêche avec le vieux Bill, Pita coupe la corde du bateau pour le laisser partir à la dérive. Alice découvre qu'il protège les langoustes de la baie, et il lui apprend à les pêcher.",
-          "Alice et son papa partent en Nouvelle-Zélande pour rejoindre sa maman, qui s'est cassé la jambe en faisant du ski. Sur l'île de Great Barrier, un grand Maori tatoué, Pita, fait très peur à Alice. Pendant une partie de pêche avec le vieux Bill, quelqu'un tire sur leur bateau depuis la côte. Alice découvre que Pita pleure son dauphin, mais il refuse de lui parler jusqu'à son départ."
+          "Alice et son papa partent en Nouvelle-Zélande pour rejoindre sa maman, blessée dans un accident de parapente. Sur l'ile de Great Barrier, un grand Maori tatoué, Pita, fait très peur à Alice. Pendant une partie de pêche avec le vieux Bill, quelqu'un tire sur leur bateau depuis la côte. Alice découvre que Pita pleure son ami le dauphin, tué par des pêcheurs, et ils finissent par devenir amis.",
+          "Alice et son papa partent en Nouvelle-Zélande pour rejoindre sa maman, blessée dans un accident de parapente. Sur l'ile de Great Barrier, un grand Maori tatoué, Pita, fait très peur à Alice. Pendant une partie de pêche avec le vieux Bill, Pita coupe la corde du bateau pour le laisser partir à la dérive. Alice découvre qu'il protège les langoustes de la baie, et il lui apprend à les pêcher.",
+          "Alice et son papa partent en Nouvelle-Zélande pour rejoindre sa maman, qui s'est cassé la jambe en faisant du ski. Sur l'ile de Great Barrier, un grand Maori tatoué, Pita, fait très peur à Alice. Pendant une partie de pêche avec le vieux Bill, quelqu'un tire sur leur bateau depuis la côte. Alice découvre que Pita pleure son dauphin, mais il refuse de lui parler jusqu'à son départ."
         ],
         "correct": 0,
         "answer": 0,
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261013r';
+window.LIVRES_VERSION = '20261013s';
