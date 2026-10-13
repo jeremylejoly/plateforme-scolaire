@@ -4815,7 +4815,7 @@ window.LIVRES = [
         "correct": 1,
         "answer": 1,
         "points": 1,
-        "explanation": "Il le trouve dans les violettes écrasées du parterre, près de la boîte aux lettres."
+        "explanation": "Il le trouve dans les violettes écrasées du parterre, près de la boite aux lettres."
       },
       {
         "id": "q3",
@@ -4831,15 +4831,15 @@ window.LIVRES = [
         "correct": 3,
         "answer": 3,
         "points": 1,
-        "explanation": "Un « 1 » apparaît sur l'icône du calendrier, avec un nouveau rendez-vous."
+        "explanation": "Un « 1 » apparait sur l'icône du calendrier, avec un nouveau rendez-vous."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que trouve Milo dans la grande boîte aux lettres de la chaussée des Coquelicots ?",
+        "text": "Que trouve Milo dans la grande boite aux lettres de la chaussée des Coquelicots ?",
         "options": [
-          "Une boîte avec le mode d'emploi du téléphone",
+          "Une boite avec le mode d'emploi du téléphone",
           "Une lettre de menace écrite en lettres découpées",
           "Un sachet de poudre blanche avec une adresse",
           "Une clé et un plan du cimetière du quartier"
@@ -4847,7 +4847,7 @@ window.LIVRES = [
         "correct": 0,
         "answer": 0,
         "points": 1,
-        "explanation": "Il trouve une boîte blanche contenant le manuel du smartphone et un petit mot."
+        "explanation": "Il trouve une boite blanche contenant le manuel du smartphone et un petit mot."
       },
       {
         "id": "q5",
@@ -4863,7 +4863,7 @@ window.LIVRES = [
         "correct": 0,
         "answer": 0,
         "points": 1,
-        "explanation": "Le petit papier dans la boîte porte son prénom : il a été choisi exprès."
+        "explanation": "Le petit papier dans la boite porte son prénom : il a été choisi exprès."
       },
       {
         "id": "q6",
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261014c';
+window.LIVRES_VERSION = '20261014d';
