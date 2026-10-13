@@ -9595,7 +9595,7 @@ window.LIVRES = [
         "correct": 3,
         "answer": 3,
         "points": 1,
-        "explanation": "Il connaît son prénom et son anniversaire, et lui colle de force les « Comptines de Frédégore » contre la poitrine."
+        "explanation": "Il connait son prénom et son anniversaire, et lui colle de force les « Comptines de Frédégore » contre la poitrine."
       },
       {
         "id": "q3",
@@ -9604,20 +9604,20 @@ window.LIVRES = [
         "text": "Qu'arrive-t-il quand Thémis lit la première comptine dans sa chambre ?",
         "options": [
           "Il se transforme en petit rat de la grotte",
-          "Le livre prend feu et disparaît",
+          "Le livre prend feu et disparait",
           "Ses parents entrent en criant dans la chambre",
-          "Il se réveille sur une île inconnue"
+          "Il se réveille sur une ile inconnue"
         ],
         "correct": 3,
         "answer": 3,
         "points": 1,
-        "explanation": "Après une douleur à la tête, il se retrouve sur l'île de Frédégore."
+        "explanation": "Après une douleur à la tête, il se retrouve sur l'ile de Frédégore."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Selon Titouan, comment peut-on quitter l'île aux comptines ?",
+        "text": "Selon Titouan, comment peut-on quitter l'ile aux comptines ?",
         "options": [
           "En capturant les jumeaux Jahel et Nathanaël",
           "En lisant la seule bonne comptine",
@@ -9635,7 +9635,7 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Que se passe-t-il quand Thémis lit la comptine de la queue du raton ?",
         "options": [
-          "Titouan disparaît pour toujours",
+          "Titouan disparait pour toujours",
           "Des rats l'attaquent dans une grotte",
           "Il rencontre Louis-Marie Deschamps, un garçon de 1821",
           "Il rentre enfin chez lui pour son anniversaire"
@@ -9653,7 +9653,7 @@ window.LIVRES = [
         "options": [
           "Un conseil : dire sa comptine à l'envers",
           "La date de son propre anniversaire",
-          "Une carte de l'île avec un trésor caché",
+          "Une carte de l'ile avec un trésor caché",
           "Le vrai nom de Frédégore et son adresse"
         ],
         "correct": 0,
@@ -9665,7 +9665,7 @@ window.LIVRES = [
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Qui aide vraiment Thémis sur l'île ?",
+        "text": "Qui aide vraiment Thémis sur l'ile ?",
         "options": [
           "Frédégore, déguisé en marchand",
           "Les jumeaux Jahel et Nathanaël",
@@ -9683,7 +9683,7 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Quelle surprise attend Thémis à la fin, à la maison ?",
         "options": [
-          "Titouan a disparu et personne ne le connaît",
+          "Titouan a disparu et personne ne le connait",
           "Le selfie avec les jumeaux reste dans son téléphone",
           "Titouan est devenu son voisin",
           "Ses parents lui offrent un nouveau téléphone"
@@ -9707,7 +9707,7 @@ window.LIVRES = [
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Sur l'île, le téléphone de Thémis capte très bien le réseau.",
+        "text": "Sur l'ile, le téléphone de Thémis capte très bien le réseau.",
         "correct": false,
         "answer": false,
         "points": 1,
@@ -9787,14 +9787,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Le jour de son anniversaire, Thémis accompagne ses parents à une foire aux livres anciens, où un étrange bouquiniste lui force la main pour lui donner un livre de comptines. En lisant la première comptine, Thémis se retrouve sur une île inconnue et dangereuse. Aidé par les jumeaux Jahel et Nathanaël, il comprend qu'il doit trouver la seule comptine capable de le ramener chez lui. Il réussit à rentrer chez lui juste à temps pour son anniversaire, et il jette le livre au feu.",
-          "Le jour de son anniversaire, Thémis accompagne ses parents à une foire aux livres anciens, où un étrange bouquiniste lui force la main pour lui donner un livre de comptines. En lisant la première comptine, Thémis se retrouve sur une île inconnue et dangereuse. Aidé par Titouan, il comprend qu'il doit trouver la seule comptine capable de le ramener chez lui. Il réussit en récitant sa comptine à l'envers, mais ses parents lui offrent un nouveau livre de Frédégore.",
-          "Le jour de son anniversaire, Thémis accompagne ses parents à une foire aux livres anciens, où il achète lui-même un vieux livre de comptines. En lisant la première comptine, Thémis se retrouve sur une île inconnue et dangereuse. Il appelle ses parents avec son téléphone, et son papa lui lit la bonne comptine pour le faire revenir. Il rentre à temps pour souffler ses bougies."
+          "Le jour de son anniversaire, Thémis accompagne ses parents à une foire aux livres anciens, où un étrange bouquiniste lui force la main pour lui donner un livre de comptines. En lisant la première comptine, Thémis se retrouve sur une ile inconnue et dangereuse. Aidé par les jumeaux Jahel et Nathanaël, il comprend qu'il doit trouver la seule comptine capable de le ramener chez lui. Il réussit à rentrer chez lui juste à temps pour son anniversaire, et il jette le livre au feu.",
+          "Le jour de son anniversaire, Thémis accompagne ses parents à une foire aux livres anciens, où un étrange bouquiniste lui force la main pour lui donner un livre de comptines. En lisant la première comptine, Thémis se retrouve sur une ile inconnue et dangereuse. Aidé par Titouan, il comprend qu'il doit trouver la seule comptine capable de le ramener chez lui. Il réussit en récitant sa comptine à l'envers, mais ses parents lui offrent un nouveau livre de Frédégore.",
+          "Le jour de son anniversaire, Thémis accompagne ses parents à une foire aux livres anciens, où il achète lui-même un vieux livre de comptines. En lisant la première comptine, Thémis se retrouve sur une ile inconnue et dangereuse. Il appelle ses parents avec son téléphone, et son papa lui lit la bonne comptine pour le faire revenir. Il rentre à temps pour souffler ses bougies."
         ],
         "correct": 1,
         "answer": 1,
         "points": 1,
-        "explanation": "Seul le résumé B est correct. Frédégore impose le livre à Thémis. Sur l'île (sans réseau), Titouan l'aide, tandis que les jumeaux le piègent. Thémis rentre en lisant la comptine à l'envers, puis reçoit les « Dictons de Frédégore »."
+        "explanation": "Seul le résumé B est correct. Frédégore impose le livre à Thémis. Sur l'ile (sans réseau), Titouan l'aide, tandis que les jumeaux le piègent. Thémis rentre en lisant la comptine à l'envers, puis reçoit les « Dictons de Frédégore »."
       }
     ]
   },
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261014o';
+window.LIVRES_VERSION = '20261014p';
