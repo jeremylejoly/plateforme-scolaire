@@ -3405,7 +3405,7 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Comment Damien essaie-t-il de faire croire à sa maman qu'il a de la fièvre ?",
         "options": [
-          "Il boit un grand bol de chocolat bien brûlant",
+          "Il boit un grand bol de chocolat bien brulant",
           "Il se met un gant de toilette chaud sur le front",
           "Il pose le thermomètre sur le radiateur",
           "Il court dans les escaliers avant de le prendre"
@@ -3451,7 +3451,7 @@ window.LIVRES = [
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que deviennent les miettes de barre de céréales que Damien a éternuées sur l'îlot ?",
+        "text": "Que deviennent les miettes de barre de céréales que Damien a éternuées sur l'ilot ?",
         "options": [
           "De petits virus qui sautent partout",
           "Des colonnes géantes de céréales",
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261013v';
+window.LIVRES_VERSION = '20261013w';
