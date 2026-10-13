@@ -15167,7 +15167,7 @@ window.LIVRES = [
           "La maman de Thomas l'a fabriquée pour un film",
           "Elle a poussé à partir d'une graine magique",
           "Des chercheurs l'ont créée dans un laboratoire",
-          "Un explorateur l'a rapportée d'une île lointaine"
+          "Un explorateur l'a rapportée d'une ile lointaine"
         ],
         "correct": 2,
         "answer": 2,
@@ -15181,7 +15181,7 @@ window.LIVRES = [
         "text": "Comment Thomas sauve-t-il la plante ?",
         "options": [
           "Il la refroidit avec un journal, l'arrose et mouille ses feuilles",
-          "Il coupe toutes ses feuilles brûlées",
+          "Il coupe toutes ses feuilles brulées",
           "Il la plante dans le jardin, à l'ombre",
           "Il la met dans le congélateur"
         ],
@@ -15291,7 +15291,7 @@ window.LIVRES = [
         "correct": 2,
         "answer": 2,
         "points": 1,
-        "explanation": "Seul le résumé C est correct. La voix est celle d'une plante, l'Isphia Luniga, qui ne parle qu'aux personnes très sensibles. Thomas la sauve du four brûlant, et Ondine l'entend à son tour."
+        "explanation": "Seul le résumé C est correct. La voix est celle d'une plante, l'Isphia Luniga, qui ne parle qu'aux personnes très sensibles. Thomas la sauve du four brulant, et Ondine l'entend à son tour."
       }
     ]
   },
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261015e';
+window.LIVRES_VERSION = '20261015f';
