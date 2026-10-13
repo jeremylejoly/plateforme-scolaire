@@ -11985,7 +11985,7 @@ window.LIVRES = [
         "correct": 3,
         "answer": 3,
         "points": 1,
-        "explanation": "Dans une énorme boîte, il trouve une carte du monde avec une vingtaine de pays. Il peut choisir le prochain pays où la famille ira vivre."
+        "explanation": "Dans une énorme boite, il trouve une carte du monde avec une vingtaine de pays. Il peut choisir le prochain pays où la famille ira vivre."
       },
       {
         "id": "q3",
@@ -12049,7 +12049,7 @@ window.LIVRES = [
         "correct": 1,
         "answer": 1,
         "points": 1,
-        "explanation": "Félicien se tord dans tous les sens sans faire tomber la bouteille. Il s'entraîne depuis l'âge de six ans."
+        "explanation": "Félicien se tord dans tous les sens sans faire tomber la bouteille. Il s'entraine depuis l'âge de six ans."
       },
       {
         "id": "q7",
@@ -12178,7 +12178,7 @@ window.LIVRES = [
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
           "Louis, un garçon belge de douze ans, déménage souvent avec sa famille, car son papa travaille dans des projets d'aide. Pour son anniversaire, il peut choisir le prochain pays : il choisit la RDC, le pays de son idole, le basketteur Mutombo. À Kinshasa, il découvre la ville avec son papa et se fait un ami, Félicien. Félicien l'emmène voir l'hôpital que Mutombo a fait construire, et Louis apprend que son nouvel ami va, lui aussi, déménager à Bukavu.",
-          "Louis, un garçon belge de douze ans, déménage souvent avec sa famille, car son papa travaille dans des projets d'aide. Pour son anniversaire, il peut choisir le prochain pays : il choisit la RDC, le pays de son idole, le basketteur Mutombo. À Kinshasa, il découvre la ville avec son papa et se fait un ami, Félicien. Félicien l'emmène voir un match de Mutombo, qui remarque Louis dans le public et l'invite à s'entraîner avec toute son équipe pendant une semaine.",
+          "Louis, un garçon belge de douze ans, déménage souvent avec sa famille, car son papa travaille dans des projets d'aide. Pour son anniversaire, il peut choisir le prochain pays : il choisit la RDC, le pays de son idole, le basketteur Mutombo. À Kinshasa, il découvre la ville avec son papa et se fait un ami, Félicien. Félicien l'emmène voir un match de Mutombo, qui remarque Louis dans le public et l'invite à s'entrainer avec toute son équipe pendant une semaine.",
           "Louis, un garçon belge de douze ans, déménage souvent avec sa famille, car son papa travaille dans des projets d'aide. Pour son anniversaire, il peut choisir le prochain pays : il choisit les États-Unis, où joue son idole, le basketteur Mutombo. À Houston, il découvre la ville avec son papa et se fait un ami, Félicien. Félicien l'emmène voir l'hôpital que Mutombo a fait construire."
         ],
         "correct": 0,
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261014v';
+window.LIVRES_VERSION = '20261014w';
