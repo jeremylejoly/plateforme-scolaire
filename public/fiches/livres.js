@@ -10529,7 +10529,7 @@ window.LIVRES = [
         "options": [
           "Son chien Padoum est tombé gravement malade",
           "Il doit changer d'école et quitter ses amis",
-          "La nature est de plus en plus abîmée",
+          "La nature est de plus en plus abimée",
           "Il n'aime pas la neige et le froid de janvier"
         ],
         "correct": 2,
@@ -10543,7 +10543,7 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Qui est vraiment Wilgar ?",
         "options": [
-          "Un ancien bûcheron venu d'un autre pays",
+          "Un ancien bucheron venu d'un autre pays",
           "Le frère de l'arrière-grand-père de Dimitri",
           "Un enfant sauvé pendant la guerre",
           "Le vieux gardien de la forêt et du village"
@@ -10561,7 +10561,7 @@ window.LIVRES = [
         "options": [
           "Un sachet de graines magiques",
           "Un livre sur les arbres de la forêt",
-          "Une vieille hache de bûcheron",
+          "Une vieille hache de bucheron",
           "Deux chèvres et leur enclos"
         ],
         "correct": 0,
@@ -10591,7 +10591,7 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Pourquoi l'arbre à gronder ne suffit-il pas ?",
         "options": [
-          "Il est abattu par des bûcherons",
+          "Il est abattu par des bucherons",
           "Il ne pousse pas plus haut qu'une fleur",
           "Il se met à pleurer au lieu de gronder",
           "Les gens polluent plus haut"
@@ -10743,9 +10743,9 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Dimitri est triste de voir la nature de plus en plus abîmée autour de la ferme. Wilgar, un vieil homme sauvé autrefois par son arrière-grand-père pendant la guerre, lui donne des graines magiques : un arbre planté avec l'une d'elles peut réaliser un souhait sincère. Dimitri plante un arbre à gronder au bord de la rivière : il fait tellement peur aux pollueurs que l'eau redevient propre pour toujours, et Dimitri n'a plus jamais besoin d'utiliser les autres graines magiques.",
-          "Dimitri est triste de voir la nature de plus en plus abîmée autour de la ferme. Wilgar, un vieil homme qui vit seul dans la forêt, lui vend des graines magiques : un arbre planté avec l'une d'elles peut rendre riche. Dimitri essaie plusieurs arbres et cherche celui qui poussera les hommes à protéger la nature. Il plante enfin des arbres à conscience, et c'est Wilgar qui raconte leur histoire bien des années plus tard.",
-          "Dimitri est triste de voir la nature de plus en plus abîmée autour de la ferme. Wilgar, un vieil homme sauvé autrefois par son arrière-grand-père pendant la guerre, lui donne des graines magiques : un arbre planté avec l'une d'elles peut réaliser un souhait sincère. Dimitri essaie plusieurs arbres et cherche celui qui poussera les hommes à protéger la nature. Il plante enfin des arbres à conscience, et son petit frère Arnaud raconte leur histoire bien des années plus tard."
+          "Dimitri est triste de voir la nature de plus en plus abimée autour de la ferme. Wilgar, un vieil homme sauvé autrefois par son arrière-grand-père pendant la guerre, lui donne des graines magiques : un arbre planté avec l'une d'elles peut réaliser un souhait sincère. Dimitri plante un arbre à gronder au bord de la rivière : il fait tellement peur aux pollueurs que l'eau redevient propre pour toujours, et Dimitri n'a plus jamais besoin d'utiliser les autres graines magiques.",
+          "Dimitri est triste de voir la nature de plus en plus abimée autour de la ferme. Wilgar, un vieil homme qui vit seul dans la forêt, lui vend des graines magiques : un arbre planté avec l'une d'elles peut rendre riche. Dimitri essaie plusieurs arbres et cherche celui qui poussera les hommes à protéger la nature. Il plante enfin des arbres à conscience, et c'est Wilgar qui raconte leur histoire bien des années plus tard.",
+          "Dimitri est triste de voir la nature de plus en plus abimée autour de la ferme. Wilgar, un vieil homme sauvé autrefois par son arrière-grand-père pendant la guerre, lui donne des graines magiques : un arbre planté avec l'une d'elles peut réaliser un souhait sincère. Dimitri essaie plusieurs arbres et cherche celui qui poussera les hommes à protéger la nature. Il plante enfin des arbres à conscience, et son petit frère Arnaud raconte leur histoire bien des années plus tard."
         ],
         "correct": 2,
         "answer": 2,
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261013g';
+window.LIVRES_VERSION = '20261013h';
