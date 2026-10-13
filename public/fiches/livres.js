@@ -1463,7 +1463,7 @@ window.LIVRES = [
         "options": [
           "Pour donner la réplique à Laura",
           "Parce que Monsieur Lopez l'avait inscrite sans lui demander",
-          "Pour montrer aux professeurs qu'elle connaît tout le texte",
+          "Pour montrer aux professeurs qu'elle connait tout le texte",
           "Parce que Tiago lui a demandé de passer l'audition avec lui"
         ],
         "correct": 0,
@@ -1477,7 +1477,7 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Qui obtient le rôle de Célimène après l'audition ?",
         "options": [
-          "Une élève de quatrième que personne ne connaît",
+          "Une élève de quatrième que personne ne connait",
           "Samira, à l'unanimité du jury",
           "Laura, comme l'année dernière",
           "Clothilde, une fille de la classe de Samira"
@@ -1663,7 +1663,7 @@ window.LIVRES = [
         "options": [
           "Samira, surnommée « Sam-la-poisse », accompagne sa meilleure amie Laura à une audition de théâtre. En lui donnant la réplique sur scène, c'est Samira qui obtient le premier rôle, et Laura ne lui parle plus. Samira découvre qu'elle aime jouer, et Laura devient accessoiriste de la troupe. Le soir du spectacle, Samira se fait une entorse, et c'est finalement Laura qui joue le rôle à sa place.",
           "Samira, surnommée « Sam-la-poisse », accompagne sa meilleure amie Laura à une audition de théâtre. En lui donnant la réplique sur scène, c'est Samira qui obtient le premier rôle, et Laura ne lui parle plus. Samira découvre qu'elle aime jouer, et Laura devient accessoiriste de la troupe. Le soir du spectacle, malgré une entorse à la cheville, Samira joue son rôle et les deux amies se réconcilient.",
-          "Samira, surnommée « Sam-la-poisse », accompagne sa meilleure amie Laura à une audition de théâtre. Le jury donne le premier rôle à Laura, et Samira devient la souffleuse de la troupe. Jalouse, elle abîme les costumes, mais elle finit par avouer sa faute. Le soir du spectacle, malgré une entorse à la cheville, Laura joue son rôle et les deux amies se réconcilient."
+          "Samira, surnommée « Sam-la-poisse », accompagne sa meilleure amie Laura à une audition de théâtre. Le jury donne le premier rôle à Laura, et Samira devient la souffleuse de la troupe. Jalouse, elle abime les costumes, mais elle finit par avouer sa faute. Le soir du spectacle, malgré une entorse à la cheville, Laura joue son rôle et les deux amies se réconcilient."
         ],
         "correct": 1,
         "answer": 1,
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261013m';
+window.LIVRES_VERSION = '20261013n';
