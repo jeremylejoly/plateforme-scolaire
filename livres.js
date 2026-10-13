@@ -10084,7 +10084,7 @@ window.LIVRES = [
           "Le commissariat est beaucoup trop loin de la cité",
           "Elle a peur d'être expulsée",
           "Elle pense que le fauteuil va revenir tout seul",
-          "Elle connaît les voleurs et veut les protéger"
+          "Elle connait les voleurs et veut les protéger"
         ],
         "correct": 1,
         "answer": 1,
@@ -10121,7 +10121,7 @@ window.LIVRES = [
         "correct": 0,
         "answer": 0,
         "points": 1,
-        "explanation": "Ainsi naît le « Gang des Bienfaiteurs d'Idriss »."
+        "explanation": "Ainsi nait le « Gang des Bienfaiteurs d'Idriss »."
       },
       {
         "id": "q6",
@@ -10205,7 +10205,7 @@ window.LIVRES = [
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Avant la création du club, une collecte dans le quartier rapporte déjà la moitié de la somme.",
+        "text": "Avant la création du club, une collecte dans le quartier rapporte déjà environ la moitié de la somme.",
         "correct": true,
         "answer": true,
         "points": 1,
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261013e';
+window.LIVRES_VERSION = '20261013f';
