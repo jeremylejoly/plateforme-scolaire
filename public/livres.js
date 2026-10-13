@@ -5766,7 +5766,7 @@ window.LIVRES = [
           "La meilleure amie de Juliette restée à Lille",
           "Une élève très grande, seule et embêtée par les autres",
           "Une fille du trio de Marjorie, Gaëlle et Marion",
-          "La maîtresse de la classe de CM2"
+          "La maitresse de la classe de CM2"
         ],
         "correct": 1,
         "answer": 1,
@@ -5779,7 +5779,7 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Que font les garçons à Colombe dans la cour ?",
         "options": [
-          "Ils lui volent son goûter et le jettent dans la poubelle",
+          "Ils lui volent son gouter et le jettent dans la poubelle",
           "Ils cachent son manteau bleu dans les toilettes",
           "Ils courent autour d'elle et la frôlent pour lui faire peur",
           "Ils la poussent exprès dans la boue devant toute l'école"
@@ -5796,7 +5796,7 @@ window.LIVRES = [
         "text": "À qui Colombe confie-t-elle ce qu'elle ressent ?",
         "options": [
           "À sa maman, tous les soirs pendant le repas",
-          "À la maîtresse, Madame Bourdelet",
+          "À la maitresse, Madame Bourdelet",
           "À son journal intime",
           "À son ami Gabriel, par des SMS"
         ],
@@ -5903,7 +5903,7 @@ window.LIVRES = [
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Gabriel connaît Colombe depuis le CP.",
+        "text": "Gabriel connait Colombe depuis le CP.",
         "correct": true,
         "answer": true,
         "points": 1,
@@ -5947,7 +5947,7 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Le « harcèlement », c'est…",
         "options": [
-          "une punition donnée par la maîtresse à toute la classe",
+          "une punition donnée par la maitresse à toute la classe",
           "une dispute qui arrive une seule fois entre deux amis",
           "un jeu de cour où l'on court en rond autour des deux arbres rabougris",
           "une méchanceté répétée encore et encore contre une même personne"
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261014i';
+window.LIVRES_VERSION = '20261014j';
