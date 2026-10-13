@@ -11268,7 +11268,7 @@ window.LIVRES = [
         "correct": 3,
         "answer": 3,
         "points": 1,
-        "explanation": "Elle pense qu'il a peut-être été agressé ou qu'il est malade."
+        "explanation": "Elle pense qu'il a peut-être été agressé, ou même qu'il est mort."
       },
       {
         "id": "q3",
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261015k';
+window.LIVRES_VERSION = '20261015l';
