@@ -3628,7 +3628,7 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Qu'est-ce que le voleur a emporté chez Babou ?",
         "options": [
-          "Sa boîte à bijoux",
+          "Sa boite à bijoux",
           "Le téléphone de l'appartement",
           "Son portefeuille et ses cartes de banque",
           "Les clés de l'immeuble"
@@ -3684,7 +3684,7 @@ window.LIVRES = [
         "correct": 1,
         "answer": 1,
         "points": 1,
-        "explanation": "Au magasin d'occasion, Gabrielle reconnaît les boucles d'oreilles à leur petit diamant qui bouge un peu."
+        "explanation": "Au magasin d'occasion, Gabrielle reconnait les boucles d'oreilles à leur petit diamant qui bouge un peu."
       },
       {
         "id": "q7",
@@ -3812,9 +3812,9 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Babou, la grand-mère des jumeaux Gabrielle et Dorian, est attaquée chez elle, et sa boîte à bijoux est volée. Les jumeaux mènent l'enquête avec Max, le rat apprivoisé de Dorian, qui trouve un fil de laine bleu. Gabrielle reconnaît ensuite les boucles d'oreilles de Babou dans un magasin d'occasion. Ils découvrent que la voleuse est Madame Jansen, une voisine qui faisait semblant d'avoir du mal à marcher.",
-          "Babou, la grand-mère des jumeaux Gabrielle et Dorian, est attaquée chez elle, et sa boîte à bijoux est volée. Les jumeaux mènent l'enquête avec Max, le chien de Babou, qui trouve un bouton de manteau. Dorian retrouve ensuite les bijoux de Babou cachés dans la cave de l'immeuble. Ils découvrent que la voleuse est Madame Jansen, une voisine qui faisait semblant d'avoir du mal à marcher.",
-          "Babou, la grand-mère des jumeaux Gabrielle et Dorian, est attaquée chez elle, et sa boîte à bijoux est volée. Les jumeaux mènent l'enquête avec Max, le rat apprivoisé de Dorian, qui trouve un fil de laine bleu. Gabrielle reconnaît ensuite les boucles d'oreilles de Babou dans un magasin d'occasion. Ils découvrent que le voleur est Monsieur Julien, le voisin qui avait déjà fait de la prison."
+          "Babou, la grand-mère des jumeaux Gabrielle et Dorian, est attaquée chez elle, et sa boite à bijoux est volée. Les jumeaux mènent l'enquête avec Max, le rat apprivoisé de Dorian, qui trouve un fil de laine bleu. Gabrielle reconnait ensuite les boucles d'oreilles de Babou dans un magasin d'occasion. Ils découvrent que la voleuse est Madame Jansen, une voisine qui faisait semblant d'avoir du mal à marcher.",
+          "Babou, la grand-mère des jumeaux Gabrielle et Dorian, est attaquée chez elle, et sa boite à bijoux est volée. Les jumeaux mènent l'enquête avec Max, le chien de Babou, qui trouve un bouton de manteau. Dorian retrouve ensuite les bijoux de Babou cachés dans la cave de l'immeuble. Ils découvrent que la voleuse est Madame Jansen, une voisine qui faisait semblant d'avoir du mal à marcher.",
+          "Babou, la grand-mère des jumeaux Gabrielle et Dorian, est attaquée chez elle, et sa boite à bijoux est volée. Les jumeaux mènent l'enquête avec Max, le rat apprivoisé de Dorian, qui trouve un fil de laine bleu. Gabrielle reconnait ensuite les boucles d'oreilles de Babou dans un magasin d'occasion. Ils découvrent que le voleur est Monsieur Julien, le voisin qui avait déjà fait de la prison."
         ],
         "correct": 0,
         "answer": 0,
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261013w';
+window.LIVRES_VERSION = '20261013x';
