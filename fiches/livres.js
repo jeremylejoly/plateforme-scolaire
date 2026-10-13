@@ -108,7 +108,7 @@ window.LIVRES = [
         "text": "Pourquoi Pita, le Maori, était-il si en colère contre les pêcheurs ?",
         "options": [
           "Ils avaient cassé son fusil à lunette",
-          "Ils avaient abîmé son cabanon en haut de la falaise",
+          "Ils avaient abimé son cabanon en haut de la falaise",
           "Ils avaient pêché toutes les langoustes",
           "Ils avaient tué son ami, le dauphin Sweety"
         ],
@@ -141,7 +141,7 @@ window.LIVRES = [
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : ils abîment la forêt. Tuer un opossum est même devenu « un devoir national »."
+        "explanation": "VRAI : ils abiment la forêt. Tuer un opossum est même devenu « un devoir national »."
       },
       {
         "id": "q10",
@@ -157,7 +157,7 @@ window.LIVRES = [
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "À la fin, Pita casse son fusil et regrette ce qu'il a fait.",
+        "text": "Quand on retrouve Pita dans son cabanon, son fusil est cassé en deux et il regrette ce qu'il a fait.",
         "correct": true,
         "answer": true,
         "points": 1,
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261002b';
+window.LIVRES_VERSION = '20261013a';
