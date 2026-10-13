@@ -2930,7 +2930,7 @@ window.LIVRES = [
           "Elle force la serrure avec une longue épingle à cheveux",
           "Elle passe par la fenêtre en grimpant au mur",
           "Elle demande la clé à Augustine, la cuisinière",
-          "Elle vole la clé à Marie-Louise pendant le dîner"
+          "Elle vole la clé à Marie-Louise pendant le diner"
         ],
         "correct": 3,
         "answer": 3,
@@ -2951,7 +2951,7 @@ window.LIVRES = [
         "correct": 1,
         "answer": 1,
         "points": 1,
-        "explanation": "Elle découvre une boîte noire avec un côté en verre, reliée à un clavier et à des pédales de vélo. Elle ne sait pas à quoi elle sert."
+        "explanation": "Elle découvre une boite noire avec un côté en verre, reliée à un clavier et à des pédales de vélo. Elle ne sait pas à quoi elle sert."
       },
       {
         "id": "q6",
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261013s';
+window.LIVRES_VERSION = '20261013t';
