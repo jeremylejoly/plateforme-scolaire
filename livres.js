@@ -569,7 +569,7 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Qu'entend Francis quand il est coincé entre deux grosses pierres ?",
         "options": [
-          "Un chien de traîneau qui aboie très fort",
+          "Un chien de traineau qui aboie très fort",
           "Mathieu qui donne une leçon de snow",
           "Son frère qui l'appelle en criant depuis le haut du télésiège",
           "Deux garçons qui parlent de compétitions et de cuivre"
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261013b';
+window.LIVRES_VERSION = '20261013c';
