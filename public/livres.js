@@ -1850,7 +1850,7 @@ window.LIVRES = [
         "id": "q13",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« On voit apparaître ses côtes saillantes sur son flanc. » Des côtes « saillantes » sont des côtes…",
+        "text": "« On voit apparaitre ses côtes saillantes sur son flanc. » Des côtes « saillantes » sont des côtes…",
         "options": [
           "qui dépassent, qu'on voit bien",
           "cassées",
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261013l';
+window.LIVRES_VERSION = '20261013m';
