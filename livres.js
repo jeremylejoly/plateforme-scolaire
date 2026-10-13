@@ -15851,7 +15851,7 @@ window.LIVRES = [
         "options": [
           "Il a l'impression d'être suivi depuis la première nuit",
           "Il collectionne les vieilles armes",
-          "Il veut chasser les corneilles qui abîment tous les vergers",
+          "Il veut chasser les corneilles qui abiment tous les vergers",
           "Il veut tirer sur les nuages de grêle"
         ],
         "correct": 0,
@@ -15873,7 +15873,7 @@ window.LIVRES = [
         "correct": 3,
         "answer": 3,
         "points": 1,
-        "explanation": "Hans a reconnu Jo Balako. Il rêve de l'argent jamais retrouvé et convainc Philippe, le contremaître, de l'aider à le prendre."
+        "explanation": "Hans a reconnu Jo Balako. Il rêve de l'argent jamais retrouvé et convainc Philippe, le contremaitre, de l'aider à le prendre."
       },
       {
         "id": "q7",
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261015g';
+window.LIVRES_VERSION = '20261015h';
