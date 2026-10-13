@@ -1336,7 +1336,7 @@ window.LIVRES = [
         "correct": false,
         "answer": false,
         "points": 1,
-        "explanation": "FAUX : ses parents jouent le jeu. Anne veut ajouter du poids dans le vaisseau, et c'est ce qui les sauve."
+        "explanation": "FAUX : ses parents jouent le jeu. Avec Rex en plus, le vaisseau serait trop lourd pour décoller : c'est ce qui amène Anne à proposer les « petits humains » dans les œufs."
       },
       {
         "id": "q10",
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261013k';
+window.LIVRES_VERSION = '20261013l';
