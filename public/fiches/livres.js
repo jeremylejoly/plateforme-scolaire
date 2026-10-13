@@ -4077,7 +4077,7 @@ window.LIVRES = [
           "Nils, un vieil oncle de sa maman",
           "Son école, pour un voyage scolaire",
           "Le père Noël en personne, par une lettre",
-          "Ensio, un berger qui connaît son papa"
+          "Ensio, un berger qui connait son papa"
         ],
         "correct": 0,
         "answer": 0,
@@ -4154,9 +4154,9 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Qu'est-ce qui rend ce petit renne si précieux ?",
         "options": [
-          "Il connaît le chemin du pôle Nord",
+          "Il connait le chemin du pôle Nord",
           "Il est le plus rapide de tous les rennes de Laponie",
-          "Il est capable de tirer le traîneau du père Noël seul",
+          "Il est capable de tirer le traineau du père Noël seul",
           "Il a des sabots d'or"
         ],
         "correct": 3,
@@ -4200,7 +4200,7 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Selon la légende, le renne aux sabots d'or apparaît tous les 60 ans.",
+        "text": "Selon la légende, le renne aux sabots d'or apparait tous les 60 ans.",
         "correct": true,
         "answer": true,
         "points": 1,
@@ -4276,7 +4276,7 @@ window.LIVRES = [
         "options": [
           "très méchante",
           "très courageuse",
-          "qui ne connaît pas grand-chose",
+          "qui ne connait pas grand-chose",
           "qui parle beaucoup"
         ],
         "correct": 2,
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261013z';
+window.LIVRES_VERSION = '20261014a';
