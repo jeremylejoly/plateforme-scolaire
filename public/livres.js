@@ -6345,7 +6345,7 @@ window.LIVRES = [
         "correct": 0,
         "answer": 0,
         "points": 1,
-        "explanation": "Une inscription de décembre 1945 montre que les jumeaux se sont retrouvés après la guerre."
+        "explanation": "Une inscription datée du 8 décembre 1945 : « Samuel et Esther, jumeaux pour toujours ». Sophie comprend qu'Esther a enfin retrouvé sa moitié."
       },
       {
         "id": "q9",
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261015l';
+window.LIVRES_VERSION = '20261015m';
