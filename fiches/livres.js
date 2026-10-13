@@ -760,7 +760,7 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Que remarque Aiko en se regardant dans l'écran éteint de sa tablette ?",
         "options": [
-          "Son visage n'apparaît pas du tout",
+          "Son visage n'apparait pas du tout",
           "Une autre élève se tient derrière elle",
           "L'écran se rallume tout seul",
           "Son reflet bouge un peu après elle"
@@ -824,7 +824,7 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Comment Aiko sauve-t-elle son amie Yui ?",
         "options": [
-          "Elle brûle les deux poupées dans le four à micro-ondes",
+          "Elle brule les deux poupées dans le four à micro-ondes",
           "Elle la réveille en lui versant un grand verre d'eau froide",
           "Elle lui fait réciter un haïku de Bashô",
           "Elle prévient le proviseur du collège"
@@ -840,7 +840,7 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Que dit la radio à la toute fin de l'histoire ?",
         "options": [
-          "Que le collège Momiji a brûlé pendant la nuit",
+          "Que le collège Momiji a brulé pendant la nuit",
           "Qu'une grande fête des poupées aura lieu cette année dans les écoles",
           "Qu'une fugueuse a été retrouvée à la gare",
           "Qu'un collège de garçons a été vidé et rempli de poupées"
@@ -888,7 +888,7 @@ window.LIVRES = [
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : c'est pour cela qu'elle ne rentre pas chez elle le week-end."
+        "explanation": "VRAI : c'est pour cela qu'elle ne rentre pas chez elle le weekend."
       },
       {
         "id": "q13",
@@ -944,8 +944,8 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Aiko est pensionnaire au collège Momiji, un collège japonais très strict où les objets personnels sont interdits. Des choses étranges s'y passent : son reflet bouge après elle, et une poupée sans visage apparaît sous son lit. Pour sauver sa petite sœur Nanako, Aiko brûle les poupées dans la cheminée, puis les deux sœurs s'enfuient. Son père les croit tout de suite et appelle la police.",
-          "Aiko est pensionnaire au collège Momiji, un collège japonais très strict où les objets personnels sont interdits. Des choses étranges s'y passent : son reflet bouge après elle, et une poupée sans visage apparaît sous son lit. Pour sauver son amie Yui, Aiko brûle les poupées dans le four à micro-ondes, puis les deux filles s'enfuient chez ses parents. Mais son père ne la croit pas et veut les ramener au collège.",
+          "Aiko est pensionnaire au collège Momiji, un collège japonais très strict où les objets personnels sont interdits. Des choses étranges s'y passent : son reflet bouge après elle, et une poupée sans visage apparaît sous son lit. Pour sauver sa petite sœur Nanako, Aiko brule les poupées dans la cheminée, puis les deux sœurs s'enfuient. Son père les croit tout de suite et appelle la police.",
+          "Aiko est pensionnaire au collège Momiji, un collège japonais très strict où les objets personnels sont interdits. Des choses étranges s'y passent : son reflet bouge après elle, et une poupée sans visage apparaît sous son lit. Pour sauver son amie Yui, Aiko brule les poupées dans le four à micro-ondes, puis les deux filles s'enfuient chez ses parents. Mais son père ne la croit pas et veut les ramener au collège.",
           "Aiko est pensionnaire au collège Momiji, un collège japonais très strict où les objets personnels sont interdits. Des choses étranges s'y passent : son reflet bouge après elle, et une poupée sans visage apparaît sous son lit. Pour sauver son amie Yui, Aiko raconte tout à la préfète de discipline, qui fait fouiller toutes les chambres. Les poupées sont enfermées, et les deux amies restent tranquillement au collège."
         ],
         "correct": 1,
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261013d';
+window.LIVRES_VERSION = '20261013e';
