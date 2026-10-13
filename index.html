@@ -35212,7 +35212,9 @@ function ptAssignTs(student, id, classList, indList) {
 // state : 'done' (fini avec score), 'vu' (activité sans score ouverte), 'started' (ouvert mais pas fini), 'todo'
 // Les anciennes coches faites à la main par l'élève (valeur true) sont ignorées (décision de Jérémy, 13/10/2026).
 function ptItemStatus(id, ctx) {
-  const since = ctx.assignTs ? Math.floor(ctx.assignTs / 60000) * 60000 : 0; // les heures des résultats sont à la minute
+  // Les heures des résultats sont à la minute. Exercice sans date d'assignation (plan fait avant le 13/10/2026) :
+  // seuls les résultats de l'année scolaire en cours comptent (jamais ceux d'une année précédente).
+  const since = ctx.assignTs ? Math.floor(ctx.assignTs / 60000) * 60000 : ptSchoolYearStart();
   const noScore = ptIsNoScore(id);
   const attempts = (ctx.results || []).filter(r => ptResultMatches(id, r) && (!since || resultTimestamp(r) >= since))
     .sort((a, b) => resultTimestamp(a) - resultTimestamp(b));
@@ -35232,6 +35234,12 @@ function ptItemStatus(id, ctx) {
   else st = 'todo';
   const doneTs = last ? resultTimestamp(last) : (st === 'vu' ? (opened || autoTs) : (st === 'done' ? autoTs : 0));
   return { state: st, best, last, attempts, doneTs, opened, noScore, assignTs: ctx.assignTs || 0 };
+}
+// 1er septembre de l'année scolaire en cours
+function ptSchoolYearStart(now) {
+  const d = now ? new Date(now) : new Date();
+  const y = d.getMonth() >= 8 ? d.getFullYear() : d.getFullYear() - 1;
+  return new Date(y, 8, 1).getTime();
 }
 function ptIsCompleted(st) { return st === 'done' || st === 'vu'; }
 
@@ -35427,7 +35435,7 @@ function ptResumeRowHtml(name, row, cIdx) {
   let score = '';
   if (s.best) score = `<span class="pt-score-badge ${ptScoreClass(s.best.pct || 0)}" title="Meilleur score">${s.best.score}/${s.best.total} — ${s.best.pct}%</span>`;
   const meta = [];
-  meta.push(s.assignTs ? 'Donné le ' + ptFmtDate(s.assignTs) : 'Date d’assignation inconnue (ancien plan)');
+  meta.push(s.assignTs ? 'Donné le ' + ptFmtDate(s.assignTs) : 'Ancien plan sans date : seuls les résultats depuis le 01/09 comptent');
   if (row.alsoClass) meta.push('aussi dans le plan de la classe');
   if (s.noScore) meta.push('activité sans score');
   let attempts = '';
