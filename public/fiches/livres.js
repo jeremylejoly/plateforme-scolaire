@@ -5381,7 +5381,7 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Comment Tom réagit-il quand Célia lui parle enfin de Julie ?",
         "options": [
-          "Il dit qu'il connaît déjà Julie et qu'elle est très jolie",
+          "Il dit qu'il connait déjà Julie et qu'elle est très jolie",
           "Il se fâche parce qu'elle lui a menti pendant longtemps",
           "Il se moque d'elle et raconte tout aux élèves du collège",
           "Il dit qu'il préfère ne plus la voir en dehors du badminton"
@@ -5485,14 +5485,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Célia, qui joue au badminton, est invitée au cinéma par Tom, un garçon qui lui plaît. Elle cache à tout le monde que sa petite sœur Julie est atteinte d'une maladie grave, et elle a peur que ses amis se moquent d'elle. Chez Tom, elle voit avec quelle douceur il s'occupe de son grand-père malade. Elle ose enfin lui parler de Julie, et Tom l'aide à comprendre qu'elle peut aimer sa sœur sans se cacher.",
-          "Célia, qui joue au badminton, est invitée au cinéma par Tom, un garçon qui lui plaît. Elle raconte à toute la classe que sa petite sœur Julie est atteinte d'une maladie grave, et ses amis l'aident beaucoup. Chez Tom, elle voit avec quelle douceur il s'occupe de son grand-père malade. Elle décide d'aller vivre chez sa maman pour aider à soigner Julie.",
-          "Célia, qui joue au badminton, est invitée au cinéma par Tom, un garçon qui lui plaît. Elle cache à tout le monde que sa petite sœur Julie est atteinte d'une maladie grave, et elle a peur que ses amis se moquent d'elle. Chez Tom, elle voit avec quelle douceur il s'occupe de son grand-père malade. Mais elle n'ose jamais lui parler de Julie, et elle préfère ne plus le revoir, même aux entraînements du club de badminton."
+          "Célia, qui joue au badminton, est invitée au cinéma par Tom, un garçon qui lui plait. Elle cache à tout le monde que sa petite sœur Julie est atteinte d'une maladie grave, et elle a peur que ses amis se moquent d'elle. Chez Tom, elle voit avec quelle douceur il s'occupe de son grand-père malade. Elle ose enfin lui parler de Julie, et Tom l'aide à comprendre qu'elle peut aimer sa sœur sans se cacher.",
+          "Célia, qui joue au badminton, est invitée au cinéma par Tom, un garçon qui lui plait. Elle raconte à toute la classe que sa petite sœur Julie est atteinte d'une maladie grave, et ses amis l'aident beaucoup. Chez Tom, elle voit avec quelle douceur il s'occupe de son grand-père malade. Elle décide d'aller vivre chez sa maman pour aider à soigner Julie.",
+          "Célia, qui joue au badminton, est invitée au cinéma par Tom, un garçon qui lui plait. Elle cache à tout le monde que sa petite sœur Julie est atteinte d'une maladie grave, et elle a peur que ses amis se moquent d'elle. Chez Tom, elle voit avec quelle douceur il s'occupe de son grand-père malade. Mais elle n'ose jamais lui parler de Julie, et elle préfère ne plus le revoir, même aux entrainements du club de badminton."
         ],
         "correct": 0,
         "answer": 0,
         "points": 1,
-        "explanation": "Seul le résumé A est correct. Célia ne l'avait dit qu'à Noémie. Tom, qui s'occupe de son grand-père atteint d'Alzheimer, connaît déjà Julie et accepte tout avec gentillesse. Célia n'a plus besoin de cacher sa sœur."
+        "explanation": "Seul le résumé A est correct. Célia ne l'avait dit qu'à Noémie. Tom, qui s'occupe de son grand-père atteint d'Alzheimer, connait déjà Julie et accepte tout avec gentillesse. Célia n'a plus besoin de cacher sa sœur."
       }
     ]
   },
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261014f';
+window.LIVRES_VERSION = '20261014g';
