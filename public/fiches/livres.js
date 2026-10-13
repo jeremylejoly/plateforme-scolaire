@@ -6019,8 +6019,8 @@ window.LIVRES = [
         "text": "Après l'accident, comment Luc se comporte-t-il ?",
         "options": [
           "Il part vivre chez sa grand-mère pour oublier le tennis",
-          "Il s'entraîne en cachette pour reprendre le tennis au plus vite",
-          "Il devient l'entraîneur de Max au club de Sport-Études",
+          "Il s'entraine en cachette pour reprendre le tennis au plus vite",
+          "Il devient l'entraineur de Max au club de Sport-Études",
           "Il s'enferme dans sa chambre et ne veut plus voir personne"
         ],
         "correct": 3,
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261014j';
+window.LIVRES_VERSION = '20261014k';
