@@ -8793,6 +8793,8 @@ function saveResult(entry){
     return;
   }
   invalidateResultsCache();
+  // Heure exacte (le champ « time » n'est qu'à la minute) : utile au plan de travail
+  if (!entry.ts) entry.ts = Date.now();
   // Identifiant unique : permet de renvoyer le résultat sans jamais créer de doublon
   if (!entry.uid) entry.uid = 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
   entry.synced = false; // Par défaut, marqué comme non synchronisé sur Firebase
@@ -34400,6 +34402,10 @@ async function _renderPlanTravailInto(el) {
         </select>
         <span style="margin-left:auto;font-size:13px;font-weight:700;color:var(--purple);" id="plan-count-label">${currentCount} exercice(s) assigné(s)</span>
       </div>
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+        <button type="button" class="btn btn-sm" onclick="ptNewPlan()">🆕 Nouveau plan ${planTravailTarget === 'class' ? 'pour toute la classe' : 'pour ' + ptEsc(planTravailTarget)}</button>
+        <span style="font-size:12px;color:var(--muted);">Tout ce qui est coché repart de zéro : rien de fait, aucun ancien score.</span>
+      </div>
     </div>
 
     <div class="pt-nav">
@@ -35212,11 +35218,12 @@ function ptAssignTs(student, id, classList, indList) {
 // state : 'done' (fini avec score), 'vu' (activité sans score ouverte), 'started' (ouvert mais pas fini), 'todo'
 // Les anciennes coches faites à la main par l'élève (valeur true) sont ignorées (décision de Jérémy, 13/10/2026).
 function ptItemStatus(id, ctx) {
-  // Les heures des résultats sont à la minute. Exercice sans date d'assignation (plan fait avant le 13/10/2026) :
-  // seuls les résultats de l'année scolaire en cours comptent (jamais ceux d'une année précédente).
-  const since = ctx.assignTs ? Math.floor(ctx.assignTs / 60000) * 60000 : ptSchoolYearStart();
+  // Les heures des résultats sont à la minute. Exercice sans date d'assignation (coché avant la nouvelle version) :
+  // rien d'avant la mise en service de la nouvelle version ne compte → il part de zéro, comme un nouveau plan.
+  const since = ctx.assignTs ? Math.floor(ctx.assignTs / 60000) * 60000 : PLAN_DATES_DEBUT;
   const noScore = ptIsNoScore(id);
-  const attempts = (ctx.results || []).filter(r => ptResultMatches(id, r) && (!since || resultTimestamp(r) >= since))
+  // Résultat avec heure exacte (ts) : comparé à l'heure exacte d'assignation ; sinon à la minute près
+  const attempts = (ctx.results || []).filter(r => ptResultMatches(id, r) && (!since || (r.ts ? r.ts >= (ctx.assignTs || since) : resultTimestamp(r) >= since)))
     .sort((a, b) => resultTimestamp(a) - resultTimestamp(b));
   const p = ctx.progress || {};
   const v = p[id];
@@ -35235,12 +35242,9 @@ function ptItemStatus(id, ctx) {
   const doneTs = last ? resultTimestamp(last) : (st === 'vu' ? (opened || autoTs) : (st === 'done' ? autoTs : 0));
   return { state: st, best, last, attempts, doneTs, opened, noScore, assignTs: ctx.assignTs || 0 };
 }
-// 1er septembre de l'année scolaire en cours
-function ptSchoolYearStart(now) {
-  const d = now ? new Date(now) : new Date();
-  const y = d.getMonth() >= 8 ? d.getFullYear() : d.getFullYear() - 1;
-  return new Date(y, 8, 1).getTime();
-}
+// Mise en service de la coche automatique : les exercices cochés avant (sans date d'assignation) partent de zéro à ce moment.
+// ⚠️ À la mise en ligne, remplacer par la date et l'heure de la mise en ligne.
+const PLAN_DATES_DEBUT = new Date(2026, 9, 13, 19, 45).getTime();
 function ptIsCompleted(st) { return st === 'done' || st === 'vu'; }
 
 function ptFmtDate(ts) {
@@ -35367,6 +35371,32 @@ function ptSetView(v) {
   const el = ptActiveRoot();
   if (el) _renderPlanTravailInto(el);
 }
+// « Nouveau plan » : tous les exercices cochés reçoivent la date du jour → ils repartent de zéro pour l'élève
+// (non cochés, sans ancien score), même s'ils étaient déjà dans le plan précédent.
+// Toute la classe : plan de la classe + plans individuels de tous les élèves. Un élève : son plan individuel.
+function ptNewPlan() {
+  if (!planTravailDatesReady) { alert("Impossible pour le moment : les dates du plan n'ont pas pu être chargées (connexion ?). Recharge la page et réessaie."); return; }
+  const isClass = planTravailTarget === 'class';
+  const nInd = Object.keys(planTravailIndividual || {}).reduce((n, k) => n + (planTravailIndividual[k] || []).length, 0);
+  const n = isClass ? planTravailAssigned.length + nInd : (planTravailIndividual[planTravailTarget] || []).length;
+  if (!n) { alert('Aucun exercice coché pour le moment.'); return; }
+  const qui = isClass ? "toute la classe (plan de la classe ET plans individuels de chaque élève)" : planTravailTarget + " (son plan individuel)";
+  if (!confirm('Nouveau plan de travail pour ' + qui + ' ?\n\nLes exercices cochés repartent de zéro : les élèves les verront non faits, sans leur ancien score.\n\nDécoche d’abord ce que tu ne veux plus donner. Le plan sera enregistré tout de suite.')) return;
+  const now = Date.now();
+  if (!planTravailDates) planTravailDates = { class: {}, students: {} };
+  const stamp = (target, ids) => ids.forEach(id => {
+    if (target === 'class') planTravailDates.class[id] = now;
+    else (planTravailDates.students[target] = planTravailDates.students[target] || {})[id] = now;
+  });
+  if (isClass) {
+    stamp('class', planTravailAssigned);
+    Object.keys(planTravailIndividual || {}).forEach(k => stamp(k, planTravailIndividual[k] || []));
+  } else {
+    stamp(planTravailTarget, planTravailIndividual[planTravailTarget] || []);
+  }
+  ptSaveAndNotify();
+  alert('✅ Nouveau plan enregistré : tout est vierge pour ' + (isClass ? 'toute la classe' : planTravailTarget) + '.');
+}
 function ptOpenResumeStudent(name) { ptView = 'summary'; ptResumeStudent = name; const el = ptActiveRoot(); if (el) _renderPlanTravailInto(el); }
 function ptEditStudentPlan(name) { planTravailTarget = name; ptView = 'assign'; ptResumeStudent = null; const el = ptActiveRoot(); if (el) _renderPlanTravailInto(el); }
 function ptSetGridMode(m) { ptGridMode = m; const el = ptActiveRoot(); if (el) _renderPlanTravailInto(el); }
@@ -35435,7 +35465,7 @@ function ptResumeRowHtml(name, row, cIdx) {
   let score = '';
   if (s.best) score = `<span class="pt-score-badge ${ptScoreClass(s.best.pct || 0)}" title="Meilleur score">${s.best.score}/${s.best.total} — ${s.best.pct}%</span>`;
   const meta = [];
-  meta.push(s.assignTs ? 'Donné le ' + ptFmtDate(s.assignTs) : 'Ancien plan sans date : seuls les résultats depuis le 01/09 comptent');
+  meta.push(s.assignTs ? 'Donné le ' + ptFmtDate(s.assignTs) : 'Donné avant la nouvelle version : compté à partir du ' + ptFmtDate(PLAN_DATES_DEBUT));
   if (row.alsoClass) meta.push('aussi dans le plan de la classe');
   if (s.noScore) meta.push('activité sans score');
   let attempts = '';
