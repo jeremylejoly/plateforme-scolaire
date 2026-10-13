@@ -2053,7 +2053,7 @@ window.LIVRES = [
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : Yasmine n'est pas une amie fidèle : c'est la traîtresse de l'histoire."
+        "explanation": "VRAI : Yasmine n'est pas une amie fidèle : c'est la traitresse de l'histoire."
       },
       {
         "id": "q10",
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261013n';
+window.LIVRES_VERSION = '20261013o';
