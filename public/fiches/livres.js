@@ -4412,7 +4412,7 @@ window.LIVRES = [
           "Philippe s'est moqué de sa fille",
           "Il a peur que Philippe révèle son secret",
           "Il pense que Philippe est un voleur",
-          "Philippe a abîmé son camion-citerne avec sa voiture"
+          "Philippe a abimé son camion-citerne avec sa voiture"
         ],
         "correct": 1,
         "answer": 1,
@@ -4469,11 +4469,11 @@ window.LIVRES = [
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Hélène propose de demander l'aide de son papa, qui connaît le directeur de Nausicaa.",
+        "text": "Hélène propose de demander l'aide de son papa, qui connait le directeur de Nausicaa.",
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : son papa est avocat et connaît bien Jacques Coron. C'est la seule solution pour aider la famille."
+        "explanation": "VRAI : son papa est avocat et connait bien Jacques Coron. C'est la seule solution pour aider la famille."
       },
       {
         "id": "q13",
@@ -4497,7 +4497,7 @@ window.LIVRES = [
         "type": "mcq",
         "text": "« Malgré une douleur lancinante au poignet gauche, il sait qu'il ne peut pas ralentir. » Une douleur « lancinante » est une douleur…",
         "options": [
-          "qui disparaît très vite",
+          "qui disparait très vite",
           "qui revient sans cesse et fait très mal",
           "qui fait rire",
           "qui chatouille"
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261014a';
+window.LIVRES_VERSION = '20261014b';
