@@ -8735,7 +8735,7 @@ window.LIVRES = [
         "correct": 0,
         "answer": 0,
         "points": 1,
-        "explanation": "Maître Renard montre des documents : la forêt appartient à la famille de Drago, le directeur n'a pas le droit d'y toucher."
+        "explanation": "Maitre Renard montre des documents : la forêt appartient à la famille de Drago, le directeur n'a pas le droit d'y toucher."
       },
       {
         "id": "q9",
@@ -8818,7 +8818,7 @@ window.LIVRES = [
           "réparer des machines cassées",
           "construire une grande cabane dans les bois",
           "planter de nouveaux arbres",
-          "abîmer exprès pour empêcher de fonctionner"
+          "abimer exprès pour empêcher de fonctionner"
         ],
         "correct": 3,
         "answer": 3,
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261014h';
+window.LIVRES_VERSION = '20261014i';
