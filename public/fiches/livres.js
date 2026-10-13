@@ -5127,7 +5127,7 @@ window.LIVRES = [
         "text": "Dans quel danger se trouvent Patrick et Billy ?",
         "options": [
           "Ils sont enfermés dans la maison de Molly Doonghlar",
-          "Ils se sont perdus dans le brouillard sur la lande de l'île",
+          "Ils se sont perdus dans le brouillard sur la lande de l'ile",
           "Leur canot est coincé entre les rochers et prend l'eau",
           "Ils sont tombés du haut de la falaise près du hameau"
         ],
@@ -5170,7 +5170,7 @@ window.LIVRES = [
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : Elle vit sur les îles d'Aran et parle gaélique."
+        "explanation": "VRAI : Elle vit sur les iles d'Aran et parle gaélique."
       },
       {
         "id": "q11",
@@ -5246,9 +5246,9 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Kathleen passe ses vacances en Irlande, chez ses cousines o'Reilly, qui participent au concours de musique du trophée Gorumna. Depuis longtemps, les o'Reilly sont fâchés avec la famille Clancy. Quand le trophée disparaît, les deux familles s'accusent, mais c'est en fait Patrick, le petit frère de Kathleen, qui l'a caché pour aider son ami Billy. Les deux familles restent fâchées, et les o'Reilly gagnent le trophée.",
-          "Kathleen passe ses vacances en Irlande, chez ses cousines o'Reilly, qui participent au concours de musique du trophée Gorumna. Depuis longtemps, les o'Reilly sont fâchés avec la famille Fitzgerald. Quand le trophée disparaît, les deux familles s'accusent, mais c'est en fait la femme de ménage qui l'a emporté pour le nettoyer. Kathleen joue du violon au concours avec ses cousines, et les o'Reilly gagnent enfin le trophée, sous les applaudissements de toute la salle.",
-          "Kathleen passe ses vacances en Irlande, chez ses cousines o'Reilly, qui participent au concours de musique du trophée Gorumna. Depuis longtemps, les o'Reilly sont fâchés avec la famille Clancy. Quand le trophée disparaît, les deux familles s'accusent, mais c'est en fait la femme de ménage qui l'a emporté pour le nettoyer. Après le sauvetage en mer de Patrick et de son ami Billy Clancy, les deux familles se réconcilient et jouent ensemble au concours."
+          "Kathleen passe ses vacances en Irlande, chez ses cousines o'Reilly, qui participent au concours de musique du trophée Gorumna. Depuis longtemps, les o'Reilly sont fâchés avec la famille Clancy. Quand le trophée disparait, les deux familles s'accusent, mais c'est en fait Patrick, le petit frère de Kathleen, qui l'a caché pour aider son ami Billy. Les deux familles restent fâchées, et les o'Reilly gagnent le trophée.",
+          "Kathleen passe ses vacances en Irlande, chez ses cousines o'Reilly, qui participent au concours de musique du trophée Gorumna. Depuis longtemps, les o'Reilly sont fâchés avec la famille Fitzgerald. Quand le trophée disparait, les deux familles s'accusent, mais c'est en fait la femme de ménage qui l'a emporté pour le nettoyer. Kathleen joue du violon au concours avec ses cousines, et les o'Reilly gagnent enfin le trophée, sous les applaudissements de toute la salle.",
+          "Kathleen passe ses vacances en Irlande, chez ses cousines o'Reilly, qui participent au concours de musique du trophée Gorumna. Depuis longtemps, les o'Reilly sont fâchés avec la famille Clancy. Quand le trophée disparait, les deux familles s'accusent, mais c'est en fait la femme de ménage qui l'a emporté pour le nettoyer. Après le sauvetage en mer de Patrick et de son ami Billy Clancy, les deux familles se réconcilient et jouent ensemble au concours."
         ],
         "correct": 2,
         "answer": 2,
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261014d';
+window.LIVRES_VERSION = '20261014e';
