@@ -14391,7 +14391,7 @@ window.LIVRES = [
         "correct": 1,
         "answer": 1,
         "points": 1,
-        "explanation": "Chen a posé des questions qui ont dérangé le maître. Le lendemain, le directeur dit que ses idées sont dangereuses et qu'il doit aller dans une école pour handicapés."
+        "explanation": "Chen a posé des questions qui ont dérangé le maitre. Le lendemain, le directeur dit que ses idées sont dangereuses et qu'il doit aller dans une école pour handicapés."
       },
       {
         "id": "q4",
@@ -14569,12 +14569,12 @@ window.LIVRES = [
         "options": [
           "Chen, un avocat chinois aveugle, aide les agents du contrôle des naissances à faire respecter la loi dans les campagnes. Les femmes du village se révoltent et le font arrêter par la police. Sa femme Yuan demande alors l'aide d'Amnesty International, qui obtient très vite sa libération. Pour fêter cela, Fanny lui écrit une lettre depuis la Belgique.",
           "Chen, un avocat chinois aveugle, défend les femmes des campagnes que les agents du contrôle des naissances forcent à avorter. Les autorités le surveillent, puis l'arrêtent et l'envoient en prison. Effrayée par les menaces, sa femme Yuan décide de se taire, et personne à l'étranger n'entend parler de lui. Seule Fanny, une petite fille de son village, lui écrit une lettre pour lui redonner espoir.",
-          "Chen, un avocat chinois aveugle, défend les femmes des campagnes que les agents du contrôle des naissances forcent à avorter. Les autorités le surveillent, puis l'arrêtent et l'envoient en prison. Sa femme Yuan continue le combat malgré les menaces, et Amnesty International fait connaître son histoire dans le monde entier. Des enfants comme Fanny lui écrivent pour lui redonner espoir."
+          "Chen, un avocat chinois aveugle, défend les femmes des campagnes que les agents du contrôle des naissances forcent à avorter. Les autorités le surveillent, puis l'arrêtent et l'envoient en prison. Sa femme Yuan continue le combat malgré les menaces, et Amnesty International fait connaitre son histoire dans le monde entier. Des enfants comme Fanny lui écrivent pour lui redonner espoir."
         ],
         "correct": 2,
         "answer": 2,
         "points": 1,
-        "explanation": "Seul le résumé C est correct. Chen défend les femmes victimes d'avortements forcés et finit en prison. Yuan continue malgré les menaces, Amnesty fait connaître son histoire, et Fanny, une élève belge, lui écrit. À la fin du livre, Chen est toujours en prison."
+        "explanation": "Seul le résumé C est correct. Chen défend les femmes victimes d'avortements forcés et finit en prison. Yuan continue malgré les menaces, Amnesty fait connaitre son histoire, et Fanny, une élève belge, lui écrit. À la fin du livre, Chen est toujours en prison."
       }
     ]
   },
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261015c';
+window.LIVRES_VERSION = '20261015d';
