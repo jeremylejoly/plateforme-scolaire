@@ -13435,7 +13435,7 @@ window.LIVRES = [
         "correct": 0,
         "answer": 0,
         "points": 1,
-        "explanation": "Les grands blancs ont été beaucoup chassés et risquent de disparaître. Les deux scientifiques veulent les protéger et inviter les gens à les observer depuis des cages : c'est l'écotourisme."
+        "explanation": "Les grands blancs ont été beaucoup chassés et risquent de disparaitre. Les deux scientifiques veulent les protéger et inviter les gens à les observer depuis des cages : c'est l'écotourisme."
       },
       {
         "id": "q4",
@@ -13515,7 +13515,7 @@ window.LIVRES = [
         "correct": 2,
         "answer": 2,
         "points": 1,
-        "explanation": "Si les gens ont peur des requins, ils voudront les faire disparaître au lieu de les protéger. Burke pourrait alors proposer dans son hôtel des « safaris » de chasse aux requins."
+        "explanation": "Si les gens ont peur des requins, ils voudront les faire disparaitre au lieu de les protéger. Burke pourrait alors proposer dans son hôtel des « safaris » de chasse aux requins."
       },
       {
         "id": "q9",
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261014z';
+window.LIVRES_VERSION = '20261015a';
