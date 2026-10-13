@@ -248,7 +248,7 @@ window.LIVRES = [
         "id": "q1",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Marine ne voit-elle son papa qu'un week-end sur deux ?",
+        "text": "Pourquoi Marine ne voit-elle son papa qu'un weekend sur deux ?",
         "options": [
           "Parce qu'elle va en pension toute la semaine",
           "Parce que son papa est à l'hôpital",
@@ -285,7 +285,7 @@ window.LIVRES = [
           "Un gros sac avec une immense bâche trouée",
           "Un vieux coffre rempli de pièces de monnaie",
           "Un parachute rangé dans une valise",
-          "Une boîte de lettres d'amour de ses parents"
+          "Une boite de lettres d'amour de ses parents"
         ],
         "correct": 0,
         "answer": 0,
@@ -406,11 +406,11 @@ window.LIVRES = [
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Le papa de Marine a décollé seul avec la montgolfière du toit de l'immeuble.",
+        "text": "La montgolfière décolle du toit de l'immeuble où habite le papa de Marine.",
         "correct": false,
         "answer": false,
         "points": 1,
-        "explanation": "FAUX : il faut un grand champ. C'est le champ de la meilleure amie de sa maman qui sert de lieu de départ."
+        "explanation": "FAUX : il faut un grand champ pour décoller et atterrir. C'est le champ de la meilleure amie de sa maman qui sert de lieu de départ."
       },
       {
         "id": "q13",
@@ -435,7 +435,7 @@ window.LIVRES = [
         "text": "« Il ne fallait surtout pas vendre la mèche. » Que veut dire « vendre la mèche » ?",
         "options": [
           "Faire une bêtise en cachette",
-          "Acheter de quoi allumer le brûleur",
+          "Acheter de quoi allumer le bruleur",
           "Couper ses cheveux très court",
           "Révéler un secret"
         ],
@@ -466,9 +466,9 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Marine voit son papa un week-end sur deux, et elle remarque qu'il est très triste depuis la séparation. Dans le débarras de son appartement, elle découvre le ballon troué d'une vieille montgolfière. En cachette de sa maman, elle le fait réparer par un voisin couturier avec son argent de poche. Le vol qu'elle fait ensuite avec son papa lui redonne le sourire et l'envie de faire des projets.",
-          "Marine voit son papa un week-end sur deux, et elle remarque qu'il est très triste depuis la séparation. Dans le débarras de son appartement, elle découvre le ballon troué d'une vieille montgolfière. Avec l'aide de sa maman, elle le répare en cousant des morceaux de tissu de toutes les couleurs. Le vol qu'elle fait ensuite avec son papa lui redonne le sourire et l'envie de faire des projets.",
-          "Marine voit son papa un week-end sur deux, et elle remarque qu'il est très triste depuis la séparation. Dans le grenier de sa maman, elle découvre le ballon troué d'une vieille montgolfière. Avec l'aide de sa maman, elle le répare en cousant des morceaux de tissu de toutes les couleurs. Mais le jour du vol, le vent est trop fort, et son papa décide de vendre la montgolfière."
+          "Marine voit son papa un weekend sur deux, et elle remarque qu'il est très triste depuis la séparation. Dans le débarras de son appartement, elle découvre le ballon troué d'une vieille montgolfière. En cachette de sa maman, elle le fait réparer par un voisin couturier avec son argent de poche. Le vol qu'elle fait ensuite avec son papa lui redonne le sourire et l'envie de faire des projets.",
+          "Marine voit son papa un weekend sur deux, et elle remarque qu'il est très triste depuis la séparation. Dans le débarras de son appartement, elle découvre le ballon troué d'une vieille montgolfière. Avec l'aide de sa maman, elle le répare en cousant des morceaux de tissu de toutes les couleurs. Le vol qu'elle fait ensuite avec son papa lui redonne le sourire et l'envie de faire des projets.",
+          "Marine voit son papa un weekend sur deux, et elle remarque qu'il est très triste depuis la séparation. Dans le grenier de sa maman, elle découvre le ballon troué d'une vieille montgolfière. Avec l'aide de sa maman, elle le répare en cousant des morceaux de tissu de toutes les couleurs. Mais le jour du vol, le vent est trop fort, et son papa décide de vendre la montgolfière."
         ],
         "correct": 1,
         "answer": 1,
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261013a';
+window.LIVRES_VERSION = '20261013b';
