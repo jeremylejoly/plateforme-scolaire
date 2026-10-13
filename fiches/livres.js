@@ -7970,7 +7970,7 @@ window.LIVRES = [
         "correct": 2,
         "answer": 2,
         "points": 1,
-        "explanation": "Milo, qui n'a jamais vraiment conduit, prend une Peugeot à boîte automatique ; Noah lit le mode d'emploi."
+        "explanation": "Milo, qui n'a jamais vraiment conduit, prend une Peugeot à boite automatique ; Noah lit le mode d'emploi."
       },
       {
         "id": "q6",
@@ -8028,7 +8028,7 @@ window.LIVRES = [
         "correct": false,
         "answer": false,
         "points": 1,
-        "explanation": "FAUX : son téléphone indique le 15 août : il est resté trois jours au lit."
+        "explanation": "FAUX : son téléphone indique le 15 aout : il est resté trois jours au lit."
       },
       {
         "id": "q10",
@@ -8074,7 +8074,7 @@ window.LIVRES = [
         "correct": 2,
         "answer": 2,
         "points": 1,
-        "explanation": "Goulûment : avec avidité, très vite, comme quelqu'un qui a très soif."
+        "explanation": "Goulument : avec avidité, très vite, comme quelqu'un qui a très soif."
       },
       {
         "id": "q14",
@@ -8106,7 +8106,7 @@ window.LIVRES = [
         "correct": 2,
         "answer": 2,
         "points": 1,
-        "explanation": "Irréel : qui ne semble pas réel, qui paraît impossible."
+        "explanation": "Irréel : qui ne semble pas réel, qui parait impossible."
       },
       {
         "id": "q16",
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261014s';
+window.LIVRES_VERSION = '20261014t';
