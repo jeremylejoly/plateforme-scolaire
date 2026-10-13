@@ -7279,7 +7279,7 @@ window.LIVRES = [
         "options": [
           "De la grippe espagnole, peu avant la fin de la guerre",
           "D'une chute dans une tranchée pendant la nuit",
-          "D'un accident avec une arme pendant l'entraînement",
+          "D'un accident avec une arme pendant l'entrainement",
           "D'une blessure pendant une grande bataille"
         ],
         "correct": 0,
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261014q';
+window.LIVRES_VERSION = '20261014r';
