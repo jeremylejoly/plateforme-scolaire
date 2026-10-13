@@ -8201,7 +8201,7 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Pourquoi Django a-t-il choisi Nicolas ?",
         "options": [
-          "Parce que Nicolas connaît bien les étoiles",
+          "Parce que Nicolas connait bien les étoiles",
           "À cause de sa cabane qui laisse passer le vent",
           "Parce que le grand-père de Nicolas est chef du village",
           "Parce qu'ils étaient à l'internat ensemble"
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261013j';
+window.LIVRES_VERSION = '20261013k';
