@@ -10767,7 +10767,7 @@ window.LIVRES = [
         "text": "Où Anna et Ruben sont-ils emmenés au début de l'histoire ?",
         "options": [
           "Chez leur tante Rachel, à Anvers",
-          "Dans un cloître tenu par des religieuses",
+          "Dans un cloitre tenu par des religieuses",
           "Dans un camp de travail en Allemagne",
           "Dans un orphelinat, à Lasne"
         ],
@@ -10784,7 +10784,7 @@ window.LIVRES = [
         "options": [
           "Madame Rosi n'aime pas les anniversaires",
           "À seize ans, on peut être déporté",
-          "Elle veut paraître plus âgée que son frère",
+          "Elle veut paraitre plus âgée que son frère",
           "Elle a menti pour entrer à l'école"
         ],
         "correct": 1,
@@ -10838,7 +10838,7 @@ window.LIVRES = [
         "correct": 0,
         "answer": 0,
         "points": 1,
-        "explanation": "Ruben remarque ensuite qu'elle n'a plus sa bague ni sa petite boîte en velours."
+        "explanation": "Ruben remarque ensuite qu'elle n'a plus sa bague ni sa petite boite en velours."
       },
       {
         "id": "q6",
@@ -10864,7 +10864,7 @@ window.LIVRES = [
         "options": [
           "Dans un foyer à Auderghem",
           "Dans une ferme près de la mer",
-          "Dans un cloître",
+          "Dans un cloitre",
           "Dans une maison de Waterloo"
         ],
         "correct": 2,
@@ -10879,7 +10879,7 @@ window.LIVRES = [
         "text": "Comment se termine l'histoire ?",
         "options": [
           "Madame Rosi revient chercher Sami",
-          "Les enfants restent pour toujours au cloître",
+          "Les enfants restent pour toujours au cloitre",
           "Anna part vivre très loin après son mariage",
           "Leur papa revient, et il adopte Sami"
         ],
@@ -10983,7 +10983,7 @@ window.LIVRES = [
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
           "Pendant la Seconde Guerre mondiale, Anna et Ruben, deux enfants juifs, sont envoyés dans une villa-orphelinat dirigée par Madame Rosi. Il faut cacher que Ruben a seize ans, car à cet âge on peut être déporté. Quand Ruben est arrêté, Sami donne toutes ses économies à l'officier pour le faire libérer, puis il cache les enfants dans la grange d'une ferme voisine. À la fin de la guerre, leur papa revient et adopte aussi Sami.",
-          "Pendant la Seconde Guerre mondiale, Anna et Ruben, deux enfants juifs, sont envoyés dans une villa-orphelinat dirigée par Madame Rosi. Il faut cacher qu'Anna a seize ans, car à cet âge on peut être déporté. Quand Anna est arrêtée, Madame Rosi donne ses bijoux pour la faire libérer, puis elle cache les enfants dans un cloître. À la fin de la guerre, leur papa revient et adopte aussi Sami, leur ami de l'orphelinat.",
+          "Pendant la Seconde Guerre mondiale, Anna et Ruben, deux enfants juifs, sont envoyés dans une villa-orphelinat dirigée par Madame Rosi. Il faut cacher qu'Anna a seize ans, car à cet âge on peut être déporté. Quand Anna est arrêtée, Madame Rosi donne ses bijoux pour la faire libérer, puis elle cache les enfants dans un cloitre. À la fin de la guerre, leur papa revient et adopte aussi Sami, leur ami de l'orphelinat.",
           "Pendant la Seconde Guerre mondiale, Anna et Ruben, deux enfants juifs, sont envoyés dans une villa-orphelinat dirigée par Madame Rosi. Il faut cacher qu'Anna a seize ans, car à cet âge on peut être déporté. Quand Anna est arrêtée, Ruben s'enfuit en Angleterre pour prévenir l'armée anglaise. À la fin de la guerre, leur papa revient, et Madame Rosi part vivre avec eux à Anvers."
         ],
         "correct": 1,
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261013t';
+window.LIVRES_VERSION = '20261013u';
