@@ -13286,7 +13286,7 @@ window.LIVRES = [
         "correct": false,
         "answer": false,
         "points": 1,
-        "explanation": "FAUX : le village n'apparaît sur aucune carte, ni plus tard sur Internet."
+        "explanation": "FAUX : le village n'apparait sur aucune carte, ni plus tard sur Internet."
       },
       {
         "id": "q10",
@@ -13340,7 +13340,7 @@ window.LIVRES = [
         "type": "mcq",
         "text": "« La bâtisse ne payait pas de mine. » Que veut dire « ne pas payer de mine » ?",
         "options": [
-          "Coûter très cher",
+          "Couter très cher",
           "Être très grande",
           "Être toute neuve",
           "Avoir l'air peu attirant"
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261014y';
+window.LIVRES_VERSION = '20261014z';
