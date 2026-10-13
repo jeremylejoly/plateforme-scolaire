@@ -11118,7 +11118,7 @@ window.LIVRES = [
         "text": "Comment se termine l'histoire ?",
         "options": [
           "Le nouveau part vivre chez Altina",
-          "Le camp est détruit et le nouveau, Adnan, disparaît",
+          "Le camp est détruit et le nouveau, Adnan, disparait",
           "Le nouveau devient leur meilleur ami et enquête avec eux",
           "Le principal renvoie les trois amis du collège"
         ],
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261013y';
+window.LIVRES_VERSION = '20261013z';
