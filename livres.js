@@ -3881,7 +3881,7 @@ window.LIVRES = [
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment les deux amies essaient-elles de reconnaître l'écriture du garçon ?",
+        "text": "Comment les deux amies essaient-elles de reconnaitre l'écriture du garçon ?",
         "options": [
           "En envoyant une lettre à tous les élèves de l'école",
           "En demandant à tous les garçons d'écrire une phrase au tableau",
@@ -3961,7 +3961,7 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Au parc, le garçon qui cherche quelque chose reconnaît tout de suite son cahier.",
+        "text": "Au parc, le garçon qui cherche quelque chose reconnait tout de suite son cahier.",
         "correct": false,
         "answer": false,
         "points": 1,
@@ -3991,7 +3991,7 @@ window.LIVRES = [
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Lucie aime beaucoup le Roi-Soleil et connaît toute son histoire.",
+        "text": "Lucie aime beaucoup le Roi-Soleil et connait toute son histoire.",
         "correct": false,
         "answer": false,
         "points": 1,
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261013x';
+window.LIVRES_VERSION = '20261013y';
