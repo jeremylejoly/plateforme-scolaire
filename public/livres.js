@@ -8442,7 +8442,7 @@ window.LIVRES = [
         "options": [
           "Louison, la sœur de Zélie",
           "Sa maman, qui oblige Salomé à le garder",
-          "Le maître-nageur de la piscine du camping",
+          "Le maitre-nageur de la piscine du camping",
           "Lorenzo, le petit ami de Salomé, puis Zélie"
         ],
         "correct": 3,
@@ -8464,7 +8464,7 @@ window.LIVRES = [
         "correct": 0,
         "answer": 0,
         "points": 1,
-        "explanation": "Quand les autres arrivent, elle fait semblant de ne pas être avec lui, pour paraître « cool »."
+        "explanation": "Quand les autres arrivent, elle fait semblant de ne pas être avec lui, pour paraitre « cool »."
       },
       {
         "id": "q7",
@@ -8496,7 +8496,7 @@ window.LIVRES = [
         "correct": 0,
         "answer": 0,
         "points": 1,
-        "explanation": "Le goût du sel lui rappelle son premier baiser au bord de la mer."
+        "explanation": "Le gout du sel lui rappelle son premier baiser au bord de la mer."
       },
       {
         "id": "q9",
@@ -8516,7 +8516,7 @@ window.LIVRES = [
         "correct": false,
         "answer": false,
         "points": 1,
-        "explanation": "FAUX : Ils habitent loin ; ils s'écrivent beaucoup après les vacances."
+        "explanation": "FAUX : ils habitent très loin l'un de l'autre ; ils se promettent seulement de s'écrire."
       },
       {
         "id": "q11",
@@ -8599,7 +8599,7 @@ window.LIVRES = [
         "correct": 2,
         "answer": 2,
         "points": 1,
-        "explanation": "Seul le résumé C est correct. Paul est dans un camping à la mer. Il trouve sa place dans la bande et vit son premier amour avec Zélie. Ils habitent loin l'un de l'autre et s'écrivent ; le goût du sel lui rappelle Zélie."
+        "explanation": "Seul le résumé C est correct. Paul est dans un camping à la mer. Il trouve sa place dans la bande et vit son premier amour avec Zélie. Ils habitent loin l'un de l'autre et se promettent de s'écrire ; le gout du sel lui rappelle Zélie."
       }
     ]
   },
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261013h';
+window.LIVRES_VERSION = '20261013i';
