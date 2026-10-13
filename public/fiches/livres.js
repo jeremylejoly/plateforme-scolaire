@@ -4204,7 +4204,7 @@ window.LIVRES = [
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : Nils l'a vu quand il avait l'âge d'Alexis et en a même pris une photo."
+        "explanation": "VRAI : Nils l'explique : « Le renne passe tous les 60 ans, et toujours à la même époque. » Il l'a vu lui-même quand il avait l'âge d'Alexis et en a pris une photo."
       },
       {
         "id": "q10",
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261015j';
+window.LIVRES_VERSION = '20261015k';
