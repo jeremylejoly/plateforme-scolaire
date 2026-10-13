@@ -2546,6 +2546,55 @@ input[type=text].calc-input.incorrect {
 .pt-progress-fill { height: 100%; background: var(--purple); border-radius: 4px; transition: width .4s ease; }
 .pt-progress-label { font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 6px; }
 .pt-done { text-decoration: line-through; color: var(--muted); }
+/* Statut automatique (coche) — élève et enseignant */
+.pt-st { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:800; padding:3px 8px; border-radius:999px; white-space:nowrap; flex-shrink:0; }
+.pt-st-ico { font-size:13px; line-height:1; }
+.pt-st-done { background:var(--green-light); color:var(--green); }
+.pt-st-started { background:var(--amber-light); color:var(--amber); }
+.pt-st-todo { background:var(--bg); color:var(--muted); }
+.pt-st-manual { background:#ede9fe; color:#6d28d9; }
+.pt-item .pt-st { min-width:86px; justify-content:center; }
+@media (max-width:560px){ .pt-item .pt-st { min-width:0; } .pt-item .pt-st-txt { display:none; } }
+/* Onglets du plan (enseignant) */
+.pt-view-tabs { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:1rem; }
+.pt-view-tab { padding:8px 14px; border:2px solid var(--border); border-radius:12px; background:var(--surface); color:var(--text); font-family:inherit; font-size:14px; font-weight:800; cursor:pointer; }
+.pt-view-tab.active { border-color:var(--purple); background:var(--purple); color:#fff; box-shadow:3px 3px 0 #1A1A2E; }
+.pt-res-toolbar { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:1rem; }
+.pt-res-toolbar .btn:last-child { margin-left:auto; }
+.pt-res-name { font-size:18px; font-weight:900; font-family:'Fredoka',sans-serif; }
+.pt-res-hint { font-size:13px; color:var(--muted); font-weight:600; }
+.pt-res-warn { background:#fef9c3; border:1px solid #fde047; border-radius:10px; padding:8px 12px; margin-bottom:1rem; font-size:13px; font-weight:600; color:#854d0e; }
+.pt-res-legend { font-size:12px; color:var(--muted); margin:-4px 0 10px; }
+.pt-res-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:10px; }
+.pt-res-card { display:flex; flex-direction:column; gap:3px; text-align:left; padding:12px; border:2px solid var(--border); border-radius:14px; background:var(--surface); color:var(--text); font-family:inherit; cursor:pointer; transition:all .15s; }
+.pt-res-card:hover { border-color:var(--purple); transform:translateY(-1px); }
+.pt-res-card-top { display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+.pt-res-card-top .student-avatar { width:32px; height:32px; font-size:15px; }
+.pt-res-card-name { font-weight:800; font-size:15px; flex:1; }
+.pt-res-card-arrow { color:var(--muted); font-size:20px; }
+.pt-res-card-line { font-size:13px; color:var(--muted); }
+.pt-res-card-line.has-ind { color:var(--purple); font-weight:700; }
+.pt-res-section { margin-bottom:1rem; }
+.pt-res-empty { font-size:13px; color:var(--muted); padding:6px 4px; }
+.pt-res-row { padding:8px 10px; border-bottom:1px solid var(--border); }
+.pt-res-row:last-child { border-bottom:none; }
+.pt-res-main { display:flex; align-items:center; gap:8px; font-size:14px; font-weight:700; }
+.pt-res-label { flex:1; }
+.pt-res-sub { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:4px 0 0 32px; }
+.pt-res-meta { font-size:11px; color:var(--muted); }
+.pt-res-comment { margin:4px 0 0 32px; font-size:12px; color:#c2410c; white-space:pre-wrap; }
+.pt-res-attempts { margin:6px 0 0 32px; font-size:12px; }
+.pt-res-attempts summary { cursor:pointer; font-weight:700; color:var(--purple); }
+.pt-grid-wrap { overflow-x:auto; border:1px solid var(--border); border-radius:12px; background:var(--surface); }
+.pt-grid { border-collapse:collapse; font-size:12px; }
+.pt-grid th, .pt-grid td { border:1px solid var(--border); padding:4px; text-align:center; }
+.pt-grid thead th { vertical-align:bottom; min-width:74px; max-width:96px; font-weight:700; }
+.pt-grid-head { display:flex; flex-direction:column; align-items:center; gap:2px; font-size:11px; line-height:1.15; }
+.pt-grid-name { position:sticky; left:0; background:var(--surface); z-index:1; text-align:left !important; min-width:110px; }
+.pt-grid-name button { background:none; border:none; padding:2px 4px; font:inherit; font-weight:800; color:var(--purple); cursor:pointer; text-align:left; }
+.pt-grid-cell { font-size:15px; }
+.pt-grid-pct { font-size:10px; font-weight:800; border-radius:6px; padding:0 3px; }
+.pt-grid-na { background:repeating-linear-gradient(45deg,var(--bg),var(--bg) 4px,transparent 4px,transparent 8px); }
 .pt-section-count {
   font-size: 11px; font-weight: 700; padding: 2px 7px;
   border-radius: 10px; background: var(--purple-light);
@@ -3743,6 +3792,30 @@ input[type=text].calc-input.incorrect {
       const snap = await get(ref(db, 'plan_progress/' + cls + '/' + student));
       return snap.exists() ? snap.val() : null;
     } catch(e) { console.warn('Firebase loadStudentPlanProgress error:', e); return null; }
+  };
+  // Coche automatique : écrit UNE seule case de la progression (jamais tout le nœud de l'élève)
+  window.FB_setPlanProgressItem = async function(cls, student, path, value) {
+    try { await set(ref(db, 'plan_progress/' + cls + '/' + student + '/' + path), value); }
+    catch(e) { console.warn('Firebase setPlanProgressItem error:', e); }
+  };
+  // Enseignant : progression de tous les élèves de la classe { élève: { id: ts|true, __ouvert: {id: ts} } }
+  window.FB_loadClassPlanProgress = async function(cls) {
+    try {
+      const snap = await get(ref(db, 'plan_progress/' + cls));
+      return snap.exists() ? snap.val() : {};
+    } catch(e) { console.warn('Firebase loadClassPlanProgress error:', e); return {}; }
+  };
+  // Dates d'assignation : 'settings/plan_travail_dates/{classe}' = { class: {id: ts}, students: {élève: {id: ts}} }
+  window.FB_savePlanDates = async function(cls, dates) {
+    try { await set(ref(db, 'settings/plan_travail_dates/' + cls), dates); return true; }
+    catch(e) { console.warn('Firebase savePlanDates error:', e); return false; }
+  };
+  // Renvoie les dates (null si aucune) ou undefined en cas d'erreur
+  window.FB_loadPlanDates = async function(cls) {
+    try {
+      const snap = await get(ref(db, 'settings/plan_travail_dates/' + cls));
+      return snap.exists() ? snap.val() : null;
+    } catch(e) { console.warn('Firebase loadPlanDates error:', e); return undefined; }
   };
 
   // ===== SYSTEME DE PRÉSENCE EN DIRECT =====
@@ -8741,6 +8814,8 @@ function saveResult(entry){
     }
   }
   trySend(5);
+  // Plan de travail : l'exercice terminé se coche tout seul
+  try { if (typeof ptAutoCheckFromResult === 'function') ptAutoCheckFromResult(entry); } catch(e) { console.warn('Coche automatique du plan :', e); }
 }
 
 // Écrit lq_results sans jamais planter si la mémoire du navigateur est pleine :
@@ -24961,6 +25036,8 @@ function loadStudentResults(){
     const student = state.student;
     if (window.FB_loadStudentResults) {
       window.FB_loadStudentResults(cls, student).then(function(fbResults) {
+        window._planFbResults = fbResults || [];
+        if (typeof ptRefreshStudentPlanIfVisible === 'function') ptRefreshStudentPlanIfVisible();
         if (fbResults && fbResults.length > 0) {
           fbResults.forEach(function(r) {
             const act = r.activity;
@@ -25012,6 +25089,8 @@ function loadStudentResultsFallback() {
         }
       });
       refreshCurrentMenu();
+      window._planFbResults = myResults;
+      if (typeof ptRefreshStudentPlanIfVisible === 'function') ptRefreshStudentPlanIfVisible();
       if (myResults.length > 0 && window.FB_saveStudentResultsBatch) {
         window.FB_saveStudentResultsBatch(state.studentCls, state.student, myResults);
       }
@@ -33205,7 +33284,9 @@ let planTravailTarget = 'class'; // 'class' ou le nom d'un élève
 let planTravailComments = { class: {}, students: {} }; // commentaires de l'enseignant par activité
 let planTravailCommentsReady = false; // côté enseignant : commentaires bien chargés depuis Firebase
 let planTravailLoaded = false;
-let studentPlanProgress = {}; // {id: true/false} côté élève
+let studentPlanProgress = {}; // côté élève : {id: horodatage de la coche automatique (ou true = ancien système), __ouvert: {id: horodatage}}
+let planTravailDates = { class: {}, students: {} }; // dates d'assignation
+let planTravailDatesReady = false; // côté enseignant : dates bien chargées depuis Firebase
 
 // --- Sauvegarde/chargement plan enseignant ---
 function savePlanTravail() {
@@ -33225,6 +33306,12 @@ function savePlanTravail() {
   if (window.FB_savePlanTravailIndividual) {
     window.FB_savePlanTravailIndividual(cls, planTravailIndividual);
   }
+  // Dates d'assignation : jamais réécrites si elles n'ont pas pu être chargées (on effacerait les anciennes)
+  if (planTravailDatesReady && window.FB_savePlanDates) {
+    planTravailDates = ptPrunedDates();
+    window.FB_savePlanDates(cls, planTravailDates);
+  }
+  ptDirty = false;
 }
 let fbStudentListeners = {};
 
@@ -33356,6 +33443,13 @@ function initRealtimeStudentSync() {
     _applyComments();
   }, (err) => console.warn('Realtime plan_comments/students error:', err));
 
+  // 3 ter. Dates d'assignation (seuls les résultats obtenus après comptent)
+  fbStudentListeners.planDates = window.FB_onValue(window.FB_ref(window.FB_DB, 'settings/plan_travail_dates/' + cls), (snap) => {
+    planTravailDates = ptNormDates(snap.exists() ? snap.val() : null);
+    try { localStorage.setItem('lq_plan_dates_' + cls, JSON.stringify(planTravailDates)); } catch(e) {}
+    if (typeof ptRefreshStudentPlanIfVisible === 'function') ptRefreshStudentPlanIfVisible();
+  }, (err) => console.warn('Realtime plan_travail_dates error:', err));
+
   // 4. Observer pour la progression du plan
   const progressRef = window.FB_ref(window.FB_DB, 'plan_progress/' + cls + '/' + student);
   fbStudentListeners.progress = window.FB_onValue(progressRef, (snap) => {
@@ -33415,6 +33509,10 @@ function loadPlanTravailLocal(targetCls) {
   planTravailComments = (typeof state !== 'undefined' && state.role !== 'teacher' && state.student)
     ? ptLoadStudentCommentsLocal(cls, state.student)
     : { class: {}, students: {} };
+  // Élève : dates d'assignation gardées sur l'appareil (mises à jour par Firebase ensuite)
+  if (typeof state !== 'undefined' && state.role !== 'teacher') {
+    try { planTravailDates = ptNormDates(JSON.parse(localStorage.getItem('lq_plan_dates_' + cls) || 'null')); } catch(e) {}
+  }
 }
 
 // --- Sauvegarde/chargement progression élève ---
@@ -33438,6 +33536,7 @@ async function loadStudentProgress() {
 // --- Récupérer le meilleur score pour un exercice ---
 function getPlanItemScore(id) {
   if (!state.student || state.role === 'teacher') return null;
+  if (typeof ptStudentStatus === 'function') return ptStudentStatus(id).best;
   const results = window._cachedResults || [];
   // Correspondance à frontière de mot : « op_add_sous_100 » ne capte plus « op_add_sous_1000 »,
   // mais « gram_analyse_phrase_n1 » ou « calc_op_x10 » restent reconnus.
@@ -33494,6 +33593,7 @@ function planNavigateToId(itemId) {
     if (foundItem) break;
   }
   if (foundItem) {
+    try { if (typeof ptMarkOpened === 'function') ptMarkOpened(itemId); } catch(e) {}
     if (foundItem.screen === 'screen-fiche-viewer' && foundItem.filename) {
       openFiche(foundItem.filename, foundItem.label, 'screen-plan-travail-student');
     } else {
@@ -34239,7 +34339,22 @@ async function _renderPlanTravailInto(el) {
     planTravailCommentsReady = (fbComments !== undefined);
     planTravailComments = ptNormComments(fbComments || null);
 
+    // Dates d'assignation (nœud séparé)
+    const fbDates = window.FB_loadPlanDates ? await window.FB_loadPlanDates(cls) : undefined;
+    planTravailDatesReady = (fbDates !== undefined);
+    planTravailDates = ptNormDates(fbDates || null);
+    ptDirty = false;
+
     planTravailLoaded = true;
+  }
+
+  // Onglets « Résumé par élève » et « Tableau »
+  if (ptView !== 'assign') {
+    ['plan-travail-teacher-full-body', 'plan-travail-teacher'].forEach(otherId => {
+      const other = document.getElementById(otherId);
+      if (other && other !== el) other.innerHTML = '';
+    });
+    return ptRenderResumeInto(el);
   }
 
   // Structure : sujet -> sous-sujets -> sections
@@ -34272,7 +34387,7 @@ async function _renderPlanTravailInto(el) {
     ? planTravailAssigned.length
     : (planTravailIndividual[planTravailTarget] || []).length;
 
-  let html = `
+  let html = ptViewTabsHtml() + `
     <div style="margin-bottom:1.25rem;">
       <h3 style="font-size:15px;font-weight:800;margin-bottom:.25rem;">📋 Plan de travail — Gestion</h3>
       <p style="font-size:13px;color:var(--muted);">Sélectionnez le destinataire, choisissez un sujet puis cochez les exercices à attribuer.</p>
@@ -34513,6 +34628,8 @@ function ptToggleCat(catId) {
 }
 
 function _ptSetChecked(id, checked) {
+  const wasChecked = ptIsChecked(id);
+  if (wasChecked !== !!checked) { ptDateMark(planTravailTarget, id, !!checked); ptDirty = true; }
   if (planTravailTarget === 'class') {
     if (checked) {
       if (!planTravailAssigned.includes(id)) planTravailAssigned.push(id);
@@ -34901,7 +35018,9 @@ function renderPlanTravailStudent() {
     return;
   }
 
-  const done = assigned.filter(id => studentPlanProgress[id]).length;
+  const _st = {};
+  assigned.forEach(id => { _st[id] = ptStudentStatus(id); });
+  const done = assigned.filter(id => ptIsCompleted(_st[id].state)).length;
   const pct = Math.round((done / assigned.length) * 100);
 
   let html = `
@@ -34923,8 +35042,9 @@ function renderPlanTravailStudent() {
     sections.forEach(section => {
       html += `<div class="pt-sub-header">${section.sub}</div>`;
       section.items.forEach(item => {
-        const isDone = !!studentPlanProgress[item.id];
-        const score = getPlanItemScore(item.id);
+        const st = _st[item.id];
+        const isDone = ptIsCompleted(st.state);
+        const score = st.best;
         let scoreBadge = '';
         if (score) {
           const clsBadge = score.pct >= 80 ? 'pt-score-good' : score.pct >= 50 ? 'pt-score-mid' : 'pt-score-bad';
@@ -34932,8 +35052,7 @@ function renderPlanTravailStudent() {
         }
         html += `
         <div class="pt-item">
-          <input type="checkbox" ${isDone ? 'checked' : ''}
-            onchange="ptStudentToggle('${item.id}', this.checked)">
+          ${ptStudentStatusHtml(st)}
           <span class="pt-item-icon">${item.icon}</span>
           <span class="pt-item-label ${isDone ? 'pt-done' : ''}" data-id="${item.id}">${item.label}</span>
           ${scoreBadge}
@@ -34976,6 +35095,467 @@ function ptStudentToggle(id, checked) {
 
 function updateHomePlanCard() {
   updateHomePlanCardUI();
+}
+
+// ============================================================
+// PLAN DE TRAVAIL — COCHE AUTOMATIQUE, DATES D'ASSIGNATION, RÉSUMÉ PAR ÉLÈVE (13/10/2026)
+// - Un exercice noté se coche tout seul quand l'élève le termine (résultat enregistré).
+// - Une activité sans score (jeu, enquête, leçon, découverte) se coche quand l'élève l'ouvre depuis son plan.
+// - Seuls les résultats obtenus APRÈS la date d'assignation comptent (anciens plans sans date : tous les résultats).
+// - L'élève ne coche plus rien lui-même.
+// ============================================================
+
+// Activités qui n'envoient jamais de score : « faites » dès qu'elles sont ouvertes depuis le plan
+const PLAN_NO_SCORE_IDS = new Set([
+  'jeu_enquete', 'jeu_enquete_beffroi', 'jeu_enquete_villa', 'jeu_enquete_belgique', 'jeu_enquete_cross',
+  'kim_histoire', 'fiche_frise', 'hist_grandes_periodes', 'hist_temps_modernes', 'hist_contemporaine',
+  'fiche_respiratoire', 'fiche_digestif', 'fiche_circulatoire', 'fiche_lune', 'fiche_classification', 'fiche_cycle_eau',
+  'sci_transformations_chimiques', 'geo_hydro_belgique', 'geo_globe_3d', 'geo_planisphere_interactif',
+  'gram_determinant_ex', 'conj_present_ecriture', 'mes_ecrits'
+]);
+// Résultats enregistrés sous l'identifiant d'un autre exercice du catalogue (même page)
+const PLAN_RESULT_ALIASES = {
+  'gram_complement_nom': ['gram_attribut_cdn'],
+  'gram_attribut': ['gram_attribut_cdn'],
+  'sci_planetes_infos': ['sci_planetes_qcm']
+};
+const PLAN_RESULT_PREFIXES = { 'lecture_rapide': 'lr_niveau_' };
+
+function ptIsNoScore(id) {
+  return PLAN_NO_SCORE_IDS.has(id) || PLAN_MENU_IDS.has(id) || /^jeu_/.test(id);
+}
+
+function ptAllIds() {
+  if (!window.__planAllIds) {
+    try {
+      const set = new Set();
+      (typeof getActivitiesMasterRegistry === 'function' ? getActivitiesMasterRegistry() : PLAN_CATALOGUE).forEach(sec => sec.items.forEach(it => set.add(it.id)));
+      window.__planAllIds = set;
+    } catch(e) { window.__planAllIds = new Set(); }
+  }
+  return window.__planAllIds;
+}
+
+// Ce résultat correspond-il à l'exercice « id » du plan ? (même règle que les badges du plan, + livres)
+const _ptReCache = {};
+function ptResultMatches(id, r) {
+  if (!r || !id) return false;
+  if (r.book && r.book === id) return true;
+  const a = r.activity;
+  if (!a) return false;
+  if (a === id) return true;
+  const legacy = RESULT_ID_ALIASES[id] ? RESULT_ID_ALIASES[id] : !id.startsWith('op_') ? [] :
+    id === 'op_mult_div_tables' ? ['calc_mult_div'] :
+    id === 'op_4_operations_melangees' ? ['calc_4_operations', 'op_4_operations'] :
+    ['calc_' + id.slice(3)];
+  if (legacy.includes(a)) return true;
+  if ((PLAN_RESULT_ALIASES[id] || []).includes(a)) return true;
+  if (PLAN_RESULT_PREFIXES[id] && a.startsWith(PLAN_RESULT_PREFIXES[id])) return true;
+  let re = _ptReCache[id];
+  if (!re) {
+    const esc = id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    re = _ptReCache[id] = new RegExp('(^|[_\\-])' + esc + '($|[_\\-])');
+  }
+  // Un résultat dont l'activity est elle-même l'id d'un AUTRE exercice du catalogue n'est pas pris
+  return re.test(a) && !ptAllIds().has(a);
+}
+
+// --- Dates d'assignation : settings/plan_travail_dates/<classe> = { class: {id: ts}, students: {élève: {id: ts}} }
+function ptNormDates(v) {
+  const clean = o => {
+    const r = {};
+    if (o && typeof o === 'object') Object.keys(o).forEach(k => { const n = Number(o[k]); if (n > 0) r[k] = n; });
+    return r;
+  };
+  const out = { class: {}, students: {} };
+  if (v && typeof v === 'object') {
+    out.class = clean(v.class);
+    if (v.students && typeof v.students === 'object') Object.keys(v.students).forEach(n => {
+      const c = clean(v.students[n]);
+      if (Object.keys(c).length) out.students[n] = c;
+    });
+  }
+  return out;
+}
+function ptDateMark(target, id, on) {
+  if (!planTravailDates) planTravailDates = { class: {}, students: {} };
+  if (target === 'class') {
+    if (on) { if (!planTravailDates.class[id]) planTravailDates.class[id] = Date.now(); }
+    else delete planTravailDates.class[id];
+  } else {
+    const m = planTravailDates.students[target] || (planTravailDates.students[target] = {});
+    if (on) { if (!m[id]) m[id] = Date.now(); }
+    else delete m[id];
+  }
+}
+// Dates gardées uniquement pour les exercices encore assignés
+function ptPrunedDates() {
+  const out = { class: {}, students: {} };
+  const d = planTravailDates || { class: {}, students: {} };
+  planTravailAssigned.forEach(id => { if (d.class[id]) out.class[id] = d.class[id]; });
+  Object.keys(planTravailIndividual || {}).forEach(n => {
+    const m = {};
+    (planTravailIndividual[n] || []).forEach(id => { if (d.students[n] && d.students[n][id]) m[id] = d.students[n][id]; });
+    if (Object.keys(m).length) out.students[n] = m;
+  });
+  return out;
+}
+// Date d'assignation la plus récente qui concerne cet élève pour cet exercice (0 = inconnue)
+function ptAssignTs(student, id, classList, indList) {
+  const d = planTravailDates || { class: {}, students: {} };
+  let ts = 0;
+  if (classList.includes(id)) ts = Math.max(ts, (d.class && d.class[id]) || 0);
+  if (indList.includes(id)) ts = Math.max(ts, (d.students && d.students[student] && d.students[student][id]) || 0);
+  return ts;
+}
+
+// --- État d'un exercice pour un élève
+// state : 'done' (fini avec score), 'vu' (activité sans score ouverte), 'manuel' (coché à la main, ancien système),
+//         'started' (ouvert mais pas fini), 'todo'
+function ptItemStatus(id, ctx) {
+  const since = ctx.assignTs ? Math.floor(ctx.assignTs / 60000) * 60000 : 0; // les heures des résultats sont à la minute
+  const noScore = ptIsNoScore(id);
+  const attempts = (ctx.results || []).filter(r => ptResultMatches(id, r) && (!since || resultTimestamp(r) >= since))
+    .sort((a, b) => resultTimestamp(a) - resultTimestamp(b));
+  const p = ctx.progress || {};
+  const v = p[id];
+  const autoTs = (typeof v === 'number') ? v : 0;
+  const opened = Number(p.__ouvert && p.__ouvert[id]) || 0;
+  const best = attempts.length ? attempts.reduce((a, b) => ((b.pct || 0) > (a.pct || 0) ? b : a)) : null;
+  const last = attempts.length ? attempts[attempts.length - 1] : null;
+  let st;
+  if (noScore) {
+    if ((opened && opened >= since) || (autoTs && autoTs >= since) || attempts.length) st = 'vu';
+    else if (v === true && !since) st = 'manuel';
+    else st = 'todo';
+  } else if (attempts.length) st = 'done';
+  else if (autoTs && autoTs >= since) st = 'done';          // coché automatiquement, résultat pas encore chargé
+  else if (v === true && !since) st = 'manuel';
+  else if (opened && opened >= since) st = 'started';
+  else st = 'todo';
+  const doneTs = last ? resultTimestamp(last) : (st === 'vu' ? (opened || autoTs) : (st === 'done' ? autoTs : 0));
+  return { state: st, best, last, attempts, doneTs, opened, noScore, assignTs: ctx.assignTs || 0 };
+}
+function ptIsCompleted(st) { return st === 'done' || st === 'vu' || st === 'manuel'; }
+
+function ptFmtDate(ts) {
+  if (!ts) return '';
+  const d = new Date(ts);
+  return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0');
+}
+function ptScoreClass(pct) { return pct >= 80 ? 'pt-score-good' : pct >= 50 ? 'pt-score-mid' : 'pt-score-bad'; }
+
+// ============================================================
+// CÔTÉ ÉLÈVE
+// ============================================================
+function ptStudentLists() {
+  const cls = (typeof state !== 'undefined' && state.studentCls) ? state.studentCls : 'lejoly';
+  let ind = [];
+  if (state.student) {
+    const s = localStorage.getItem('lq_plan_travail_individual_' + cls + '_' + state.student) || localStorage.getItem('lq_plan_travail_individual_' + state.student);
+    ind = s ? JSON.parse(s) : ((planTravailIndividual && planTravailIndividual[state.student]) || []);
+  }
+  const valid = ptAllIds();
+  return {
+    classList: ptMigrateIds(planTravailAssigned || []).filter(id => valid.has(id)),
+    indList: ptMigrateIds(ind || []).filter(id => valid.has(id))
+  };
+}
+function ptStudentResults() {
+  const cls = state.studentCls || 'lejoly', st = state.student;
+  const out = [], seen = new Set();
+  const add = (r, checkCls) => {
+    if (!r || r.student !== st) return;
+    if (checkCls && (r.cls || 'lejoly') !== cls) return;
+    const k = r.uid || ((r.date || '') + '|' + (r.time || '') + '|' + (r.activity || r.book || ''));
+    if (seen.has(k)) return;
+    seen.add(k); out.push(r);
+  };
+  (window._planFbResults || []).forEach(r => add(r, false)); // déjà limités à la classe (student_results/<classe>)
+  try { JSON.parse(localStorage.getItem('lq_results') || '[]').forEach(r => add(r, true)); } catch(e) {}
+  return out;
+}
+function ptStudentStatus(id) {
+  const L = ptStudentLists();
+  return ptItemStatus(id, {
+    results: ptStudentResults(),
+    progress: studentPlanProgress || {},
+    assignTs: ptAssignTs(state.student, id, L.classList, L.indList)
+  });
+}
+function ptRefreshStudentPlanIfVisible() {
+  const el = document.getElementById('plan-student-body');
+  if (el && !el.innerHTML.includes('Chargement…')) renderPlanTravailStudent();
+}
+function ptStoreProgressLocal(cls, student) {
+  try { localStorage.setItem('lq_plan_progress_' + cls + '_' + student, JSON.stringify(studentPlanProgress)); } catch(e) {}
+}
+
+// Appelée par saveResult() : coche les exercices du plan qui correspondent à ce résultat
+function ptAutoCheckFromResult(entry) {
+  if (!entry || typeof state === 'undefined' || state.role === 'teacher' || !state.student) return;
+  if (entry.student !== state.student) return;
+  const L = ptStudentLists();
+  const ids = [...new Set([...L.classList, ...L.indList])].filter(id => !ptIsNoScore(id) && ptResultMatches(id, entry));
+  if (ids.length) {
+    const now = Date.now();
+    const cls = entry.cls || state.studentCls;
+    if (!studentPlanProgress || typeof studentPlanProgress !== 'object') studentPlanProgress = {};
+    ids.forEach(id => {
+      studentPlanProgress[id] = now;
+      // Écriture ciblée (un seul exercice) : ne touche jamais au reste de la progression
+      if (window.FB_setPlanProgressItem) window.FB_setPlanProgressItem(cls, state.student, id, now);
+    });
+    ptStoreProgressLocal(cls, state.student);
+  }
+  ptRefreshStudentPlanIfVisible();
+}
+
+// Appelée quand l'élève ouvre une activité depuis son plan
+function ptMarkOpened(id) {
+  if (typeof state === 'undefined' || state.role === 'teacher' || !state.student) return;
+  const L = ptStudentLists();
+  if (!L.classList.includes(id) && !L.indList.includes(id)) return;
+  const now = Date.now();
+  const cls = state.studentCls || 'lejoly';
+  if (!studentPlanProgress || typeof studentPlanProgress !== 'object') studentPlanProgress = {};
+  studentPlanProgress.__ouvert = Object.assign({}, studentPlanProgress.__ouvert || {}, { [id]: now });
+  if (window.FB_setPlanProgressItem) window.FB_setPlanProgressItem(cls, state.student, '__ouvert/' + id, now);
+  ptStoreProgressLocal(cls, state.student);
+}
+
+function ptStudentStatusHtml(s) {
+  const map = {
+    done:    ['pt-st-done', '✅', 'Fini'],
+    vu:      ['pt-st-done', '✅', 'Fait'],
+    manuel:  ['pt-st-done', '✅', 'Fait'],
+    started: ['pt-st-started', '⏳', 'Commencé'],
+    todo:    ['pt-st-todo', '⬜', 'À faire']
+  };
+  const m = map[s.state] || map.todo;
+  return `<span class="pt-st ${m[0]}" title="${m[2]}"><span class="pt-st-ico">${m[1]}</span><span class="pt-st-txt">${m[2]}</span></span>`;
+}
+
+// ============================================================
+// CÔTÉ ENSEIGNANT : onglets Attribuer / Résumé par élève / Tableau
+// ============================================================
+let ptView = 'assign';          // 'assign' | 'summary' | 'grid'
+let ptResumeStudent = null;     // élève ouvert dans le résumé
+let ptGridMode = 'ind';         // 'ind' | 'class' | 'all'
+let ptDirty = false;            // changements pas encore enregistrés
+let _ptResumeData = null;       // { cls, results, progress }
+
+function ptViewTabsHtml() {
+  const tab = (v, txt) => `<button type="button" class="pt-view-tab ${ptView === v ? 'active' : ''}" onclick="ptSetView('${v}')">${txt}</button>`;
+  return `<div class="pt-view-tabs">${tab('assign', '✏️ Attribuer')}${tab('summary', '👥 Résumé par élève')}${tab('grid', '📊 Tableau')}</div>`;
+}
+function ptActiveRoot() {
+  const full = document.getElementById('plan-travail-teacher-full-body');
+  const tab = document.getElementById('plan-travail-teacher');
+  if (full && full.closest('.screen') && full.closest('.screen').classList.contains('active')) return full;
+  if (tab && tab.innerHTML) return tab;
+  return full || tab;
+}
+function ptSetView(v) {
+  ptView = v;
+  if (v !== 'summary') ptResumeStudent = null;
+  if (v !== 'assign') _ptResumeData = null; // recharger les résultats à chaque ouverture
+  const el = ptActiveRoot();
+  if (el) _renderPlanTravailInto(el);
+}
+function ptOpenResumeStudent(name) { ptView = 'summary'; ptResumeStudent = name; const el = ptActiveRoot(); if (el) _renderPlanTravailInto(el); }
+function ptEditStudentPlan(name) { planTravailTarget = name; ptView = 'assign'; ptResumeStudent = null; const el = ptActiveRoot(); if (el) _renderPlanTravailInto(el); }
+function ptSetGridMode(m) { ptGridMode = m; const el = ptActiveRoot(); if (el) _renderPlanTravailInto(el); }
+function ptRefreshResume() { _ptResumeData = null; const el = ptActiveRoot(); if (el) _renderPlanTravailInto(el); }
+
+async function ptLoadResumeData(cls) {
+  if (_ptResumeData && _ptResumeData.cls === cls) return _ptResumeData;
+  // Résultats : même fusion que Gestion › Résultats
+  if (window.FB_loadResults) {
+    try {
+      const fbResults = await window.FB_loadResults(cls);
+      if (fbResults && fbResults.length) {
+        const local = JSON.parse(localStorage.getItem('lq_results') || '[]');
+        const keyOf = r => (r.cls || 'lejoly') + '|' + r.student + '|' + r.date + '|' + (r.activity || r.book || '');
+        const keys = new Set(local.map(keyOf));
+        const merged = [...local];
+        fbResults.forEach(r => { const k = keyOf(r); if (!keys.has(k)) { merged.push(Object.assign({}, r, { synced: true })); keys.add(k); } });
+        saveLocalResultsSafe(merged);
+      }
+    } catch(e) { console.warn('Résumé du plan : résultats non chargés', e); }
+  }
+  let progress = {};
+  if (window.FB_loadClassPlanProgress) {
+    try { progress = (await window.FB_loadClassPlanProgress(cls)) || {}; } catch(e) {}
+  }
+  _ptResumeData = { cls, results: loadResults(cls), progress };
+  return _ptResumeData;
+}
+
+// Carte « id → {item, cat, sub, ordre} » construite une seule fois par rendu
+function ptCatalogueIndex() {
+  const idx = {};
+  let n = 0;
+  ((typeof getActivitiesMasterRegistry === 'function') ? getActivitiesMasterRegistry() : PLAN_CATALOGUE).forEach(sec => {
+    sec.items.forEach(it => { if (!idx[it.id]) idx[it.id] = { item: it, cat: sec.cat, sub: sec.sub, order: n++ }; });
+  });
+  return idx;
+}
+
+function ptStudentSummary(name, data, cIdx) {
+  const classList = planTravailAssigned.filter(id => cIdx[id]);
+  const indList = (planTravailIndividual[name] || []).filter(id => cIdx[id]);
+  const results = data.results.filter(r => r.student === name);
+  const progress = data.progress[name] || {};
+  const mk = id => ptItemStatus(id, { results, progress, assignTs: ptAssignTs(name, id, classList, indList) });
+  const ind = indList.map(id => ({ id, s: mk(id), alsoClass: classList.includes(id) }));
+  const cls = classList.filter(id => !indList.includes(id)).map(id => ({ id, s: mk(id) }));
+  const count = arr => ({ done: arr.filter(x => ptIsCompleted(x.s.state)).length, total: arr.length });
+  return { ind, cls, cInd: count(ind), cCls: count(cls) };
+}
+
+function ptTeacherStatusChip(s) {
+  const map = {
+    done:    ['pt-st-done', '✅', 'Fini' + (s.doneTs ? ' le ' + ptFmtDate(s.doneTs) : '')],
+    vu:      ['pt-st-done', '✅', 'Ouvert' + (s.doneTs ? ' le ' + ptFmtDate(s.doneTs) : '') + ' (sans score)'],
+    manuel:  ['pt-st-manual', '✋', "Coché par l'élève (ancien système)"],
+    started: ['pt-st-started', '⏳', 'Commencé' + (s.opened ? ' le ' + ptFmtDate(s.opened) : '') + ', pas fini'],
+    todo:    ['pt-st-todo', '⬜', 'Pas encore fait']
+  };
+  const m = map[s.state] || map.todo;
+  return `<span class="pt-st ${m[0]}"><span class="pt-st-ico">${m[1]}</span><span class="pt-st-txt">${m[2]}</span></span>`;
+}
+
+function ptResumeRowHtml(name, row, cIdx) {
+  const e = cIdx[row.id]; const it = e.item; const s = row.s;
+  const comment = ptGetComment(name, row.id) || ptGetComment('class', row.id);
+  let score = '';
+  if (s.best) score = `<span class="pt-score-badge ${ptScoreClass(s.best.pct || 0)}" title="Meilleur score">${s.best.score}/${s.best.total} — ${s.best.pct}%</span>`;
+  const meta = [];
+  meta.push(s.assignTs ? 'Donné le ' + ptFmtDate(s.assignTs) : 'Date d’assignation inconnue (ancien plan)');
+  if (row.alsoClass) meta.push('aussi dans le plan de la classe');
+  if (s.noScore) meta.push('activité sans score');
+  let attempts = '';
+  if (s.attempts.length) {
+    const rows = s.attempts.slice().reverse().map((r, i) => {
+      const pct = r.pct || 0;
+      const color = pct >= 70 ? 'var(--green)' : pct >= 50 ? 'var(--amber)' : 'var(--red)';
+      return `<div class="attempt-row">
+        <span class="attempt-num">Tentative ${s.attempts.length - i}</span>
+        <span class="attempt-score" style="color:${color}">${r.score}/${r.total} (${pct}%)</span>
+        <div style="flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;"><div style="width:${pct}%;height:100%;background:${color};border-radius:3px;"></div></div>
+        <span class="attempt-date">${ptEsc(r.date || '')} ${ptEsc(r.time || '')}</span>
+      </div>`;
+    }).join('');
+    attempts = `<details class="pt-res-attempts"><summary>${s.attempts.length} tentative${s.attempts.length > 1 ? 's' : ''}</summary>${rows}</details>`;
+  }
+  return `<div class="pt-res-row">
+    <div class="pt-res-main">
+      <span class="pt-item-icon">${it.icon || ''}</span>
+      <span class="pt-res-label">${it.label}</span>
+      ${score}
+    </div>
+    <div class="pt-res-sub">${ptTeacherStatusChip(s)}<span class="pt-res-meta">${meta.join(' · ')}</span></div>
+    ${comment ? `<div class="pt-res-comment">💬 ${ptEsc(comment)}</div>` : ''}
+    ${attempts}
+  </div>`;
+}
+
+function ptResumeSectionHtml(title, rows, name, cIdx) {
+  if (!rows.length) return `<div class="card pt-res-section"><div class="pt-cat-header" style="cursor:default"><span>${title}</span></div><div class="pt-res-empty">Rien pour le moment.</div></div>`;
+  const sorted = rows.slice().sort((a, b) => cIdx[a.id].order - cIdx[b.id].order);
+  const done = rows.filter(r => ptIsCompleted(r.s.state)).length;
+  let html = `<div class="card pt-res-section"><div class="pt-cat-header" style="cursor:default"><span>${title}</span><span class="pt-section-count">${done}/${rows.length} fait${done > 1 ? 's' : ''}</span></div>`;
+  let lastCat = null;
+  sorted.forEach(r => {
+    const c = cIdx[r.id].cat;
+    if (c !== lastCat) { html += `<div class="pt-sub-header">${c}</div>`; lastCat = c; }
+    html += ptResumeRowHtml(name, r, cIdx);
+  });
+  return html + '</div>';
+}
+
+async function ptRenderResumeInto(el) {
+  const cls = (typeof teacherCls !== 'undefined' && teacherCls) ? teacherCls : 'lejoly';
+  const head = ptViewTabsHtml() + (ptDirty ? `<div class="pt-res-warn">⚠️ Des changements de l’onglet « Attribuer » ne sont pas encore enregistrés : le résumé les montre déjà, mais les élèves ne les voient pas. Pense à cliquer sur « 💾 Enregistrer le plan ».</div>` : '');
+  if (!_ptResumeData || _ptResumeData.cls !== cls) el.innerHTML = head + '<div class="card pt-nav-empty">⏳ Chargement des résultats…</div>';
+  const data = await ptLoadResumeData(cls);
+  const cIdx = ptCatalogueIndex();
+  const students = getClassStudents(cls).slice().sort((a, b) => a.name.localeCompare(b.name, 'fr'));
+  const refreshBtn = `<button type="button" class="btn btn-sm" onclick="ptRefreshResume()">🔄 Actualiser</button>`;
+  let html = head;
+
+  if (ptView === 'summary' && ptResumeStudent) {
+    const name = ptResumeStudent;
+    const sum = ptStudentSummary(name, data, cIdx);
+    const q = JSON.stringify(name).replace(/"/g, '&quot;');
+    html += `<div class="pt-res-toolbar">
+        <button type="button" class="btn btn-sm" onclick="ptOpenResumeStudent(null)">← Tous les élèves</button>
+        <span class="pt-res-name">👤 ${ptEsc(name)}</span>
+        <button type="button" class="btn btn-sm btn-primary" onclick="ptEditStudentPlan(${q})">✏️ Modifier son plan</button>
+        ${refreshBtn}
+      </div>`;
+    html += ptResumeSectionHtml('👤 Rien que pour ' + ptEsc(name), sum.ind, name, cIdx);
+    html += ptResumeSectionHtml('🌍 Plan de la classe', sum.cls, name, cIdx);
+  } else if (ptView === 'summary') {
+    html += `<div class="pt-res-toolbar"><span class="pt-res-hint">Clique sur un prénom pour voir ce qui lui a été donné et ce qu’il a déjà fait.</span>${refreshBtn}</div>`;
+    if (!students.length) html += '<div class="card pt-nav-empty">Aucun élève dans cette classe.</div>';
+    html += '<div class="pt-res-grid">';
+    students.forEach(st => {
+      const sum = ptStudentSummary(st.name, data, cIdx);
+      const tot = sum.cInd.total + sum.cCls.total, done = sum.cInd.done + sum.cCls.done;
+      const pct = tot ? Math.round(done / tot * 100) : 0;
+      const q = JSON.stringify(st.name).replace(/"/g, '&quot;');
+      html += `<button type="button" class="pt-res-card" onclick="ptOpenResumeStudent(${q})">
+        <div class="pt-res-card-top"><span class="student-avatar">${ptEsc(st.name[0] || '?')}</span><span class="pt-res-card-name">${ptEsc(st.name)}</span><span class="pt-res-card-arrow">›</span></div>
+        <div class="pt-res-card-line ${sum.cInd.total ? 'has-ind' : ''}">👤 Perso : <b>${sum.cInd.done}/${sum.cInd.total}</b></div>
+        <div class="pt-res-card-line">🌍 Classe : <b>${sum.cCls.done}/${sum.cCls.total}</b></div>
+        <div class="pt-progress-bar" style="margin:6px 0 0"><div class="pt-progress-fill" style="width:${pct}%"></div></div>
+      </button>`;
+    });
+    html += '</div>';
+  } else {
+    // Tableau : élèves en lignes, exercices en colonnes
+    const sums = {};
+    students.forEach(st => { sums[st.name] = ptStudentSummary(st.name, data, cIdx); });
+    const colSet = new Set();
+    students.forEach(st => {
+      if (ptGridMode !== 'class') sums[st.name].ind.forEach(r => colSet.add(r.id));
+      if (ptGridMode !== 'ind') sums[st.name].cls.forEach(r => colSet.add(r.id));
+    });
+    const cols = [...colSet].sort((a, b) => cIdx[a].order - cIdx[b].order);
+    const mbtn = (m, t) => `<button type="button" class="pt-grp-chip ${ptGridMode === m ? 'active' : ''}" onclick="ptSetGridMode('${m}')">${t}</button>`;
+    html += `<div class="pt-res-toolbar">${mbtn('ind', '👤 Travail individuel')}${mbtn('class', '🌍 Plan de la classe')}${mbtn('all', '📚 Tout')}${refreshBtn}</div>
+      <div class="pt-res-legend">✅ fait (avec le score) · ⏳ commencé, pas fini · ⬜ pas encore fait · ✋ coché par l’élève (ancien système) · case grise : pas donné à cet élève. Clique sur un prénom pour le détail.</div>`;
+    if (!cols.length) {
+      html += '<div class="card pt-nav-empty">Aucun exercice à afficher pour ce choix.</div>';
+    } else {
+      html += '<div class="pt-grid-wrap"><table class="pt-grid"><thead><tr><th class="pt-grid-name">Élève</th>';
+      cols.forEach(id => { const it = cIdx[id].item; html += `<th title="${ptEsc(it.label.replace(/<[^>]+>/g, ''))}"><div class="pt-grid-head"><span class="pt-item-icon">${it.icon || ''}</span><span>${it.label}</span></div></th>`; });
+      html += '</tr></thead><tbody>';
+      students.forEach(st => {
+        const sum = sums[st.name];
+        const map = {};
+        sum.ind.forEach(r => map[r.id] = r.s);
+        sum.cls.forEach(r => map[r.id] = r.s);
+        const q = JSON.stringify(st.name).replace(/"/g, '&quot;');
+        html += `<tr><th class="pt-grid-name"><button type="button" onclick="ptOpenResumeStudent(${q})">${ptEsc(st.name)}</button></th>`;
+        cols.forEach(id => {
+          const s = map[id];
+          if (!s) { html += '<td class="pt-grid-na"></td>'; return; }
+          let cell;
+          if (s.state === 'done' && s.best) cell = `✅<div class="pt-grid-pct ${ptScoreClass(s.best.pct || 0)}">${s.best.pct}%</div>`;
+          else if (ptIsCompleted(s.state)) cell = s.state === 'manuel' ? '✋' : '✅';
+          else cell = s.state === 'started' ? '⏳' : '⬜';
+          html += `<td class="pt-grid-cell">${cell}</td>`;
+        });
+        html += '</tr>';
+      });
+      html += '</tbody></table></div>';
+    }
+  }
+  // Rendu uniquement si l'onglet n'a pas changé pendant le chargement
+  if (ptView !== 'assign') el.innerHTML = html;
 }
 
 
