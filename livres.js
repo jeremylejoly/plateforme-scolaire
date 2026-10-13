@@ -9909,7 +9909,7 @@ window.LIVRES = [
           "Il sort sous l'orage avec les AirPods dans la main",
           "Il cherche une réponse dans l'encyclopédie et la trouve",
           "Il conduit la voiture jusqu'au collège",
-          "Il regarde toutes les chaînes de la télévision"
+          "Il regarde toutes les chaines de la télévision"
         ],
         "correct": 0,
         "answer": 0,
@@ -9966,11 +9966,11 @@ window.LIVRES = [
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "En 1986, Liam est assis parmi les élèves pendant le cours de mathématiques.",
+        "text": "En 1986, Liam est un élève dans la classe de monsieur Planchon.",
         "correct": false,
         "answer": false,
         "points": 1,
-        "explanation": "FAUX : dans ce monde, c'est Liam le professeur de maths ! Monsieur Planchon, lui, est assis parmi les élèves."
+        "explanation": "FAUX : dans ce monde, c'est Liam le professeur de maths ! Monsieur Planchon, lui, est un élève assis parmi les autres."
       },
       {
         "id": "q13",
@@ -10026,7 +10026,7 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Les parents de Liam répètent sans cesse qu'à son âge, ils étaient des enfants parfaits. Liam fabrique une machine à voyager dans le temps et part en 1986 : il devient l'ami de ses parents, qui ont son âge. Il découvre qu'ils étaient loin d'être aussi sages qu'ils le disent. Il décide de rester dans les années 80, où la vie lui paraît plus simple.",
+          "Les parents de Liam répètent sans cesse qu'à son âge, ils étaient des enfants parfaits. Liam fabrique une machine à voyager dans le temps et part en 1986 : il devient l'ami de ses parents, qui ont son âge. Il découvre qu'ils étaient loin d'être aussi sages qu'ils le disent. Il décide de rester dans les années 80, où la vie lui parait plus simple.",
           "Les parents de Liam répètent sans cesse qu'à son âge, ils étaient des enfants parfaits. Un soir d'orage, Liam se réveille en 1986 : il est devenu professeur de mathématiques, et ses parents sont des adolescents. Il découvre qu'ils étaient encore plus sages et travailleurs qu'ils le disent. Grâce à ses écouteurs, il réussit à revenir dans son époque, et il promet d'être aussi parfait qu'eux.",
           "Les parents de Liam répètent sans cesse qu'à son âge, ils étaient des enfants parfaits. Un soir d'orage, Liam se réveille en 1986 : il est devenu professeur de mathématiques, et ses parents sont des adolescents. Il découvre qu'ils étaient loin d'être aussi sages qu'ils le disent. Grâce à ses écouteurs, il réussit à revenir dans son époque, et il comprend que ses parents ont été jeunes, eux aussi."
         ],
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261013c';
+window.LIVRES_VERSION = '20261013d';
