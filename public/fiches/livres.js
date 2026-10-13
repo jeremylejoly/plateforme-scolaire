@@ -7721,7 +7721,7 @@ window.LIVRES = [
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Qui a vraiment demandé au robot de casser la chaîne de la remise ?",
+        "text": "Qui a vraiment demandé au robot de casser la chaine de la remise ?",
         "options": [
           "Arabella, pour le sauver",
           "Antonin, avec son grille-robot",
@@ -7819,7 +7819,7 @@ window.LIVRES = [
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : Ils sont à la pointe de la technologie et coûtent très cher."
+        "explanation": "VRAI : Ils sont à la pointe de la technologie et coutent très cher."
       },
       {
         "id": "q13",
@@ -7846,7 +7846,7 @@ window.LIVRES = [
           "ne se trompent jamais",
           "sont très légers",
           "tombent très souvent en panne",
-          "coûtent peu d'argent"
+          "coutent peu d'argent"
         ],
         "correct": 0,
         "answer": 0,
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261014r';
+window.LIVRES_VERSION = '20261014s';
