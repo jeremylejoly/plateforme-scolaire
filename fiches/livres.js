@@ -2165,7 +2165,7 @@ window.LIVRES = [
           "Sa meilleure amie Assia est partie vivre dans un autre pays",
           "Son frère est parti et Catsou a disparu",
           "Ses parents viennent de lui annoncer qu'ils vont divorcer",
-          "Elle a déménagé et ne connaît personne dans sa nouvelle école"
+          "Elle a déménagé et ne connait personne dans sa nouvelle école"
         ],
         "correct": 1,
         "answer": 1,
@@ -2331,14 +2331,14 @@ window.LIVRES = [
         "text": "« En la voyant comme ça, j'avais comme une impression de gâchis terrible. » Un « gâchis », c'est…",
         "options": [
           "un jeu de société",
-          "un grand dommage, quelque chose d'abîmé pour rien",
+          "un grand dommage, quelque chose d'abimé pour rien",
           "une maison en désordre",
           "un repas raté"
         ],
         "correct": 1,
         "answer": 1,
         "points": 1,
-        "explanation": "Un gâchis, c'est quelque chose de beau ou d'utile qui est abîmé ou perdu. Line trouve injuste que Charlotte soit en fauteuil."
+        "explanation": "Un gâchis, c'est quelque chose de beau ou d'utile qui est abimé ou perdu. Line trouve injuste que Charlotte soit en fauteuil."
       },
       {
         "id": "q14",
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261013o';
+window.LIVRES_VERSION = '20261013p';
