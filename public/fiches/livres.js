@@ -10289,7 +10289,7 @@ window.LIVRES = [
         "text": "Pourquoi Lilou et Arthur font-ils ce vol au-dessus de l'Amazonie ?",
         "options": [
           "Ils rentrent en Belgique après un séjour à Cayenne",
-          "Pour apprendre à se connaître",
+          "Pour apprendre à se connaitre",
           "Ils participent à un concours de photos d'animaux",
           "Ils vont rejoindre la maman de Lilou dans la jungle"
         ],
@@ -10354,7 +10354,7 @@ window.LIVRES = [
         "options": [
           "Il vole leur nourriture",
           "Il attaque Arthur et le blesse gravement au genou",
-          "Il pêche un gros poisson puis disparaît",
+          "Il pêche un gros poisson puis disparait",
           "Il les suit toute la nuit"
         ],
         "correct": 2,
@@ -10428,7 +10428,7 @@ window.LIVRES = [
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : Ils se chamaillent ; à la fin, ils ont appris à se connaître."
+        "explanation": "VRAI : Ils se chamaillent ; à la fin, ils ont appris à se connaitre."
       },
       {
         "id": "q11",
@@ -10474,7 +10474,7 @@ window.LIVRES = [
         "options": [
           "rempli de carburant",
           "posé sur la piste",
-          "mis en morceaux, abîmé",
+          "mis en morceaux, abimé",
           "tout neuf et brillant"
         ],
         "correct": 2,
@@ -10504,9 +10504,9 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Lilou et Arthur, qui ne s'entendent pas très bien, font un vol au-dessus de l'Amazonie pour apprendre à se connaître. Un vol d'oiseaux heurte leur petit avion, qui s'écrase dans la jungle. Pendant plusieurs jours, les deux enfants survivent ensemble : ils se protègent des moustiques, suivent une rivière et allument un feu. La fumée attire une scientifique qui les sauve, et Lilou et Arthur sont devenus amis.",
-          "Lilou et Arthur, qui ne s'entendent pas très bien, font un vol au-dessus de l'Amazonie pour apprendre à se connaître. Le moteur tombe en panne, et le pilote Jacques pose l'avion sur une rivière. Pendant plusieurs jours, les deux enfants survivent ensemble, mais ils se disputent sans arrêt. Des policiers les retrouvent, et Lilou décide de ne plus jamais retourner dans la jungle.",
-          "Lilou et Arthur, qui ne s'entendent pas très bien, font un vol au-dessus de l'Amazonie pour apprendre à se connaître. Un vol d'oiseaux heurte leur petit avion, qui s'écrase dans la jungle. Pendant plusieurs jours, les deux enfants survivent ensemble : ils se protègent des moustiques, suivent une rivière et allument un feu. Ils trouvent un village de chercheurs d'or, dont les habitants les ramènent en pirogue jusqu'à la ville."
+          "Lilou et Arthur, qui ne s'entendent pas très bien, font un vol au-dessus de l'Amazonie pour apprendre à se connaitre. Un vol d'oiseaux heurte leur petit avion, qui s'écrase dans la jungle. Pendant plusieurs jours, les deux enfants survivent ensemble : ils se protègent des moustiques, suivent une rivière et allument un feu. La fumée attire une scientifique qui les sauve, et Lilou et Arthur sont devenus amis.",
+          "Lilou et Arthur, qui ne s'entendent pas très bien, font un vol au-dessus de l'Amazonie pour apprendre à se connaitre. Le moteur tombe en panne, et le pilote Jacques pose l'avion sur une rivière. Pendant plusieurs jours, les deux enfants survivent ensemble, mais ils se disputent sans arrêt. Des policiers les retrouvent, et Lilou décide de ne plus jamais retourner dans la jungle.",
+          "Lilou et Arthur, qui ne s'entendent pas très bien, font un vol au-dessus de l'Amazonie pour apprendre à se connaitre. Un vol d'oiseaux heurte leur petit avion, qui s'écrase dans la jungle. Pendant plusieurs jours, les deux enfants survivent ensemble : ils se protègent des moustiques, suivent une rivière et allument un feu. Ils trouvent un village de chercheurs d'or, dont les habitants les ramènent en pirogue jusqu'à la ville."
         ],
         "correct": 0,
         "answer": 0,
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261013f';
+window.LIVRES_VERSION = '20261013g';
