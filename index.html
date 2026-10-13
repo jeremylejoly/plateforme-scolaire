@@ -34340,6 +34340,9 @@ async function _renderPlanTravailInto(el) {
     planTravailCommentsReady = (fbComments !== undefined);
     planTravailComments = ptNormComments(fbComments || null);
 
+    // Ménage : anciennes coches faites à la main par les élèves (ignorées depuis le 13/10/2026)
+    ptPurgeManualTicks(cls);
+
     // Dates d'assignation (nœud séparé)
     const fbDates = window.FB_loadPlanDates ? await window.FB_loadPlanDates(cls) : undefined;
     planTravailDatesReady = (fbDates !== undefined);
@@ -35410,6 +35413,32 @@ function ptClearAllIndividual() {
   const el = ptActiveRoot();
   if (el) _renderPlanTravailInto(el);
   alert('✅ Tous les plans individuels sont vides.');
+}
+// Efface de Firebase les anciennes coches manuelles des élèves (valeur true dans plan_progress/<classe>/<élève>/<id>).
+// Seul l'enseignant connecté peut le faire (règles Firebase). Une fois par classe et par session ; ne touche jamais
+// aux coches automatiques (horodatages) ni aux ouvertures (__ouvert). Décidé par Jérémy le 13/10/2026.
+const _ptPurgedClasses = new Set();
+async function ptPurgeManualTicks(cls) {
+  if (_ptPurgedClasses.has(cls) || !window.FB_loadClassPlanProgress || !window.FB_remove || !window.FB_ref || !window.FB_DB) return;
+  _ptPurgedClasses.add(cls);
+  try {
+    const all = await window.FB_loadClassPlanProgress(cls);
+    const jobs = [];
+    Object.keys(all || {}).forEach(student => {
+      const prog = all[student];
+      if (!prog || typeof prog !== 'object') return;
+      Object.keys(prog).forEach(id => {
+        if (id !== '__ouvert' && prog[id] === true) {
+          jobs.push(window.FB_remove(window.FB_ref(window.FB_DB, 'plan_progress/' + cls + '/' + student + '/' + id)));
+        }
+      });
+    });
+    if (jobs.length) {
+      await Promise.all(jobs);
+      console.log('🧹 Plan de travail : ' + jobs.length + ' ancienne(s) coche(s) manuelle(s) effacée(s) (' + cls + ')');
+      _ptResumeData = null;
+    }
+  } catch(e) { _ptPurgedClasses.delete(cls); console.warn('Ménage des anciennes coches impossible :', e); }
 }
 function ptOpenResumeStudent(name) { ptView = 'summary'; ptResumeStudent = name; const el = ptActiveRoot(); if (el) _renderPlanTravailInto(el); }
 function ptEditStudentPlan(name) { planTravailTarget = name; ptView = 'assign'; ptResumeStudent = null; const el = ptActiveRoot(); if (el) _renderPlanTravailInto(el); }
