@@ -2425,7 +2425,7 @@ window.LIVRES = [
         "correct": 0,
         "answer": 0,
         "points": 1,
-        "explanation": "Euclave, vexé d'avoir été repoussé, raconte partout que Marjolaine est laide. La rumeur se répand comme une traînée de poudre."
+        "explanation": "Euclave, vexé d'avoir été repoussé, raconte partout que Marjolaine est laide. La rumeur se répand comme une trainée de poudre."
       },
       {
         "id": "q3",
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261013p';
+window.LIVRES_VERSION = '20261013q';
