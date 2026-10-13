@@ -2648,7 +2648,7 @@ window.LIVRES = [
         "correct": 2,
         "answer": 2,
         "points": 1,
-        "explanation": "Picolino est devenu roi par la volonté de tous, mais il a distribué le trésor royal aux habitants de l'île."
+        "explanation": "Picolino est devenu roi par la volonté de tous, mais il a distribué le trésor royal aux habitants de l'ile."
       },
       {
         "id": "q2",
@@ -2686,9 +2686,9 @@ window.LIVRES = [
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que fait le sort de Mostar aux adultes de l'île ?",
+        "text": "Que fait le sort de Mostar aux adultes de l'ile ?",
         "options": [
-          "Il les fait tous disparaître au fond de la mer Méditerranée",
+          "Il les fait tous disparaitre au fond de la mer Méditerranée",
           "Il les rend sans émotions, et ils travaillent à la mine",
           "Il leur fait oublier leur nom et leur maison",
           "Il les transforme en animaux de la forêt"
@@ -2800,7 +2800,7 @@ window.LIVRES = [
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : Picolino connaît l'entrée secrète grâce à une de ses chèvres, tombée un jour dans un puits naturel."
+        "explanation": "VRAI : Picolino connait l'entrée secrète grâce à une de ses chèvres, tombée un jour dans un puits naturel."
       },
       {
         "id": "q13",
@@ -2838,7 +2838,7 @@ window.LIVRES = [
         "id": "q15",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Un tyran venait de prendre le pouvoir sur l'île. » Qu'est-ce qu'un « tyran » ?",
+        "text": "« Un tyran venait de prendre le pouvoir sur l'ile. » Qu'est-ce qu'un « tyran » ?",
         "options": [
           "Un roi très gentil et généreux",
           "Un marchand qui vend de l'or",
@@ -2856,9 +2856,9 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Le vieux roi Picolino raconte son enfance sur l'île de Figuélia. Orphelin et coléreux, il devient berger et se calme dans la montagne. Quand le brigand Mostar ensorcelle les adultes pour les faire travailler à la mine d'or, les enfants se cachent dans une grotte et s'organisent. Armés de bâtons et de frondes, ils attaquent la mine en pleine nuit, et une terrible bataille, avec de nombreux blessés, chasse les brigands de l'île.",
-          "Le vieux roi Picolino raconte son enfance sur l'île de Figuélia. Fils du roi Livio, il devient berger pour échapper aux brigands. Quand le brigand Mostar ensorcelle les adultes pour les faire travailler à la mine d'or, Picolino part seul chercher de l'aide sur le continent. Il revient avec une armée, et leur musique brise le sort de Mostar.",
-          "Le vieux roi Picolino raconte son enfance sur l'île de Figuélia. Orphelin et coléreux, il devient berger et se calme dans la montagne. Quand le brigand Mostar ensorcelle les adultes pour les faire travailler à la mine d'or, les enfants se cachent dans une grotte et s'organisent. Grâce au chant que compose Picolino, leur musique brise le sort, et les brigands s'enfuient sans qu'une goutte de sang soit versée."
+          "Le vieux roi Picolino raconte son enfance sur l'ile de Figuélia. Orphelin et coléreux, il devient berger et se calme dans la montagne. Quand le brigand Mostar ensorcelle les adultes pour les faire travailler à la mine d'or, les enfants se cachent dans une grotte et s'organisent. Armés de bâtons et de frondes, ils attaquent la mine en pleine nuit, et une terrible bataille, avec de nombreux blessés, chasse les brigands de l'ile.",
+          "Le vieux roi Picolino raconte son enfance sur l'ile de Figuélia. Fils du roi Livio, il devient berger pour échapper aux brigands. Quand le brigand Mostar ensorcelle les adultes pour les faire travailler à la mine d'or, Picolino part seul chercher de l'aide sur le continent. Il revient avec une armée, et leur musique brise le sort de Mostar.",
+          "Le vieux roi Picolino raconte son enfance sur l'ile de Figuélia. Orphelin et coléreux, il devient berger et se calme dans la montagne. Quand le brigand Mostar ensorcelle les adultes pour les faire travailler à la mine d'or, les enfants se cachent dans une grotte et s'organisent. Grâce au chant que compose Picolino, leur musique brise le sort, et les brigands s'enfuient sans qu'une goutte de sang soit versée."
         ],
         "correct": 2,
         "answer": 2,
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261013q';
+window.LIVRES_VERSION = '20261013r';
