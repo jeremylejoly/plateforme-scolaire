@@ -9462,7 +9462,7 @@ window.LIVRES = [
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : Il se ferme « comme une huître » quand elle parle de sa mère."
+        "explanation": "VRAI : Il se ferme « comme une huitre » quand elle parle de sa mère."
       },
       {
         "id": "q10",
@@ -9472,7 +9472,7 @@ window.LIVRES = [
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : Odile le lui a proposé. Marion y commence une formation de maraîchage."
+        "explanation": "VRAI : Odile le lui a proposé. Marion y commence une formation de maraichage."
       },
       {
         "id": "q11",
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261014p';
+window.LIVRES_VERSION = '20261014q';
