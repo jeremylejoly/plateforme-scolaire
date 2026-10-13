@@ -11561,7 +11561,7 @@ window.LIVRES = [
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que découvre Paloma dans la boîte cachée derrière une brique ?",
+        "text": "Que découvre Paloma dans la boite cachée derrière une brique ?",
         "options": [
           "Une carte au trésor dessinée par les anciens propriétaires",
           "Des dents de lait et une carte d'amoureux",
@@ -11580,7 +11580,7 @@ window.LIVRES = [
         "text": "À qui Paloma révèle-t-elle le secret de Laurine ?",
         "options": [
           "À Marco, puis à Agathe",
-          "À Valentin, l'aîné des quasis",
+          "À Valentin, l'ainé des quasis",
           "À sa sœur Cassandra",
           "À son professeur, Monsieur Bruno"
         ],
@@ -11629,7 +11629,7 @@ window.LIVRES = [
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Paloma garde précieusement sa boîte de secrets à la fin.",
+        "text": "Paloma garde précieusement sa boite de secrets à la fin.",
         "correct": false,
         "answer": false,
         "points": 1,
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261014l';
+window.LIVRES_VERSION = '20261014m';
