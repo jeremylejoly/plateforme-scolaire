@@ -6737,7 +6737,7 @@ window.LIVRES = [
         "options": [
           "L'ami de Papa a quitté le lycée français de Sydney",
           "L'arrière-grand-mère de Sophie s'est cassé le coude",
-          "Les billets d'avion coûtaient beaucoup trop cher",
+          "Les billets d'avion coutaient beaucoup trop cher",
           "Le papa de Sophie a perdu son travail au lycée"
         ],
         "correct": 1,
@@ -6753,7 +6753,7 @@ window.LIVRES = [
         "options": [
           "Sévère, silencieuse et toujours habillée en noir",
           "Moderne, avec Internet et une grande télévision",
-          "Distraite et toujours en retard pour le dîner",
+          "Distraite et toujours en retard pour le diner",
           "Joyeuse, bavarde et très drôle, comme le papa de Sophie"
         ],
         "correct": 0,
@@ -6807,7 +6807,7 @@ window.LIVRES = [
         "correct": 3,
         "answer": 3,
         "points": 1,
-        "explanation": "Jacinthe ne part pas aux îles : elle passe chaque été chez son oncle Bernard, le boucher."
+        "explanation": "Jacinthe ne part pas aux iles : elle passe chaque été chez son oncle Bernard, le boucher."
       },
       {
         "id": "q8",
@@ -6859,11 +6859,11 @@ window.LIVRES = [
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Pendant que ses parents partent aux îles, Jacinthe reste chez son oncle à Saint-Jean-des-Vignes.",
+        "text": "Pendant que ses parents partent aux iles, Jacinthe reste chez son oncle à Saint-Jean-des-Vignes.",
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : ses parents partent aux îles, mais Jacinthe passe l'été chez son oncle, le boucher du village."
+        "explanation": "VRAI : ses parents partent aux iles, mais Jacinthe passe l'été chez son oncle, le boucher du village."
       },
       {
         "id": "q13",
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261014m';
+window.LIVRES_VERSION = '20261014n';
