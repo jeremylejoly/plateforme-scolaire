@@ -50815,11 +50815,19 @@ init();
   function showFrames(screen){
     framesOf(screen).forEach(function(f){ if(isLoaded(f)) ensureRightPage(f); else load(f); });
   }
+  // Quand l'élève quitte un écran, la page intégrée est prévenue si elle définit
+  // window.lcmlOnLeave() : un jeu en profite pour revenir à son menu (sinon l'élève
+  // retrouvait, en revenant du plan de travail, la grille qu'il venait de finir).
+  function notifyLeave(f){
+    try { var w=f.contentWindow; if(w && typeof w.lcmlOnLeave==='function') w.lcmlOnLeave(); } catch(e) {}
+  }
   function onScreenChange(screen){
     if(screen.classList.contains('active')){ showFrames(screen); return; }
     framesOf(screen).forEach(function(f){
+      if(!isLoaded(f)) return;
       var s=f.getAttribute('data-lazy-src');
-      if(isLoaded(f) && UNLOAD_ON_LEAVE.some(function(n){return s.indexOf(n)!==-1;})) f.setAttribute('src','about:blank');
+      if(UNLOAD_ON_LEAVE.some(function(n){return s.indexOf(n)!==-1;})) f.setAttribute('src','about:blank');
+      else notifyLeave(f);
     });
   }
   function init(){
