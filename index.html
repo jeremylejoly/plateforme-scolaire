@@ -35115,8 +35115,10 @@ function updateHomePlanCard() {
 // ============================================================
 
 // Activités qui n'envoient jamais de score : « faites » dès qu'elles sont ouvertes depuis le plan
+// Enquêtes « dont tu es le héros » : pas de score, mais cochées seulement quand l'élève atteint la fin gagnante
+// (l'enquête appelle window.parent.ptEnqueteFinie(id)). Ouvertes sans être résolues → « Commencé ».
+const PLAN_END_SIGNAL_IDS = new Set(['jeu_enquete', 'jeu_enquete_beffroi', 'jeu_enquete_villa', 'jeu_enquete_belgique', 'jeu_enquete_cross']);
 const PLAN_NO_SCORE_IDS = new Set([
-  'jeu_enquete', 'jeu_enquete_beffroi', 'jeu_enquete_villa', 'jeu_enquete_belgique', 'jeu_enquete_cross',
   'kim_histoire', 'fiche_frise', 'hist_grandes_periodes', 'hist_temps_modernes', 'hist_contemporaine',
   'fiche_respiratoire', 'fiche_digestif', 'fiche_circulatoire', 'fiche_lune', 'fiche_classification', 'fiche_cycle_eau',
   'sci_transformations_chimiques', 'geo_hydro_belgique', 'geo_globe_3d', 'geo_planisphere_interactif',
@@ -35131,6 +35133,7 @@ const PLAN_RESULT_ALIASES = {
 const PLAN_RESULT_PREFIXES = { 'lecture_rapide': 'lr_niveau_' };
 
 function ptIsNoScore(id) {
+  if (PLAN_END_SIGNAL_IDS.has(id)) return false;
   return PLAN_NO_SCORE_IDS.has(id) || PLAN_MENU_IDS.has(id) || /^jeu_/.test(id);
 }
 
@@ -35321,6 +35324,20 @@ function ptAutoCheckFromResult(entry) {
     });
     ptStoreProgressLocal(cls, state.student);
   }
+  ptRefreshStudentPlanIfVisible();
+}
+
+// Appelée par une enquête quand l'élève atteint la fin gagnante : coche l'enquête dans son plan
+function ptEnqueteFinie(id) {
+  if (!PLAN_END_SIGNAL_IDS.has(id) || typeof state === 'undefined' || state.role === 'teacher' || !state.student) return;
+  const L = ptStudentLists();
+  if (!L.classList.includes(id) && !L.indList.includes(id)) return;
+  const now = Date.now();
+  const cls = state.studentCls || 'lejoly';
+  if (!studentPlanProgress || typeof studentPlanProgress !== 'object') studentPlanProgress = {};
+  studentPlanProgress[id] = now;
+  if (window.FB_setPlanProgressItem) window.FB_setPlanProgressItem(cls, state.student, id, now);
+  ptStoreProgressLocal(cls, state.student);
   ptRefreshStudentPlanIfVisible();
 }
 
