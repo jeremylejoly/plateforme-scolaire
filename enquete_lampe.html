@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>La Lampe à lave sabotée — Plateforme LCML</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+  :root {
+    --purple: #5B4FCF; --purple-light: #EEF0FF; --purple-mid: #C7C2F5;
+    --green: #1A9E75; --green-light: #E2F5EE;
+    --red: #D94F3D; --red-light: #FDECEA;
+    --amber: #F59E0B; --amber-dark: #C97B1A; --amber-light: #FEF3E2;
+    --blue: #1A6FA0; --blue-light: #E2F0FA;
+    --parchment: #F3FBF6;
+    --bg: #FDFBF7; --surface: #FFFFFF; --surface-alt: #F4F1EB;
+    --text: #1A1A2E; --muted: #6B7080; --border: #1A1A2E;
+    --shadow: 4px 4px 0 var(--border); --shadow-sm: 2px 2px 0 var(--border);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; }
+  body { padding: 16px; }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1, h2, h3, .fred { font-family: 'Fredoka', 'Inter', sans-serif; }
+  button { font: inherit; color: inherit; cursor: pointer; touch-action: manipulation; }
+
+  .topbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .topbar .title { flex: 1; min-width: 180px; font-family: 'Fredoka'; font-weight: 700; font-size: 1.25rem; }
+  .btn { border: 2px solid var(--border); border-radius: 12px; background: var(--surface); padding: 10px 14px; min-height: 48px; font-weight: 600; box-shadow: var(--shadow-sm); }
+  .btn:active { transform: translate(2px,2px); box-shadow: none; }
+  .btn.primary { background: var(--purple); color: #fff; }
+  .btn.amber { background: var(--amber-light); }
+  .btn .count { display: inline-block; min-width: 22px; padding: 0 6px; margin-left: 4px; border-radius: 999px; background: var(--purple); color: #fff; font-size: .85rem; }
+
+  .card { background: var(--surface); border: 2px solid var(--border); border-radius: 20px; box-shadow: var(--shadow); padding: 22px; }
+  .story.card { background: var(--parchment); }
+
+  .hero { text-align: center; }
+  .hero .owl { font-size: 4.5rem; line-height: 1; }
+  .hero h1 { font-size: 2rem; margin: 10px 0 6px; }
+  .hero p { line-height: 1.55; font-size: 1.05rem; }
+  .rules { text-align: left; background: var(--surface-alt); border-radius: 14px; padding: 14px 18px; margin: 16px 0; line-height: 1.5; }
+  .rules li { margin: 4px 0; }
+  .endings { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 12px 0 18px; }
+  .ending-chip { border: 2px solid var(--border); border-radius: 999px; padding: 6px 12px; font-size: .9rem; background: var(--surface-alt); color: var(--muted); }
+  .ending-chip.found { color: var(--text); background: var(--green-light); }
+  .ending-chip.found.win { background: #FFE9A8; }
+  .start-btns { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+  .para-num { display: inline-flex; align-items: center; justify-content: center; width: 58px; height: 58px; border-radius: 50%; flex-shrink: 0;
+    background: var(--purple); color: #fff; font-family: 'Fredoka'; font-weight: 700; font-size: 1.6rem; border: 2px solid var(--border); box-shadow: var(--shadow-sm); }
+  .para-head { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  .para-head h2 { margin: 0; font-size: 1.35rem; }
+  .story p { font-size: 1.12rem; line-height: 1.7; margin: 0 0 14px; }
+  .story .speech { font-style: italic; }
+  .doc { font-family: 'Fredoka'; background: #FFFBEA; border: 2px solid var(--border); border-radius: 6px; padding: 14px 18px; margin: 0 0 14px; font-size: 1.1rem; line-height: 1.8; }
+  .vocab { background: var(--surface); border-left: 5px solid var(--amber-dark); border-radius: 8px; padding: 8px 12px; margin: 0 0 14px; font-size: .98rem; line-height: 1.5; }
+
+  .clue-found { background: var(--blue-light); border: 2px solid var(--blue); border-radius: 12px; padding: 10px 14px; margin: 4px 0 12px; font-size: 1rem; line-height: 1.45; }
+  .clue-found b { color: var(--blue); }
+  .obj-found { background: var(--green-light); border: 2px solid var(--green); border-radius: 12px; padding: 10px 14px; margin: 4px 0 12px; font-size: 1rem; line-height: 1.45; }
+
+  .choices { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+  .choices .prompt { font-weight: 700; font-family: 'Fredoka'; font-size: 1.1rem; margin: 6px 0 2px; }
+  .choice { display: flex; align-items: center; gap: 12px; text-align: left; width: 100%; border: 2px solid var(--border); border-radius: 14px;
+    background: var(--purple-light); padding: 12px 14px; min-height: 56px; font-size: 1.05rem; font-weight: 600; box-shadow: var(--shadow-sm); }
+  .choice:active { transform: translate(2px,2px); box-shadow: none; }
+  .choice .go { margin-left: auto; flex-shrink: 0; font-family: 'Fredoka'; font-size: .95rem; background: var(--surface); border: 2px solid var(--border); border-radius: 999px; padding: 2px 10px; white-space: nowrap; }
+  .choice.accuse { background: var(--red-light); }
+  .choice.skip { background: var(--surface-alt); }
+  .choice.obj { background: var(--green-light); }
+
+  .enigme { border: 2px solid var(--border); border-radius: 16px; background: var(--amber-light); padding: 16px; margin: 6px 0 16px; }
+  .enigme h3 { margin: 0 0 8px; font-size: 1.15rem; }
+  .enigme .q { font-size: 1.05rem; line-height: 1.55; margin: 0 0 12px; font-weight: 600; }
+  .answer-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+  .answer-row label { font-weight: 600; min-width: 140px; }
+  .answer-row input { width: 120px; font-size: 1.4rem; font-family: 'Fredoka'; text-align: center; padding: 8px; border: 2px solid var(--border); border-radius: 10px; background: #fff; }
+  .answer-row .unit { font-family: 'Fredoka'; font-size: 1.2rem; font-weight: 600; }
+  .qcm { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  .qcm button { text-align: left; border: 2px solid var(--border); border-radius: 12px; background: #fff; padding: 10px 14px; min-height: 52px; font-size: 1.02rem; font-weight: 500; }
+  .qcm button.sel { background: var(--purple); color: #fff; }
+  .qcm button.good { background: var(--green); color: #fff; }
+  .qcm.done button:not(.sel) { opacity: .45; }
+  .classify { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  .cl-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; border: 2px solid var(--border); border-radius: 12px; background: #fff; padding: 8px 10px; }
+  .cl-row .cl-label { flex: 1 1 200px; font-weight: 500; line-height: 1.35; }
+  .cl-row .cl-btns { display: flex; gap: 6px; }
+  .cl-row .cl-btns button { border: 2px solid var(--border); border-radius: 10px; background: #fff; padding: 8px 12px; min-height: 44px; font-size: .98rem; font-weight: 600; }
+  .cl-row .cl-btns button.sel { background: var(--purple); color: #fff; }
+  .cl-row.missing { border-color: var(--amber-dark); background: var(--amber-light); }
+  .classify.done .cl-btns button.sel { background: var(--green); }
+  .classify.done .cl-btns button:not(.sel) { opacity: .45; }
+  .feedback { margin-top: 12px; padding: 10px 14px; border-radius: 10px; line-height: 1.5; font-size: 1rem; }
+  .feedback.ok { background: var(--green-light); border: 2px solid var(--green); }
+  .feedback.ko { background: var(--red-light); border: 2px solid var(--red); }
+  .feedback.info { background: var(--surface); border: 2px solid var(--amber-dark); }
+
+  .proofs { list-style: none; padding: 0; margin: 0 0 14px; }
+  .proofs li { background: var(--surface); border: 2px solid var(--border); border-radius: 10px; padding: 8px 12px; margin-bottom: 8px; line-height: 1.45; }
+
+  .ending-box { text-align: center; border: 2px solid var(--border); border-radius: 16px; padding: 16px; margin: 10px 0 14px; }
+  .ending-box.win { background: #FFE9A8; }
+  .ending-box.half { background: var(--blue-light); }
+  .ending-box.lose { background: var(--red-light); }
+  .ending-box .big { font-size: 2.6rem; }
+  .ending-box h3 { margin: 6px 0; font-size: 1.3rem; }
+  .ending-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+  .overlay { position: fixed; inset: 0; background: rgba(26,26,46,.45); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 10; }
+  .overlay.open { display: flex; }
+  .overlay .card { max-width: 560px; width: 100%; max-height: 85vh; overflow: auto; }
+  .carnet-list { list-style: none; padding: 0; margin: 8px 0 14px; }
+  .carnet-list li { border-bottom: 2px dashed var(--purple-mid); padding: 10px 2px; line-height: 1.45; }
+  .muted { color: var(--muted); }
+  .hidden { display: none !important; }
+  @media (max-width: 480px) { body { padding: 10px; } .card { padding: 16px; } .story p { font-size: 1.05rem; } .hero h1 { font-size: 1.6rem; } .answer-row label { min-width: 0; width: 100%; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section id="screen-title" class="card hero">
+    <div class="owl">🧪</div>
+    <h1>La Lampe à lave sabotée</h1>
+    <p class="muted fred">Une enquête dont tu es le héros ou l'héroïne — le jour de l'Expo-sciences</p>
+    <div class="rules">
+      <ul>
+        <li>🧪 La lampe à lave de ta classe a été sabotée ! À toi de trouver le coupable… comme un ou une scientifique !</li>
+        <li>🧪 Observe, trie, mesure et pèse : les <b>mélanges</b>, le <b>volume</b> et la <b>masse</b> sont tes meilleurs outils.</li>
+        <li>🔐 Les <b>énigmes</b> te font gagner des preuves. Plus tu en résous, plus ton dossier est solide.</li>
+        <li>📒 Les indices sont notés dans ton <b>carnet</b>, et certains objets ouvrent de nouveaux chemins.</li>
+        <li>⚖️ Attention : accuser quelqu'un <b>sans preuve</b> n'est pas juste !</li>
+        <li>💾 La partie est <b>sauvegardée</b> : tu peux la reprendre plus tard.</li>
+      </ul>
+    </div>
+    <div class="fred" style="font-weight:600">Fins découvertes : <span id="endings-count">0</span> / <span id="endings-total">6</span></div>
+    <div class="endings" id="endings-list"></div>
+    <div class="start-btns">
+      <button class="btn primary hidden" id="btn-resume" style="font-size:1.1rem;padding:12px 24px">▶ Reprendre ma partie</button>
+      <button class="btn" id="btn-start" style="font-size:1.1rem;padding:12px 24px">Commencer l'enquête</button>
+    </div>
+  </section>
+
+  <section id="screen-story" class="hidden">
+    <div class="topbar">
+      <div class="title">🧪 La Lampe à lave sabotée</div>
+      <button class="btn amber" id="btn-carnet">📒 Carnet <span class="count" id="clue-count">0</span></button>
+      <button class="btn" id="btn-menu">⟲ Menu</button>
+    </div>
+    <article class="card story" id="story"></article>
+  </section>
+</div>
+
+<div class="overlay" id="carnet">
+  <div class="card">
+    <h2 style="margin:0 0 4px">🎒 Mon sac</h2>
+    <ul class="carnet-list" id="sac-list"></ul>
+    <h2 style="margin:0 0 4px">📒 Mes indices</h2>
+    <ul class="carnet-list" id="carnet-list"></ul>
+    <button class="btn primary" id="btn-carnet-close" style="width:100%">Fermer le carnet</button>
+  </div>
+</div>
+
+<script src="lcml_jeux_sync.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* =====================================================================
+     INDICES ET OBJETS
+     PREUVES : indices qui comptent comme preuves devant Mme Lambert.
+     ===================================================================== */
+  const CLUES = {
+    traces:   "Des gouttes rouges sur le sol mènent de ta classe jusqu'à la porte du labo des 5B.",
+    fenetre:  "À 7 h 40, quand Mme Petit a quitté ta classe, la lampe était encore intacte : l'eau bleue au fond, l'huile au-dessus.",
+    registre: "La clé de ta classe a été empruntée de 7 h 45 à 7 h 58, soit 13 minutes, par « Victor, 5B ».",
+    temoin:   "Vers 7 h 50, depuis la cour, M. Grégoire a vu par la fenêtre un élève en sweat vert de 5B sortir de ta classe avec une gourde en métal.",
+    huile:    "Dans l'armoire des 5B, la gourde « 5A » contient 500 mL d'un liquide qui pèse 460 g : c'est de l'huile, celle de ta lampe !",
+    colorant: "À côté, le flacon de colorant rouge du volcan des 5B est presque vide.",
+    versionVictor: "Victor dit qu'il est arrivé à l'école à 8 h 20, en retard.",
+    alibiHugo:  "Hugo est arrivé en bus à 8 h 10. Ses mains rouges, c'est de la grenadine renversée au petit-déjeuner.",
+    alibiPetit: "Mme Petit est partie de ta classe à 7 h 40, avant que la clé soit empruntée.",
+    lampe:      "Tu as réussi à refaire la lampe à lave : l'eau colorée au fond, l'huile au-dessus, et le comprimé pour les bulles."
+  };
+  const PREUVES = ['traces', 'fenetre', 'registre', 'temoin', 'huile', 'colorant'];
+
+  const OBJECTS = {
+    balance: "⚖️ La balance électronique de Mme Delattre, pour peser les objets en grammes.",
+    cle:     "🔑 La clé de l'armoire du labo des 5B, prêtée par M. Grégoire."
+  };
+
+  /* =====================================================================
+     L'HISTOIRE
+     ===================================================================== */
+  const S = {
+    debut: { title: "La lampe ne marche plus !",
+      text: [
+        "Jeudi, 8 h 15. Cet après-midi à 14 h, c'est l'Expo-sciences de l'école. Ta classe de 5A présente une <b>lampe à lave</b> faite maison : dans un grand bocal, 250 mL d'eau colorée en bleu au fond et 500 mL d'huile au-dessus. Quand on ajoute un comprimé effervescent, des bulles bleues montent et descendent dans l'huile. Magnifique !",
+        "Mais ce matin, en entrant en classe, tu restes bouche bée. Le bocal ne contient plus qu'un seul liquide, tout rouge, sans aucune couche. Plus rien ne bouge.",
+        "Mme Lambert, la directrice, arrive en courant : <span class='speech'>« Quelqu'un a saboté votre lampe ! Avant de chercher qui, explique-moi ce qui a changé. »</span>",
+        "<div class='vocab'>📚 Un mélange est <b>hétérogène</b> quand on peut distinguer ses constituants à l'œil nu. Il est <b>homogène</b> quand on ne peut pas les distinguer : il a l'air d'être fait d'un seul constituant.</div>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🔬 Un seul liquide",
+        question: "Avant, on voyait deux couches : l'eau bleue au fond et l'huile au-dessus. Maintenant, il n'y a plus qu'un liquide tout rouge. Quel type de mélange y a-t-il dans le bocal maintenant ?",
+        options: [
+          "Un mélange hétérogène, comme avant",
+          "Un mélange homogène",
+          "Ce n'est plus du tout un mélange"
+        ],
+        answer: 1,
+        hint: "L'eau seule n'est pas rouge : dans le bocal, il y a donc de l'eau et autre chose. Mais on ne voit plus qu'un seul liquide… Si on ne peut pas distinguer les constituants à l'œil nu, comment s'appelle le mélange ?",
+        success: "Exact ! Avant, eau et huile formaient un mélange hétérogène : deux couches bien visibles. Maintenant, on ne voit plus qu'un seul liquide rouge : c'est un mélange homogène, sans doute de l'eau et du colorant rouge. Quelqu'un a retiré l'huile !",
+        to: 'debutOk', skipTo: 'debutKo', skipLabel: "Laisser Mme Lambert réfléchir"
+      }
+    },
+
+    debutOk: { title: "Plus d'huile !",
+      text: [
+        "Sans huile, plus de lampe à lave : il n'y a plus deux couches de liquides pour faire monter et descendre les gouttes colorées.",
+        "<span class='speech'>« Il te reste jusqu'à 14 h pour trouver le coupable… et réparer la lampe ! »</span> dit Mme Lambert."
+      ],
+      prompt: "",
+      choices: [ { label: "Commencer l'enquête dans le couloir des sciences", to: 'couloir' } ]
+    },
+
+    debutKo: { title: "Il faut enquêter",
+      text: [
+        "Mme Lambert soupire : <span class='speech'>« On dirait que quelqu'un a enlevé l'huile et mis de l'eau rouge à la place. Il te reste jusqu'à 14 h pour trouver le coupable… et réparer la lampe ! »</span>"
+      ],
+      prompt: "",
+      choices: [ { label: "Commencer l'enquête dans le couloir des sciences", to: 'couloir' } ]
+    },
+
+    couloir: { title: "Le couloir des sciences",
+      text: [
+        "Le couloir des sciences est en pleine effervescence : chaque classe prépare son stand pour l'Expo de 14 h. Au bout du couloir, les 5B construisent un volcan qui crache de la mousse rouge.",
+        "Plusieurs personnes ont pu entrer dans ta classe ce matin. À toi de trouver qui !"
+      ],
+      prompt: "Où vas-tu ?",
+      choices: [
+        { label: "🧪 Examiner la lampe dans ta classe", to: 'classe' },
+        { label: "🔬 Le labo de sciences de Mme Delattre", to: 'labo' },
+        { label: "🧹 Le local de nettoyage", to: 'nettoyage' },
+        { label: "🗂️ Le secrétariat", to: 'secretariat' },
+        { label: "🎈 La cour, où M. Grégoire gonfle des ballons", to: 'cour' },
+        { label: "🔧 La salle de technologie", to: 'techno' },
+        { label: "🌋 Le labo des 5B", to: 'labo5b' },
+        { label: "C'est l'heure de l'Expo : je donne mes conclusions", to: 'expo', accuse: true }
+      ]
+    },
+
+    classe: { title: "Le bocal",
+      text: [
+        "Tu observes le bocal de près. Sur l'étiquette, ta classe avait noté sa capacité :",
+        "<div class='doc'>🧪 Lampe à lave de la 5A — capacité du bocal : <b>0,8 dm³</b></div>",
+        "<div class='vocab'>📚 Le <b>volume</b> d'un objet, c'est l'espace qu'il occupe. La <b>capacité</b> d'un récipient, c'est le volume de liquide qu'il peut contenir. On les exprime en dm³, cm³, L ou mL. Et <b>1 dm³ = 1 L</b>.</div>"
+      ],
+      enigme: { kind: 'number', answer: 800, unit: "mL",
+        title: "🧪 Le volume du bocal",
+        question: "Le bocal a une capacité de 0,8 dm³. Combien de millilitres (mL) de liquide peut-il contenir ?",
+        hint: "1 dm³ = 1 L, donc 0,8 dm³ = 0,8 L. Et 1 L = 1 000 mL : il faut calculer 0,8 × 1 000.",
+        success: "Exact : 0,8 dm³ = 0,8 L = 800 mL. Avec 250 mL d'eau et 500 mL d'huile, soit 750 mL, il reste un peu de place en haut pour que ça ne déborde pas quand on ajoute le comprimé.",
+        to: 'classeOk', skipTo: 'classeKo', skipLabel: "Laisser le calcul pour plus tard"
+      }
+    },
+
+    classeOk: { title: "Des gouttes rouges",
+      text: [
+        "En te penchant pour mesurer, tu remarques de petites gouttes rouges sur le sol. Elles partent de la table… et vont jusqu'à la porte. Tu les suis : elles traversent le couloir et s'arrêtent devant le labo des 5B !"
+      ],
+      clues: ['traces'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le couloir", to: 'couloir' } ]
+    },
+
+    classeKo: { title: "Le bocal",
+      text: [
+        "Tu reposes le bocal sans rien remarquer de spécial."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner dans le couloir", to: 'couloir' } ]
+    },
+
+    labo: { title: "Le labo de Mme Delattre",
+      text: [
+        "Dans le labo de sciences, Mme Delattre, l'institutrice de 6e qui organise l'Expo, prépare des flacons.",
+        "<span class='speech'>« Une lampe à lave sabotée ? Je peux te prêter ma balance pour ton enquête. Mais d'abord, montre-moi que tu sais trier les mélanges ! »</span>"
+      ],
+      enigme: { kind: 'classify',
+        title: "🧪 Trier les mélanges",
+        question: "Pour chaque mélange, touche « Homogène » ou « Hétérogène ».",
+        categories: ['Homogène', 'Hétérogène'],
+        items: [
+          { label: "Du sel et du poivre mélangés", answer: 1 },
+          { label: "Du sel bien dissous dans de l'eau", answer: 0 },
+          { label: "De l'eau et de l'huile", answer: 1 },
+          { label: "De l'eau et du sirop de grenadine", answer: 0 },
+          { label: "L'air que tu respires", answer: 0 },
+          { label: "Du sable dans de l'eau", answer: 1 }
+        ],
+        hint: "Pose-toi chaque fois la même question : est-ce qu'on voit les différents constituants à l'œil nu ? Les grains de poivre se voient dans le sel. Mais le sel dissous dans l'eau ne se voit plus. Et l'air, est-ce qu'on y voit ses différents gaz ?",
+        success: "Parfait ! Sel et poivre, eau et huile, sable et eau : on voit les constituants, ce sont des mélanges hétérogènes. Eau salée, eau et grenadine, air : on ne les distingue plus, ce sont des mélanges homogènes.",
+        to: 'laboOk', skipTo: 'laboKo', skipLabel: "Revenir plus tard"
+      }
+    },
+
+    laboOk: { title: "La balance",
+      text: [
+        "<span class='speech'>« Bravo ! Voici ma balance. Et retiens bien ceci : 1 litre d'eau pèse environ 1 kg, soit 1 000 g, mais 1 litre d'huile pèse moins : environ 920 g. Deux liquides de même volume n'ont pas toujours la même masse ! »</span>"
+      ],
+      objects: ['balance'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le couloir", to: 'couloir' } ]
+    },
+
+    laboKo: { title: "Pas de balance",
+      text: [
+        "<span class='speech'>« Reviens quand tu auras révisé ! »</span> sourit Mme Delattre, qui garde sa balance."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner dans le couloir", to: 'couloir' } ]
+    },
+
+    nettoyage: { title: "Le local de nettoyage",
+      text: [
+        "Dans le local de nettoyage, Mme Petit range son seau et sa raclette.",
+        "<span class='speech'>« Ta classe ? Je l'ai nettoyée tôt ce matin. Dis-moi, toi qui fais des sciences : quand je remplis mon seau d'eau, qu'est-ce que je mesure en litres ? »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🪣 Le seau de Mme Petit",
+        question: "Quand on dit que le seau contient 10 litres d'eau, que mesure-t-on ?",
+        options: [
+          "La masse de l'eau : combien elle est lourde",
+          "Le volume de l'eau : l'espace qu'elle occupe dans le seau",
+          "La température de l'eau"
+        ],
+        answer: 1,
+        hint: "Les litres (L) et les millilitres (mL) servent à mesurer un volume. La masse, elle, se mesure en kilogrammes (kg) et en grammes (g).",
+        success: "Exact ! Le litre est une unité de volume : 10 L, c'est l'espace occupé par l'eau. Sa masse, elle, se mesure en kg (environ 10 kg pour 10 L d'eau).",
+        to: 'nettoyageOk', skipTo: 'nettoyageKo', skipLabel: "Laisser Mme Petit travailler"
+      }
+    },
+
+    nettoyageOk: { title: "À 7 h 40",
+      text: [
+        "<span class='speech'>« Bien ! Alors écoute : j'ai nettoyé ta classe de 7 h 30 à 7 h 40. À 7 h 40, quand je suis partie, votre lampe était intacte : l'eau bleue au fond, l'huile au-dessus, deux couches bien nettes. »</span>",
+        "Le sabotage a donc eu lieu <b>après 7 h 40</b>."
+      ],
+      clues: ['fenetre', 'alibiPetit'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le couloir", to: 'couloir' } ]
+    },
+
+    nettoyageKo: { title: "Mme Petit",
+      text: [
+        "Mme Petit hausse les épaules et repart avec son seau d'eau. C'est elle qui a nettoyé ta classe ce matin… et elle avait de l'eau, justement."
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Retourner dans le couloir", to: 'couloir' },
+        { label: "Accuser Mme Petit : elle a vidé la lampe avec son seau !", to: 'finPetit', accuse: true }
+      ]
+    },
+
+    secretariat: { title: "Le secrétariat",
+      text: [
+        "Au secrétariat, on prête les clés des classes aux élèves qui doivent y aller avant 8 h. Chaque emprunt est noté dans un registre.",
+        "<div class='doc'>🔑 Salle 12 (5A) — empruntée à <b>7 h 45</b> par « Victor, 5B (chercher un cahier) » — rendue à <b>7 h 58</b></div>"
+      ],
+      enigme: { kind: 'number', answer: 13, unit: "minutes",
+        title: "⏱️ Combien de temps ?",
+        question: "Combien de minutes Victor a-t-il gardé la clé de ta classe ?",
+        hint: "De 7 h 45 à 7 h 58 : compte les minutes entre les deux heures (58 − 45).",
+        success: "Exact : de 7 h 45 à 7 h 58, cela fait 13 minutes. Bien long pour aller chercher un cahier… et juste après le départ de Mme Petit !",
+        to: 'secretariatOk', skipTo: 'secretariatKo', skipLabel: "Refermer le registre"
+      }
+    },
+
+    secretariatOk: { title: "Le registre",
+      text: [
+        "Tu notes soigneusement l'heure et le nom dans ton carnet."
+      ],
+      clues: ['registre'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le couloir", to: 'couloir' } ]
+    },
+
+    secretariatKo: { title: "Des noms et des heures",
+      text: [
+        "Le registre est rempli de noms et d'heures. Tu le refermes sans rien noter."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner dans le couloir", to: 'couloir' } ]
+    },
+
+    cour: { title: "Les ballons de M. Grégoire",
+      text: [
+        "Dans la cour, M. Grégoire, le concierge, gonfle des ballons avec une pompe pour décorer l'Expo. Il pompe si fort qu'il est tout rouge.",
+        "<span class='speech'>« Pfiou ! Dis-moi, toi qui t'y connais en sciences : dans ces ballons, il y a de l'air de la cour. Mais l'air, c'est quoi exactement ? »</span>",
+        "<div class='vocab'>📚 L'<b>air</b> est un mélange de plusieurs gaz.</div>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🎈 De quoi est fait l'air ?",
+        question: "Quel gaz est le plus abondant dans l'air ?",
+        options: [
+          "Le dioxygène",
+          "Le dioxyde de carbone",
+          "Le diazote"
+        ],
+        answer: 2,
+        hint: "On respire l'air pour son dioxygène, mais ce n'est pas le gaz le plus abondant : il y en a environ un cinquième. Le dioxyde de carbone, lui, n'est présent qu'en toute petite quantité.",
+        success: "Bravo ! L'air contient environ 78 % de diazote et 21 % de dioxygène. Le reste, c'est un peu d'autres gaz, dont une toute petite quantité de dioxyde de carbone. Comme on ne distingue pas ces gaz, l'air est un mélange homogène.",
+        to: 'courOk', skipTo: 'courKo', skipLabel: "Aider M. Grégoire à gonfler un ballon"
+      }
+    },
+
+    courOk: { title: "Le sweat vert",
+      text: [
+        "<span class='speech'>« Bravo, tu connais ton air ! »</span> rit M. Grégoire. <span class='speech'>« Écoute : vers 7 h 50, depuis la cour, j'ai vu par la fenêtre un élève avec un sweat vert, celui des 5B, sortir de ta classe avec une gourde en métal à la main. »</span>",
+        "Il décroche une petite clé de son trousseau : <span class='speech'>« Et tiens, la clé de l'armoire du labo des 5B. Mme Lambert m'a demandé de t'aider. »</span>"
+      ],
+      clues: ['temoin'],
+      objects: ['cle'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le couloir", to: 'couloir' } ]
+    },
+
+    courKo: { title: "Un ballon de plus",
+      text: [
+        "Tu gonfles un ballon avec M. Grégoire, puis tu repars."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner dans le couloir", to: 'couloir' } ]
+    },
+
+    techno: { title: "La salle de technologie",
+      text: [
+        "Dans la salle de technologie, Hugo, de ta classe, prépare l'affiche de la lampe à lave. Ses mains sont toutes rouges !",
+        "<span class='speech'>« Ne me regarde pas comme ça ! C'est de la grenadine. Aide-moi plutôt : pour notre affiche, M. Lenoir nous a donné deux cubes de même taille, un en bois et un en fer. Lequel est le plus lourd, à ton avis ? »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🧊 Deux cubes de même taille",
+        question: "Le cube en bois et le cube en fer ont exactement le même volume. Que peut-on dire de leur masse ?",
+        options: [
+          "Ils ont forcément la même masse, puisqu'ils ont le même volume.",
+          "Le cube en fer a une masse plus grande que le cube en bois.",
+          "Le cube en bois a une masse plus grande que le cube en fer."
+        ],
+        answer: 1,
+        hint: "Pense à l'eau et à l'huile : un litre de chacune n'a pas la même masse. Pour deux objets de même volume, la matière dont ils sont faits compte !",
+        success: "Exact ! Des objets de même volume peuvent avoir une masse différente : le fer est bien plus lourd que le bois pour le même volume. C'est aussi pour ça que l'huile flotte sur l'eau : à volume égal, elle est plus légère.",
+        to: 'technoOk', skipTo: 'technoKo', skipLabel: "Ne pas répondre et repartir"
+      }
+    },
+
+    technoOk: { title: "L'alibi d'Hugo",
+      text: [
+        "<span class='speech'>« C'est ce que je pensais ! Et pour la lampe, ce n'est pas moi : mon bus est arrivé à 8 h 10, tout le monde m'a vu. Mes mains rouges, c'est la grenadine que j'ai renversée au petit-déjeuner. »</span>"
+      ],
+      clues: ['alibiHugo'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le couloir", to: 'couloir' } ]
+    },
+
+    technoKo: { title: "Des mains rouges",
+      text: [
+        "Hugo se remet à son affiche. Ses mains rouges te font quand même réfléchir… Le liquide de la lampe est rouge, lui aussi."
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Retourner dans le couloir", to: 'couloir' },
+        { label: "Accuser Hugo : il a les mains rouges !", to: 'finHugo', accuse: true }
+      ]
+    },
+
+    labo5b: { title: "Le labo des 5B",
+      text: [
+        "Dans le labo des 5B, Victor, en sweat vert, verse du vinaigre dans son volcan, qui crache une mousse rouge.",
+        "<span class='speech'>« Ta lampe ? Je n'y suis pour rien. Je suis arrivé à 8 h 20 ce matin, en retard. Demande à qui tu veux ! »</span>",
+        "Au fond du labo se trouve une grande armoire fermée à clé."
+      ],
+      clues: ['versionVictor'],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Ouvrir l'armoire avec la clé de M. Grégoire", to: 'armoire', requires: 'cle', cls: 'obj' },
+        { label: "Essayer d'ouvrir l'armoire", to: 'armoireFermee', requiresNot: 'cle' },
+        { label: "Retourner dans le couloir", to: 'couloir' },
+        { label: "Accuser Victor tout de suite", to: 'finTropTot', accuse: true }
+      ]
+    },
+
+    armoireFermee: { title: "Fermée à clé",
+      text: [
+        "L'armoire est fermée à clé. Victor sourit en coin. Il te faudrait la clé… Peut-être que le concierge l'a ?"
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner dans le couloir", to: 'couloir' } ]
+    },
+
+    armoire: { title: "L'armoire",
+      text: [
+        "Dans l'armoire, à côté du matériel du volcan, il y a deux gourdes en métal de 500 mL, bien fermées. Aucune étiquette sur la première. La seconde porte une petite étiquette à moitié arrachée : « …5A… ».",
+        "Victor devient tout pâle : <span class='speech'>« C'est notre matériel ! Tu peux les peser si tu veux, mais tu ne les ouvres pas ! »</span>"
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Peser les deux gourdes avec la balance", to: 'pesee', requires: 'balance', cls: 'obj' },
+        { label: "Regarder les gourdes de près", to: 'armoireSans', requiresNot: 'balance' },
+        { label: "Retourner dans le couloir", to: 'couloir' }
+      ]
+    },
+
+    armoireSans: { title: "Deux gourdes",
+      text: [
+        "Les deux gourdes se ressemblent, et Victor t'interdit de les ouvrir. Sans balance, impossible de savoir ce qu'elles contiennent. Mme Delattre en a une, dans son labo…"
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner dans le couloir", to: 'couloir' } ]
+    },
+
+    pesee: { title: "La pesée",
+      text: [
+        "Sur l'étagère, il y a aussi une gourde vide du même modèle. Tu la pèses : <b>200 g</b>. Tu pèses ensuite les deux gourdes pleines et tu enlèves 200 g pour ne garder que la masse du liquide.",
+        "<div class='doc'>⚖️ Gourde sans étiquette : 700 g − 200 g = <b>500 g</b> de liquide (500 mL)<br>⚖️ Gourde « …5A… » : 660 g − 200 g = <b>460 g</b> de liquide (500 mL)</div>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "⚖️ Eau ou huile ?",
+        question: "Les deux gourdes contiennent 500 mL de liquide. Laquelle contient de l'huile ?",
+        options: [
+          "La gourde sans étiquette (500 g de liquide)",
+          "La gourde « …5A… » (460 g de liquide)",
+          "On ne peut pas savoir : elles ont le même volume"
+        ],
+        answer: 1,
+        hint: "Souviens-toi de ce que t'a dit Mme Delattre : 1 L d'eau pèse environ 1 kg (1 000 g), mais 1 L d'huile pèse moins, environ 920 g. Et 500 mL, c'est la moitié d'un litre.",
+        success: "Exact ! 500 mL d'eau pèsent environ 500 g, et 500 mL d'huile environ 460 g (la moitié de 920 g). Même volume, mais pas la même masse : la gourde « …5A… » contient l'huile de ta lampe ! Et à côté, tu remarques le flacon de colorant rouge du volcan… presque vide.",
+        to: 'peseeOk', skipTo: 'peseeKo', skipLabel: "Ne pas conclure tout de suite"
+      }
+    },
+
+    peseeOk: { title: "L'huile retrouvée",
+      text: [
+        "Tu récupères la gourde d'huile : avec elle, tu pourras peut-être refaire la lampe avant 14 h !",
+        "Victor ne dit plus rien. Mais attention : pour convaincre Mme Lambert, il faudra présenter toutes tes preuves à l'Expo."
+      ],
+      clues: ['huile', 'colorant'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le couloir", to: 'couloir' } ]
+    },
+
+    peseeKo: { title: "Deux nombres",
+      text: [
+        "Tu notes les deux masses sans savoir quoi en conclure, et tu remets les gourdes dans l'armoire."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner dans le couloir", to: 'couloir' } ]
+    },
+
+    expo: { title: "L'Expo-sciences",
+      text: [
+        "Il est 14 h. Les parents arrivent, le volcan des 5B crache sa mousse… et ton stand est encore vide. Mme Lambert s'approche avec Victor, Hugo et Mme Petit.",
+        "<span class='speech'>« Avant d'accuser quelqu'un, montre-moi que tu sais refaire ta lampe. Dans le bocal, où se place l'eau colorée quand on ajoute l'huile ? »</span>"
+      ],
+      dynamic: function (g) {
+        return g.clues.indexOf('huile') !== -1
+          ? "<p>Tu as rapporté la gourde d'huile. Tu vides l'eau rouge, tu rinces le bocal et tu prends le colorant bleu de la classe.</p>"
+          : "<p>Tu n'as pas retrouvé l'huile, mais Mme Delattre t'en apporte une bouteille de la cuisine. Tu vides l'eau rouge, tu rinces le bocal et tu prends le colorant bleu de la classe.</p>";
+      },
+      enigme: { kind: 'qcm',
+        title: "🧪 Refaire la lampe à lave",
+        question: "Tu verses dans le bocal 250 mL d'eau avec du colorant bleu, puis 500 mL d'huile. Que se passe-t-il ?",
+        options: [
+          "L'eau colorée reste au fond, sous l'huile : à volume égal, l'eau est plus lourde que l'huile, et les deux liquides ne se mélangent pas.",
+          "L'eau colorée monte au-dessus de l'huile, parce qu'elle est plus légère.",
+          "L'eau et l'huile se mélangent et donnent un liquide bleu clair."
+        ],
+        answer: 0,
+        hint: "Pense à la pesée : 500 mL d'eau pèsent 500 g, 500 mL d'huile 460 g. Le liquide le plus lourd, à volume égal, va au fond. Et l'eau et l'huile forment-elles un mélange homogène ?",
+        success: "Bravo ! L'eau colorée reste au fond et l'huile flotte au-dessus : c'est un mélange hétérogène. Le colorant se dissout dans l'eau, mais pas dans l'huile : l'huile reste claire. Tu ajoutes le comprimé effervescent : il produit des bulles de dioxyde de carbone, qui font monter des gouttes d'eau bleue à travers l'huile. Quand les bulles éclatent à la surface, les gouttes redescendent. La lampe marche à nouveau !",
+        to: 'expoOk', skipTo: 'expoKo', skipLabel: "Laisser la lampe pour plus tard"
+      }
+    },
+
+    expoOk: { title: "Qui a saboté la lampe ?",
+      text: [
+        "Les parents applaudissent la lampe à lave. Mme Lambert sourit : <span class='speech'>« Bien joué. Maintenant, dis-moi : qui a saboté votre lampe ? »</span>"
+      ],
+      clues: ['lampe'],
+      prompt: "Qui désignes-tu ?",
+      choices: [
+        { label: "Hugo, aux mains rouges", to: 'finHugo', accuse: true },
+        { label: "Mme Petit, avec son seau d'eau", to: 'finPetit', accuse: true },
+        { label: "Victor, de la 5B", to: 'preuves', accuse: true }
+      ]
+    },
+
+    expoKo: { title: "Qui a saboté la lampe ?",
+      text: [
+        "Le bocal reste sur la table, sans bulles. <span class='speech'>« Bon… dis-moi au moins qui a saboté votre lampe »</span>, demande Mme Lambert."
+      ],
+      prompt: "Qui désignes-tu ?",
+      choices: [
+        { label: "Hugo, aux mains rouges", to: 'finHugo', accuse: true },
+        { label: "Mme Petit, avec son seau d'eau", to: 'finPetit', accuse: true },
+        { label: "Victor, de la 5B", to: 'preuves', accuse: true }
+      ]
+    },
+
+    preuves: { title: "Tes preuves",
+      text: [
+        "<span class='speech'>« Victor ? demande Mme Lambert. Qu'est-ce qui te permet de le dire ? »</span>",
+        "Tu ouvres ton carnet."
+      ],
+      dynamic: function (g) {
+        const list = PREUVES.filter(c => g.clues.indexOf(c) !== -1);
+        if (!list.length) return "<p><b>Ton carnet ne contient aucune preuve…</b></p>";
+        return "<p>Tu présentes <b>" + list.length + " preuve" + (list.length > 1 ? "s" : "") + "</b> :</p><ul class='proofs'>" + list.map(c => "<li>🔎 " + CLUES[c] + "</li>").join('') + "</ul>";
+      },
+      auto: function (g) {
+        const n = PREUVES.filter(c => g.clues.indexOf(c) !== -1).length;
+        const vise = g.clues.indexOf('registre') !== -1 || g.clues.indexOf('temoin') !== -1;
+        return n >= 4 && vise ? 'finGagne' : n >= 2 ? 'finMoitie' : 'finSansPreuve';
+      },
+      autoLabel: "Voir la réaction de Mme Lambert"
+    },
+
+    finGagne: { title: "La vérité",
+      text: [
+        "Mme Lambert emmène Victor à l'écart. Il baisse la tête : <span class='speech'>« C'est vrai… Notre volcan n'était pas terrible, et votre lampe était trop belle. J'ai versé votre huile dans une gourde prise dans votre classe, j'ai vidé votre eau bleue dans l'évier et j'ai rempli le bocal d'eau avec notre colorant rouge. Je voulais juste gagner le prix de l'Expo… Et non, je n'étais pas en retard : j'ai emprunté la clé à 7 h 45. »</span>",
+        "Mme Lambert lui répond calmement : <span class='speech'>« Gagner en abimant le travail des autres, ce n'est pas gagner. Tu vas t'excuser auprès de la 5A et l'aider à ranger son stand. »</span>"
+      ],
+      dynamic: function (g) {
+        return g.clues.indexOf('lampe') !== -1
+          ? "<p>Pendant ce temps, ta lampe à lave fait des merveilles : les parents font la file pour voir les bulles bleues monter et descendre. Le prix de l'Expo revient à la 5A !</p>"
+          : "<p>Ta lampe, elle, n'a pas pu être réparée à temps… mais toute l'école sait maintenant ce qui s'est passé, et vous la présenterez à la prochaine Expo.</p>";
+      },
+      ending: { type: 'win', title: "Bravo, détective ! Grâce à tes observations et à tes mesures, la vérité a éclaté." }
+    },
+
+    finMoitie: { title: "Le doute",
+      text: [
+        "Mme Lambert hésite. <span class='speech'>« C'est un peu léger pour accuser Victor… Qu'est-ce qui montre que c'est lui, et pas quelqu'un d'autre ? »</span>",
+        "Victor hausse les épaules et retourne à son volcan. Personne ne saura vraiment ce qui s'est passé."
+      ],
+      ending: { backTo: 'couloir', type: 'half', title: "Tu avais la bonne piste, mais il te fallait plus de preuves. Visite tous les lieux de l'école !" }
+    },
+
+    finSansPreuve: { title: "Pas assez de preuves",
+      text: [
+        "<span class='speech'>« Accuser Victor avec si peu de preuves ? Ce n'est pas juste ! »</span> dit Mme Lambert.",
+        "Victor retourne à son volcan en sifflotant."
+      ],
+      ending: { backTo: 'couloir', type: 'lose', title: "Ton intuition était peut-être bonne, mais il faut des preuves. Les mesures et les témoins t'en donnent !" }
+    },
+
+    finTropTot: { title: "Trop tôt !",
+      text: [
+        "<span class='speech'>« C'est toi qui as saboté notre lampe ! »</span>",
+        "Victor croise les bras : <span class='speech'>« Tu n'as aucune preuve. Sors de notre labo ! »</span>",
+        "Quand tu reviens un peu plus tard, l'armoire a été vidée. Les gourdes ont disparu…"
+      ],
+      ending: { type: 'lose', title: "En accusant trop tôt, tu as prévenu le coupable. Rassemble tes preuves en silence, puis présente-les à l'Expo !" }
+    },
+
+    finHugo: { title: "Une erreur",
+      text: [
+        "<span class='speech'>« C'est Hugo ! Il a les mains toutes rouges ! »</span>",
+        "Hugo est vexé : <span class='speech'>« C'est de la grenadine ! Et je suis arrivé à 8 h 10, en bus. Tout le monde peut le dire ! »</span>",
+        "Mme Lambert te regarde, déçue."
+      ],
+      ending: { type: 'lose', title: "Les mains rouges d'Hugo venaient de la grenadine de la récréation. Il fallait vérifier les heures !" }
+    },
+
+    finPetit: { title: "Une erreur",
+      text: [
+        "<span class='speech'>« C'est Mme Petit ! Elle a vidé la lampe avec son seau ! »</span>",
+        "Mme Petit pose les mains sur les hanches : <span class='speech'>« Quand je suis partie, à 7 h 40, votre lampe était intacte ! »</span>",
+        "Mme Lambert te regarde, déçue."
+      ],
+      ending: { type: 'lose', title: "Mme Petit était partie avant le sabotage. Qui est entré dans ta classe après 7 h 40 ?" }
+    }
+  };
+
+  const ENDINGS = [
+    { id: 'finGagne',      label: "🧪 La lampe brille" },
+    { id: 'finMoitie',     label: "🤔 Le doute" },
+    { id: 'finSansPreuve', label: "😶 Pas assez de preuves" },
+    { id: 'finTropTot',    label: "🏃 Trop tôt" },
+    { id: 'finHugo',       label: "🍒 Les mains rouges" },
+    { id: 'finPetit',      label: "🪣 Le seau d'eau" }
+  ];
+  const FIRST = 'debut';
+
+  /* Numéros des paragraphes : mélangés comme dans un vrai livre-jeu (toujours les mêmes). */
+  (function numberParagraphs() {
+    const ids = Object.keys(S).filter(k => k !== FIRST);
+    let seed = 1400;
+    const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+    const nums = ids.map((_, i) => i + 2);
+    for (let i = nums.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [nums[i], nums[j]] = [nums[j], nums[i]]; }
+    S[FIRST].n = 1;
+    ids.forEach((k, i) => { S[k].n = nums[i]; });
+  })();
+
+  /* =====================================================================
+     SAUVEGARDE — par élève, sur l'appareil. Rien n'est envoyé.
+     ===================================================================== */
+  function who() {
+    try {
+      const st = window.parent && window.parent !== window && window.parent.state;
+      if (st && st.student) return '_' + (st.studentCls || '') + '_' + st.student;
+    } catch (e) {}
+    return '';
+  }
+  const KEY_FINS = () => 'lcml_enquete_lampe_fins' + who();
+  const KEY_SAVE = () => 'lcml_enquete_lampe_partie' + who();
+  function readJSON(k, def) { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? def : v; } catch (e) { return def; } }
+  function writeJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function removeKey(k) { try { localStorage.removeItem(k); } catch (e) {} }
+  // Fins découvertes aussi gardées en ligne, par élève (lcml_jeux_sync.js) : les tablettes changent d'un jour à l'autre
+  const finsSync = window.LCMLSync ? LCMLSync.create({ game: 'jeu_enquete_lampe', key: KEY_FINS, merge: LCMLSync.union }) : null;
+  function loadEndings() { const v = readJSON(KEY_FINS(), []); return Array.isArray(v) ? v.filter(id => S[id]) : []; }
+  function saveEnding(id) {
+    const list = loadEndings();
+    if (list.indexOf(id) === -1) { list.push(id); writeJSON(KEY_FINS(), list); if (finsSync) finsSync.push(); return true; }
+    return false;
+  }
+
+  /* =====================================================================
+     MOTEUR
+     ===================================================================== */
+  let game = null;
+  function newGame() { game = { at: FIRST, clues: [], objects: [], history: [], solved: {} }; }
+  const $ = (id) => document.getElementById(id);
+  const story = $('story');
+  let errors = 0, solvedNow = false;
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+  function has(x) { return game.clues.indexOf(x) !== -1 || game.objects.indexOf(x) !== -1; }
+
+  function renderTitle() {
+    const found = loadEndings();
+    $('endings-count').textContent = found.length;
+    $('endings-list').innerHTML = ENDINGS.map(e => {
+      const ok = found.indexOf(e.id) !== -1;
+      return `<span class="ending-chip ${ok ? 'found' : ''} ${ok && e.id === 'finGagne' ? 'win' : ''}">${ok ? e.label : '❔ ???'}</span>`;
+    }).join('');
+    const save = readJSON(KEY_SAVE(), null);
+    const canResume = save && S[save.at] && !S[save.at].ending;
+    $('btn-resume').classList.toggle('hidden', !canResume);
+    $('btn-start').textContent = canResume ? "Recommencer depuis le début" : (found.length ? "Recommencer l'enquête" : "Commencer l'enquête");
+    $('btn-start').classList.toggle('primary', !canResume);
+    $('screen-title').classList.remove('hidden');
+    $('screen-story').classList.add('hidden');
+  }
+
+  function showStory() { $('screen-title').classList.add('hidden'); $('screen-story').classList.remove('hidden'); }
+
+  function goTo(id, opts) {
+    opts = opts || {};
+    if (!opts.noHistory && game.at !== id) game.history.push(game.at);
+    game.at = id;
+    errors = 0; solvedNow = false;
+    const p = S[id];
+    const freshClues = [], freshObjs = [];
+    if (!opts.resume) {
+      (p.clues || []).forEach(c => { if (game.clues.indexOf(c) === -1) { game.clues.push(c); freshClues.push(c); } });
+      (p.objects || []).forEach(o => { if (game.objects.indexOf(o) === -1) { game.objects.push(o); freshObjs.push(o); } });
+    }
+    if (p.ending) removeKey(KEY_SAVE()); else writeJSON(KEY_SAVE(), game);
+    renderPara(p, freshClues, freshObjs);
+    updateCount();
+    window.scrollTo(0, 0);
+  }
+
+  function renderPara(p, freshClues, freshObjs) {
+    let html = `<div class="para-head"><span class="para-num">${p.n}</span><h2>${p.title}</h2></div>`;
+    html += p.text.map(t => /^<div/.test(t) ? t : `<p>${t}</p>`).join('');
+    if (p.dynamic) html += p.dynamic(game);
+    freshObjs.forEach(o => { html += `<div class="obj-found">🎒 <b>Objet ajouté à ton sac :</b> ${OBJECTS[o]}</div>`; });
+    freshClues.forEach(c => { html += `<div class="clue-found">📒 <b>Nouvel indice noté dans ton carnet :</b> ${CLUES[c]}</div>`; });
+
+    if (p.enigme) {
+      if (game.solved[game.at]) {
+        html += `<div class="feedback ok" style="margin-bottom:12px">✅ Tu as déjà résolu cette énigme.</div>`;
+        html += `<div class="choices">${choiceBtn({ label: "Continuer", to: p.enigme.to })}</div>`;
+      } else {
+        html += renderEnigme(p.enigme);
+        html += `<div class="choices" id="after-enigme"></div>`;
+      }
+    } else if (p.auto) {
+      html += `<div class="choices">${choiceBtn({ label: p.autoLabel || "Continuer", to: p.auto(game) })}</div>`;
+    } else if (p.ending) {
+      const isNew = saveEnding(game.at);
+      const icon = p.ending.type === 'win' ? '🏆' : p.ending.type === 'half' ? '🏃' : '❌';
+      const label = p.ending.type === 'win' ? 'Fin gagnante' : p.ending.type === 'half' ? 'Fin à moitié réussie' : 'Fin ratée';
+      html += `<div class="ending-box ${p.ending.type}"><div class="big">${icon}</div><h3>${label}</h3><p style="margin:6px 0 10px">${p.ending.title}</p>
+        <div class="muted">${isNew ? '✨ Nouvelle fin découverte ! ' : ''}Fins découvertes : ${loadEndings().length} / ${ENDINGS.length}</div></div><div class="ending-actions">`;
+      if (p.ending.type !== 'win' && p.ending.backTo) html += `<button class="btn" data-act="backTo" data-target="${p.ending.backTo}">↩ Retourner enquêter</button>`;
+      else if (p.ending.type !== 'win' && !p.ending.noBack && game.history.length) html += `<button class="btn" data-act="back">↩ Revenir au choix précédent</button>`;
+      html += `<button class="btn primary" data-act="restart">🔄 Recommencer l'enquête</button><button class="btn" data-act="menu">Menu</button></div>`;
+      // Plan de travail : l'enquête n'est cochée que lorsqu'elle est résolue (fin gagnante). Aucun score envoyé.
+      if (p.ending.type === 'win') { try { if (window.parent && window.parent !== window && typeof window.parent.ptEnqueteFinie === 'function') window.parent.ptEnqueteFinie('jeu_enquete_lampe'); } catch (e) {} }
+      if (p.ending.type === 'win' && typeof confetti === 'function') setTimeout(() => { try { confetti({ particleCount: 150, spread: 80, origin: { y: .6 } }); } catch (e) {} }, 250);
+    } else {
+      const list = p.choices.filter(c => (!c.requires || has(c.requires)) && (!c.requiresNot || !has(c.requiresNot)));
+      html += `<div class="choices">${p.prompt ? `<div class="prompt">${p.prompt}</div>` : ''}${list.map(choiceBtn).join('')}</div>`;
+    }
+    story.innerHTML = html;
+  }
+
+  function choiceBtn(c) {
+    const cls = c.accuse ? 'accuse' : (c.cls || '');
+    return `<button class="choice ${cls}" data-to="${c.to}">${c.accuse ? '⚖️ ' : ''}${esc(c.label)}<span class="go">Va au ${S[c.to].n}</span></button>`;
+  }
+
+  const inputAttrs = 'type="text" inputmode="numeric" pattern="[0-9]*" maxlength="5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"';
+  function renderEnigme(e) {
+    let h = `<div class="enigme" id="enigme"><h3>${e.title}</h3><p class="q">${e.question}</p>`;
+    if (e.kind === 'number') {
+      h += `<div class="answer-row"><input id="ans-0" ${inputAttrs} aria-label="Réponse">${e.unit ? `<span class="unit">${e.unit}</span>` : ''}</div>`;
+    } else if (e.kind === 'numbers') {
+      e.fields.forEach((f, i) => { h += `<div class="answer-row"><label for="ans-${i}">${f.label}</label><input id="ans-${i}" ${inputAttrs}></div>`; });
+    } else if (e.kind === 'qcm') {
+      h += `<div class="qcm">` + e.options.map((o, i) => `<button type="button" data-opt="${i}">${o}</button>`).join('') + `</div>`;
+    } else if (e.kind === 'classify') {
+      h += `<div class="classify">` + e.items.map((it, i) => `<div class="cl-row" data-row="${i}"><span class="cl-label">${it.label}</span><span class="cl-btns">` +
+        e.categories.map((c, k) => `<button type="button" data-cl="${k}">${c}</button>`).join('') + `</span></div>`).join('') + `</div>`;
+    }
+    h += `<button class="btn primary" data-act="check">Valider</button><div id="enigme-fb"></div></div>`;
+    return h;
+  }
+
+  function checkEnigme() {
+    if (solvedNow) return;
+    const e = S[game.at].enigme, fb = $('enigme-fb');
+    let ok = false, said = '';
+    if (e.kind === 'number' || e.kind === 'numbers') {
+      const answers = e.kind === 'number' ? [e.answer] : e.fields.map(f => f.answer);
+      const vals = answers.map((_, i) => ($('ans-' + i).value || '').replace(/\D/g, ''));
+      if (vals.some(v => !v)) { fb.innerHTML = `<div class="feedback info">${answers.length > 1 ? 'Complète <b>toutes</b> les cases' : 'Écris un nombre'} avant de valider.</div>`; return; }
+      ok = vals.every((v, i) => parseInt(v, 10) === answers[i]);
+      said = ` Tu as écrit ${vals.join(' et ')}.`;
+    } else if (e.kind === 'qcm') {
+      const sel = story.querySelector('.qcm button.sel');
+      if (!sel) { fb.innerHTML = `<div class="feedback info">Choisis une réponse avant de valider.</div>`; return; }
+      ok = parseInt(sel.getAttribute('data-opt'), 10) === e.answer;
+    } else if (e.kind === 'classify') {
+      const rows = Array.from(story.querySelectorAll('.cl-row'));
+      const picks = rows.map(r => { const b = r.querySelector('button.sel'); return b ? parseInt(b.getAttribute('data-cl'), 10) : -1; });
+      rows.forEach((r, i) => r.classList.toggle('missing', picks[i] === -1));
+      const left = picks.filter(v => v === -1).length;
+      if (left) { fb.innerHTML = `<div class="feedback info">Il reste ${left === 1 ? '<b>1 mélange</b>' : '<b>' + left + ' mélanges</b>'} à trier avant de valider.</div>`; return; }
+      const wrong = picks.filter((v, i) => v !== e.items[i].answer).length;
+      ok = wrong === 0;
+      said = wrong ? (wrong === 1 ? ' Un mélange est mal trié.' : ' ' + wrong + ' mélanges sont mal triés.') : '';
+    }
+
+    if (ok) {
+      solvedNow = true;
+      game.solved[game.at] = true;
+      writeJSON(KEY_SAVE(), game);
+      story.querySelectorAll('#enigme input').forEach(i => { i.readOnly = true; });
+      const q = story.querySelector('.qcm'); if (q) { q.classList.add('done'); q.querySelector('.sel').classList.add('good'); }
+      const cl = story.querySelector('.classify'); if (cl) cl.classList.add('done');
+      story.querySelector('[data-act="check"]').remove();
+      fb.innerHTML = `<div class="feedback ok">✅ ${e.success}</div>`;
+      $('after-enigme').innerHTML = choiceBtn({ label: "Continuer l'enquête", to: e.to });
+      return;
+    }
+    errors++;
+    fb.innerHTML = `<div class="feedback ko">❌ Ce n'est pas ça.${esc(said)}<br>💡 <b>Indice :</b> ${e.hint}</div>`;
+    if (errors >= 2 && !story.querySelector('.choice.skip')) {
+      $('after-enigme').innerHTML = `<button class="choice skip" data-to="${e.skipTo}">${esc(e.skipLabel)}<span class="go">Va au ${S[e.skipTo].n}</span></button>`;
+    }
+  }
+
+  function updateCount() { $('clue-count').textContent = game ? game.clues.length + game.objects.length : 0; }
+  function openCarnet() {
+    $('sac-list').innerHTML = game.objects.length ? game.objects.map(o => `<li>${OBJECTS[o]}</li>`).join('') : `<li class="muted">Ton sac est vide.</li>`;
+    $('carnet-list').innerHTML = game.clues.length ? game.clues.map(c => `<li>🔎 ${CLUES[c]}</li>`).join('') : `<li class="muted">Aucun indice pour l'instant. Mène l'enquête !</li>`;
+    $('carnet').classList.add('open');
+  }
+
+  story.addEventListener('click', (ev) => {
+    const t = ev.target.closest('button');
+    if (!t) return;
+    if (t.dataset.to) { goTo(t.dataset.to); return; }
+    if (t.dataset.cl !== undefined) {
+      if (solvedNow) return;
+      const row = t.closest('.cl-row');
+      row.querySelectorAll('button').forEach(b => b.classList.toggle('sel', b === t));
+      row.classList.remove('missing');
+      return;
+    }
+    if (t.dataset.opt !== undefined) {
+      if (solvedNow) return;
+      t.parentNode.querySelectorAll('button').forEach(b => b.classList.toggle('sel', b === t));
+      return;
+    }
+    const act = t.dataset.act;
+    if (act === 'check') checkEnigme();
+    else if (act === 'restart') { newGame(); goTo(FIRST, { noHistory: true }); }
+    else if (act === 'menu') renderTitle();
+    else if (act === 'back') { let prev = game.history.pop(); while (prev && S[prev].auto) prev = game.history.pop(); if (prev) goTo(prev, { noHistory: true }); }
+    else if (act === 'backTo') goTo(t.dataset.target, { noHistory: true });
+  });
+  story.addEventListener('keydown', (ev) => { if (ev.key === 'Enter' && ev.target.tagName === 'INPUT') { ev.preventDefault(); checkEnigme(); } });
+
+  $('btn-start').addEventListener('click', () => { newGame(); showStory(); goTo(FIRST, { noHistory: true }); });
+  $('btn-resume').addEventListener('click', () => {
+    const save = readJSON(KEY_SAVE(), null);
+    if (!save || !S[save.at]) { newGame(); } else {
+      game = { at: save.at, clues: save.clues || [], objects: save.objects || [], history: save.history || [], solved: save.solved || {} };
+    }
+    showStory(); goTo(game.at, { noHistory: true, resume: true });
+  });
+  $('btn-menu').addEventListener('click', renderTitle);
+  $('btn-carnet').addEventListener('click', openCarnet);
+  $('btn-carnet-close').addEventListener('click', () => $('carnet').classList.remove('open'));
+  $('carnet').addEventListener('click', (ev) => { if (ev.target.id === 'carnet') $('carnet').classList.remove('open'); });
+
+  window.__enquete = { S, CLUES, PREUVES, goTo, get game() { return game; }, newGame };
+  renderTitle();
+})();
+</script>
+</body>
+</html>
