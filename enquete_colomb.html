@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Le Faux de 1493 — Plateforme LCML</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+  :root {
+    --purple: #5B4FCF; --purple-light: #EEF0FF; --purple-mid: #C7C2F5;
+    --green: #1A9E75; --green-light: #E2F5EE;
+    --red: #D94F3D; --red-light: #FDECEA;
+    --amber: #F59E0B; --amber-dark: #C97B1A; --amber-light: #FEF3E2;
+    --blue: #1A6FA0; --blue-light: #E2F0FA;
+    --parchment: #F3FBF6;
+    --bg: #FDFBF7; --surface: #FFFFFF; --surface-alt: #F4F1EB;
+    --text: #1A1A2E; --muted: #6B7080; --border: #1A1A2E;
+    --shadow: 4px 4px 0 var(--border); --shadow-sm: 2px 2px 0 var(--border);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; }
+  body { padding: 16px; }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1, h2, h3, .fred { font-family: 'Fredoka', 'Inter', sans-serif; }
+  button { font: inherit; color: inherit; cursor: pointer; touch-action: manipulation; }
+
+  .topbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .topbar .title { flex: 1; min-width: 180px; font-family: 'Fredoka'; font-weight: 700; font-size: 1.25rem; }
+  .btn { border: 2px solid var(--border); border-radius: 12px; background: var(--surface); padding: 10px 14px; min-height: 48px; font-weight: 600; box-shadow: var(--shadow-sm); }
+  .btn:active { transform: translate(2px,2px); box-shadow: none; }
+  .btn.primary { background: var(--purple); color: #fff; }
+  .btn.amber { background: var(--amber-light); }
+  .btn .count { display: inline-block; min-width: 22px; padding: 0 6px; margin-left: 4px; border-radius: 999px; background: var(--purple); color: #fff; font-size: .85rem; }
+
+  .card { background: var(--surface); border: 2px solid var(--border); border-radius: 20px; box-shadow: var(--shadow); padding: 22px; }
+  .story.card { background: var(--parchment); }
+
+  .hero { text-align: center; }
+  .hero .owl { font-size: 4.5rem; line-height: 1; }
+  .hero h1 { font-size: 2rem; margin: 10px 0 6px; }
+  .hero p { line-height: 1.55; font-size: 1.05rem; }
+  .rules { text-align: left; background: var(--surface-alt); border-radius: 14px; padding: 14px 18px; margin: 16px 0; line-height: 1.5; }
+  .rules li { margin: 4px 0; }
+  .endings { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 12px 0 18px; }
+  .ending-chip { border: 2px solid var(--border); border-radius: 999px; padding: 6px 12px; font-size: .9rem; background: var(--surface-alt); color: var(--muted); }
+  .ending-chip.found { color: var(--text); background: var(--green-light); }
+  .ending-chip.found.win { background: #FFE9A8; }
+  .start-btns { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+  .para-num { display: inline-flex; align-items: center; justify-content: center; width: 58px; height: 58px; border-radius: 50%; flex-shrink: 0;
+    background: var(--purple); color: #fff; font-family: 'Fredoka'; font-weight: 700; font-size: 1.6rem; border: 2px solid var(--border); box-shadow: var(--shadow-sm); }
+  .para-head { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  .para-head h2 { margin: 0; font-size: 1.35rem; }
+  .story p { font-size: 1.12rem; line-height: 1.7; margin: 0 0 14px; }
+  .story .speech { font-style: italic; }
+  .doc { font-family: 'Fredoka'; background: #FFFBEA; border: 2px solid var(--border); border-radius: 6px; padding: 14px 18px; margin: 0 0 14px; font-size: 1.1rem; line-height: 1.8; }
+  .vocab { background: var(--surface); border-left: 5px solid var(--amber-dark); border-radius: 8px; padding: 8px 12px; margin: 0 0 14px; font-size: .98rem; line-height: 1.5; }
+
+  .clue-found { background: var(--blue-light); border: 2px solid var(--blue); border-radius: 12px; padding: 10px 14px; margin: 4px 0 12px; font-size: 1rem; line-height: 1.45; }
+  .clue-found b { color: var(--blue); }
+  .obj-found { background: var(--green-light); border: 2px solid var(--green); border-radius: 12px; padding: 10px 14px; margin: 4px 0 12px; font-size: 1rem; line-height: 1.45; }
+
+  .choices { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+  .choices .prompt { font-weight: 700; font-family: 'Fredoka'; font-size: 1.1rem; margin: 6px 0 2px; }
+  .choice { display: flex; align-items: center; gap: 12px; text-align: left; width: 100%; border: 2px solid var(--border); border-radius: 14px;
+    background: var(--purple-light); padding: 12px 14px; min-height: 56px; font-size: 1.05rem; font-weight: 600; box-shadow: var(--shadow-sm); }
+  .choice:active { transform: translate(2px,2px); box-shadow: none; }
+  .choice .go { margin-left: auto; flex-shrink: 0; font-family: 'Fredoka'; font-size: .95rem; background: var(--surface); border: 2px solid var(--border); border-radius: 999px; padding: 2px 10px; white-space: nowrap; }
+  .choice.accuse { background: var(--red-light); }
+  .choice.skip { background: var(--surface-alt); }
+  .choice.obj { background: var(--green-light); }
+
+  .enigme { border: 2px solid var(--border); border-radius: 16px; background: var(--amber-light); padding: 16px; margin: 6px 0 16px; }
+  .enigme h3 { margin: 0 0 8px; font-size: 1.15rem; }
+  .enigme .q { font-size: 1.05rem; line-height: 1.55; margin: 0 0 12px; font-weight: 600; }
+  .answer-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+  .answer-row label { font-weight: 600; min-width: 140px; }
+  .answer-row input { width: 120px; font-size: 1.4rem; font-family: 'Fredoka'; text-align: center; padding: 8px; border: 2px solid var(--border); border-radius: 10px; background: #fff; }
+  .answer-row .unit { font-family: 'Fredoka'; font-size: 1.2rem; font-weight: 600; }
+  .qcm { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  .qcm button { text-align: left; border: 2px solid var(--border); border-radius: 12px; background: #fff; padding: 10px 14px; min-height: 52px; font-size: 1.02rem; font-weight: 500; }
+  .qcm button.sel { background: var(--purple); color: #fff; }
+  .qcm button.good { background: var(--green); color: #fff; }
+  .qcm.done button:not(.sel) { opacity: .45; }
+  .classify { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  .cl-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; border: 2px solid var(--border); border-radius: 12px; background: #fff; padding: 8px 10px; }
+  .cl-row .cl-label { flex: 1 1 200px; font-weight: 500; line-height: 1.35; }
+  .cl-row .cl-btns { display: flex; gap: 6px; }
+  .cl-row .cl-btns button { border: 2px solid var(--border); border-radius: 10px; background: #fff; padding: 8px 12px; min-height: 44px; font-size: .98rem; font-weight: 600; }
+  .cl-row .cl-btns button.sel { background: var(--purple); color: #fff; }
+  .cl-row.missing { border-color: var(--amber-dark); background: var(--amber-light); }
+  .classify.done .cl-btns button.sel { background: var(--green); }
+  .classify.done .cl-btns button:not(.sel) { opacity: .45; }
+  .order { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  .order button { display: flex; align-items: center; gap: 10px; text-align: left; border: 2px solid var(--border); border-radius: 12px; background: #fff; padding: 8px 12px; min-height: 52px; font-size: 1.02rem; font-weight: 500; }
+  .order button .rank { flex: 0 0 34px; height: 34px; border-radius: 50%; border: 2px dashed var(--purple-mid); display: flex; align-items: center; justify-content: center; font-family: 'Fredoka'; font-weight: 700; font-size: 1.1rem; }
+  .order button.sel .rank { background: var(--purple); border: 2px solid var(--purple); color: #fff; }
+  .order.done button .rank { background: var(--green); border-color: var(--green); }
+  .order-tools { margin: -2px 0 10px; }
+  .feedback { margin-top: 12px; padding: 10px 14px; border-radius: 10px; line-height: 1.5; font-size: 1rem; }
+  .feedback.ok { background: var(--green-light); border: 2px solid var(--green); }
+  .feedback.ko { background: var(--red-light); border: 2px solid var(--red); }
+  .feedback.info { background: var(--surface); border: 2px solid var(--amber-dark); }
+
+  .proofs { list-style: none; padding: 0; margin: 0 0 14px; }
+  .proofs li { background: var(--surface); border: 2px solid var(--border); border-radius: 10px; padding: 8px 12px; margin-bottom: 8px; line-height: 1.45; }
+
+  .ending-box { text-align: center; border: 2px solid var(--border); border-radius: 16px; padding: 16px; margin: 10px 0 14px; }
+  .ending-box.win { background: #FFE9A8; }
+  .ending-box.half { background: var(--blue-light); }
+  .ending-box.lose { background: var(--red-light); }
+  .ending-box .big { font-size: 2.6rem; }
+  .ending-box h3 { margin: 6px 0; font-size: 1.3rem; }
+  .ending-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+  .overlay { position: fixed; inset: 0; background: rgba(26,26,46,.45); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 10; }
+  .overlay.open { display: flex; }
+  .overlay .card { max-width: 560px; width: 100%; max-height: 85vh; overflow: auto; }
+  .carnet-list { list-style: none; padding: 0; margin: 8px 0 14px; }
+  .carnet-list li { border-bottom: 2px dashed var(--purple-mid); padding: 10px 2px; line-height: 1.45; }
+  .muted { color: var(--muted); }
+  .hidden { display: none !important; }
+  @media (max-width: 480px) { body { padding: 10px; } .card { padding: 16px; } .story p { font-size: 1.05rem; } .hero h1 { font-size: 1.6rem; } .answer-row label { min-width: 0; width: 100%; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section id="screen-title" class="card hero">
+    <div class="owl">📜</div>
+    <h1>Le Faux de 1493</h1>
+    <p class="muted fred">Une enquête dont tu es le héros ou l'héroïne — au musée, à Anvers</p>
+    <div class="rules">
+      <ul>
+        <li>📜 La lettre de Christophe Colomb a été remplacée par un faux ! À toi de trouver le coupable, comme le font les historiens et les historiennes !</li>
+        <li>🗓️ Dates, documents et témoins : repère les <b>anachronismes</b>, compare les documents et distingue ce que tu <b>lis</b> de ce que tu <b>déduis</b>.</li>
+        <li>🔐 Les <b>énigmes</b> te font gagner des preuves. Plus tu en résous, plus ton dossier est solide.</li>
+        <li>📒 Les indices sont notés dans ton <b>carnet</b>, et certains ouvrent de nouveaux chemins.</li>
+        <li>⚖️ Attention : accuser quelqu'un <b>sans preuve</b> n'est pas juste !</li>
+        <li>💾 La partie est <b>sauvegardée</b> : tu peux la reprendre plus tard.</li>
+      </ul>
+    </div>
+    <div class="fred" style="font-weight:600">Fins découvertes : <span id="endings-count">0</span> / <span id="endings-total">6</span></div>
+    <div class="endings" id="endings-list"></div>
+    <div class="start-btns">
+      <button class="btn primary hidden" id="btn-resume" style="font-size:1.1rem;padding:12px 24px">▶ Reprendre ma partie</button>
+      <button class="btn" id="btn-start" style="font-size:1.1rem;padding:12px 24px">Commencer l'enquête</button>
+    </div>
+  </section>
+
+  <section id="screen-story" class="hidden">
+    <div class="topbar">
+      <div class="title">📜 Le Faux de 1493</div>
+      <button class="btn amber" id="btn-carnet">📒 Carnet <span class="count" id="clue-count">0</span></button>
+      <button class="btn" id="btn-menu">⟲ Menu</button>
+    </div>
+    <article class="card story" id="story"></article>
+  </section>
+</div>
+
+<div class="overlay" id="carnet">
+  <div class="card">
+        <h2 style="margin:0 0 4px">📒 Mes indices</h2>
+    <ul class="carnet-list" id="carnet-list"></ul>
+    <button class="btn primary" id="btn-carnet-close" style="width:100%">Fermer le carnet</button>
+  </div>
+</div>
+
+<script src="lcml_jeux_sync.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* =====================================================================
+     INDICES ET OBJETS
+     PREUVES : indices qui comptent comme preuves devant l'inspectrice.
+     VISE : au moins une de ces preuves doit désigner le coupable lui-même.
+     ===================================================================== */
+  const CLUES = {
+    faux:      "Le livret de la vitrine est un faux : il parle de l'« Amérique », du « royaume de Belgique » et de « Charles Quint, roi d'Espagne », ce qui est impossible en 1493.",
+    carnet:    "Mercredi, la vitrine est restée ouverte sans surveillance de 16 h 40 à 16 h 50, pendant que Mme Leroy allait chercher des gants.",
+    registre:  "Registre des badges : M. Paul Dumont, antiquaire, est entré au musée mercredi à 16 h 05 et en est sorti à 16 h 55.",
+    temoin:    "Vers 16 h 45 mercredi, Karim, le gardien, a vu un homme en manteau gris sortir de la salle 1 avec un long tube en carton.",
+    offre:     "M. Dumont voulait acheter la lettre de Colomb. Le musée a refusé, et il a répondu : « Je l'aurai, d'une manière ou d'une autre. »",
+    mensonge:  "M. Dumont prétend être arrivé de Paris ce matin et n'être jamais venu au musée. Le registre prouve qu'il ment.",
+    tube:      "Dans la voiture de M. Dumont : un long tube en carton « Antiquités Dumont » et une feuille froissée, un essai du faux avec les mêmes erreurs.",
+    versionDumont: "M. Dumont dit qu'il est arrivé de Paris ce matin et qu'il n'était jamais venu au musée avant aujourd'hui.",
+    alibiBram:   "Mercredi de 16 h 30 à 17 h, Bram guidait un groupe de 20 pensionnés dans la salle 2.",
+    alibiLeroy:  "Mercredi de 16 h 40 à 16 h 50, Mme Leroy était à l'atelier avec son collègue Tom."
+  };
+  const PREUVES = ['carnet', 'registre', 'temoin', 'offre', 'mensonge', 'tube'];
+  const VISE = ['registre', 'temoin', 'mensonge', 'tube'];
+
+  const OBJECTS = {};
+
+  /* =====================================================================
+     L'HISTOIRE
+     ===================================================================== */
+  const S = {
+    debut: { title: "Un faux dans la vitrine !",
+      text: [
+        "Jeudi, 9 h 30. Ta classe de 6e visite l'exposition « 1492, deux mondes se rencontrent » dans un musée d'Anvers. La vedette de l'exposition : un petit livret de 4 feuillets, la <b>lettre de Christophe Colomb</b> qui raconte son arrivée dans des iles lointaines. Elle a été imprimée ici, à Anvers, en 1493.",
+        "Mais devant la vitrine, M. Peeters, le conservateur du musée, est tout pâle : <span class='speech'>« Ce n'est pas notre lettre ! Quelqu'un l'a remplacée par une copie. L'inspectrice Mertens arrive à 11 h. »</span>",
+        "Il te regarde : <span class='speech'>« On m'a dit que tu adores l'histoire. Aide-moi ! D'abord, une question : en quelle période de l'histoire classe-t-on l'année 1493 ? »</span>",
+        "<div class='vocab'>📚 Les grandes périodes : Préhistoire (jusque vers 3500 av. J.-C.), Antiquité (jusqu'en 476), Moyen Âge (476-1492), <b>Temps modernes (1492-1789)</b>, Époque contemporaine (depuis 1789).</div>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🗓️ Quelle période ?",
+        question: "La lettre de Colomb a été imprimée en 1493. À quelle période appartient cette année ?",
+        options: [
+          "Au Moyen Âge",
+          "Aux Temps modernes",
+          "À l'Époque contemporaine"
+        ],
+        answer: 1,
+        hint: "Le Moyen Âge se termine en 1492, avec l'arrivée de Christophe Colomb aux Amériques. Qu'est-ce qui commence juste après ?",
+        success: "Exact ! L'arrivée de Christophe Colomb aux Amériques, en 1492, marque la fin du Moyen Âge et le début des Temps modernes. La lettre, imprimée en 1493, date donc des tout débuts des Temps modernes.",
+        to: 'debutOk', skipTo: 'debutKo', skipLabel: "Laisser M. Peeters répondre"
+      }
+    },
+
+    debutOk: { title: "L'enquête commence",
+      text: [
+        "<span class='speech'>« Parfait. Tu as jusqu'à 11 h pour découvrir qui a pris la lettre. Le musée est à toi ! »</span>",
+        "<div class='vocab'>📚 Pour de vrai : Colomb a écrit cette lettre en espagnol. Elle a été traduite en latin, puis imprimée à Anvers en 1493 par Thierry Martens. Un exemplaire est conservé à la Bibliothèque royale, à Bruxelles. Le musée et le vol, eux, sont inventés.</div>"
+      ],
+      prompt: "",
+      choices: [ { label: "Commencer l'enquête dans le hall", to: 'hall' } ]
+    },
+
+    debutKo: { title: "L'enquête commence",
+      text: [
+        "<span class='speech'>« Aux Temps modernes, qui commencent en 1492 avec l'arrivée de Colomb aux Amériques. Bon, tu as jusqu'à 11 h pour découvrir qui a pris la lettre ! »</span>",
+        "<div class='vocab'>📚 Pour de vrai : Colomb a écrit cette lettre en espagnol. Elle a été traduite en latin, puis imprimée à Anvers en 1493 par Thierry Martens. Un exemplaire est conservé à la Bibliothèque royale, à Bruxelles. Le musée et le vol, eux, sont inventés.</div>"
+      ],
+      prompt: "",
+      choices: [ { label: "Commencer l'enquête dans le hall", to: 'hall' } ]
+    },
+
+    hall: { title: "Le hall du musée",
+      text: [
+        "Le hall du musée donne sur toutes les salles de l'exposition. Hier, mercredi, le musée était ouvert jusqu'à 17 h. Ce matin, à l'ouverture, le faux était déjà dans la vitrine."
+      ],
+      prompt: "Où vas-tu ?",
+      choices: [
+        { label: "📜 Salle 1 : la vitrine de la lettre", to: 'vitrine' },
+        { label: "⛵ Salle 2 : le grand voyage de Colomb", to: 'voyage' },
+        { label: "🌽 Salle 3 : le grand échange", to: 'echange' },
+        { label: "⛓️ Salle 4 : esclavage et travail forcé", to: 'traite' },
+        { label: "👑 Salle 5 : Anvers au temps de Charles Quint", to: 'charles' },
+        { label: "🧤 L'atelier de restauration", to: 'atelier' },
+        { label: "🎫 L'accueil", to: 'accueil' },
+        { label: "🚗 Le parking du musée", to: 'parking' },
+        { label: "Il est 11 h : je retrouve l'inspectrice Mertens", to: 'bureau', accuse: true }
+      ]
+    },
+
+    vitrine: { title: "La vitrine",
+      text: [
+        "Dans la vitrine, le faux livret est ouvert sur sa première page. Elle est en français, alors que le vrai livret est en latin ! On peut y lire :",
+        "<div class='doc'>« Lettre de Christophe Colomb sur les iles qu'il a trouvées en Amérique.<br>Dédiée à Charles Quint, roi d'Espagne.<br>Imprimée par Thierry Martens, à Anvers, royaume de Belgique, en l'an 1493. »</div>",
+        "<div class='vocab'>📚 Un <b>anachronisme</b>, c'est une erreur de date : quelque chose qui n'existait pas encore (ou plus) à l'époque. Un seul anachronisme suffit pour démasquer un faux !</div>"
+      ],
+      enigme: { kind: 'classify',
+        title: "🔍 Possible en 1493 ?",
+        question: "Pour chaque détail du livret, touche « Possible en 1493 » ou « Impossible en 1493 ».",
+        categories: ['Possible en 1493', 'Impossible en 1493'],
+        items: [
+          { label: "Christophe Colomb raconte son arrivée dans des iles lointaines.", answer: 0 },
+          { label: "Le livret emploie le nom « Amérique ».", answer: 1 },
+          { label: "Le livret est dédié à « Charles Quint, roi d'Espagne ».", answer: 1 },
+          { label: "Le livret est imprimé, et non écrit à la main.", answer: 0 },
+          { label: "Il est imprimé à Anvers, par Thierry Martens.", answer: 0 },
+          { label: "Le livret dit qu'Anvers est dans le « royaume de Belgique ».", answer: 1 }
+        ],
+        hint: "Pense aux dates : le nom « America » apparait pour la première fois sur une carte en 1507. Charles Quint est né en 1500. La Belgique n'existe comme pays que depuis 1830. Mais l'imprimerie, elle, existe en Europe depuis le milieu du XVe siècle, vers 1450.",
+        success: "Bravo ! Trois anachronismes : le nom « Amérique » n'apparait qu'en 1507, Charles Quint ne nait qu'en 1500, et la Belgique n'existe que depuis 1830. Colomb, l'imprimerie et Thierry Martens, eux, existaient bien en 1493. Ce livret est un faux, et un faux maladroit !",
+        to: 'vitrineOk', skipTo: 'vitrineKo', skipLabel: "Laisser la vitrine pour l'instant"
+      }
+    },
+
+    vitrineOk: { title: "Un faux maladroit",
+      text: [
+        "M. Peeters hoche la tête : <span class='speech'>« Le faussaire ne connaissait pas bien l'histoire. Il a dû faire l'échange quand la vitrine était ouverte. Elle ne s'ouvre qu'avec la clé de Mme Leroy, notre restauratrice. »</span>"
+      ],
+      clues: ['faux'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'hall' } ]
+    },
+
+    vitrineKo: { title: "Une copie",
+      text: [
+        "Tu n'arrives pas à repérer ce qui cloche dans ce livret. M. Peeters t'explique que la vitrine ne s'ouvre qu'avec la clé de Mme Leroy, la restauratrice."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'hall' } ]
+    },
+
+    voyage: { title: "Le grand voyage",
+      text: [
+        "Dans la salle 2, une grande carte montre le trajet des trois navires de Colomb : la <i>Santa María</i>, la <i>Pinta</i> et la <i>Niña</i>. Bram, le jeune guide du musée, en t-shirt orange, range des affiches dans de longs tubes en carton.",
+        "<span class='speech'>« Salut ! Tu connais le grand voyage ? »</span>",
+        "<div class='doc'>⛵ 3 aout 1492 : départ du port de Palos, en Espagne, avec le soutien de la reine Isabelle de Castille et du roi Ferdinand d'Aragon.<br>🏝️ 12 octobre 1492 : arrivée sur une ile des Bahamas que ses habitants, les Taïnos, appelaient Guanahani. Colomb la rebaptise San Salvador.</div>"
+      ],
+      enigme: { kind: 'number', answer: 70, unit: "jours",
+        title: "🧮 Combien de jours ?",
+        question: "Combien de jours se sont écoulés entre le départ de Palos (3 aout) et l'arrivée à Guanahani (12 octobre) ? Aout a 31 jours et septembre 30 jours.",
+        hint: "Du 3 au 31 aout, cela fait 31 − 3 = 28 jours. Ajoute les 30 jours de septembre, puis les 12 premiers jours d'octobre.",
+        success: "Exact : 28 + 30 + 12 = 70 jours. Et Colomb ne savait pas où il était ! Il croyait être arrivé en Asie, aux « Indes ». C'est pour cela qu'il a appelé les habitants les « Indiens ». Aujourd'hui, on dit plutôt les Amérindiens ou les peuples autochtones.",
+        to: 'voyageOk', skipTo: 'voyageKo', skipLabel: "Ne pas calculer"
+      }
+    },
+
+    voyageOk: { title: "L'alibi de Bram",
+      text: [
+        "<span class='speech'>« Bien calculé ! Le vol ? Mercredi, de 16 h 30 à 17 h, je guidais un groupe de 20 pensionnés, ici, dans la salle 2. Ils m'ont posé des questions jusqu'à la fermeture. Et ces tubes, ce sont mes affiches : regarde ! »</span>",
+        "Il ouvre un tube : il n'y a que des affiches de l'exposition."
+      ],
+      clues: ['alibiBram'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'hall' } ]
+    },
+
+    voyageKo: { title: "Des tubes en carton",
+      text: [
+        "Bram retourne à ses affiches. Ces longs tubes en carton sont bien pratiques pour cacher un livret…"
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Retourner dans le hall", to: 'hall' },
+        { label: "Accuser Bram : il cache la lettre dans un tube !", to: 'finBram', accuse: true }
+      ]
+    },
+
+    echange: { title: "Le grand échange",
+      text: [
+        "Dans la salle 3, des vitrines montrent des plantes et des animaux. Karim, le gardien, surveille la salle.",
+        "<span class='speech'>« Après 1492, des produits ont traversé l'océan dans les deux sens. Les élèves se trompent souvent. Et toi ? »</span>"
+      ],
+      enigme: { kind: 'classify',
+        title: "🌽 D'où viennent-ils ?",
+        question: "Pour chaque produit, touche « Venu des Amériques » ou « Apporté aux Amériques par les Européens ».",
+        categories: ['Venu des Amériques', 'Apporté aux Amériques'],
+        items: [
+          { label: "La tomate", answer: 0 },
+          { label: "Le cheval", answer: 1 },
+          { label: "La pomme de terre", answer: 0 },
+          { label: "Le blé", answer: 1 },
+          { label: "Le cacao (pour le chocolat)", answer: 0 },
+          { label: "Le maïs", answer: 0 },
+          { label: "La canne à sucre", answer: 1 },
+          { label: "Le tabac", answer: 0 }
+        ],
+        hint: "Avant 1492, en Europe, on ne connaissait ni les frites, ni la sauce tomate, ni le chocolat ! Et les peuples des Amériques n'avaient jamais vu de chevaux.",
+        success: "Bravo ! Tomate, pomme de terre, cacao, maïs et tabac sont venus des Amériques. Les Européens y ont apporté le cheval, le blé et la canne à sucre. Mais ils y ont aussi apporté des maladies, comme la variole, la rougeole ou la grippe, qui ont tué une grande partie des peuples amérindiens. Les guerres, le travail forcé et les famines en ont aussi tué beaucoup.",
+        to: 'echangeOk', skipTo: 'echangeKo', skipLabel: "Laisser Karim tranquille"
+      }
+    },
+
+    echangeOk: { title: "Le témoin",
+      text: [
+        "<span class='speech'>« Tu en sais des choses ! Alors je vais te dire ce que j'ai vu. Mercredi, vers 16 h 45, un homme en manteau gris est sorti de la salle 1, celle de la lettre, avec un long tube en carton sous le bras. Il marchait vite. Ce n'était pas Bram : Bram porte toujours son t-shirt orange. »</span>"
+      ],
+      clues: ['temoin'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'hall' } ]
+    },
+
+    echangeKo: { title: "Le gardien",
+      text: [
+        "Karim retourne à sa surveillance sans te dire ce qu'il a vu."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'hall' } ]
+    },
+
+    traite: { title: "Esclavage et travail forcé",
+      text: [
+        "La salle 4 est plus sombre. Mme Lemaire, la médiatrice du musée, t'accueille.",
+        "<span class='speech'>« Cette salle raconte la face terrible de la colonisation. Les Espagnols ont conquis par la guerre de grands empires, comme celui des Aztèques en 1521 et celui des Incas à partir de 1532. Ils ont forcé les peuples amérindiens à travailler pour eux. Colomb lui-même avait capturé des Taïnos pour les vendre comme esclaves en Espagne. Puis, du XVIe au XIXe siècle, ils ont déporté environ 12 millions d'Africaines et d'Africains vers les Amériques, pour les réduire en esclavage dans les plantations de canne à sucre, de coton ou de café. »</span>",
+        "<div class='doc'>🚢 Le commerce triangulaire : Europe ➜ Afrique ➜ Amériques ➜ Europe</div>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🚢 Le commerce triangulaire",
+        question: "Que transportaient les navires entre l'Afrique et les Amériques ?",
+        options: [
+          "Des armes, des tissus et de l'alcool",
+          "Des Africaines et des Africains réduits en esclavage, enchainés dans les cales",
+          "Du sucre, du café et du coton"
+        ],
+        answer: 1,
+        hint: "Les navires partaient d'Europe avec des marchandises, qu'ils échangeaient en Afrique. Puis ils traversaient l'océan vers les plantations des Amériques. Qui devait y travailler de force ?",
+        success: "Oui. Les armes, les tissus et l'alcool partaient d'Europe vers l'Afrique. Les personnes réduites en esclavage étaient transportées d'Afrique vers les Amériques, dans des conditions terribles. Et le sucre, le café et le coton revenaient en Europe. Les esclaves se sont souvent révoltés : à Haïti, leur révolte a mené à l'indépendance en 1804. Aux Amériques, l'esclavage a été aboli au cours du XIXe siècle, en dernier au Brésil, en 1888.",
+        to: 'traiteOk', skipTo: 'traiteKo', skipLabel: "Quitter la salle"
+      }
+    },
+
+    traiteOk: { title: "L'antiquaire",
+      text: [
+        "Mme Lemaire reste un moment silencieuse devant les chaines exposées. Puis elle te regarde : <span class='speech'>« Merci d'avoir écouté. Tu cherches aussi qui a pris la lettre, je crois ? Il y a un mois, un antiquaire, M. Paul Dumont, a voulu l'acheter. Le musée a refusé : elle ne nous appartient même pas, elle est prêtée par une bibliothèque. Il a répondu, furieux : “Je l'aurai, d'une manière ou d'une autre.” »</span>"
+      ],
+      clues: ['offre'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'hall' } ]
+    },
+
+    traiteKo: { title: "Une salle sombre",
+      text: [
+        "Tu quittes la salle sans parler à Mme Lemaire. Tu reviendras peut-être plus tard."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'hall' } ]
+    },
+
+    charles: { title: "Anvers au temps de Charles Quint",
+      text: [
+        "Dans la salle 5, un panneau explique que Charles Quint, né à Gand en 1500, a régné sur nos régions, sur l'Espagne et sur ses colonies d'Amérique. À son époque, Anvers était l'un des plus grands ports d'Europe.",
+        "Un homme en manteau gris observe le panneau. <span class='speech'>« Bonjour, je suis Paul Dumont, antiquaire. Je collectionne les livres anciens. Tu t'y connais en dates, toi ? Remets donc ces évènements dans l'ordre. »</span>"
+      ],
+      enigme: { kind: 'order',
+        title: "🗓️ La frise du temps",
+        question: "Touche les évènements du plus ancien au plus récent.",
+        items: [
+          "1500 : naissance de Charles Quint à Gand",
+          "Vers 1450 : Gutenberg imprime les premiers livres en Europe",
+          "1789 : Révolution française, fin des Temps modernes",
+          "1492 : Christophe Colomb arrive aux Amériques",
+          "1507 : le nom « America » apparait sur une carte"
+        ],
+        answer: [1, 3, 0, 4, 2],
+        hint: "Compare les années : 1450, 1492, 1500, 1507, 1789. La plus petite année est la plus ancienne.",
+        success: "Parfait : vers 1450, 1492, 1500, 1507, 1789. Les Temps modernes s'étendent de 1492 à 1789.",
+        to: 'charlesOk', skipTo: 'charlesKo', skipLabel: "Laisser tomber la frise"
+      }
+    },
+
+    charlesOk: { title: "M. Dumont",
+      text: [
+        "<span class='speech'>« Pas mal ! Moi, je suis arrivé de Paris ce matin. C'est la première fois que je viens dans ce musée. Quel dommage, ce vol… »</span>",
+        "Il serre contre lui son manteau gris."
+      ],
+      clues: ['versionDumont'],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Comparer ce qu'il dit avec le registre de l'accueil", to: 'confronter', requires: 'registre', cls: 'obj' },
+        { label: "Retourner dans le hall", to: 'hall' },
+        { label: "Accuser M. Dumont tout de suite", to: 'finTropTot', accuse: true }
+      ]
+    },
+
+    charlesKo: { title: "M. Dumont",
+      text: [
+        "<span class='speech'>« Les jeunes ne connaissent plus rien à l'histoire ! »</span> soupire M. Dumont. <span class='speech'>« Moi, je suis arrivé de Paris ce matin. C'est la première fois que je viens dans ce musée. »</span>"
+      ],
+      clues: ['versionDumont'],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Comparer ce qu'il dit avec le registre de l'accueil", to: 'confronter', requires: 'registre', cls: 'obj' },
+        { label: "Retourner dans le hall", to: 'hall' },
+        { label: "Accuser M. Dumont tout de suite", to: 'finTropTot', accuse: true }
+      ]
+    },
+
+    confronter: { title: "Deux sources",
+      text: [
+        "Tu compares deux informations de ton carnet :",
+        "<div class='doc'>🎫 Registre des badges : « M. Paul Dumont, antiquaire — mercredi : entrée 16 h 05, sortie 16 h 55 »<br>🗣️ Paul Dumont : « Je suis arrivé de Paris ce matin. C'est la première fois que je viens dans ce musée. »</div>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "⚖️ Comparer deux sources",
+        question: "Que peux-tu déduire en comparant le registre et ce que dit Paul Dumont ?",
+        options: [
+          "M. Dumont ne ment pas : il est arrivé de Paris mercredi soir.",
+          "M. Dumont ment : il était déjà au musée mercredi après-midi.",
+          "On ne peut rien déduire : le registre ne donne pas assez d'informations."
+        ],
+        answer: 1,
+        hint: "Le registre dit que Paul Dumont, antiquaire, est venu au musée mercredi. M. Dumont dit qu'il vient aujourd'hui pour la première fois. Les deux peuvent-ils être vrais en même temps ?",
+        success: "Exact ! Le registre prouve que M. Dumont était au musée mercredi de 16 h 05 à 16 h 55. Il ment : pourquoi cacherait-il sa visite ?",
+        to: 'confronterOk', skipTo: 'confronterKo', skipLabel: "Ne pas conclure"
+      }
+    },
+
+    confronterOk: { title: "Un mensonge",
+      text: [
+        "M. Dumont devient rouge et s'éloigne vers la cafétéria. L'inspectrice arrive bientôt : ne l'accuse pas encore, garde tes preuves pour elle."
+      ],
+      clues: ['mensonge'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'hall' } ]
+    },
+
+    confronterKo: { title: "Pas de conclusion",
+      text: [
+        "Tu n'arrives pas à conclure. M. Dumont s'éloigne."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'hall' } ]
+    },
+
+    atelier: { title: "L'atelier de restauration",
+      text: [
+        "Dans l'atelier, Mme Leroy, la restauratrice, soigne un vieux livre avec des gants blancs. Son collègue Tom colle une étiquette.",
+        "<span class='speech'>« La vitrine ? Oui, je l'ai ouverte mercredi. Tout est noté dans mon carnet de travail. »</span>",
+        "<div class='doc'>📓 Mercredi<br>16 h 30 : j'ouvre la vitrine de la salle 1 pour la nettoyer.<br>16 h 40 : je vais chercher des gants propres à l'atelier.<br>16 h 50 : je reviens et je referme vite la vitrine à clé.</div>"
+      ],
+      enigme: { kind: 'classify',
+        title: "📓 Lu ou déduit ?",
+        question: "Pour chaque phrase, touche « Je le lis » si c'est écrit dans le carnet, ou « Je le déduis » si c'est toi qui le comprends en réfléchissant.",
+        categories: ['Je le lis', 'Je le déduis'],
+        items: [
+          { label: "La vitrine a été ouverte à 16 h 30.", answer: 0 },
+          { label: "Mme Leroy est allée chercher des gants à 16 h 40.", answer: 0 },
+          { label: "La vitrine est restée ouverte sans surveillance pendant 10 minutes.", answer: 1 },
+          { label: "Pendant ces 10 minutes, quelqu'un a pu échanger la lettre contre le faux.", answer: 1 },
+          { label: "La vitrine a été refermée à clé à 16 h 50.", answer: 0 }
+        ],
+        hint: "Relis le carnet mot à mot. Si la phrase y est écrite (même avec d'autres mots), tu la lis. Si le carnet ne le dit pas, mais que tu le comprends en réfléchissant aux heures, tu le déduis.",
+        success: "Bravo ! Le carnet dit quand la vitrine a été ouverte, quand Mme Leroy est partie et quand elle l'a refermée. Mais c'est toi qui déduis que la vitrine est restée sans surveillance de 16 h 40 à 16 h 50, et que le voleur a pu agir à ce moment-là.",
+        to: 'atelierOk', skipTo: 'atelierKo', skipLabel: "Rendre le carnet"
+      }
+    },
+
+    atelierOk: { title: "Dix minutes",
+      text: [
+        "Mme Leroy est gênée : <span class='speech'>« Je n'aurais pas dû laisser la vitrine ouverte… Et en revenant, j'ai refermé sans même regarder le livret. Mais je n'ai rien pris ! J'étais ici, avec Tom. »</span> Tom confirme : <span class='speech'>« Elle cherchait ses gants partout, on a mis dix minutes à les retrouver ! »</span>"
+      ],
+      clues: ['carnet', 'alibiLeroy'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'hall' } ]
+    },
+
+    atelierKo: { title: "La clé",
+      text: [
+        "Mme Leroy reprend son carnet. C'est elle qui a la clé de la vitrine… et elle l'a ouverte mercredi."
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Retourner dans le hall", to: 'hall' },
+        { label: "Accuser Mme Leroy : elle seule a la clé !", to: 'finLeroy', accuse: true }
+      ]
+    },
+
+    accueil: { title: "L'accueil",
+      text: [
+        "À l'accueil, Mme Janssens répond aux visiteurs en français, en néerlandais, en anglais… et en espagnol. Sur le comptoir, une affiche de l'exposition pose une question :",
+        "<div class='doc'>🌎 Aujourd'hui, au Mexique, on parle surtout espagnol. Au Brésil, on parle portugais. Pourquoi ?</div>",
+        "<span class='speech'>« Si tu trouves, je t'aide ! »</span> sourit Mme Janssens."
+      ],
+      enigme: { kind: 'qcm',
+        title: "🌎 Les langues des Amériques",
+        question: "Pourquoi parle-t-on surtout espagnol au Mexique et portugais au Brésil ?",
+        options: [
+          "Parce que ces langues sont nées en Amérique.",
+          "Parce que ces régions ont été colonisées par l'Espagne et le Portugal, qui y ont imposé leur langue et leur religion.",
+          "Parce que Christophe Colomb y a ouvert des écoles."
+        ],
+        answer: 1,
+        hint: "Quels pays européens ont conquis ces régions après 1492 ? Les colonisateurs imposaient leur langue et leur religion, le christianisme.",
+        success: "Exact ! Les colonisateurs espagnols et portugais ont imposé leur langue et leur religion chrétienne. Pourtant, des langues amérindiennes sont encore parlées aujourd'hui, comme le nahuatl au Mexique ou le quechua au Pérou.",
+        to: 'accueilOk', skipTo: 'accueilKo', skipLabel: "Laisser l'affiche"
+      }
+    },
+
+    accueilOk: { title: "Le registre des badges",
+      text: [
+        "<span class='speech'>« Bravo ! Tiens, voici le registre des badges de mercredi : les visiteurs professionnels doivent y écrire leur nom. »</span>",
+        "<div class='doc'>🎫 Mercredi — M. Paul Dumont, antiquaire — entrée : <b>16 h 05</b> — sortie : <b>16 h 55</b></div>"
+      ],
+      clues: ['registre'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'hall' } ]
+    },
+
+    accueilKo: { title: "Trop de monde",
+      text: [
+        "Une file de visiteurs arrive. Mme Janssens n'a plus le temps de s'occuper de toi."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'hall' } ]
+    },
+
+    parking: { title: "Le parking",
+      text: [
+        "Sur le parking du musée, il y a quelques voitures. Rien ne bouge."
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Chercher un long tube en carton, comme celui qu'a vu Karim", to: 'voiture', requires: 'temoin', cls: 'obj' },
+        { label: "Retourner dans le hall", to: 'hall' }
+      ]
+    },
+
+    voiture: { title: "La voiture grise",
+      text: [
+        "Tu fais le tour des voitures sans rien toucher. Soudain, à travers la vitre d'une voiture grise, tu aperçois sur la banquette arrière un long tube en carton avec une étiquette : « Antiquités Dumont ».",
+        "Sur le siège avant, il y a une feuille froissée. Tu arrives à lire : « Lettre de Christophe Colomb sur les iles qu'il a trouvées en Amérique… ». C'est un essai du faux, avec les mêmes erreurs !"
+      ],
+      clues: ['tube'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'hall' } ]
+    },
+
+    bureau: { title: "L'inspectrice Mertens",
+      text: [
+        "Il est 11 h. L'inspectrice Mertens attend dans le bureau de M. Peeters. Mme Leroy, Bram et M. Dumont sont là aussi.",
+        "<span class='speech'>« Alors, détective ? Qui a remplacé la lettre de Colomb par un faux ? »</span>"
+      ],
+      prompt: "Qui désignes-tu ?",
+      choices: [
+        { label: "Mme Leroy, la restauratrice", to: 'finLeroy', accuse: true },
+        { label: "Bram, le guide", to: 'finBram', accuse: true },
+        { label: "M. Dumont, l'antiquaire", to: 'preuves', accuse: true }
+      ]
+    },
+
+    preuves: { title: "Tes preuves",
+      text: [
+        "<span class='speech'>« M. Dumont ? demande l'inspectrice. Qu'est-ce qui te permet de le dire ? »</span>",
+        "Tu ouvres ton carnet."
+      ],
+      dynamic: function (g) {
+        const list = PREUVES.filter(c => g.clues.indexOf(c) !== -1);
+        if (!list.length) return "<p><b>Ton carnet ne contient aucune preuve…</b></p>";
+        return "<p>Tu présentes <b>" + list.length + " preuve" + (list.length > 1 ? "s" : "") + "</b> :</p><ul class='proofs'>" + list.map(c => "<li>🔎 " + CLUES[c] + "</li>").join('') + "</ul>";
+      },
+      auto: function (g) {
+        const n = PREUVES.filter(c => g.clues.indexOf(c) !== -1).length;
+        const vise = VISE.some(c => g.clues.indexOf(c) !== -1);
+        return n >= 4 && vise ? 'finGagne' : n >= 2 ? 'finMoitie' : 'finSansPreuve';
+      },
+      autoLabel: "Voir la réaction de l'inspectrice"
+    },
+
+    finGagne: { title: "La lettre retrouvée",
+      text: [
+        "L'inspectrice demande à M. Dumont d'ouvrir sa voiture. Dans le tube en carton, roulée dans du papier de soie, il y a la vraie lettre de Christophe Colomb, intacte !",
+        "M. Dumont baisse la tête : <span class='speech'>« Je la voulais tellement pour ma collection… J'ai fabriqué le faux chez moi, avec mon imprimante. Quand la vitrine est restée ouverte, j'ai fait l'échange. »</span>"
+      ],
+      dynamic: function (g) {
+        return g.clues.indexOf('faux') !== -1
+          ? "<p>M. Peeters te serre la main : <span class='speech'>« Et c'est toi qui as trouvé les trois anachronismes de son faux ! Quel regard de détective ! »</span></p>"
+          : "<p>M. Peeters te serre la main : <span class='speech'>« Le faussaire avait même écrit “Amérique” sur un livret de 1493, alors que ce nom n'existe que depuis 1507 ! Merci, détective. »</span></p>";
+      },
+      ending: { type: 'win', title: "Bravo, détective ! La lettre de Colomb retourne dans sa vitrine grâce à tes preuves." }
+    },
+
+    finMoitie: { title: "Le doute",
+      text: [
+        "L'inspectrice hésite. <span class='speech'>« C'est un peu léger. Qu'est-ce qui montre que c'est M. Dumont, et pas quelqu'un d'autre ? »</span>",
+        "M. Dumont croise les bras. L'inspectrice lui demande de ne pas quitter le musée pendant qu'elle vérifie."
+      ],
+      ending: { backTo: 'hall', type: 'half', title: "Tu avais la bonne piste, mais il te fallait plus de preuves contre lui. Visite toutes les salles !" }
+    },
+
+    finSansPreuve: { title: "Pas assez de preuves",
+      text: [
+        "<span class='speech'>« Accuser un visiteur sans preuve ? Impossible ! »</span> dit l'inspectrice.",
+        "M. Dumont sourit. L'inspectrice lui demande quand même de rester au musée encore un peu."
+      ],
+      ending: { backTo: 'hall', type: 'lose', title: "Ton intuition était peut-être bonne, mais il faut des preuves. Les documents et les témoins t'en donneront !" }
+    },
+
+    finTropTot: { title: "Trop tôt !",
+      text: [
+        "<span class='speech'>« C'est vous qui avez volé la lettre ! »</span>",
+        "M. Dumont hausse les sourcils : <span class='speech'>« Quelle imagination ! »</span> Il quitte la salle sans se presser.",
+        "Quand l'inspectrice arrive, sa voiture grise a déjà quitté le parking…"
+      ],
+      ending: { type: 'lose', title: "En accusant trop tôt, tu as prévenu le coupable. Rassemble tes preuves en silence, puis présente-les à l'inspectrice !" }
+    },
+
+    finLeroy: { title: "Une erreur",
+      text: [
+        "<span class='speech'>« C'est Mme Leroy ! Elle seule a la clé de la vitrine ! »</span>",
+        "Tom intervient : <span class='speech'>« Mercredi, de 16 h 40 à 16 h 50, elle était avec moi à l'atelier, à chercher ses gants ! »</span>",
+        "L'inspectrice te regarde, déçue."
+      ],
+      ending: { type: 'lose', title: "Mme Leroy a laissé la vitrine ouverte, mais elle était à l'atelier. Qui était au musée à ce moment-là ?" }
+    },
+
+    finBram: { title: "Une erreur",
+      text: [
+        "<span class='speech'>« C'est Bram ! Il cache la lettre dans un de ses tubes ! »</span>",
+        "Bram ouvre tous ses tubes : il n'y a que des affiches. <span class='speech'>« Et mercredi à 16 h 45, je guidais 20 pensionnés. Ils peuvent tous le dire ! »</span>",
+        "L'inspectrice te regarde, déçue."
+      ],
+      ending: { type: 'lose', title: "Bram guidait un groupe au moment du vol. Le gardien a vu quelqu'un d'autre avec un tube…" }
+    }
+  };
+
+  const ENDINGS = [
+    { id: 'finGagne',      label: "📜 La lettre retrouvée" },
+    { id: 'finMoitie',     label: "🤔 Le doute" },
+    { id: 'finSansPreuve', label: "😶 Pas assez de preuves" },
+    { id: 'finTropTot',    label: "🚗 Trop tôt" },
+    { id: 'finLeroy',      label: "🧤 La clé de la vitrine" },
+    { id: 'finBram',       label: "🗞️ Les tubes en carton" }
+  ];
+  const FIRST = 'debut';
+
+  /* Numéros des paragraphes : mélangés comme dans un vrai livre-jeu (toujours les mêmes). */
+  (function numberParagraphs() {
+    const ids = Object.keys(S).filter(k => k !== FIRST);
+    let seed = 1600;
+    const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+    const nums = ids.map((_, i) => i + 2);
+    for (let i = nums.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [nums[i], nums[j]] = [nums[j], nums[i]]; }
+    S[FIRST].n = 1;
+    ids.forEach((k, i) => { S[k].n = nums[i]; });
+  })();
+
+  /* =====================================================================
+     SAUVEGARDE — par élève, sur l'appareil. Rien n'est envoyé.
+     ===================================================================== */
+  function who() {
+    try {
+      const st = window.parent && window.parent !== window && window.parent.state;
+      if (st && st.student) return '_' + (st.studentCls || '') + '_' + st.student;
+    } catch (e) {}
+    return '';
+  }
+  const KEY_FINS = () => 'lcml_enquete_colomb_fins' + who();
+  const KEY_SAVE = () => 'lcml_enquete_colomb_partie' + who();
+  function readJSON(k, def) { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? def : v; } catch (e) { return def; } }
+  function writeJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function removeKey(k) { try { localStorage.removeItem(k); } catch (e) {} }
+  // Fins découvertes aussi gardées en ligne, par élève (lcml_jeux_sync.js) : les tablettes changent d'un jour à l'autre
+  const finsSync = window.LCMLSync ? LCMLSync.create({ game: 'jeu_enquete_colomb', key: KEY_FINS, merge: LCMLSync.union }) : null;
+  function loadEndings() { const v = readJSON(KEY_FINS(), []); return Array.isArray(v) ? v.filter(id => S[id]) : []; }
+  function saveEnding(id) {
+    const list = loadEndings();
+    if (list.indexOf(id) === -1) { list.push(id); writeJSON(KEY_FINS(), list); if (finsSync) finsSync.push(); return true; }
+    return false;
+  }
+
+  /* =====================================================================
+     MOTEUR
+     ===================================================================== */
+  let game = null;
+  function newGame() { game = { at: FIRST, clues: [], objects: [], history: [], solved: {} }; }
+  const $ = (id) => document.getElementById(id);
+  const story = $('story');
+  let errors = 0, solvedNow = false, orderSeq = [];
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+  function has(x) { return game.clues.indexOf(x) !== -1 || game.objects.indexOf(x) !== -1; }
+
+  function renderTitle() {
+    const found = loadEndings();
+    $('endings-count').textContent = found.length;
+    $('endings-list').innerHTML = ENDINGS.map(e => {
+      const ok = found.indexOf(e.id) !== -1;
+      return `<span class="ending-chip ${ok ? 'found' : ''} ${ok && e.id === 'finGagne' ? 'win' : ''}">${ok ? e.label : '❔ ???'}</span>`;
+    }).join('');
+    const save = readJSON(KEY_SAVE(), null);
+    const canResume = save && S[save.at] && !S[save.at].ending;
+    $('btn-resume').classList.toggle('hidden', !canResume);
+    $('btn-start').textContent = canResume ? "Recommencer depuis le début" : (found.length ? "Recommencer l'enquête" : "Commencer l'enquête");
+    $('btn-start').classList.toggle('primary', !canResume);
+    $('screen-title').classList.remove('hidden');
+    $('screen-story').classList.add('hidden');
+  }
+
+  function showStory() { $('screen-title').classList.add('hidden'); $('screen-story').classList.remove('hidden'); }
+
+  function goTo(id, opts) {
+    opts = opts || {};
+    if (!opts.noHistory && game.at !== id) game.history.push(game.at);
+    game.at = id;
+    errors = 0; solvedNow = false; orderSeq = [];
+    const p = S[id];
+    const freshClues = [], freshObjs = [];
+    if (!opts.resume) {
+      (p.clues || []).forEach(c => { if (game.clues.indexOf(c) === -1) { game.clues.push(c); freshClues.push(c); } });
+      (p.objects || []).forEach(o => { if (game.objects.indexOf(o) === -1) { game.objects.push(o); freshObjs.push(o); } });
+    }
+    if (p.ending) removeKey(KEY_SAVE()); else writeJSON(KEY_SAVE(), game);
+    renderPara(p, freshClues, freshObjs);
+    updateCount();
+    window.scrollTo(0, 0);
+  }
+
+  function renderPara(p, freshClues, freshObjs) {
+    let html = `<div class="para-head"><span class="para-num">${p.n}</span><h2>${p.title}</h2></div>`;
+    html += p.text.map(t => /^<div/.test(t) ? t : `<p>${t}</p>`).join('');
+    if (p.dynamic) html += p.dynamic(game);
+    freshObjs.forEach(o => { html += `<div class="obj-found">🎒 <b>Objet ajouté à ton sac :</b> ${OBJECTS[o]}</div>`; });
+    freshClues.forEach(c => { html += `<div class="clue-found">📒 <b>Nouvel indice noté dans ton carnet :</b> ${CLUES[c]}</div>`; });
+
+    if (p.enigme) {
+      if (game.solved[game.at]) {
+        html += `<div class="feedback ok" style="margin-bottom:12px">✅ Tu as déjà résolu cette énigme.</div>`;
+        html += `<div class="choices">${choiceBtn({ label: "Continuer", to: p.enigme.to })}</div>`;
+      } else {
+        html += renderEnigme(p.enigme);
+        html += `<div class="choices" id="after-enigme"></div>`;
+      }
+    } else if (p.auto) {
+      html += `<div class="choices">${choiceBtn({ label: p.autoLabel || "Continuer", to: p.auto(game) })}</div>`;
+    } else if (p.ending) {
+      const isNew = saveEnding(game.at);
+      const icon = p.ending.type === 'win' ? '🏆' : p.ending.type === 'half' ? '🏃' : '❌';
+      const label = p.ending.type === 'win' ? 'Fin gagnante' : p.ending.type === 'half' ? 'Fin à moitié réussie' : 'Fin ratée';
+      html += `<div class="ending-box ${p.ending.type}"><div class="big">${icon}</div><h3>${label}</h3><p style="margin:6px 0 10px">${p.ending.title}</p>
+        <div class="muted">${isNew ? '✨ Nouvelle fin découverte ! ' : ''}Fins découvertes : ${loadEndings().length} / ${ENDINGS.length}</div></div><div class="ending-actions">`;
+      if (p.ending.type !== 'win' && p.ending.backTo) html += `<button class="btn" data-act="backTo" data-target="${p.ending.backTo}">↩ Retourner enquêter</button>`;
+      else if (p.ending.type !== 'win' && !p.ending.noBack && game.history.length) html += `<button class="btn" data-act="back">↩ Revenir au choix précédent</button>`;
+      html += `<button class="btn primary" data-act="restart">🔄 Recommencer l'enquête</button><button class="btn" data-act="menu">Menu</button></div>`;
+      // Plan de travail : l'enquête n'est cochée que lorsqu'elle est résolue (fin gagnante). Aucun score envoyé.
+      if (p.ending.type === 'win') { try { if (window.parent && window.parent !== window && typeof window.parent.ptEnqueteFinie === 'function') window.parent.ptEnqueteFinie('jeu_enquete_colomb'); } catch (e) {} }
+      if (p.ending.type === 'win' && typeof confetti === 'function') setTimeout(() => { try { confetti({ particleCount: 150, spread: 80, origin: { y: .6 } }); } catch (e) {} }, 250);
+    } else {
+      const list = p.choices.filter(c => (!c.requires || has(c.requires)) && (!c.requiresNot || !has(c.requiresNot)));
+      html += `<div class="choices">${p.prompt ? `<div class="prompt">${p.prompt}</div>` : ''}${list.map(choiceBtn).join('')}</div>`;
+    }
+    story.innerHTML = html;
+  }
+
+  function choiceBtn(c) {
+    const cls = c.accuse ? 'accuse' : (c.cls || '');
+    return `<button class="choice ${cls}" data-to="${c.to}">${c.accuse ? '⚖️ ' : ''}${esc(c.label)}<span class="go">Va au ${S[c.to].n}</span></button>`;
+  }
+
+  const inputAttrs = 'type="text" inputmode="numeric" pattern="[0-9]*" maxlength="5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"';
+  function renderEnigme(e) {
+    let h = `<div class="enigme" id="enigme"><h3>${e.title}</h3><p class="q">${e.question}</p>`;
+    if (e.kind === 'number') {
+      h += `<div class="answer-row"><input id="ans-0" ${inputAttrs} aria-label="Réponse">${e.unit ? `<span class="unit">${e.unit}</span>` : ''}</div>`;
+    } else if (e.kind === 'numbers') {
+      e.fields.forEach((f, i) => { h += `<div class="answer-row"><label for="ans-${i}">${f.label}</label><input id="ans-${i}" ${inputAttrs}></div>`; });
+    } else if (e.kind === 'qcm') {
+      h += `<div class="qcm">` + e.options.map((o, i) => `<button type="button" data-opt="${i}">${o}</button>`).join('') + `</div>`;
+    } else if (e.kind === 'order') {
+      h += `<div class="order">` + e.items.map((it, i) => `<button type="button" data-ord="${i}"><span class="rank"></span><span>${it}</span></button>`).join('') + `</div>`;
+      h += `<div class="order-tools"><button class="btn" type="button" data-act="ordreset">↺ Tout effacer</button></div>`;
+    } else if (e.kind === 'classify') {
+      h += `<div class="classify">` + e.items.map((it, i) => `<div class="cl-row" data-row="${i}"><span class="cl-label">${it.label}</span><span class="cl-btns">` +
+        e.categories.map((c, k) => `<button type="button" data-cl="${k}">${c}</button>`).join('') + `</span></div>`).join('') + `</div>`;
+    }
+    h += `<button class="btn primary" data-act="check">Valider</button><div id="enigme-fb"></div></div>`;
+    return h;
+  }
+
+  function checkEnigme() {
+    if (solvedNow) return;
+    const e = S[game.at].enigme, fb = $('enigme-fb');
+    let ok = false, said = '';
+    if (e.kind === 'number' || e.kind === 'numbers') {
+      const answers = e.kind === 'number' ? [e.answer] : e.fields.map(f => f.answer);
+      const vals = answers.map((_, i) => ($('ans-' + i).value || '').replace(/\D/g, ''));
+      if (vals.some(v => !v)) { fb.innerHTML = `<div class="feedback info">${answers.length > 1 ? 'Complète <b>toutes</b> les cases' : 'Écris un nombre'} avant de valider.</div>`; return; }
+      ok = vals.every((v, i) => parseInt(v, 10) === answers[i]);
+      said = ` Tu as écrit ${vals.join(' et ')}.`;
+    } else if (e.kind === 'qcm') {
+      const sel = story.querySelector('.qcm button.sel');
+      if (!sel) { fb.innerHTML = `<div class="feedback info">Choisis une réponse avant de valider.</div>`; return; }
+      ok = parseInt(sel.getAttribute('data-opt'), 10) === e.answer;
+    } else if (e.kind === 'order') {
+      if (orderSeq.length < e.items.length) { fb.innerHTML = `<div class="feedback info">Touche <b>tous</b> les évènements, du plus ancien au plus récent, avant de valider.</div>`; return; }
+      ok = orderSeq.every((v, i) => v === e.answer[i]);
+    } else if (e.kind === 'classify') {
+      const rows = Array.from(story.querySelectorAll('.cl-row'));
+      const picks = rows.map(r => { const b = r.querySelector('button.sel'); return b ? parseInt(b.getAttribute('data-cl'), 10) : -1; });
+      rows.forEach((r, i) => r.classList.toggle('missing', picks[i] === -1));
+      const left = picks.filter(v => v === -1).length;
+      if (left) { fb.innerHTML = `<div class="feedback info">Il reste ${left === 1 ? '<b>1 ligne</b>' : '<b>' + left + ' lignes</b>'} sans réponse : touche un bouton sur chaque ligne avant de valider.</div>`; return; }
+      const wrong = picks.filter((v, i) => v !== e.items[i].answer).length;
+      ok = wrong === 0;
+      said = wrong ? (wrong === 1 ? ' Une ligne est mal classée.' : ' ' + wrong + ' lignes sont mal classées.') : '';
+    }
+
+    if (ok) {
+      solvedNow = true;
+      game.solved[game.at] = true;
+      writeJSON(KEY_SAVE(), game);
+      story.querySelectorAll('#enigme input').forEach(i => { i.readOnly = true; });
+      const q = story.querySelector('.qcm'); if (q) { q.classList.add('done'); q.querySelector('.sel').classList.add('good'); }
+      const cl = story.querySelector('.classify'); if (cl) cl.classList.add('done');
+      const od = story.querySelector('.order'); if (od) { od.classList.add('done'); const rt = story.querySelector('[data-act="ordreset"]'); if (rt) rt.remove(); }
+      story.querySelector('[data-act="check"]').remove();
+      fb.innerHTML = `<div class="feedback ok">✅ ${e.success}</div>`;
+      $('after-enigme').innerHTML = choiceBtn({ label: "Continuer l'enquête", to: e.to });
+      return;
+    }
+    errors++;
+    fb.innerHTML = `<div class="feedback ko">❌ Ce n'est pas ça.${esc(said)}<br>💡 <b>Indice :</b> ${e.hint}</div>`;
+    if (errors >= 2 && !story.querySelector('.choice.skip')) {
+      $('after-enigme').innerHTML = `<button class="choice skip" data-to="${e.skipTo}">${esc(e.skipLabel)}<span class="go">Va au ${S[e.skipTo].n}</span></button>`;
+    }
+  }
+
+  function paintOrder() {
+    story.querySelectorAll('.order button').forEach(b => {
+      const pos = orderSeq.indexOf(parseInt(b.dataset.ord, 10));
+      b.classList.toggle('sel', pos !== -1);
+      b.querySelector('.rank').textContent = pos === -1 ? '' : pos + 1;
+    });
+    const fb = $('enigme-fb'); if (fb && fb.querySelector('.feedback.info')) fb.innerHTML = '';
+  }
+
+  function updateCount() { $('clue-count').textContent = game ? game.clues.length + game.objects.length : 0; }
+  function openCarnet() {
+    $('carnet-list').innerHTML = game.clues.length ? game.clues.map(c => `<li>🔎 ${CLUES[c]}</li>`).join('') : `<li class="muted">Aucun indice pour l'instant. Mène l'enquête !</li>`;
+    $('carnet').classList.add('open');
+  }
+
+  story.addEventListener('click', (ev) => {
+    const t = ev.target.closest('button');
+    if (!t) return;
+    if (t.dataset.to) { goTo(t.dataset.to); return; }
+    if (t.dataset.ord !== undefined) {
+      if (solvedNow) return;
+      const k = parseInt(t.dataset.ord, 10), pos = orderSeq.indexOf(k);
+      if (pos === -1) orderSeq.push(k); else orderSeq = orderSeq.slice(0, pos);
+      paintOrder();
+      return;
+    }
+    if (t.dataset.cl !== undefined) {
+      if (solvedNow) return;
+      const row = t.closest('.cl-row');
+      row.querySelectorAll('button').forEach(b => b.classList.toggle('sel', b === t));
+      row.classList.remove('missing');
+      return;
+    }
+    if (t.dataset.opt !== undefined) {
+      if (solvedNow) return;
+      t.parentNode.querySelectorAll('button').forEach(b => b.classList.toggle('sel', b === t));
+      return;
+    }
+    const act = t.dataset.act;
+    if (act === 'check') checkEnigme();
+    else if (act === 'ordreset') { if (!solvedNow) { orderSeq = []; paintOrder(); } }
+    else if (act === 'restart') { newGame(); goTo(FIRST, { noHistory: true }); }
+    else if (act === 'menu') renderTitle();
+    else if (act === 'back') { let prev = game.history.pop(); while (prev && S[prev].auto) prev = game.history.pop(); if (prev) goTo(prev, { noHistory: true }); }
+    else if (act === 'backTo') goTo(t.dataset.target, { noHistory: true });
+  });
+  story.addEventListener('keydown', (ev) => { if (ev.key === 'Enter' && ev.target.tagName === 'INPUT') { ev.preventDefault(); checkEnigme(); } });
+
+  $('btn-start').addEventListener('click', () => { newGame(); showStory(); goTo(FIRST, { noHistory: true }); });
+  $('btn-resume').addEventListener('click', () => {
+    const save = readJSON(KEY_SAVE(), null);
+    if (!save || !S[save.at]) { newGame(); } else {
+      game = { at: save.at, clues: save.clues || [], objects: save.objects || [], history: save.history || [], solved: save.solved || {} };
+    }
+    showStory(); goTo(game.at, { noHistory: true, resume: true });
+  });
+  $('btn-menu').addEventListener('click', renderTitle);
+  $('btn-carnet').addEventListener('click', openCarnet);
+  $('btn-carnet-close').addEventListener('click', () => $('carnet').classList.remove('open'));
+  $('carnet').addEventListener('click', (ev) => { if (ev.target.id === 'carnet') $('carnet').classList.remove('open'); });
+
+  window.__enquete = { S, CLUES, PREUVES, goTo, get game() { return game; }, newGame };
+  renderTitle();
+})();
+</script>
+</body>
+</html>
