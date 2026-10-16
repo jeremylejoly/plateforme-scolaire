@@ -1141,6 +1141,7 @@
     </div>
   </div>
 
+  <script src="../lcml_jeux_sync.js"></script>
   <script>
     // --- SYNTHÈSE SONORE (WEB AUDIO API) ---
     class SoundController {
@@ -1440,20 +1441,16 @@
     let collectedBatteries = 0;
 
     // Niveaux réussis, par élève (gardés sur l'appareil)
-    function doneKey() {
-      let who = '';
-      try {
-        const st = window.parent && window.parent !== window && window.parent.state;
-        if (st && st.student) who = '_' + (st.studentCls || '') + '_' + st.student;
-      } catch (e) {}
-      return 'lcml_robot_done' + who;
-    }
+    function doneKey() { return LCMLSync.key('lcml_robot_done'); }
+    // Aussi en ligne, par élève (lcml_jeux_sync.js) : les tablettes changent d'un jour à l'autre
+    const doneSync = LCMLSync.create({ game: 'jeu_robot', prefix: 'lcml_robot_done', merge: LCMLSync.union,
+      onChange: function () { paintDone(); } });
     function getDone() {
       try { const a = JSON.parse(localStorage.getItem(doneKey()) || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; }
     }
     function markDone(id) {
       const d = getDone();
-      if (!d.includes(id)) { d.push(id); try { localStorage.setItem(doneKey(), JSON.stringify(d)); } catch (e) {} }
+      if (!d.includes(id)) { d.push(id); try { localStorage.setItem(doneKey(), JSON.stringify(d)); } catch (e) {} doneSync.push(); }
       paintDone();
     }
     function paintDone() {

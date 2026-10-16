@@ -980,6 +980,7 @@
 
 </div>
 
+<script src="lcml_jeux_sync.js"></script>
 <script>
 (function() {
   "use strict";
@@ -1232,16 +1233,20 @@
   }
 
   var activeStudent = getActiveStudent();
-  var STORAGE_KEY = (function() {
-    if (activeStudent && activeStudent.name) {
-      var safeName = activeStudent.name.replace(/[^a-zA-Z0-9_\u00C0-\u00FF]/g, "_").toLowerCase();
-      var safeCls = (activeStudent.cls || "").replace(/[^a-zA-Z0-9_]/g, "_").toLowerCase();
-      return "lcml_pendu_mots_v2_" + (safeCls ? safeCls + "_" : "") + safeName;
+  // Clés recalculées à chaque fois (l'élève connecté peut changer alors que le jeu reste chargé).
+  // Mots trouvés et record aussi gardés en ligne (lcml_jeux_sync.js) : les tablettes changent.
+  function studentKey(base) {
+    var s = getActiveStudent();
+    if (s && s.name) {
+      var safeName = s.name.replace(/[^a-zA-Z0-9_\u00C0-\u00FF]/g, "_").toLowerCase();
+      var safeCls = (s.cls || "").replace(/[^a-zA-Z0-9_]/g, "_").toLowerCase();
+      return base + "_" + (safeCls ? safeCls + "_" : "") + safeName;
     }
-    return "lcml_pendu_mots_v2";
-  })();
+    return base;
+  }
+  function storageKey() { return studentKey("lcml_pendu_mots_v2"); }
+  function bestKey() { return studentKey("lcml_pendu_record"); }
   var SOUND_STORAGE_KEY = "lcml_sound_enabled";
-  var BEST_KEY = STORAGE_KEY.replace("lcml_pendu_mots_v2", "lcml_pendu_record");
 
   /* =========================================================================
      AUDIO SYNTHÉTISEUR WEB AUDIO (AUCUN FICHIER EXTERNE REQUIS)
@@ -1318,11 +1323,11 @@
      ========================================================================= */
   function loadDiscovered() {
     try {
-      var raw = localStorage.getItem(STORAGE_KEY);
+      var raw = localStorage.getItem(storageKey());
       var parsed = raw ? JSON.parse(raw) : null;
       if (parsed && typeof parsed === "object") return parsed;
       // Récupérer les mots d'une session précédente s'ils existent
-      if (STORAGE_KEY !== "lcml_pendu_mots_v2") {
+      if (storageKey() !== "lcml_pendu_mots_v2") {
         var legacyRaw = localStorage.getItem("lcml_pendu_mots_v2");
         var legacyParsed = legacyRaw ? JSON.parse(legacyRaw) : null;
         if (legacyParsed && typeof legacyParsed === "object") return legacyParsed;
@@ -1335,14 +1340,21 @@
 
   function saveDiscovered(d) {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+      localStorage.setItem(storageKey(), JSON.stringify(d));
     } catch(e) {}
+    if (window.penduSync) penduSync.push();
   }
 
   var discovered = loadDiscovered(); // { themeKey: [word1, word2, ...] }
   var totalStreak = 0;
   var bestStreak = 0;
-  try { bestStreak = parseInt(localStorage.getItem(BEST_KEY) || "0", 10) || 0; } catch(e) {}
+  try { bestStreak = parseInt(localStorage.getItem(bestKey()) || "0", 10) || 0; } catch(e) {}
+  if (window.LCMLSync) {
+    window.penduSync = LCMLSync.create({ game: "jeu_pendu", key: storageKey, merge: LCMLSync.perKey(LCMLSync.union),
+      onChange: function() { discovered = loadDiscovered(); try { renderThemeSelect(); updateGlobalStats(); } catch(e) {} } });
+    window.penduRecordSync = LCMLSync.create({ game: "jeu_pendu_record", key: bestKey, merge: LCMLSync.max,
+      onChange: function() { try { bestStreak = parseInt(localStorage.getItem(bestKey()) || "0", 10) || 0; updateGlobalStats(); } catch(e) {} } });
+  }
 
   function countTotalDiscovered() {
     var count = 0;
@@ -1800,7 +1812,8 @@
         var newRecord = false;
         if (totalStreak > bestStreak) {
           bestStreak = totalStreak; newRecord = totalStreak >= 2;
-          try { localStorage.setItem(BEST_KEY, String(bestStreak)); } catch(e) {}
+          try { localStorage.setItem(bestKey(), String(bestStreak)); } catch(e) {}
+          if (window.penduRecordSync) penduRecordSync.push();
         }
         playSound("win");
         

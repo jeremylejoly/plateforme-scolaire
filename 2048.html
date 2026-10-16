@@ -592,19 +592,15 @@
   </div>
 </div>
 
+<script src="lcml_jeux_sync.js"></script>
 <script>
 (function(){
   "use strict";
   const N = 4;
   const TARGET = 2048;
   // Record par élève (avant : le même pour tous les élèves de l'appareil)
-  const BEST_KEY = (function(){
-    try {
-      const st = window.parent && window.parent !== window && window.parent.state;
-      if (st && st.student) return "game2048_best_" + (st.studentCls || "") + "_" + st.student;
-    } catch(e) {}
-    return "game2048_best";
-  })();
+  // Clé recalculée à chaque fois (l'élève connecté peut changer)
+  function bestKey(){ return LCMLSync.key("game2048_best"); }
   let bestAtStart = 0;
 
   /* Palette de couleurs Signature LCML pour chaque valeur de tuile */
@@ -641,11 +637,12 @@
   const infoBox = document.getElementById("info-box");
 
   function loadBest(){
-    try { return parseInt(localStorage.getItem(BEST_KEY) || "0", 10) || 0; }
+    try { return parseInt(localStorage.getItem(bestKey()) || "0", 10) || 0; }
     catch(e){ return 0; }
   }
   function saveBest(v){
-    try { localStorage.setItem(BEST_KEY, String(v)); } catch(e){ /* ignore */ }
+    try { localStorage.setItem(bestKey(), String(v)); } catch(e){ /* ignore */ }
+    bestSync.push();
   }
 
   function emptyGrid(){
@@ -967,6 +964,9 @@
   } catch(e) {}
 
   best = loadBest();
+  // Records aussi gardés en ligne, par élève (lcml_jeux_sync.js) : les tablettes changent d'un jour à l'autre
+  var bestSync = LCMLSync.createGroup({ game: "jeu_2048", prefix: "game2048_best", merge: LCMLSync.max,
+    onChange: function(){ best = Math.max(best || 0, loadBest()); bestEl.textContent = String(best); } });
   startNewGame();
 })();
 </script>

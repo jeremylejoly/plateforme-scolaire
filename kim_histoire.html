@@ -459,11 +459,14 @@
 </script>
 
 <!-- MOTEUR DE JEU JAVASCRIPT -->
+<script src="lcml_jeux_sync.js"></script>
 <script>
 /**
  * Logique du Jeu de Kim Historique
  */
-const STORAGE_KEY = 'kim_histoire_progress_v1' + (function(){ try { const st = window.parent && window.parent !== window && window.parent.state; if (st && st.student) return '_' + (st.studentCls || '') + '_' + st.student; } catch(e) {} return ''; })(); // étoiles par élève (avant : communes à l'appareil)
+// Étoiles par élève, aussi en ligne (lcml_jeux_sync.js). Clé recalculée à chaque fois (l'élève peut changer).
+const STORAGE_PREFIX = 'kim_histoire_progress_v1';
+function storageKey() { return (window.LCMLSync ? LCMLSync.key(STORAGE_PREFIX) : STORAGE_PREFIX); }
 const TIMER_KEY = 'kim_histoire_timer_dur';
 
 // État global
@@ -585,13 +588,20 @@ window.addEventListener('DOMContentLoaded', () => {
   loadStoredData();
   renderHub();
   updateHeaderStats();
+  if (window.LCMLSync) {
+    window.kimSync = LCMLSync.create({ game: 'kim_histoire', prefix: STORAGE_PREFIX, merge: LCMLSync.perKey(LCMLSync.max),
+      onChange: function () {
+        try { const raw = localStorage.getItem(storageKey()); state.scores = raw ? (JSON.parse(raw) || {}) : {}; } catch (e) {}
+        renderHub(); updateHeaderStats();
+      } });
+  }
 });
 
 // Chargement du localStorage
 function loadStoredData() {
   try {
-    const rawScores = localStorage.getItem(STORAGE_KEY);
-    if (rawScores) state.scores = JSON.parse(rawScores);
+    const rawScores = localStorage.getItem(storageKey());
+    state.scores = rawScores ? (JSON.parse(rawScores) || {}) : {};
     
     const savedTimer = localStorage.getItem(TIMER_KEY);
     if (savedTimer) state.timerDuration = parseInt(savedTimer, 10) || 25;
@@ -602,8 +612,9 @@ function loadStoredData() {
 
 function saveStoredScores() {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state.scores));
+    localStorage.setItem(storageKey(), JSON.stringify(state.scores));
   } catch (e) {}
+  if (window.kimSync) window.kimSync.push();
 }
 
 function updateHeaderStats() {

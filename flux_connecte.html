@@ -728,14 +728,18 @@
       {"size":10,"name":"Niveau 12","colors":[{"start":[5,4],"end":[0,0]},{"start":[1,8],"end":[1,3]},{"start":[6,7],"end":[8,6]},{"start":[4,4],"end":[2,8]},{"start":[7,3],"end":[6,2]},{"start":[9,0],"end":[5,0]},{"start":[2,3],"end":[4,6]},{"start":[7,4],"end":[8,9]},{"start":[2,9],"end":[4,9]},{"start":[1,1],"end":[1,0]},{"start":[4,2],"end":[5,1]}]}
     ];
 
-    // Progression par élève (avant : la même pour tous les élèves de l'appareil)
-    var STORAGE_KEY = (function(){
+    // Progression par élève. Gardée sur la tablette ET en ligne (Firebase, via le site) :
+    // les tablettes de classe changent d'un jour à l'autre (16/10/2026 : une élève retombait
+    // au niveau 1 à chaque fois). La clé est recalculée à chaque fois : l'élève connecté
+    // peut changer alors que la page du jeu reste chargée.
+    var GAME_ID = "flux_connecte";
+    function storageKey(){
       try {
         var st = window.parent && window.parent !== window && window.parent.state;
         if (st && st.student) return "flux-connecte-progress-v1_" + (st.studentCls || "") + "_" + st.student;
       } catch(e) {}
       return "flux-connecte-progress-v1";
-    })();
+    }
 
     // Synthétiseur de sons légers Web Audio
     var audioCtx = null;
@@ -789,25 +793,56 @@
       } catch(e){}
     }
 
+    function emptyProgress(){ return {unlocked:0, completed:new Array(LEVELS.length).fill(false)}; }
+    function normalize(p){
+      if(!p || typeof p.unlocked !== "number") return emptyProgress();
+      var c = Array.isArray(p.completed) ? p.completed.slice(0, LEVELS.length).map(Boolean) : [];
+      while(c.length < LEVELS.length) c.push(false);
+      return {unlocked: Math.max(0, Math.min(LEVELS.length - 1, Math.floor(p.unlocked))), completed: c};
+    }
+    // Fusion : on garde toujours le plus avancé des deux (tablette / en ligne)
+    function merge(a, b){
+      a = normalize(a); b = normalize(b);
+      return {unlocked: Math.max(a.unlocked, b.unlocked), completed: a.completed.map(function(v, i){ return v || b.completed[i]; })};
+    }
+    function same(a, b){ return JSON.stringify(normalize(a)) === JSON.stringify(normalize(b)); }
+
     function loadProgress(){
       try{
-        var raw = localStorage.getItem(STORAGE_KEY);
-        if(!raw) return {unlocked:0, completed:new Array(LEVELS.length).fill(false)};
-        var parsed = JSON.parse(raw);
-        if(!parsed || typeof parsed.unlocked !== "number") throw 0;
-        if(!Array.isArray(parsed.completed)) parsed.completed = new Array(LEVELS.length).fill(false);
-        while(parsed.completed.length < LEVELS.length) parsed.completed.push(false);
-        return parsed;
-      }catch(e){
-        return {unlocked:0, completed:new Array(LEVELS.length).fill(false)};
-      }
+        var raw = localStorage.getItem(storageKey());
+        return raw ? normalize(JSON.parse(raw)) : emptyProgress();
+      }catch(e){ return emptyProgress(); }
     }
 
-    function saveProgress(p){
-      try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); }catch(e){}
+    function saveLocal(p){
+      try{ localStorage.setItem(storageKey(), JSON.stringify(p)); }catch(e){}
     }
+    function saveRemote(p){
+      try{
+        var w = window.parent;
+        if (w && w !== window && typeof w.FB_saveGameProgress === "function") w.FB_saveGameProgress(GAME_ID, normalize(p));
+      }catch(e){}
+    }
+    function saveProgress(p){ saveLocal(p); saveRemote(p); }
 
     var progress = loadProgress();
+
+    // Recharge la progression de l'élève connecté (tablette + en ligne)
+    function refreshProgress(){
+      var key = storageKey();
+      progress = loadProgress();
+      if (!screenSelect.hidden) renderLevelSelect();
+      try{
+        var w = window.parent;
+        if (!(w && w !== window && typeof w.FB_loadGameProgress === "function")) return;
+        Promise.resolve(w.FB_loadGameProgress(GAME_ID)).then(function(remote){
+          if (key !== storageKey()) return; // l'élève a changé entre-temps
+          var merged = merge(progress, remote);
+          if (!same(merged, progress)) { progress = merged; saveLocal(progress); if (!screenSelect.hidden) renderLevelSelect(); }
+          if (!same(merged, remote)) saveRemote(merged); // progression faite hors ligne → envoyée
+        }).catch(function(){});
+      }catch(e){}
+    }
 
     function getColorHex(i, total){
       if (i < LCML_COLORS.length) {
@@ -1266,6 +1301,12 @@
     boardSvg.addEventListener("pointerleave", function(evt){ if(dragging){ /* maintenu via pointer capture */ } });
 
     renderLevelSelect();
+    refreshProgress();
+
+    // Site LCML : quitter l'écran du jeu ramène au menu des niveaux ; y revenir recharge
+    // la progression de l'élève connecté.
+    window.lcmlOnLeave = function(){ if (!screenPlay.hidden) backToSelect(); };
+    window.lcmlOnShow = function(){ refreshProgress(); };
 
     // Gestion du bouton accueil dans l'iframe du site LCML
     if (window.self !== window.top) {

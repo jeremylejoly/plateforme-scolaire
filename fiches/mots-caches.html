@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <!-- TailwindCSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="../lcml_jeux_sync.js"></script>
   <script>
     tailwind.config = {
       corePlugins: {
@@ -1203,17 +1204,15 @@
     // 7. LOCAL STORAGE PROGRESS TRACKING
     // =========================================================================
     // Record par élève (avant : partagé par tous les élèves de l'appareil)
-    const LOCAL_STORAGE_KEY = (function() {
-      try {
-        const st = window.parent && window.parent !== window && window.parent.state;
-        if (st && st.student) return 'lcml_wordsearch_progress_' + (st.studentCls || '') + '_' + st.student;
-      } catch (e) {}
-      return 'lcml_wordsearch_progress';
-    })();
+    // Clé recalculée à chaque fois (l'élève connecté peut changer) ; progression aussi en ligne (lcml_jeux_sync.js)
+    function localStorageKey() { return LCMLSync.key('lcml_wordsearch_progress'); }
+    const progressSync = LCMLSync.create({ game: 'jeu_mots_caches', prefix: 'lcml_wordsearch_progress',
+      merge: LCMLSync.perKey(function (a, b) { return (b && (!a || Number(b.time) < Number(a.time))) ? b : a; }),
+      onChange: function () { try { renderThemesMenu(); } catch (e) {} } });
 
     function getSavedProgress() {
       try {
-        const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+        const raw = localStorage.getItem(localStorageKey());
         return raw ? (JSON.parse(raw) || {}) : {};
       } catch (e) {
         return {};
@@ -1230,7 +1229,8 @@
           time: time,
           date: new Date().toLocaleDateString('fr-BE')
         };
-        try { localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(progress)); } catch (e) {}
+        try { localStorage.setItem(localStorageKey(), JSON.stringify(progress)); } catch (e) {}
+        progressSync.push();
       }
     }
   </script>

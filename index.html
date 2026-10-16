@@ -3792,6 +3792,23 @@ input[type=text].calc-input.incorrect {
       return snap.exists() ? snap.val() : null;
     } catch(e) { console.warn('Firebase loadStudentPlanProgress error:', e); return null; }
   };
+  // Progression des jeux à niveaux, par élève et EN LIGNE (les tablettes de classe changent
+  // d'un jour à l'autre) : 'game_progress/{classe}/{élève}/{jeu}'. Élève connecté seulement.
+  function gameProgressPath(game) {
+    const st = (typeof state !== 'undefined') ? state : null;
+    if (!st || st.role !== 'student' || !st.student || !st.studentCls) return null;
+    return 'game_progress/' + st.studentCls + '/' + st.student + '/' + String(game).replace(/[.#$\[\]\/]/g, '_');
+  }
+  window.FB_loadGameProgress = async function(game) {
+    const path = gameProgressPath(game); if (!path) return null;
+    try { const snap = await get(ref(db, path)); return snap.exists() ? snap.val() : null; }
+    catch(e) { console.warn('Firebase loadGameProgress error:', e); return null; }
+  };
+  window.FB_saveGameProgress = async function(game, data) {
+    const path = gameProgressPath(game); if (!path) return false;
+    try { await set(ref(db, path), data); return true; }
+    catch(e) { console.warn('Firebase saveGameProgress error:', e); return false; }
+  };
   // Coche automatique : écrit UNE seule case de la progression (jamais tout le nœud de l'élève)
   window.FB_setPlanProgressItem = async function(cls, student, path, value) {
     try { await set(ref(db, 'plan_progress/' + cls + '/' + student + '/' + path), value); }
@@ -50855,8 +50872,13 @@ init();
       if(new URL(cur).pathname !== exp.pathname) w.location.replace(exp.href);
     } catch(e) {}
   }
+  // Page déjà chargée qui revient à l'écran : prévenue si elle définit window.lcmlOnShow()
+  // (un jeu recharge alors la progression de l'élève connecté, qui a pu changer entre-temps).
+  function notifyShow(f){
+    try { var w=f.contentWindow; if(w && typeof w.lcmlOnShow==='function') w.lcmlOnShow(); } catch(e) {}
+  }
   function showFrames(screen){
-    framesOf(screen).forEach(function(f){ if(isLoaded(f)) ensureRightPage(f); else load(f); });
+    framesOf(screen).forEach(function(f){ if(isLoaded(f)) { ensureRightPage(f); notifyShow(f); } else load(f); });
   }
   // Quand l'élève quitte un écran, la page intégrée est prévenue si elle définit
   // window.lcmlOnLeave() : un jeu en profite pour revenir à son menu (sinon l'élève
