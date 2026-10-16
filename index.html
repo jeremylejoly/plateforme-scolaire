@@ -11612,8 +11612,16 @@ function isActivityLocked(id){
 
   // 3. Dynamic containers & composite menu locks
   if (id === 'recits_express') {
-    if (typeof loadVisibleBooks === 'function') {
-      const visible = loadVisibleBooks();
+    // Masquée à la main par l'enseignant (bouton de la carte), ou plus aucun livre visible.
+    // Indicateur propre (« recits_express_masque ») : l'ancien identifiant « recits_express »
+    // traîne dans les listes enregistrées et ne doit pas masquer la carte d'un coup.
+    if (locked.includes('recits_express_masque')) return true;
+    if (typeof loadBooks === 'function') {
+      const isT = (typeof state !== 'undefined' && state.role === 'teacher');
+      // Enseignant : loadVisibleBooks() renvoie TOUS les livres → on regarde les livres non masqués.
+      const visible = isT
+        ? loadBooks().filter(b => !getArchivedBooks().includes(b.id))
+        : loadVisibleBooks();
       return visible.length === 0;
     }
     return false;
@@ -11674,7 +11682,7 @@ function isActivityLocked(id){
     return locked.includes('ortho_homophones') || homos.every(h => locked.includes(h));
   }
   if (id === 'francais-lecture') {
-    if (typeof loadVisibleBooks === 'function' && loadVisibleBooks().length > 0) return false;
+    if (!isActivityLocked('recits_express')) return false;
     if (!locked.includes('conte_chatbotte') || !locked.includes('conte_breme')) return false;
     if (!locked.includes('poeme_cancre') || !locked.includes('poeme_ecriture')) return false;
     const sampleLectures = ['fiche_1','fiche_2','desc_libraire','desc_foret','arg_devoirs','dial_ecrans','lr_niveau_1'];
@@ -11692,7 +11700,7 @@ function toggleActivity(id){
       if (archived.includes(id)) {
         if (typeof restoreBook === 'function') restoreBook(id);
         // Déverrouiller recits_express et francais-lecture si nécessaire
-        let lk = getLockedActivities().filter(x => x !== 'recits_express' && x !== 'francais-lecture');
+        let lk = getLockedActivities().filter(x => x !== 'recits_express' && x !== 'recits_express_masque' && x !== 'francais-lecture');
         saveLockedActivities(lk);
       } else {
         if (typeof archiveBook === 'function') archiveBook(id);
@@ -11700,6 +11708,24 @@ function toggleActivity(id){
       refreshAllToggles();
       return;
     }
+  }
+
+  // Carte « Récits Express » : indicateur dédié ; à la réactivation, si tous les livres
+  // sont masqués, on les réaffiche tous (sinon la carte resterait vide et masquée).
+  if (id === 'recits_express') {
+    const wasLocked = isActivityLocked('recits_express');
+    let lk = getLockedActivities();
+    if (wasLocked) {
+      lk = lk.filter(x => x !== 'recits_express_masque' && x !== 'recits_express' && x !== 'francais-lecture');
+      const books = (typeof loadBooks === 'function') ? loadBooks() : [];
+      const archived = getArchivedBooks();
+      if (books.length && books.every(b => archived.includes(b.id))) saveArchivedBooks([]);
+    } else if (!lk.includes('recits_express_masque')) {
+      lk.push('recits_express_masque');
+    }
+    saveLockedActivities(lk);
+    refreshAllToggles();
+    return;
   }
 
   let arr = getLockedActivities();
@@ -11732,10 +11758,27 @@ function toggleActivity(id){
     'solide_disque': ['disque_vocabulaire', 'disque_laboratoire', 'disque_compas'],
     'sci_matiere': ['sci_matiere_etats', 'sci_matiere_changements', 'sci_transformations_chimiques'],
     'sci_cycle_eau_cat': ['fiche_cycle_eau', 'sci_cycle_eau_schema'],
-    'sci_plantes': ['sci_plantes_fleur', 'sci_plantes_germination', 'sci_reproduction_plantes']
+    'sci_plantes': ['sci_plantes_fleur', 'sci_plantes_germination', 'sci_reproduction_plantes'],
+    // Menus dont l'état dépend uniquement de leurs enfants (pas d'indicateur propre)
+    'contes': ['conte_chatbotte', 'conte_breme'],
+    'poemes': ['poeme_cancre', 'poeme_ecriture', 'poeme_dormeur', 'poeme_sorciere']
+  };
+  // Menus masqués quand TOUS leurs enfants sont masqués : pour les réactiver, il faut
+  // aussi réactiver les enfants (sinon le bouton « Réactiver » ne fait rien).
+  const derivedChildren = {
+    'sci_respiratoire': ['sci_resp_schema', 'sci_resp_texte', 'sci_resp_qcm', 'sci_resp_assoc', 'sci_resp_ordre'],
+    'sci_digestif': ['sci_dig_schema', 'sci_dig_texte', 'sci_dig_qcm', 'sci_dig_assoc', 'sci_dig_ordre'],
+    'sci_circulatoire': ['sci_coeur', 'sci_trajet_sang', 'sci_circulatoire_qcm', 'sci_circulatoire_assoc', 'sci_circ_petite', 'sci_circ_grande', 'sci_circ_ensemble'],
+    'sci_systeme_solaire': ['sci_planetes_ordre', 'sci_planetes_infos', 'sci_planetes_qcm'],
+    'geo_europe': ['geo_europe_cartes', 'geo_europe_climats', 'geo_europe_relief_fleuves', 'geo_europe_villes_pop'],
+    'geo_belgique': ['geo_belgique_provinces', 'geo_belgique_hydro', 'geo_belgique_communes', 'geo_belgique_regions_communautes', 'geo_belgique_qcm'],
+    'ortho_homophones': ['homo_a', 'homo_on', 'homo_son', 'homo_ce', 'homo_ces', 'homo_ou', 'homo_la', 'homo_leur', 'homo_sans', 'homo_peu', 'homo_complexes']
   };
 
   const isCurrentlyLocked = isActivityLocked(id);
+  if (isCurrentlyLocked && derivedChildren[id] && derivedChildren[id].every(c => arr.includes(c))) {
+    parentChildren[id] = derivedChildren[id];
+  }
   const idsToProcess = new Set([id]);
   if (idMapping[id]) idsToProcess.add(idMapping[id]);
   if (parentChildren[id]) {
@@ -33757,7 +33800,7 @@ function bulkToggleSubCategory(itemIds, makeActive) {
       }
     });
     if (itemIds.some(id => bookIdSet.has(id))) {
-      arr = arr.filter(x => x !== 'recits_express' && x !== 'francais-lecture');
+      arr = arr.filter(x => x !== 'recits_express' && x !== 'recits_express_masque' && x !== 'francais-lecture');
     }
   } else {
     itemIds.forEach(id => {
