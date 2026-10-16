@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Qui a empoisonné l'étang ? — Plateforme LCML</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+  :root {
+    --purple: #5B4FCF; --purple-light: #EEF0FF; --purple-mid: #C7C2F5;
+    --green: #1A9E75; --green-light: #E2F5EE;
+    --red: #D94F3D; --red-light: #FDECEA;
+    --amber: #F59E0B; --amber-dark: #C97B1A; --amber-light: #FEF3E2;
+    --blue: #1A6FA0; --blue-light: #E2F0FA;
+    --parchment: #F3FBF6;
+    --bg: #FDFBF7; --surface: #FFFFFF; --surface-alt: #F4F1EB;
+    --text: #1A1A2E; --muted: #6B7080; --border: #1A1A2E;
+    --shadow: 4px 4px 0 var(--border); --shadow-sm: 2px 2px 0 var(--border);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; }
+  body { padding: 16px; }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1, h2, h3, .fred { font-family: 'Fredoka', 'Inter', sans-serif; }
+  button { font: inherit; color: inherit; cursor: pointer; touch-action: manipulation; }
+
+  .topbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .topbar .title { flex: 1; min-width: 180px; font-family: 'Fredoka'; font-weight: 700; font-size: 1.25rem; }
+  .btn { border: 2px solid var(--border); border-radius: 12px; background: var(--surface); padding: 10px 14px; min-height: 48px; font-weight: 600; box-shadow: var(--shadow-sm); }
+  .btn:active { transform: translate(2px,2px); box-shadow: none; }
+  .btn.primary { background: var(--purple); color: #fff; }
+  .btn.amber { background: var(--amber-light); }
+  .btn .count { display: inline-block; min-width: 22px; padding: 0 6px; margin-left: 4px; border-radius: 999px; background: var(--purple); color: #fff; font-size: .85rem; }
+
+  .card { background: var(--surface); border: 2px solid var(--border); border-radius: 20px; box-shadow: var(--shadow); padding: 22px; }
+  .story.card { background: var(--parchment); }
+
+  .hero { text-align: center; }
+  .hero .owl { font-size: 4.5rem; line-height: 1; }
+  .hero h1 { font-size: 2rem; margin: 10px 0 6px; }
+  .hero p { line-height: 1.55; font-size: 1.05rem; }
+  .rules { text-align: left; background: var(--surface-alt); border-radius: 14px; padding: 14px 18px; margin: 16px 0; line-height: 1.5; }
+  .rules li { margin: 4px 0; }
+  .endings { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 12px 0 18px; }
+  .ending-chip { border: 2px solid var(--border); border-radius: 999px; padding: 6px 12px; font-size: .9rem; background: var(--surface-alt); color: var(--muted); }
+  .ending-chip.found { color: var(--text); background: var(--green-light); }
+  .ending-chip.found.win { background: #FFE9A8; }
+  .start-btns { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+  .para-num { display: inline-flex; align-items: center; justify-content: center; width: 58px; height: 58px; border-radius: 50%; flex-shrink: 0;
+    background: var(--purple); color: #fff; font-family: 'Fredoka'; font-weight: 700; font-size: 1.6rem; border: 2px solid var(--border); box-shadow: var(--shadow-sm); }
+  .para-head { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  .para-head h2 { margin: 0; font-size: 1.35rem; }
+  .story p { font-size: 1.12rem; line-height: 1.7; margin: 0 0 14px; }
+  .story .speech { font-style: italic; }
+  .doc { font-family: 'Fredoka'; background: #FFFBEA; border: 2px solid var(--border); border-radius: 6px; padding: 14px 18px; margin: 0 0 14px; font-size: 1.1rem; line-height: 1.8; }
+  .vocab { background: var(--surface); border-left: 5px solid var(--amber-dark); border-radius: 8px; padding: 8px 12px; margin: 0 0 14px; font-size: .98rem; line-height: 1.5; }
+
+  .clue-found { background: var(--blue-light); border: 2px solid var(--blue); border-radius: 12px; padding: 10px 14px; margin: 4px 0 12px; font-size: 1rem; line-height: 1.45; }
+  .clue-found b { color: var(--blue); }
+  .obj-found { background: var(--green-light); border: 2px solid var(--green); border-radius: 12px; padding: 10px 14px; margin: 4px 0 12px; font-size: 1rem; line-height: 1.45; }
+
+  .choices { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+  .choices .prompt { font-weight: 700; font-family: 'Fredoka'; font-size: 1.1rem; margin: 6px 0 2px; }
+  .choice { display: flex; align-items: center; gap: 12px; text-align: left; width: 100%; border: 2px solid var(--border); border-radius: 14px;
+    background: var(--purple-light); padding: 12px 14px; min-height: 56px; font-size: 1.05rem; font-weight: 600; box-shadow: var(--shadow-sm); }
+  .choice:active { transform: translate(2px,2px); box-shadow: none; }
+  .choice .go { margin-left: auto; flex-shrink: 0; font-family: 'Fredoka'; font-size: .95rem; background: var(--surface); border: 2px solid var(--border); border-radius: 999px; padding: 2px 10px; white-space: nowrap; }
+  .choice.accuse { background: var(--red-light); }
+  .choice.skip { background: var(--surface-alt); }
+  .choice.obj { background: var(--green-light); }
+
+  .enigme { border: 2px solid var(--border); border-radius: 16px; background: var(--amber-light); padding: 16px; margin: 6px 0 16px; }
+  .enigme h3 { margin: 0 0 8px; font-size: 1.15rem; }
+  .enigme .q { font-size: 1.05rem; line-height: 1.55; margin: 0 0 12px; font-weight: 600; }
+  .answer-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+  .answer-row label { font-weight: 600; min-width: 140px; }
+  .answer-row input { width: 120px; font-size: 1.4rem; font-family: 'Fredoka'; text-align: center; padding: 8px; border: 2px solid var(--border); border-radius: 10px; background: #fff; }
+  .answer-row .unit { font-family: 'Fredoka'; font-size: 1.2rem; font-weight: 600; }
+  .qcm { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  .qcm button { text-align: left; border: 2px solid var(--border); border-radius: 12px; background: #fff; padding: 10px 14px; min-height: 52px; font-size: 1.02rem; font-weight: 500; }
+  .qcm button.sel { background: var(--purple); color: #fff; }
+  .qcm button.good { background: var(--green); color: #fff; }
+  .qcm.done button:not(.sel) { opacity: .45; }
+  .classify { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  .cl-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; border: 2px solid var(--border); border-radius: 12px; background: #fff; padding: 8px 10px; }
+  .cl-row .cl-label { flex: 1 1 200px; font-weight: 500; line-height: 1.35; }
+  .cl-row .cl-btns { display: flex; flex-wrap: wrap; gap: 6px; }
+  .cl-row .cl-btns button { border: 2px solid var(--border); border-radius: 10px; background: #fff; padding: 8px 12px; min-height: 44px; font-size: .98rem; font-weight: 600; }
+  .cl-row .cl-btns button.sel { background: var(--purple); color: #fff; }
+  .cl-row.missing { border-color: var(--amber-dark); background: var(--amber-light); }
+  .classify.done .cl-btns button.sel { background: var(--green); }
+  .classify.done .cl-btns button:not(.sel) { opacity: .45; }
+  .order { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  .order button { display: flex; align-items: center; gap: 10px; text-align: left; border: 2px solid var(--border); border-radius: 12px; background: #fff; padding: 8px 12px; min-height: 52px; font-size: 1.02rem; font-weight: 500; }
+  .order button .rank { flex: 0 0 34px; height: 34px; border-radius: 50%; border: 2px dashed var(--purple-mid); display: flex; align-items: center; justify-content: center; font-family: 'Fredoka'; font-weight: 700; font-size: 1.1rem; }
+  .order button.sel .rank { background: var(--purple); border: 2px solid var(--purple); color: #fff; }
+  .order.done button .rank { background: var(--green); border-color: var(--green); }
+  .order-tools { margin: -2px 0 10px; }
+  .sym { width: 120px; height: 60px; display: block; }
+  .sym line, .sym circle, .schema line, .schema circle, .schema polyline { stroke: #1A1A2E; stroke-width: 2.5; }
+  .sym circle[r="2.5"], .schema circle[r="2.5"] { fill: #1A1A2E; }
+  .sym .plus, .schema .plus { font: 700 14px 'Inter', sans-serif; fill: #1A1A2E; stroke: none; }
+  .sym .m { font: 700 15px 'Inter', sans-serif; fill: #1A1A2E; stroke: none; }
+  .schema-box { text-align: center; }
+  .schema { width: 100%; max-width: 360px; }
+  .schema .cap { font: 500 13px 'Inter', sans-serif; fill: #555; stroke: none; }
+  .schema .q { font: 700 16px 'Inter', sans-serif; fill: #C97B1A; stroke: none; }
+  .circuit-svg { display: block; width: 100%; max-width: 420px; margin: 0 auto 6px; }
+  .circuit-svg .w { stroke: #1A1A2E; stroke-width: 4; fill: none; }
+  .circuit-svg .sw { cursor: pointer; }
+  .circuit-svg .sw-hit { fill: transparent; }
+  .circuit-svg .lbl { font: 600 14px 'Inter', sans-serif; fill: #1A1A2E; }
+  .circuit-svg .bulb { fill: #EEE; stroke: #1A1A2E; stroke-width: 3; }
+  .circuit-svg.lit .bulb { fill: #FFD84D; }
+  .circuit-svg .rays { display: none; stroke: #F59E0B; stroke-width: 3; }
+  .circuit-svg.lit .rays { display: inline; }
+  .mats { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+  .mats button { border: 2px solid var(--border); border-radius: 12px; background: #fff; padding: 8px 12px; min-height: 48px; font-size: 1rem; font-weight: 600; }
+  .mats button.sel { background: var(--purple); color: #fff; }
+  .nest .n1 { fill: #EAF6EE; stroke: #1A1A2E; stroke-width: 2; }
+  .nest .n2 { fill: #D3EEDC; stroke: #1A1A2E; stroke-width: 1.5; }
+  .nest .n3 { fill: #FFF7D6; stroke: #1A1A2E; stroke-width: 1.5; }
+  .nest .nt { font: 700 14px 'Inter', sans-serif; fill: #1A1A2E; }
+  .nest .ns { font: 600 12.5px 'Inter', sans-serif; fill: #1A1A2E; }
+  .nest .nx { font: 600 11px 'Inter', sans-serif; fill: #1A1A2E; }
+  .nest .nl { font: 700 26px 'Fredoka', sans-serif; fill: #5B4FCF; }
+  .schema.nest { max-width: 560px; min-width: 500px; }
+  .nest-scroll { overflow-x: auto; }
+  .grid-wrap { overflow-x: auto; margin-bottom: 10px; }
+  table.grid { border-collapse: collapse; width: 100%; background: #fff; }
+  table.grid th, table.grid td { border: 2px solid var(--border); padding: 4px; text-align: center; }
+  table.grid th { font-size: .8rem; font-weight: 700; line-height: 1.15; }
+  @media (max-width: 480px) { table.grid th { font-size: .64rem; } table.grid th, table.grid td { padding: 1px; } table.grid td.rl { font-size: .78rem; padding-left: 4px; } table.grid button { min-width: 26px; } }
+  table.grid td.rl { text-align: left; font-weight: 600; padding-left: 6px; font-size: .9rem; }
+  table.grid button { width: 100%; min-width: 36px; min-height: 44px; border: none; background: #fff; font-size: 1.4rem; font-weight: 700; color: var(--green); }
+  table.grid button.on { background: var(--green-light); }
+  .grid-done table.grid button { pointer-events: none; }
+  .globe { display: block; width: 100%; max-width: 540px; margin: 0 auto 10px; touch-action: manipulation; }
+  .globe .band { cursor: pointer; }
+  .globe .band rect { fill: #DCEFFB; stroke: none; }
+  .globe .band.alt rect { fill: #F4FAFF; }
+  .globe .band.sel rect { fill: var(--purple); }
+  .globe.done .band.sel rect { fill: var(--green); }
+  .globe .line { stroke: #1A1A2E; stroke-width: 1.5; }
+  .globe .line.eq { stroke-width: 2.5; }
+  .globe .lbl { font-family: 'Inter', sans-serif; font-size: 15px; fill: #1A1A2E; }
+  .globe .pole { font-family: 'Fredoka', sans-serif; font-size: 15px; font-weight: 700; fill: #1A1A2E; }
+  .feedback { margin-top: 12px; padding: 10px 14px; border-radius: 10px; line-height: 1.5; font-size: 1rem; }
+  .feedback.ok { background: var(--green-light); border: 2px solid var(--green); }
+  .feedback.ko { background: var(--red-light); border: 2px solid var(--red); }
+  .feedback.info { background: var(--surface); border: 2px solid var(--amber-dark); }
+
+  .proofs { list-style: none; padding: 0; margin: 0 0 14px; }
+  .proofs li { background: var(--surface); border: 2px solid var(--border); border-radius: 10px; padding: 8px 12px; margin-bottom: 8px; line-height: 1.45; }
+
+  .ending-box { text-align: center; border: 2px solid var(--border); border-radius: 16px; padding: 16px; margin: 10px 0 14px; }
+  .ending-box.win { background: #FFE9A8; }
+  .ending-box.half { background: var(--blue-light); }
+  .ending-box.lose { background: var(--red-light); }
+  .ending-box .big { font-size: 2.6rem; }
+  .ending-box h3 { margin: 6px 0; font-size: 1.3rem; }
+  .ending-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+  .overlay { position: fixed; inset: 0; background: rgba(26,26,46,.45); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 10; }
+  .overlay.open { display: flex; }
+  .overlay .card { max-width: 560px; width: 100%; max-height: 85vh; overflow: auto; }
+  .carnet-list { list-style: none; padding: 0; margin: 8px 0 14px; }
+  .carnet-list li { border-bottom: 2px dashed var(--purple-mid); padding: 10px 2px; line-height: 1.45; }
+  .muted { color: var(--muted); }
+  .hidden { display: none !important; }
+  @media (max-width: 480px) { body { padding: 10px; } .card { padding: 16px; } .story p { font-size: 1.05rem; } .hero h1 { font-size: 1.6rem; } .answer-row label { min-width: 0; width: 100%; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section id="screen-title" class="card hero">
+    <div class="owl">🐸</div>
+    <h1>Qui a empoisonné l'étang ?</h1>
+    <p class="muted fred">Une enquête dont tu es le héros ou l'héroïne — au bord de l'étang communal</p>
+    <div class="rules">
+      <ul>
+        <li>🐸 Les poissons de l'étang sont morts : quelqu'un l'a pollué ! À toi de trouver le coupable, comme un ou une scientifique.</li>
+        <li>🧩 Espèces, attributs, tableau et ensembles emboités : la <b>classification des vivants</b> est ton meilleur outil.</li>
+        <li>🔐 Les <b>énigmes</b> te font gagner des preuves. Plus tu en résous, plus ton dossier est solide.</li>
+        <li>📒 Les indices sont notés dans ton <b>carnet</b>.</li>
+        <li>⚖️ Attention : accuser quelqu'un <b>sans preuve</b> n'est pas juste !</li>
+        <li>💾 La partie est <b>sauvegardée</b> : tu peux la reprendre plus tard.</li>
+      </ul>
+    </div>
+    <div class="fred" style="font-weight:600">Fins découvertes : <span id="endings-count">0</span> / <span id="endings-total">6</span></div>
+    <div class="endings" id="endings-list"></div>
+    <div class="start-btns">
+      <button class="btn primary hidden" id="btn-resume" style="font-size:1.1rem;padding:12px 24px">▶ Reprendre ma partie</button>
+      <button class="btn" id="btn-start" style="font-size:1.1rem;padding:12px 24px">Commencer l'enquête</button>
+    </div>
+  </section>
+
+  <section id="screen-story" class="hidden">
+    <div class="topbar">
+      <div class="title">🐸 Qui a empoisonné l'étang ?</div>
+      <button class="btn amber" id="btn-carnet">📒 Carnet <span class="count" id="clue-count">0</span></button>
+      <button class="btn" id="btn-menu">⟲ Menu</button>
+    </div>
+    <article class="card story" id="story"></article>
+  </section>
+</div>
+
+<div class="overlay" id="carnet">
+  <div class="card">
+        <h2 style="margin:0 0 4px">🎒 Mon sac</h2>
+    <ul class="carnet-list" id="sac-list"></ul>
+    <h2 style="margin:0 0 4px">📒 Mes indices</h2>
+    <ul class="carnet-list" id="carnet-list"></ul>
+    <button class="btn primary" id="btn-carnet-close" style="width:100%">Fermer le carnet</button>
+  </div>
+</div>
+
+<script src="lcml_jeux_sync.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* =====================================================================
+     SCHÉMA DES ENSEMBLES EMBOITÉS (dessin SVG)
+     ===================================================================== */
+  const EMBOITES = '<svg class="schema nest" viewBox="0 0 520 330" aria-label="Ensembles emboités, régions A à G">'
+    + '<rect x="6" y="6" width="330" height="200" rx="14" class="n1"/><text x="16" y="26" class="nt">Squelette interne</text>'
+    + '<rect x="18" y="38" width="96" height="156" rx="10" class="n2"/><text x="26" y="56" class="ns">Nageoires</text><text x="26" y="72" class="ns">rayonnées</text><text x="66" y="140" class="nl">A</text>'
+    + '<rect x="124" y="38" width="200" height="156" rx="10" class="n2"/><text x="132" y="56" class="ns">Membres</text>'
+    + '<rect x="132" y="66" width="60" height="118" rx="8" class="n3"/><text x="136" y="82" class="nx">4 doigts</text><text x="136" y="95" class="nx">à la main</text><text x="162" y="150" class="nl">B</text>'
+    + '<rect x="198" y="66" width="56" height="118" rx="8" class="n3"/><text x="204" y="82" class="nx">Plumes</text><text x="226" y="150" class="nl">C</text>'
+    + '<rect x="260" y="66" width="56" height="118" rx="8" class="n3"/><text x="268" y="82" class="nx">Poils</text><text x="288" y="150" class="nl">D</text>'
+    + '<rect x="346" y="6" width="168" height="200" rx="14" class="n1"/><text x="354" y="26" class="nt">Squelette externe</text><text x="354" y="42" class="ns">et pattes articulées</text>'
+    + '<rect x="360" y="58" width="140" height="136" rx="10" class="n2"/><text x="370" y="76" class="ns">Antennes</text><text x="430" y="150" class="nl">E</text>'
+    + '<rect x="6" y="218" width="250" height="104" rx="14" class="n1"/><text x="16" y="238" class="nt">Coquille, pied plat</text><text x="16" y="254" class="ns">et tentacules</text><text x="200" y="296" class="nl">F</text>'
+    + '<rect x="266" y="218" width="248" height="104" rx="14" class="n1"/><text x="276" y="238" class="nt">Corps mou formé</text><text x="276" y="254" class="ns">d\'anneaux</text><text x="460" y="296" class="nl">G</text>'
+    + '</svg>';
+
+  /* =====================================================================
+     INDICES
+     PREUVES : indices qui comptent comme preuves devant la bourgmestre.
+     ===================================================================== */
+  const CLUES = {
+    mousse:   "Une mousse bleue sort du tuyau qui amène l'eau du ruisseau dans l'étang. La pollution vient donc du ruisseau.",
+    analyse:  "La bandelette de Mme Hennaux est formelle : l'eau contient un détergent, un produit de lavage. Le test de l'engrais, lui, est négatif.",
+    plan:     "Sur le plan de la commune, l'avaloir de la rue de la Gare, devant le garage, se jette dans le ruisseau qui alimente l'étang.",
+    bidon:    "Près de l'avaloir de la rue de la Gare, un bidon vide de 20 litres de « Lave-Tout Pro », avec un autocollant « Garage Lambeau ».",
+    temoin:   "Mardi vers 6 h, Sacha, qui faisait son jogging, a vu un homme vider des bidons dans l'avaloir, devant le garage, près de la camionnette « Garage Lambeau ».",
+    apprenti: "Nico, l'apprenti du garage, raconte que M. Lambeau lui a dit lundi : « Il faut se débarrasser de ces vieux bidons de produit, ça coute cher à faire reprendre. »",
+    alibiFontaine: "Mme Fontaine n'a plus mis d'engrais depuis le mois d'aout, et l'eau de son champ s'écoule de l'autre côté de la colline.",
+    alibiGobert:   "M. Gobert, le pêcheur, a donné l'alerte à 7 h. De 5 h 30 à 6 h 45, il prenait son café au café de la Place : le patron le confirme. Et il n'a ni voiture ni bidon."
+  };
+  const PREUVES = ['mousse', 'analyse', 'plan', 'bidon', 'temoin', 'apprenti'];
+
+  const OBJECTS = {
+    gants: "🧤 Une paire de gants, prêtée par la garde-nature : on ne touche pas l'eau polluée ni les animaux morts."
+  };
+
+  /* =====================================================================
+     L'HISTOIRE
+     ===================================================================== */
+  const S = {
+    debut: { title: "L'étang empoisonné",
+      text: [
+        "Mardi matin. Ta classe de 6e devait étudier les animaux de l'étang communal. Mais en arrivant, c'est la consternation : des dizaines de poissons flottent, le ventre en l'air. Une mousse bleue couvre une partie de l'eau.",
+        "Mme Hennaux, la garde-nature de la commune, est déjà là : <span class='speech'>« Quelqu'un a pollué l'étang ! Avant de chercher qui, je dois faire l'inventaire des espèces qui vivent ici. Tu m'aides ? »</span>",
+        "Elle te tend une paire de gants : <span class='speech'>« Règle d'or : on ne touche pas l'eau polluée ni les animaux morts. Les gants, c'est seulement au cas où. »</span>",
+        "<div class='vocab'>📚 Une <b>espèce</b>, c'est un ensemble de vivants qui peuvent se reproduire entre eux et avoir des descendants féconds, c'est-à-dire qui pourront à leur tour avoir des petits.</div>"
+      ],
+      objects: ['gants'],
+      enigme: { kind: 'qcm',
+        title: "🐴 Une question d'espèce",
+        question: "Un âne et une jument (la femelle du cheval) peuvent avoir un petit : le mulet. Mais le mulet ne peut presque jamais avoir de petits. L'âne et le cheval sont-ils de la même espèce ?",
+        options: [
+          "Oui, puisqu'ils ont pu avoir un petit ensemble",
+          "Non, car leur petit, le mulet, n'est pas fécond",
+          "Oui, car ils se ressemblent beaucoup"
+        ],
+        answer: 1,
+        hint: "Relis bien la définition : il ne suffit pas d'avoir des petits. Il faut que ces petits soient féconds, c'est-à-dire capables d'avoir à leur tour des petits.",
+        success: "Exact ! Pour être de la même espèce, il faut pouvoir se reproduire ensemble ET avoir des descendants féconds. Le mulet ne l'est presque jamais : l'âne et le cheval sont donc deux espèces différentes, même s'ils se ressemblent.",
+        to: 'debutOk', skipTo: 'debutOk', skipLabel: "Commencer l'enquête"
+      }
+    },
+
+    debutOk: { title: "L'enquête commence",
+      text: [
+        "<span class='speech'>« La bourgmestre, Mme Delhaye, veut savoir qui a fait ça. Elle nous attend ce soir à la maison communale. Au travail ! »</span>"
+      ],
+      prompt: "",
+      choices: [ { label: "Aller au bord de l'étang", to: 'etang' } ]
+    },
+
+    etang: { title: "Au bord de l'étang",
+      text: [
+        "L'étang est entouré de roseaux. Au nord, un tuyau y amène l'eau d'un petit ruisseau. De l'autre côté de la route, il y a la ferme de Mme Fontaine. Plus loin, la rue de la Gare et le garage Lambeau.",
+        "M. Gobert, un pêcheur, est assis sur un banc, l'air abattu."
+      ],
+      prompt: "Où vas-tu ?",
+      choices: [
+        { label: "🔬 Faire l'inventaire avec Mme Hennaux", to: 'inventaire' },
+        { label: "🏕️ La cabane de la garde-nature", to: 'cabane' },
+        { label: "🎣 Parler au pêcheur", to: 'pecheur' },
+        { label: "🚜 La ferme de Mme Fontaine", to: 'ferme' },
+        { label: "🗺️ La maison communale (le service des travaux)", to: 'commune' },
+        { label: "🔧 Le garage Lambeau", to: 'garage' },
+        { label: "🌳 Le parc", to: 'parc' },
+        { label: "Ce soir : je présente mes conclusions à la bourgmestre", to: 'soir', accuse: true }
+      ]
+    },
+
+    inventaire: { title: "L'inventaire",
+      text: [
+        "Avec Mme Hennaux, tu observes les animaux de l'étang : un gardon (mort), une grenouille, une écrevisse, une limnée (un escargot d'eau) et un ragondin, qui nage sans se presser.",
+        "<span class='speech'>« Les scientifiques classent les vivants d'après leurs attributs : ce qu'ils ont en commun. Commençons par un tableau. »</span>"
+      ],
+      enigme: { kind: 'grid',
+        title: "📋 Le tableau d'attributs",
+        question: "Coche (✓) chaque attribut que possède l'animal. Laisse vide quand il ne l'a pas.",
+        cols: ['Squelette interne', 'Pattes articulées', 'Coquille', 'Poils'],
+        rows: [
+          { label: "Gardon", answer: [1, 0, 0, 0] },
+          { label: "Grenouille", answer: [1, 0, 0, 0] },
+          { label: "Écrevisse", answer: [0, 1, 0, 0] },
+          { label: "Limnée", answer: [0, 0, 1, 0] },
+          { label: "Ragondin", answer: [1, 0, 0, 1] }
+        ],
+        hint: "Le squelette interne, ce sont des os à l'intérieur du corps (comme toi). L'écrevisse, elle, a une carapace dure à l'extérieur et des pattes faites de plusieurs morceaux articulés. La limnée a une coquille. Et un seul de ces animaux a des poils !",
+        success: "Parfait ! Le gardon, la grenouille et le ragondin ont un squelette interne. L'écrevisse a des pattes articulées. La limnée a une coquille. Le ragondin est le seul à avoir des poils.",
+        to: 'inventaireOk', skipTo: 'inventaireKo', skipLabel: "Laisser le tableau à Mme Hennaux"
+      }
+    },
+
+    inventaireOk: { title: "Le tuyau",
+      text: [
+        "Mme Hennaux note le tableau dans son cahier. En longeant la berge, tu remarques quelque chose : la mousse bleue sort du tuyau qui amène l'eau du ruisseau dans l'étang !",
+        "<span class='speech'>« Bien vu ! La pollution vient donc du ruisseau. »</span>"
+      ],
+      clues: ['mousse'],
+      prompt: "",
+      choices: [ { label: "Retourner au bord de l'étang", to: 'etang' } ]
+    },
+
+    inventaireKo: { title: "L'inventaire",
+      text: [
+        "Mme Hennaux termine le tableau seule. Tu regardes les poissons morts, sans rien remarquer d'autre."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner au bord de l'étang", to: 'etang' } ]
+    },
+
+    cabane: { title: "La cabane de la garde-nature",
+      text: [
+        "Dans sa cabane, Mme Hennaux a affiché un grand schéma. <span class='speech'>« Voici comment les scientifiques classent les animaux de l'étang : en ensembles emboités. Chaque ensemble regroupe les animaux qui partagent un attribut. »</span>",
+        "<div class='doc schema-box nest-scroll'>" + EMBOITES + "</div>",
+        "<span class='speech'>« Pendant que tu places les animaux, je fais une analyse de l'eau. »</span>"
+      ],
+      enigme: { kind: 'classify',
+        title: "🧩 Les ensembles emboités",
+        question: "Pour chaque animal, touche la lettre de l'ensemble où il doit être placé sur le schéma. (Certaines zones du schéma restent vides.)",
+        categories: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+        items: [
+          { label: "Le gardon (un poisson)", answer: 0 },
+          { label: "La grenouille", answer: 1 },
+          { label: "Le canard", answer: 2 },
+          { label: "Le ragondin", answer: 3 },
+          { label: "L'écrevisse", answer: 4 },
+          { label: "La larve de libellule", answer: 4 },
+          { label: "La limnée (escargot d'eau)", answer: 5 },
+          { label: "La sangsue", answer: 6 },
+          { label: "Le triton", answer: 1 }
+        ],
+        hint: "Commence par le plus grand ensemble : l'animal a-t-il des os à l'intérieur (squelette interne) ? Puis cherche l'attribut le plus précis : des nageoires ? Des membres avec quatre doigts à la main, des plumes ou des poils ? Pour les autres : des pattes articulées et des antennes, une coquille, ou un corps mou formé d'anneaux ?",
+        success: "Bravo ! Gardon en A ; grenouille et triton en B (quatre doigts à la main) ; canard en C ; ragondin en D ; écrevisse et larve de libellule en E ; limnée en F ; sangsue en G. Plus deux animaux sont dans les mêmes ensembles, plus ils sont proches parents.",
+        to: 'cabaneOk', skipTo: 'cabaneKo', skipLabel: "Laisser le schéma"
+      }
+    },
+
+    cabaneOk: { title: "L'analyse de l'eau",
+      text: [
+        "Mme Hennaux sort une bandelette de test de l'eau : <span class='speech'>« Regarde : la bandelette “détergent” a changé de couleur, mais pas la bandelette “nitrates”, qui détecte l'engrais. Il y a donc un produit de lavage dans l'eau. C'est très toxique pour les poissons. »</span>"
+      ],
+      clues: ['analyse'],
+      prompt: "",
+      choices: [ { label: "Retourner au bord de l'étang", to: 'etang' } ]
+    },
+
+    cabaneKo: { title: "La cabane",
+      text: [
+        "Mme Hennaux est occupée par son analyse. Tu repars sans connaitre le résultat."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner au bord de l'étang", to: 'etang' } ]
+    },
+
+    pecheur: { title: "Le pêcheur",
+      text: [
+        "M. Gobert, le pêcheur, soupire : <span class='speech'>« C'est moi qui ai trouvé les poissons morts, ce matin à 7 h, et qui ai prévenu la commune. Certains croient que c'est moi, parce que j'étais là très tôt… »</span>",
+        "Il te montre un canard sur l'eau : <span class='speech'>« D'après la classification, à ton avis, de qui le canard est-il le plus proche parent ? »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🦆 Liens de parenté",
+        question: "D'après la classification, le canard est-il plus proche parent du ragondin ou de l'écrevisse ?",
+        options: [
+          "De l'écrevisse, parce qu'ils vivent tous les deux dans l'eau",
+          "Du ragondin, parce qu'ils partagent plus d'attributs : squelette interne et membres",
+          "Ni de l'un ni de l'autre : la classification ne dit rien sur la parenté"
+        ],
+        answer: 1,
+        hint: "La classification scientifique ne regarde pas où vit l'animal, mais les attributs qu'il possède. Combien d'attributs le canard partage-t-il avec le ragondin ? Et avec l'écrevisse ?",
+        success: "Exact ! Le canard et le ragondin ont tous les deux un squelette interne et des membres : ils sont dans les mêmes grands ensembles, donc plus proches parents. Vivre dans l'eau n'est pas un attribut de la classification. Et la classification montre justement les liens de parenté entre les espèces : des espèces proches ont un ancêtre commun plus récent. D'ailleurs, le ragondin aussi vit dans l'eau : le milieu de vie ne compte pas.",
+        to: 'pecheurOk', skipTo: 'pecheurKo', skipLabel: "Laisser M. Gobert"
+      }
+    },
+
+    pecheurOk: { title: "L'alerte",
+      text: [
+        "<span class='speech'>« Bravo ! Ce matin, de 5 h 30 à 6 h 45, je prenais mon café au café de la Place : demande au patron. Je suis arrivé à pied à l'étang, et dès que j'ai vu la mousse, j'ai appelé la commune. »</span>"
+      ],
+      clues: ['alibiGobert'],
+      prompt: "",
+      choices: [ { label: "Retourner au bord de l'étang", to: 'etang' } ]
+    },
+
+    pecheurKo: { title: "Le pêcheur",
+      text: [
+        "M. Gobert hausse les épaules. Il était là très tôt ce matin… Bizarre, non ?"
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Retourner au bord de l'étang", to: 'etang' },
+        { label: "Accuser M. Gobert : il était là à l'aube !", to: 'finGobert', accuse: true }
+      ]
+    },
+
+    ferme: { title: "La ferme",
+      text: [
+        "À la ferme, Mme Fontaine soigne ses vaches. <span class='speech'>« On m'accuse déjà ? Parce que je suis agricultrice ? Tiens, puisque tu étudies la classification, dis-moi ce que mes vaches ont en commun avec la grenouille, le canard et le ragondin… mais pas avec le gardon ! »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🐄 Un attribut partagé",
+        question: "Quel attribut partagent la vache, la grenouille, le canard et le ragondin, mais pas le gardon ?",
+        options: [
+          "Des poils",
+          "Des membres",
+          "Une coquille"
+        ],
+        answer: 1,
+        hint: "Le gardon a des nageoires. Les quatre autres ont-ils des poils ? Non : le canard a des plumes et la grenouille a la peau nue. Que possèdent-ils tous pour se déplacer ?",
+        success: "Exact ! Ils ont tous des membres. C'est pour cela qu'on les place ensemble dans l'ensemble « membres », à l'intérieur de l'ensemble « squelette interne ». Les poils, eux, ne concernent que la vache et le ragondin.",
+        to: 'fermeOk', skipTo: 'fermeKo', skipLabel: "Laisser Mme Fontaine travailler"
+      }
+    },
+
+    fermeOk: { title: "Le champ",
+      text: [
+        "<span class='speech'>« Bien ! Et pour l'étang : je n'ai plus mis d'engrais depuis le mois d'aout. Et regarde : l'eau de mon champ s'écoule de l'autre côté de la colline, pas vers l'étang. »</span>"
+      ],
+      clues: ['alibiFontaine'],
+      prompt: "",
+      choices: [ { label: "Retourner au bord de l'étang", to: 'etang' } ]
+    },
+
+    fermeKo: { title: "La ferme",
+      text: [
+        "Mme Fontaine retourne à ses vaches. Un tas de sacs d'engrais est rangé dans la grange…"
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Retourner au bord de l'étang", to: 'etang' },
+        { label: "Accuser Mme Fontaine : son engrais a pollué l'étang !", to: 'finFontaine', accuse: true }
+      ]
+    },
+
+    commune: { title: "Le service des travaux",
+      text: [
+        "À la maison communale, M. Pirotte, du service des travaux, déplie un grand plan. <span class='speech'>« Le ruisseau qui alimente l'étang ? Il reçoit l'eau de pluie de plusieurs avaloirs du village. »</span>",
+        "<div class='vocab'>📚 Un <b>avaloir</b> : la grille au bord de la route qui avale l'eau de pluie. Dans certaines rues, cette eau ne va pas à une station d'épuration : elle part directement dans un ruisseau, une rivière ou un étang.</div>",
+        "<div class='doc'>🗺️ Avaloirs reliés au ruisseau de l'étang :<br>– rue de l'Église : non<br>– rue de la Gare : <b>oui</b><br>– chemin de la Ferme : non (l'eau part vers l'autre vallée)</div>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🗺️ Lire le plan",
+        question: "D'après le plan, par où un produit versé dans un avaloir a-t-il pu arriver dans l'étang ?",
+        options: [
+          "Par l'avaloir de la rue de l'Église",
+          "Par l'avaloir de la rue de la Gare",
+          "Par l'avaloir du chemin de la Ferme"
+        ],
+        answer: 1,
+        hint: "Regarde la colonne « oui / non » du plan : un seul avaloir est relié au ruisseau de l'étang.",
+        success: "Exact ! Seul l'avaloir de la rue de la Gare envoie son eau dans le ruisseau, puis dans l'étang. C'est pour cela qu'il ne faut jamais rien verser dans un avaloir : ce qu'on y jette peut finir directement dans la nature.",
+        to: 'communeOk', skipTo: 'communeKo', skipLabel: "Rendre le plan"
+      }
+    },
+
+    communeOk: { title: "La rue de la Gare",
+      text: [
+        "M. Pirotte fronce les sourcils : <span class='speech'>« L'avaloir de la rue de la Gare… c'est juste devant le garage Lambeau. »</span> Tu vas jeter un œil : à côté de l'avaloir, dans l'herbe, il y a un bidon vide de 20 litres de « Lave-Tout Pro », avec un autocollant « Garage Lambeau ». Tu le laisses en place, sans y toucher, pour la police."
+      ],
+      clues: ['plan', 'bidon'],
+      prompt: "",
+      choices: [ { label: "Retourner au bord de l'étang", to: 'etang' } ]
+    },
+
+    communeKo: { title: "Le plan",
+      text: [
+        "M. Pirotte replie son plan. Tu n'as pas trouvé d'où venait la pollution."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner au bord de l'étang", to: 'etang' } ]
+    },
+
+    garage: { title: "Le garage Lambeau",
+      text: [
+        "Au garage, M. Lambeau lave une voiture. <span class='speech'>« L'étang ? Rien à voir avec moi. Je fais tout dans les règles. »</span>",
+        "Son jeune apprenti, Nico, range des outils. Pendant que M. Lambeau répond au téléphone, il te fait signe. <span class='speech'>« Tu fais un exposé sur les animaux ? Moi, j'adorais ça à l'école. Dis-moi, l'écrevisse et la larve de libellule, qu'ont-elles en commun ? »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🦐 Squelette externe",
+        question: "Quels attributs partagent l'écrevisse et la larve de libellule ?",
+        options: [
+          "Un squelette interne et des poils",
+          "Un squelette externe, des pattes articulées et des antennes",
+          "Une coquille et un pied plat"
+        ],
+        answer: 1,
+        hint: "Observe une écrevisse : sa carapace dure est à l'extérieur. Et ses pattes sont faites de plusieurs morceaux reliés par des articulations.",
+        success: "Exact ! Elles ont un squelette externe, des pattes articulées et des antennes. Elles sont donc dans le même ensemble, même si l'écrevisse vivra toujours dans l'eau, alors que la larve deviendra une libellule qui vole !",
+        to: 'garageOk', skipTo: 'garageKo', skipLabel: "Partir"
+      }
+    },
+
+    garageOk: { title: "Les vieux bidons",
+      text: [
+        "Nico baisse la voix : <span class='speech'>« Je ne devrais pas te le dire… Lundi, mon patron m'a dit : “Il faut se débarrasser de ces vieux bidons de produit, ça coute cher à faire reprendre.” Ce matin, ils n'étaient plus dans la réserve. »</span>"
+      ],
+      clues: ['apprenti'],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Retourner au bord de l'étang", to: 'etang' },
+        { label: "Accuser M. Lambeau tout de suite, ici, au garage", to: 'finTropTot', accuse: true }
+      ]
+    },
+
+    garageKo: { title: "Le garage",
+      text: [
+        "M. Lambeau raccroche et te fait signe de partir : <span class='speech'>« Allez, je travaille, moi ! »</span>"
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner au bord de l'étang", to: 'etang' } ]
+    },
+
+    parc: { title: "Le parc",
+      text: [
+        "Dans le parc, tu croises Sacha, qui promène son chien. Elle a vu ta classe à l'étang. <span class='speech'>« Quelle tristesse, ces poissons ! Toi qui étudies les animaux : est-ce que la limnée, cet escargot d'eau, a un squelette interne ? »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🐌 La limnée",
+        question: "La limnée a-t-elle un squelette interne ?",
+        options: [
+          "Oui, comme tous les animaux",
+          "Non : elle n'a pas d'os, mais une coquille, un pied plat et des tentacules",
+          "Oui, sa coquille est son squelette interne"
+        ],
+        answer: 1,
+        hint: "Un squelette interne, ce sont des os à l'intérieur du corps. Est-ce que tous les animaux en ont ? Pense à l'escargot de ton jardin…",
+        success: "Exact ! La limnée n'a pas de squelette interne. Elle a une coquille, un pied plat sur lequel elle glisse, et des tentacules. Ce ne sont pas tous les animaux qui ont un squelette interne : c'est justement un attribut qui permet de les classer.",
+        to: 'parcOk', skipTo: 'parcKo', skipLabel: "Continuer ta route"
+      }
+    },
+
+    parcOk: { title: "Le témoin",
+      text: [
+        "<span class='speech'>« Bravo ! Et puisque tu enquêtes… Ce matin, vers 6 h, pendant mon jogging, en passant rue de la Gare, j'ai vu un homme vider des bidons dans l'avaloir, juste devant le garage. Il y avait la camionnette « Garage Lambeau » à côté. Sur le moment, je n'y ai pas fait attention. »</span>"
+      ],
+      clues: ['temoin'],
+      prompt: "",
+      choices: [ { label: "Retourner au bord de l'étang", to: 'etang' } ]
+    },
+
+    parcKo: { title: "Le parc",
+      text: [
+        "Sacha repart avec son chien."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner au bord de l'étang", to: 'etang' } ]
+    },
+
+    soir: { title: "À la maison communale",
+      text: [
+        "Le soir, à la maison communale, la bourgmestre, Mme Delhaye, a réuni Mme Hennaux, M. Gobert, Mme Fontaine et M. Lambeau.",
+        "<span class='speech'>« Alors, jeune détective, qui a empoisonné notre étang ? »</span>"
+      ],
+      prompt: "Qui désignes-tu ?",
+      choices: [
+        { label: "M. Gobert, le pêcheur", to: 'finGobert', accuse: true },
+        { label: "Mme Fontaine, l'agricultrice", to: 'finFontaine', accuse: true },
+        { label: "M. Lambeau, le garagiste", to: 'preuves', accuse: true }
+      ]
+    },
+
+    preuves: { title: "Tes preuves",
+      text: [
+        "<span class='speech'>« M. Lambeau ? »</span> demande la bourgmestre. M. Lambeau croise les bras.",
+        "Tu ouvres ton carnet."
+      ],
+      dynamic: function (g) {
+        const list = PREUVES.filter(c => g.clues.indexOf(c) !== -1);
+        if (!list.length) return "<p><b>Ton carnet ne contient aucune preuve…</b></p>";
+        return "<p>Tu présentes <b>" + list.length + " preuve" + (list.length > 1 ? "s" : "") + "</b> :</p><ul class='proofs'>" + list.map(c => "<li>🔎 " + CLUES[c] + "</li>").join('') + "</ul>";
+      },
+      auto: function (g) {
+        const n = PREUVES.filter(c => g.clues.indexOf(c) !== -1).length;
+        const vise = ['bidon', 'temoin', 'apprenti'].some(c => g.clues.indexOf(c) !== -1);
+        return n >= 4 && vise ? 'finGagne' : n >= 2 ? 'finMoitie' : 'finSansPreuve';
+      },
+      autoLabel: "Voir la réaction de la bourgmestre"
+    },
+
+    finGagne: { title: "La vérité",
+      text: [
+        "M. Lambeau baisse la tête : <span class='speech'>« C'est vrai… Faire reprendre ces vieux produits coute cher. Je les ai vidés dans l'avaloir. Je ne pensais pas que ça finirait dans l'étang… »</span>",
+        "La bourgmestre est sévère : <span class='speech'>« La police va dresser un procès-verbal : vous devrez payer une amende et aider à nettoyer l'étang. Un garage doit faire reprendre ses produits dangereux par une firme spécialisée. À la maison, on les apporte au parc à conteneurs. Jamais dans un avaloir ! »</span>",
+        "Quelques semaines plus tard, l'eau est redevenue claire. Mme Hennaux a remis des gardons dans l'étang, et ta classe a pu enfin faire son inventaire : grenouilles, tritons, limnées, écrevisses et larves de libellules sont revenus."
+      ],
+      ending: { type: 'win', title: "Bravo, détective ! Grâce à tes connaissances sur le vivant, l'étang est sauvé." }
+    },
+
+    finMoitie: { title: "Le doute",
+      text: [
+        "La bourgmestre hésite. <span class='speech'>« C'est un peu léger contre M. Lambeau. Qu'est-ce qui montre que c'est lui ? »</span>"
+      ],
+      ending: { backTo: 'etang', type: 'half', title: "Tu avais la bonne piste, mais il te fallait plus de preuves contre lui. Retourne enquêter !" }
+    },
+
+    finSansPreuve: { title: "Pas assez de preuves",
+      text: [
+        "<span class='speech'>« Accuser quelqu'un sans preuve ? Impossible »</span>, dit la bourgmestre."
+      ],
+      ending: { backTo: 'etang', type: 'lose', title: "Ton intuition était peut-être bonne, mais il faut des preuves. Les animaux, le plan et les témoins t'en donneront !" }
+    },
+
+    finTropTot: { title: "Trop tôt !",
+      text: [
+        "<span class='speech'>« C'est vous qui avez empoisonné l'étang ! »</span>",
+        "M. Lambeau devient rouge : <span class='speech'>« Sors d'ici tout de suite ! »</span> Le soir même, il a fait disparaitre tous les autres bidons de son garage…"
+      ],
+      ending: { type: 'lose', title: "En accusant seul au garage, tu as prévenu le coupable. Rassemble tes preuves en silence, puis présente-les à la bourgmestre !" }
+    },
+
+    finGobert: { title: "Une erreur",
+      text: [
+        "<span class='speech'>« C'est M. Gobert ! Il était au bord de l'étang à l'aube ! »</span>",
+        "M. Gobert est vexé : <span class='speech'>« Mais c'est moi qui ai donné l'alerte ! »</span> La bourgmestre te regarde, déçue."
+      ],
+      ending: { type: 'lose', title: "M. Gobert était au café au moment des faits, et il a donné l'alerte. D'où venait la mousse bleue ?" }
+    },
+
+    finFontaine: { title: "Une erreur",
+      text: [
+        "<span class='speech'>« C'est Mme Fontaine ! Son engrais a pollué l'étang ! »</span>",
+        "Mme Hennaux secoue la tête : <span class='speech'>« Mon analyse a trouvé du détergent, et le test de l'engrais est négatif. »</span> La bourgmestre te regarde, déçue."
+      ],
+      ending: { type: 'lose', title: "Ce n'était pas de l'engrais, et l'eau du champ coule de l'autre côté. Fais analyser l'eau et suis le ruisseau !" }
+    }
+  };
+
+  const ENDINGS = [
+    { id: 'finGagne',      label: "🐸 L'étang sauvé" },
+    { id: 'finMoitie',     label: "🤔 Le doute" },
+    { id: 'finSansPreuve', label: "😶 Pas assez de preuves" },
+    { id: 'finTropTot',    label: "🔧 Trop tôt" },
+    { id: 'finGobert',     label: "🎣 Le pêcheur" },
+    { id: 'finFontaine',   label: "🚜 L'agricultrice" }
+  ];
+  const FIRST = 'debut';
+
+  /* Numéros des paragraphes : mélangés comme dans un vrai livre-jeu (toujours les mêmes). */
+  (function numberParagraphs() {
+    const ids = Object.keys(S).filter(k => k !== FIRST);
+    let seed = 2600;
+    const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+    const nums = ids.map((_, i) => i + 2);
+    for (let i = nums.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [nums[i], nums[j]] = [nums[j], nums[i]]; }
+    S[FIRST].n = 1;
+    ids.forEach((k, i) => { S[k].n = nums[i]; });
+  })();
+
+  /* =====================================================================
+     SAUVEGARDE — par élève, sur l'appareil. Rien n'est envoyé.
+     ===================================================================== */
+  function who() {
+    try {
+      const st = window.parent && window.parent !== window && window.parent.state;
+      if (st && st.student) return '_' + (st.studentCls || '') + '_' + st.student;
+    } catch (e) {}
+    return '';
+  }
+  const KEY_FINS = () => 'lcml_enquete_etang_fins' + who();
+  const KEY_SAVE = () => 'lcml_enquete_etang_partie' + who();
+  function readJSON(k, def) { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? def : v; } catch (e) { return def; } }
+  function writeJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function removeKey(k) { try { localStorage.removeItem(k); } catch (e) {} }
+  // Fins découvertes aussi gardées en ligne, par élève (lcml_jeux_sync.js) : les tablettes changent d'un jour à l'autre
+  const finsSync = window.LCMLSync ? LCMLSync.create({ game: 'jeu_enquete_etang', key: KEY_FINS, merge: LCMLSync.union }) : null;
+  function loadEndings() { const v = readJSON(KEY_FINS(), []); return Array.isArray(v) ? v.filter(id => S[id]) : []; }
+  function saveEnding(id) {
+    const list = loadEndings();
+    if (list.indexOf(id) === -1) { list.push(id); writeJSON(KEY_FINS(), list); if (finsSync) finsSync.push(); return true; }
+    return false;
+  }
+
+  /* =====================================================================
+     MOTEUR
+     ===================================================================== */
+  let game = null;
+  function newGame() { game = { at: FIRST, clues: [], objects: [], history: [], solved: {} }; }
+  const $ = (id) => document.getElementById(id);
+  const story = $('story');
+  let errors = 0, solvedNow = false, orderSeq = [], circ = { sw: false, mat: -1 };
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+  function has(x) { return game.clues.indexOf(x) !== -1 || game.objects.indexOf(x) !== -1; }
+
+  function renderTitle() {
+    const found = loadEndings();
+    $('endings-count').textContent = found.length;
+    const tot = $('endings-total'); if (tot) tot.textContent = ENDINGS.length;
+    $('endings-list').innerHTML = ENDINGS.map(e => {
+      const ok = found.indexOf(e.id) !== -1;
+      return `<span class="ending-chip ${ok ? 'found' : ''} ${ok && e.id === 'finGagne' ? 'win' : ''}">${ok ? e.label : '❔ ???'}</span>`;
+    }).join('');
+    const save = readJSON(KEY_SAVE(), null);
+    const canResume = save && S[save.at] && !S[save.at].ending;
+    $('btn-resume').classList.toggle('hidden', !canResume);
+    $('btn-start').textContent = canResume ? "Recommencer depuis le début" : (found.length ? "Recommencer l'enquête" : "Commencer l'enquête");
+    $('btn-start').classList.toggle('primary', !canResume);
+    $('screen-title').classList.remove('hidden');
+    $('screen-story').classList.add('hidden');
+  }
+
+  function showStory() { $('screen-title').classList.add('hidden'); $('screen-story').classList.remove('hidden'); }
+
+  function goTo(id, opts) {
+    opts = opts || {};
+    if (!opts.noHistory && game.at !== id) game.history.push(game.at);
+    game.at = id;
+    errors = 0; solvedNow = false; orderSeq = []; circ = { sw: false, mat: -1 };
+    const p = S[id];
+    const freshClues = [], freshObjs = [];
+    if (!opts.resume) {
+      (p.clues || []).forEach(c => { if (game.clues.indexOf(c) === -1) { game.clues.push(c); freshClues.push(c); } });
+      (p.objects || []).forEach(o => { if (game.objects.indexOf(o) === -1) { game.objects.push(o); freshObjs.push(o); } });
+    }
+    if (p.ending) removeKey(KEY_SAVE()); else writeJSON(KEY_SAVE(), game);
+    renderPara(p, freshClues, freshObjs);
+    updateCount();
+    window.scrollTo(0, 0);
+  }
+
+  function renderPara(p, freshClues, freshObjs) {
+    let html = `<div class="para-head"><span class="para-num">${p.n}</span><h2>${p.title}</h2></div>`;
+    if (p.before) html += p.before(game);
+    html += p.text.map(t => /^<div/.test(t) ? t : `<p>${t}</p>`).join('');
+    if (p.dynamic) html += p.dynamic(game);
+    freshObjs.forEach(o => { html += `<div class="obj-found">🎒 <b>Objet ajouté à ton sac :</b> ${OBJECTS[o]}</div>`; });
+    freshClues.forEach(c => { html += `<div class="clue-found">📒 <b>Nouvel indice noté dans ton carnet :</b> ${CLUES[c]}</div>`; });
+
+    if (p.enigme) {
+      if (game.solved[game.at]) {
+        html += `<div class="feedback ok" style="margin-bottom:12px">✅ Tu as déjà résolu cette énigme.</div>`;
+        html += `<div class="choices">${choiceBtn({ label: "Continuer", to: p.enigme.to })}</div>`;
+      } else {
+        html += renderEnigme(p.enigme);
+        html += `<div class="choices" id="after-enigme"></div>`;
+      }
+    } else if (p.auto) {
+      html += `<div class="choices">${choiceBtn({ label: p.autoLabel || "Continuer", to: p.auto(game) })}</div>`;
+    } else if (p.ending) {
+      const isNew = saveEnding(game.at);
+      const icon = p.ending.type === 'win' ? '🏆' : p.ending.type === 'half' ? '🏃' : '❌';
+      const label = p.ending.type === 'win' ? 'Fin gagnante' : p.ending.type === 'half' ? 'Fin à moitié réussie' : 'Fin ratée';
+      html += `<div class="ending-box ${p.ending.type}"><div class="big">${icon}</div><h3>${label}</h3><p style="margin:6px 0 10px">${p.ending.title}</p>
+        <div class="muted">${isNew ? '✨ Nouvelle fin découverte ! ' : ''}Fins découvertes : ${loadEndings().length} / ${ENDINGS.length}</div></div><div class="ending-actions">`;
+      if (p.ending.type !== 'win' && p.ending.backTo) html += `<button class="btn" data-act="backTo" data-target="${p.ending.backTo}">↩ Retourner enquêter</button>`;
+      else if (p.ending.type !== 'win' && !p.ending.noBack && game.history.length) html += `<button class="btn" data-act="back">↩ Revenir au choix précédent</button>`;
+      html += `<button class="btn primary" data-act="restart">🔄 Recommencer l'enquête</button><button class="btn" data-act="menu">Menu</button></div>`;
+      // Plan de travail : l'enquête n'est cochée que lorsqu'elle est résolue (fin gagnante). Aucun score envoyé.
+      if (p.ending.type === 'win') { try { if (window.parent && window.parent !== window && typeof window.parent.ptEnqueteFinie === 'function') window.parent.ptEnqueteFinie('jeu_enquete_etang'); } catch (e) {} }
+      if (p.ending.type === 'win' && typeof confetti === 'function') setTimeout(() => { try { confetti({ particleCount: 150, spread: 80, origin: { y: .6 } }); } catch (e) {} }, 250);
+    } else {
+      const list = p.choices.filter(c => (!c.requires || has(c.requires)) && (!c.requiresNot || !has(c.requiresNot)));
+      html += `<div class="choices">${p.prompt ? `<div class="prompt">${p.prompt}</div>` : ''}${list.map(choiceBtn).join('')}</div>`;
+    }
+    story.innerHTML = html;
+  }
+
+  function choiceBtn(c) {
+    const cls = c.accuse ? 'accuse' : (c.cls || '');
+    return `<button class="choice ${cls}" data-to="${c.to}">${c.accuse ? '⚖️ ' : ''}${esc(c.label)}<span class="go">Va au ${S[c.to].n}</span></button>`;
+  }
+
+  const inputAttrs = 'type="text" inputmode="numeric" pattern="[0-9]*" maxlength="5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"';
+  function renderEnigme(e) {
+    let h = `<div class="enigme" id="enigme"><h3>${e.title}</h3><p class="q">${e.question}</p>`;
+    if (e.kind === 'number') {
+      h += `<div class="answer-row"><input id="ans-0" ${inputAttrs} aria-label="Réponse">${e.unit ? `<span class="unit">${e.unit}</span>` : ''}</div>`;
+    } else if (e.kind === 'numbers') {
+      e.fields.forEach((f, i) => { h += `<div class="answer-row"><label for="ans-${i}">${f.label}</label><input id="ans-${i}" ${inputAttrs}></div>`; });
+    } else if (e.kind === 'qcm') {
+      h += `<div class="qcm">` + e.options.map((o, i) => `<button type="button" data-opt="${i}">${o}</button>`).join('') + `</div>`;
+    } else if (e.kind === 'grid') {
+      h += `<div class="grid-wrap"><table class="grid"><thead><tr><th></th>` + e.cols.map(c => `<th>${c}</th>`).join('') + `</tr></thead><tbody>` +
+        e.rows.map((r, i) => `<tr><td class="rl">${r.label}</td>` + e.cols.map((c, k) => `<td><button type="button" data-gr="${i},${k}" aria-label="${r.label} : ${c}" aria-pressed="false"></button></td>`).join('') + `</tr>`).join('') +
+        `</tbody></table></div>`;
+    } else if (e.kind === 'circuit') {
+      h += `<div id="circuit-box">${circuitSVG(e)}</div><p class="muted" style="margin:0 0 6px">Objets à essayer :</p><div class="mats">` +
+        e.materials.map((m, i) => `<button type="button" data-mat="${i}">${m.icon} ${m.label}</button>`).join('') + `</div>`;
+    } else if (e.kind === 'zone') {
+      h += globeSVG();
+    } else if (e.kind === 'order') {
+      h += `<div class="order">` + e.items.map((it, i) => `<button type="button" data-ord="${i}"><span class="rank"></span><span>${it}</span></button>`).join('') + `</div>`;
+      h += `<div class="order-tools"><button class="btn" type="button" data-act="ordreset">↺ Tout effacer</button></div>`;
+    } else if (e.kind === 'classify') {
+      h += `<div class="classify">` + e.items.map((it, i) => `<div class="cl-row" data-row="${i}"><span class="cl-label">${it.label}</span><span class="cl-btns">` +
+        e.categories.map((c, k) => `<button type="button" data-cl="${k}">${c}</button>`).join('') + `</span></div>`).join('') + `</div>`;
+    }
+    h += `<button class="btn primary" data-act="check">Valider</button><div id="enigme-fb"></div></div>`;
+    return h;
+  }
+
+  function checkEnigme() {
+    if (solvedNow) return;
+    const e = S[game.at].enigme, fb = $('enigme-fb');
+    let ok = false, said = '';
+    if (e.kind === 'number' || e.kind === 'numbers') {
+      const answers = e.kind === 'number' ? [e.answer] : e.fields.map(f => f.answer);
+      const vals = answers.map((_, i) => ($('ans-' + i).value || '').replace(/\D/g, ''));
+      if (vals.some(v => !v)) { fb.innerHTML = `<div class="feedback info">${answers.length > 1 ? 'Complète <b>toutes</b> les cases' : 'Écris un nombre'} avant de valider.</div>`; return; }
+      ok = vals.every((v, i) => parseInt(v, 10) === answers[i]);
+      said = ` Tu as écrit ${vals.join(' et ')}.`;
+    } else if (e.kind === 'qcm') {
+      const sel = story.querySelector('.qcm button.sel');
+      if (!sel) { fb.innerHTML = `<div class="feedback info">Choisis une réponse avant de valider.</div>`; return; }
+      ok = parseInt(sel.getAttribute('data-opt'), 10) === e.answer;
+    } else if (e.kind === 'grid') {
+      let wrong = 0;
+      e.rows.forEach((r, i) => r.answer.forEach((v, k) => { const b = story.querySelector(`[data-gr="${i},${k}"]`); if ((b.classList.contains('on') ? 1 : 0) !== v) wrong++; }));
+      ok = wrong === 0;
+      said = wrong ? (wrong === 1 ? ' Une case n\'est pas juste.' : ' ' + wrong + ' cases ne sont pas justes.') : '';
+    } else if (e.kind === 'circuit') {
+      if (circ.mat === -1) { fb.innerHTML = `<div class="feedback info">Choisis d'abord un objet pour fermer le trou du circuit.</div>`; return; }
+      ok = circuitLit(e);
+      said = !e.materials[circ.mat].conductor ? ' L\'ampoule reste éteinte : le courant ne traverse pas cet objet.' : (!circ.sw ? ' L\'ampoule reste éteinte : regarde l\'interrupteur.' : '');
+    } else if (e.kind === 'zone') {
+      const sel = story.querySelector('.globe .band.sel');
+      if (!sel) { fb.innerHTML = `<div class="feedback info">Touche une zone du globe avant de valider.</div>`; return; }
+      const z = parseInt(sel.getAttribute('data-zone'), 10);
+      ok = z === e.answer;
+      said = ' Tu as choisi : ' + ZONE_NAMES[z] + '.';
+    } else if (e.kind === 'order') {
+      if (orderSeq.length < e.items.length) { fb.innerHTML = `<div class="feedback info">${e.incomplete || 'Touche <b>tous</b> les évènements, du plus ancien au plus récent, avant de valider.'}</div>`; return; }
+      ok = orderSeq.every((v, i) => v === e.answer[i]);
+    } else if (e.kind === 'classify') {
+      const rows = Array.from(story.querySelectorAll('.cl-row'));
+      const picks = rows.map(r => { const b = r.querySelector('button.sel'); return b ? parseInt(b.getAttribute('data-cl'), 10) : -1; });
+      rows.forEach((r, i) => r.classList.toggle('missing', picks[i] === -1));
+      const left = picks.filter(v => v === -1).length;
+      if (left) { fb.innerHTML = `<div class="feedback info">Il reste ${left === 1 ? '<b>1 ligne</b>' : '<b>' + left + ' lignes</b>'} sans réponse : touche un bouton sur chaque ligne avant de valider.</div>`; return; }
+      const wrong = picks.filter((v, i) => v !== e.items[i].answer).length;
+      ok = wrong === 0;
+      said = wrong ? (wrong === 1 ? ' Une ligne est mal classée.' : ' ' + wrong + ' lignes sont mal classées.') : '';
+    }
+
+    if (ok) {
+      solvedNow = true;
+      game.solved[game.at] = true;
+      writeJSON(KEY_SAVE(), game);
+      story.querySelectorAll('#enigme input').forEach(i => { i.readOnly = true; });
+      const q = story.querySelector('.qcm'); if (q) { q.classList.add('done'); q.querySelector('.sel').classList.add('good'); }
+      const cl = story.querySelector('.classify'); if (cl) cl.classList.add('done');
+      const gl = story.querySelector('.globe'); if (gl) gl.classList.add('done');
+      const gw = story.querySelector('.grid-wrap'); if (gw) gw.classList.add('grid-done');
+      const od = story.querySelector('.order'); if (od) { od.classList.add('done'); const rt = story.querySelector('[data-act="ordreset"]'); if (rt) rt.remove(); }
+      story.querySelector('[data-act="check"]').remove();
+      fb.innerHTML = `<div class="feedback ok">✅ ${e.success}</div>`;
+      $('after-enigme').innerHTML = choiceBtn({ label: "Continuer l'enquête", to: e.to });
+      return;
+    }
+    errors++;
+    fb.innerHTML = `<div class="feedback ko">❌ Ce n'est pas ça.${esc(said)}<br>💡 <b>Indice :</b> ${e.hint}</div>`;
+    if (errors >= 2 && !story.querySelector('.choice.skip')) {
+      $('after-enigme').innerHTML = `<button class="choice skip" data-to="${e.skipTo}">${esc(e.skipLabel)}<span class="go">Va au ${S[e.skipTo].n}</span></button>`;
+    }
+  }
+
+  /* Circuit à monter : pile, interrupteur, ampoule et un trou à boucher avec un objet. */
+  function circuitLit(e) { return circ.sw && circ.mat !== -1 && e.materials[circ.mat].conductor; }
+  function circuitSVG(e) {
+    const m = circ.mat === -1 ? null : e.materials[circ.mat];
+    const lever = circ.sw ? '<line class="w" x1="170" y1="40" x2="226" y2="40"/>' : '<line class="w" x1="170" y1="40" x2="218" y2="12"/>';
+    return `<svg class="circuit-svg${circuitLit(e) ? ' lit' : ''}" viewBox="0 0 400 250" role="group" aria-label="Circuit à réparer">
+      <polyline class="w" points="60,118 60,40 166,40"/>
+      <circle cx="170" cy="40" r="5" fill="#1A1A2E"/><circle cx="230" cy="40" r="5" fill="#1A1A2E"/>
+      ${lever}
+      <g class="sw" role="button" aria-label="Interrupteur ${circ.sw ? 'fermé' : 'ouvert'}"><rect class="sw-hit" x="150" y="0" width="100" height="62"/></g>
+      <text class="lbl" x="200" y="78" text-anchor="middle">interrupteur ${circ.sw ? 'fermé' : 'ouvert'} (touche-le)</text>
+      <polyline class="w" points="234,40 340,40 340,92"/>
+      <g class="rays"><line x1="372" y1="96" x2="392" y2="86"/><line x1="376" y1="118" x2="398" y2="118"/><line x1="372" y1="140" x2="392" y2="150"/><line x1="308" y1="96" x2="288" y2="86"/><line x1="304" y1="118" x2="282" y2="118"/><line x1="308" y1="140" x2="288" y2="150"/></g>
+      <circle class="bulb" cx="340" cy="118" r="26"/><line x1="322" y1="100" x2="358" y2="136" stroke="#1A1A2E" stroke-width="3"/><line x1="358" y1="100" x2="322" y2="136" stroke="#1A1A2E" stroke-width="3"/>
+      <polyline class="w" points="340,144 340,210 250,210"/>
+      <rect x="150" y="190" width="100" height="40" rx="8" fill="${m ? '#FFF7D6' : '#fff'}" stroke="#C97B1A" stroke-width="2.5" stroke-dasharray="${m ? '0' : '6 4'}"/>
+      <text class="lbl" x="200" y="215" text-anchor="middle">${m ? m.icon + ' ' + m.label.split(' ')[0] : 'trou'}</text>
+      <polyline class="w" points="150,210 60,210 60,130"/>
+      <line x1="34" y1="118" x2="86" y2="118" stroke="#1A1A2E" stroke-width="4"/><line x1="46" y1="130" x2="74" y2="130" stroke="#1A1A2E" stroke-width="9"/>
+      <text class="lbl" x="92" y="116">+</text><text class="lbl" x="92" y="150">pile</text>
+    </svg>`;
+  }
+  function paintCircuit() {
+    const e = S[game.at].enigme, box = $('circuit-box');
+    if (box) box.innerHTML = circuitSVG(e);
+    const fb = $('enigme-fb'); if (fb) fb.innerHTML = '';
+  }
+
+  /* Globe en vue de face : les parallèles sont des droites, à la hauteur R × sin(latitude). */
+  const ZONE_NAMES = ['la zone polaire nord', 'la zone tempérée nord', 'la zone chaude', 'la zone tempérée sud', 'la zone polaire sud'];
+  function globeSVG() {
+    const cx = 120, cy = 130, R = 110, y = lat => cy - R * Math.sin(lat * Math.PI / 180);
+    const cuts = [90, 66.56, 23.44, -23.44, -66.56, -90];
+    let bands = '';
+    for (let i = 0; i < 5; i++) {
+      const y1 = y(cuts[i]), y2 = y(cuts[i + 1]);
+      bands += `<g class="band${i % 2 ? ' alt' : ''}" data-zone="${i}" role="button" aria-label="${ZONE_NAMES[i]}"><rect x="${cx - R}" y="${y1.toFixed(1)}" width="${2 * R}" height="${(y2 - y1).toFixed(1)}" clip-path="url(#globe-clip)"/></g>`;
+    }
+    const lines = [[66.56, 'Cercle polaire arctique'], [23.44, 'Tropique du Cancer'], [0, 'Équateur'], [-23.44, 'Tropique du Capricorne'], [-66.56, 'Cercle polaire antarctique']];
+    let ls = '';
+    lines.forEach(([lat, name]) => {
+      const yy = y(lat), half = R * Math.cos(lat * Math.PI / 180);
+      ls += `<line class="line${lat === 0 ? ' eq' : ''}" x1="${(cx - half).toFixed(1)}" y1="${yy.toFixed(1)}" x2="${(cx + half).toFixed(1)}" y2="${yy.toFixed(1)}"/>`;
+      ls += `<line x1="${(cx + half).toFixed(1)}" y1="${yy.toFixed(1)}" x2="${cx + R + 12}" y2="${yy.toFixed(1)}" stroke="#8A8A9A" stroke-dasharray="3 3"/>`;
+      ls += `<text class="lbl" x="${cx + R + 16}" y="${(yy + 4).toFixed(1)}">${name}</text>`;
+    });
+    return `<svg class="globe" viewBox="0 0 470 270" role="group" aria-label="Globe terrestre et ses zones">
+      <defs><clipPath id="globe-clip"><circle cx="${cx}" cy="${cy}" r="${R}"/></clipPath></defs>
+      ${bands}
+      <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#1A1A2E" stroke-width="2.5" pointer-events="none"/>
+      <g pointer-events="none">${ls}</g>
+      <text class="pole" x="${cx}" y="${cy - R - 6}" text-anchor="middle" pointer-events="none">Pôle Nord</text>
+      <text class="pole" x="${cx}" y="${cy + R + 18}" text-anchor="middle" pointer-events="none">Pôle Sud</text>
+    </svg>`;
+  }
+
+  function paintOrder() {
+    story.querySelectorAll('.order button').forEach(b => {
+      const pos = orderSeq.indexOf(parseInt(b.dataset.ord, 10));
+      b.classList.toggle('sel', pos !== -1);
+      b.querySelector('.rank').textContent = pos === -1 ? '' : pos + 1;
+    });
+    const fb = $('enigme-fb'); if (fb && fb.querySelector('.feedback.info')) fb.innerHTML = '';
+  }
+
+  function updateCount() { $('clue-count').textContent = game ? game.clues.length + game.objects.length : 0; }
+  function openCarnet() {
+    $('sac-list').innerHTML = game.objects.length ? game.objects.map(o => `<li>${OBJECTS[o]}</li>`).join('') : `<li class="muted">Ton sac est vide.</li>`;
+    $('carnet-list').innerHTML = game.clues.length ? game.clues.map(c => `<li>🔎 ${CLUES[c]}</li>`).join('') : `<li class="muted">Aucun indice pour l'instant. Mène l'enquête !</li>`;
+    $('carnet').classList.add('open');
+  }
+
+  story.addEventListener('click', (ev) => {
+    const swb = ev.target.closest && ev.target.closest('.circuit-svg .sw');
+    if (swb) { if (!solvedNow) { circ.sw = !circ.sw; paintCircuit(); } return; }
+    const zb = ev.target.closest && ev.target.closest('.globe .band');
+    if (zb) {
+      if (solvedNow) return;
+      story.querySelectorAll('.globe .band').forEach(b => b.classList.toggle('sel', b === zb));
+      const fb = $('enigme-fb'); if (fb && fb.querySelector('.feedback.info')) fb.innerHTML = '';
+      return;
+    }
+    const t = ev.target.closest('button');
+    if (!t) return;
+    if (t.dataset.to) { goTo(t.dataset.to); return; }
+    if (t.dataset.gr !== undefined) {
+      if (solvedNow) return;
+      const on = !t.classList.contains('on');
+      t.classList.toggle('on', on); t.textContent = on ? '✓' : ''; t.setAttribute('aria-pressed', on ? 'true' : 'false');
+      return;
+    }
+    if (t.dataset.mat !== undefined) {
+      if (solvedNow) return;
+      circ.mat = parseInt(t.dataset.mat, 10);
+      story.querySelectorAll('.mats button').forEach(b => b.classList.toggle('sel', b === t));
+      paintCircuit();
+      return;
+    }
+    if (t.dataset.ord !== undefined) {
+      if (solvedNow) return;
+      const k = parseInt(t.dataset.ord, 10), pos = orderSeq.indexOf(k);
+      if (pos === -1) orderSeq.push(k); else orderSeq = orderSeq.slice(0, pos);
+      paintOrder();
+      return;
+    }
+    if (t.dataset.cl !== undefined) {
+      if (solvedNow) return;
+      const row = t.closest('.cl-row');
+      row.querySelectorAll('button').forEach(b => b.classList.toggle('sel', b === t));
+      row.classList.remove('missing');
+      return;
+    }
+    if (t.dataset.opt !== undefined) {
+      if (solvedNow) return;
+      t.parentNode.querySelectorAll('button').forEach(b => b.classList.toggle('sel', b === t));
+      return;
+    }
+    const act = t.dataset.act;
+    if (act === 'check') checkEnigme();
+    else if (act === 'ordreset') { if (!solvedNow) { orderSeq = []; paintOrder(); } }
+    else if (act === 'restart') { newGame(); goTo(FIRST, { noHistory: true }); }
+    else if (act === 'menu') renderTitle();
+    else if (act === 'back') { let prev = game.history.pop(); while (prev && S[prev].auto) prev = game.history.pop(); if (prev) goTo(prev, { noHistory: true }); }
+    else if (act === 'backTo') goTo(t.dataset.target, { noHistory: true });
+  });
+  story.addEventListener('keydown', (ev) => { if (ev.key === 'Enter' && ev.target.tagName === 'INPUT') { ev.preventDefault(); checkEnigme(); } });
+
+  $('btn-start').addEventListener('click', () => { newGame(); showStory(); goTo(FIRST, { noHistory: true }); });
+  $('btn-resume').addEventListener('click', () => {
+    const save = readJSON(KEY_SAVE(), null);
+    if (!save || !S[save.at]) { newGame(); } else {
+      game = { at: save.at, clues: save.clues || [], objects: save.objects || [], history: save.history || [], solved: save.solved || {} };
+    }
+    showStory(); goTo(game.at, { noHistory: true, resume: true });
+  });
+  $('btn-menu').addEventListener('click', renderTitle);
+  $('btn-carnet').addEventListener('click', openCarnet);
+  $('btn-carnet-close').addEventListener('click', () => $('carnet').classList.remove('open'));
+  $('carnet').addEventListener('click', (ev) => { if (ev.target.id === 'carnet') $('carnet').classList.remove('open'); });
+
+  window.__enquete = { S, CLUES, PREUVES, goTo, get game() { return game; }, newGame };
+  renderTitle();
+})();
+</script>
+</body>
+</html>
