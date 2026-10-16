@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Le Carnet perdu — Plateforme LCML</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+  :root {
+    --purple: #5B4FCF; --purple-light: #EEF0FF; --purple-mid: #C7C2F5;
+    --green: #1A9E75; --green-light: #E2F5EE;
+    --red: #D94F3D; --red-light: #FDECEA;
+    --amber: #F59E0B; --amber-dark: #C97B1A; --amber-light: #FEF3E2;
+    --blue: #1A6FA0; --blue-light: #E2F0FA;
+    --parchment: #F3FBF6;
+    --bg: #FDFBF7; --surface: #FFFFFF; --surface-alt: #F4F1EB;
+    --text: #1A1A2E; --muted: #6B7080; --border: #1A1A2E;
+    --shadow: 4px 4px 0 var(--border); --shadow-sm: 2px 2px 0 var(--border);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; }
+  body { padding: 16px; }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1, h2, h3, .fred { font-family: 'Fredoka', 'Inter', sans-serif; }
+  button { font: inherit; color: inherit; cursor: pointer; touch-action: manipulation; }
+
+  .topbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .topbar .title { flex: 1; min-width: 180px; font-family: 'Fredoka'; font-weight: 700; font-size: 1.25rem; }
+  .btn { border: 2px solid var(--border); border-radius: 12px; background: var(--surface); padding: 10px 14px; min-height: 48px; font-weight: 600; box-shadow: var(--shadow-sm); }
+  .btn:active { transform: translate(2px,2px); box-shadow: none; }
+  .btn.primary { background: var(--purple); color: #fff; }
+  .btn.amber { background: var(--amber-light); }
+  .btn .count { display: inline-block; min-width: 22px; padding: 0 6px; margin-left: 4px; border-radius: 999px; background: var(--purple); color: #fff; font-size: .85rem; }
+
+  .card { background: var(--surface); border: 2px solid var(--border); border-radius: 20px; box-shadow: var(--shadow); padding: 22px; }
+  .story.card { background: var(--parchment); }
+
+  .hero { text-align: center; }
+  .hero .owl { font-size: 4.5rem; line-height: 1; }
+  .hero h1 { font-size: 2rem; margin: 10px 0 6px; }
+  .hero p { line-height: 1.55; font-size: 1.05rem; }
+  .rules { text-align: left; background: var(--surface-alt); border-radius: 14px; padding: 14px 18px; margin: 16px 0; line-height: 1.5; }
+  .rules li { margin: 4px 0; }
+  .endings { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 12px 0 18px; }
+  .ending-chip { border: 2px solid var(--border); border-radius: 999px; padding: 6px 12px; font-size: .9rem; background: var(--surface-alt); color: var(--muted); }
+  .ending-chip.found { color: var(--text); background: var(--green-light); }
+  .ending-chip.found.win { background: #FFE9A8; }
+  .start-btns { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+  .para-num { display: inline-flex; align-items: center; justify-content: center; width: 58px; height: 58px; border-radius: 50%; flex-shrink: 0;
+    background: var(--purple); color: #fff; font-family: 'Fredoka'; font-weight: 700; font-size: 1.6rem; border: 2px solid var(--border); box-shadow: var(--shadow-sm); }
+  .para-head { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  .para-head h2 { margin: 0; font-size: 1.35rem; }
+  .story p { font-size: 1.12rem; line-height: 1.7; margin: 0 0 14px; }
+  .story .speech { font-style: italic; }
+  .doc { font-family: 'Fredoka'; background: #FFFBEA; border: 2px solid var(--border); border-radius: 6px; padding: 14px 18px; margin: 0 0 14px; font-size: 1.1rem; line-height: 1.8; }
+  .vocab { background: var(--surface); border-left: 5px solid var(--amber-dark); border-radius: 8px; padding: 8px 12px; margin: 0 0 14px; font-size: .98rem; line-height: 1.5; }
+
+  .clue-found { background: var(--blue-light); border: 2px solid var(--blue); border-radius: 12px; padding: 10px 14px; margin: 4px 0 12px; font-size: 1rem; line-height: 1.45; }
+  .clue-found b { color: var(--blue); }
+  .obj-found { background: var(--green-light); border: 2px solid var(--green); border-radius: 12px; padding: 10px 14px; margin: 4px 0 12px; font-size: 1rem; line-height: 1.45; }
+
+  .choices { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+  .choices .prompt { font-weight: 700; font-family: 'Fredoka'; font-size: 1.1rem; margin: 6px 0 2px; }
+  .choice { display: flex; align-items: center; gap: 12px; text-align: left; width: 100%; border: 2px solid var(--border); border-radius: 14px;
+    background: var(--purple-light); padding: 12px 14px; min-height: 56px; font-size: 1.05rem; font-weight: 600; box-shadow: var(--shadow-sm); }
+  .choice:active { transform: translate(2px,2px); box-shadow: none; }
+  .choice .go { margin-left: auto; flex-shrink: 0; font-family: 'Fredoka'; font-size: .95rem; background: var(--surface); border: 2px solid var(--border); border-radius: 999px; padding: 2px 10px; white-space: nowrap; }
+  .choice.accuse { background: var(--red-light); }
+  .choice.skip { background: var(--surface-alt); }
+  .choice.obj { background: var(--green-light); }
+
+  .enigme { border: 2px solid var(--border); border-radius: 16px; background: var(--amber-light); padding: 16px; margin: 6px 0 16px; }
+  .enigme h3 { margin: 0 0 8px; font-size: 1.15rem; }
+  .enigme .q { font-size: 1.05rem; line-height: 1.55; margin: 0 0 12px; font-weight: 600; }
+  .answer-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+  .answer-row label { font-weight: 600; min-width: 140px; }
+  .answer-row input { width: 120px; font-size: 1.4rem; font-family: 'Fredoka'; text-align: center; padding: 8px; border: 2px solid var(--border); border-radius: 10px; background: #fff; }
+  .answer-row .unit { font-family: 'Fredoka'; font-size: 1.2rem; font-weight: 600; }
+  .qcm { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  .qcm button { text-align: left; border: 2px solid var(--border); border-radius: 12px; background: #fff; padding: 10px 14px; min-height: 52px; font-size: 1.02rem; font-weight: 500; }
+  .qcm button.sel { background: var(--purple); color: #fff; }
+  .qcm button.good { background: var(--green); color: #fff; }
+  .qcm.done button:not(.sel) { opacity: .45; }
+  .classify { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  .cl-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; border: 2px solid var(--border); border-radius: 12px; background: #fff; padding: 8px 10px; }
+  .cl-row .cl-label { flex: 1 1 200px; font-weight: 500; line-height: 1.35; }
+  .cl-row .cl-btns { display: flex; gap: 6px; }
+  .cl-row .cl-btns button { border: 2px solid var(--border); border-radius: 10px; background: #fff; padding: 8px 12px; min-height: 44px; font-size: .98rem; font-weight: 600; }
+  .cl-row .cl-btns button.sel { background: var(--purple); color: #fff; }
+  .cl-row.missing { border-color: var(--amber-dark); background: var(--amber-light); }
+  .classify.done .cl-btns button.sel { background: var(--green); }
+  .classify.done .cl-btns button:not(.sel) { opacity: .45; }
+  .order { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  .order button { display: flex; align-items: center; gap: 10px; text-align: left; border: 2px solid var(--border); border-radius: 12px; background: #fff; padding: 8px 12px; min-height: 52px; font-size: 1.02rem; font-weight: 500; }
+  .order button .rank { flex: 0 0 34px; height: 34px; border-radius: 50%; border: 2px dashed var(--purple-mid); display: flex; align-items: center; justify-content: center; font-family: 'Fredoka'; font-weight: 700; font-size: 1.1rem; }
+  .order button.sel .rank { background: var(--purple); border: 2px solid var(--purple); color: #fff; }
+  .order.done button .rank { background: var(--green); border-color: var(--green); }
+  .order-tools { margin: -2px 0 10px; }
+  .globe { display: block; width: 100%; max-width: 540px; margin: 0 auto 10px; touch-action: manipulation; }
+  .globe .band { cursor: pointer; }
+  .globe .band rect { fill: #DCEFFB; stroke: none; }
+  .globe .band.alt rect { fill: #F4FAFF; }
+  .globe .band.sel rect { fill: var(--purple); }
+  .globe.done .band.sel rect { fill: var(--green); }
+  .globe .line { stroke: #1A1A2E; stroke-width: 1.5; }
+  .globe .line.eq { stroke-width: 2.5; }
+  .globe .lbl { font-family: 'Inter', sans-serif; font-size: 15px; fill: #1A1A2E; }
+  .globe .pole { font-family: 'Fredoka', sans-serif; font-size: 15px; font-weight: 700; fill: #1A1A2E; }
+  .feedback { margin-top: 12px; padding: 10px 14px; border-radius: 10px; line-height: 1.5; font-size: 1rem; }
+  .feedback.ok { background: var(--green-light); border: 2px solid var(--green); }
+  .feedback.ko { background: var(--red-light); border: 2px solid var(--red); }
+  .feedback.info { background: var(--surface); border: 2px solid var(--amber-dark); }
+
+  .proofs { list-style: none; padding: 0; margin: 0 0 14px; }
+  .proofs li { background: var(--surface); border: 2px solid var(--border); border-radius: 10px; padding: 8px 12px; margin-bottom: 8px; line-height: 1.45; }
+
+  .ending-box { text-align: center; border: 2px solid var(--border); border-radius: 16px; padding: 16px; margin: 10px 0 14px; }
+  .ending-box.win { background: #FFE9A8; }
+  .ending-box.half { background: var(--blue-light); }
+  .ending-box.lose { background: var(--red-light); }
+  .ending-box .big { font-size: 2.6rem; }
+  .ending-box h3 { margin: 6px 0; font-size: 1.3rem; }
+  .ending-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+  .overlay { position: fixed; inset: 0; background: rgba(26,26,46,.45); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 10; }
+  .overlay.open { display: flex; }
+  .overlay .card { max-width: 560px; width: 100%; max-height: 85vh; overflow: auto; }
+  .carnet-list { list-style: none; padding: 0; margin: 8px 0 14px; }
+  .carnet-list li { border-bottom: 2px dashed var(--purple-mid); padding: 10px 2px; line-height: 1.45; }
+  .muted { color: var(--muted); }
+  .hidden { display: none !important; }
+  @media (max-width: 480px) { body { padding: 10px; } .card { padding: 16px; } .story p { font-size: 1.05rem; } .hero h1 { font-size: 1.6rem; } .answer-row label { min-width: 0; width: 100%; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section id="screen-title" class="card hero">
+    <div class="owl">📓</div>
+    <h1>Le Carnet perdu</h1>
+    <p class="muted fred">Une enquête dont tu es le héros ou l'héroïne — à l'aéroport de Bruxelles</p>
+    <div class="rules">
+      <ul>
+        <li>📓 Une voyageuse a perdu son carnet de terrain, et un inconnu prétend qu'il est à lui. À toi de découvrir la vérité !</li>
+        <li>🌍 Continents, océans, zones du globe, climats et population : ta <b>géographie du monde</b> est ton meilleur outil.</li>
+        <li>🔐 Les <b>énigmes</b> te font gagner des preuves. Plus tu en résous, plus ton dossier est solide.</li>
+        <li>📒 Les indices sont notés dans ton <b>carnet d'enquête</b>, et certains ouvrent de nouveaux chemins.</li>
+        <li>⚖️ Attention : accuser quelqu'un <b>sans preuve</b> n'est pas juste !</li>
+        <li>💾 La partie est <b>sauvegardée</b> : tu peux la reprendre plus tard.</li>
+      </ul>
+    </div>
+    <div class="fred" style="font-weight:600">Fins découvertes : <span id="endings-count">0</span> / <span id="endings-total">6</span></div>
+    <div class="endings" id="endings-list"></div>
+    <div class="start-btns">
+      <button class="btn primary hidden" id="btn-resume" style="font-size:1.1rem;padding:12px 24px">▶ Reprendre ma partie</button>
+      <button class="btn" id="btn-start" style="font-size:1.1rem;padding:12px 24px">Commencer l'enquête</button>
+    </div>
+  </section>
+
+  <section id="screen-story" class="hidden">
+    <div class="topbar">
+      <div class="title">📓 Le Carnet perdu</div>
+      <button class="btn amber" id="btn-carnet">📒 Carnet <span class="count" id="clue-count">0</span></button>
+      <button class="btn" id="btn-menu">⟲ Menu</button>
+    </div>
+    <article class="card story" id="story"></article>
+  </section>
+</div>
+
+<div class="overlay" id="carnet">
+  <div class="card">
+        <h2 style="margin:0 0 4px">📒 Mes indices</h2>
+    <ul class="carnet-list" id="carnet-list"></ul>
+    <button class="btn primary" id="btn-carnet-close" style="width:100%">Fermer le carnet</button>
+  </div>
+</div>
+
+<script src="lcml_jeux_sync.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* =====================================================================
+     INDICES ET OBJETS
+     PREUVES : indices qui montrent à l'agente Claes que le carnet
+     n'appartient pas à M. Vargas.
+     ===================================================================== */
+  const CLUES = {
+    escale:     "Le carnet décrit un voyage Bruxelles ➜ Le Cap ➜ station Princesse Élisabeth, en Antarctique. M. Vargas, lui, dit qu'il part à Dubaï.",
+    ignorance:  "M. Vargas croit que l'Antarctique est entouré par l'océan Arctique, alors que son « propre » carnet parle de l'océan Austral.",
+    equipement: "M. Vargas dit qu'il part à Dubaï, au climat aride et chaud… mais il transporte une tenue polaire et des bottes de neige.",
+    carte:      "Sa carte d'embarquement, oubliée au café, est au nom d'Oscar Vargas, pour le vol de 11 h 20 vers Le Cap, et non vers Dubaï.",
+    libraire:   "À la librairie, M. Vargas a acheté un livre sur les météorites de l'Antarctique et a demandé la porte du vol pour Le Cap.",
+    photo:      "Sur une photo de l'exposition, la géologue Lina Maes porte une parka rouge : c'est la femme qui a laissé tomber le carnet.",
+    station:    "La station Princesse Élisabeth est en Antarctique, dans la zone polaire sud. Elle est ouverte de novembre à février, pendant l'été austral.",
+    meteorites: "Le carnet contient une carte de l'endroit où l'équipe de Lina Maes a repéré des météorites."
+  };
+  const PREUVES = ['escale', 'ignorance', 'equipement', 'carte', 'libraire', 'photo'];
+
+  const OBJECTS = {};
+
+  /* =====================================================================
+     L'HISTOIRE
+     ===================================================================== */
+  const S = {
+    debut: { title: "Le carnet perdu",
+      text: [
+        "Samedi, 9 h 30, à l'aéroport de Bruxelles. C'est le début du congé d'automne : tu attends avec ta grand-mère l'heure de partir en vacances.",
+        "Soudain, une femme en parka rouge passe en courant, tire une grosse valise… et laisse tomber un carnet. Le temps de le ramasser, elle a disparu dans la foule.",
+        "Sur la couverture, il est écrit : « Carnet de terrain — Expédition 2026 ». À la première page, tu lis :",
+        "<div class='doc'>🗺️ Mon trajet : Bruxelles ➜ Le Cap (Afrique du Sud) ➜ station Princesse Élisabeth (Antarctique)</div>",
+        "<div class='vocab'>📚 Les <b>6 continents</b> : l'Europe, l'Asie, l'Amérique, l'Afrique, l'Océanie et l'Antarctique.</div>"
+      ],
+      enigme: { kind: 'number', answer: 3, unit: "continents",
+        title: "🌍 Combien de continents ?",
+        question: "Sur combien de continents différents la propriétaire du carnet va-t-elle passer pendant son trajet ?",
+        hint: "Pour chaque étape, demande-toi sur quel continent elle se trouve : Bruxelles est en Europe. Et Le Cap ? Et la station ?",
+        success: "Exact : 3 continents. Bruxelles est en Europe, Le Cap en Afrique, et la station Princesse Élisabeth en Antarctique.",
+        to: 'vargas', skipTo: 'vargas', skipLabel: "Refermer le carnet"
+      }
+    },
+
+    vargas: { title: "Un drôle de propriétaire",
+      text: [
+        "Un homme en costume gris s'approche de toi. <span class='speech'>« Ah, mon carnet ! Merci beaucoup. Je m'appelle Oscar Vargas. Donne-le-moi, je pars à Dubaï, mon avion va bientôt partir. »</span>",
+        "Ta grand-mère te souffle à l'oreille : <span class='speech'>« La personne qui l'a perdu portait une parka rouge… Avant de le donner, vérifie bien à qui il appartient. Je reste avec toi. »</span>",
+        "M. Vargas fronce les sourcils : <span class='speech'>« Bon, je t'attends près des portes d'embarquement. Mais dépêche-toi ! »</span>"
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Enquêter dans l'aéroport", to: 'hall' },
+        { label: "Donner le carnet à M. Vargas", to: 'finVargas', accuse: true }
+      ]
+    },
+
+    hall: { title: "Le hall des départs",
+      text: [
+        "Le hall des départs est plein de voyageurs. Ta grand-mère te suit partout. Le carnet est dans ton sac.",
+        "Au loin, tu aperçois M. Vargas, qui fait les cent pas près des portes d'embarquement."
+      ],
+      prompt: "Où vas-tu ?",
+      choices: [
+        { label: "📓 Feuilleter le carnet : la page « Le Cap »", to: 'pageCap' },
+        { label: "📓 Feuilleter le carnet : la page « La station »", to: 'pageStation' },
+        { label: "🌦️ L'écran météo des destinations", to: 'meteo' },
+        { label: "📚 La librairie", to: 'librairie' },
+        { label: "☕ Le café", to: 'cafe' },
+        { label: "📸 L'exposition photo sur l'Antarctique", to: 'expo' },
+        { label: "🧳 Parler à M. Vargas", to: 'questionVargas' },
+        { label: "👮 Le bureau de la police de l'aéroport", to: 'police', accuse: true }
+      ]
+    },
+
+    pageCap: { title: "Page « Le Cap »",
+      text: [
+        "Sur cette page, un petit dessin de globe et une note :",
+        "<div class='doc'>📍 Le Cap : environ 34° de latitude sud.<br>Y préparer le matériel avant le premier vol vers l'Antarctique, en novembre.</div>",
+        "<div class='vocab'>📚 Les grandes lignes du globe : le <b>cercle polaire arctique</b> (66° N), le <b>tropique du Cancer</b> (23° N), l'<b>équateur</b> (0°), le <b>tropique du Capricorne</b> (23° S) et le <b>cercle polaire antarctique</b> (66° S). Elles délimitent les zones chaude, tempérées et polaires.</div>"
+      ],
+      enigme: { kind: 'zone',
+        title: "🌐 Dans quelle zone ?",
+        question: "Le Cap se trouve à environ 34° de latitude sud. Touche sa zone sur le globe.",
+        answer: 3,
+        hint: "34° sud, c'est au sud de l'équateur, donc dans l'hémisphère sud. C'est plus loin de l'équateur que le tropique du Capricorne (23° S), mais moins loin que le cercle polaire antarctique (66° S).",
+        success: "Exact ! Le Cap est dans la zone tempérée de l'hémisphère sud, entre le tropique du Capricorne et le cercle polaire antarctique. Son climat est méditerranéen. Et comme les saisons sont inversées dans l'hémisphère sud, en octobre, c'est le printemps au Cap !",
+        to: 'pageCapOk', skipTo: 'pageCapKo', skipLabel: "Tourner la page"
+      }
+    },
+
+    pageCapOk: { title: "Le trajet",
+      text: [
+        "La propriétaire du carnet part donc d'abord pour Le Cap, en Afrique du Sud. Pas à Dubaï !"
+      ],
+      clues: ['escale'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'hall' } ]
+    },
+
+    pageCapKo: { title: "Le trajet",
+      text: [
+        "Tu tournes la page sans bien comprendre où se trouve Le Cap."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'hall' } ]
+    },
+
+    pageStation: { title: "Page « La station »",
+      text: [
+        "Cette page parle de la station belge Princesse Élisabeth :",
+        "<div class='doc'>🏔️ Station Princesse Élisabeth : environ 72° de latitude sud, 1 382 m d'altitude.<br>Ouverte de novembre à février.<br>L'Antarctique est entouré par l'océan …… (la tache de café cache le mot !)</div>",
+        "<div class='vocab'>📚 Les <b>5 océans</b> : l'océan Pacifique, l'océan Atlantique, l'océan Indien, l'océan Arctique et l'océan Austral.</div>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🌊 Quel océan ?",
+        question: "Quel océan entoure l'Antarctique ?",
+        options: [
+          "L'océan Arctique",
+          "L'océan Austral",
+          "L'océan Pacifique"
+        ],
+        answer: 1,
+        hint: "Attention au piège : l'Arctique est autour du pôle Nord. L'Antarctique, lui, est autour du pôle Sud. « Austral » veut dire « du sud ».",
+        success: "Exact ! L'océan Austral entoure l'Antarctique, au pôle Sud. L'océan Arctique, lui, se trouve autour du pôle Nord. La station est ouverte de novembre à février : c'est l'été dans l'hémisphère sud, la saison la moins froide.",
+        to: 'pageStationOk', skipTo: 'pageStationKo', skipLabel: "Tourner la page"
+      }
+    },
+
+    pageStationOk: { title: "Une carte secrète",
+      text: [
+        "Sur la page suivante, il y a une carte dessinée à la main, avec des croix et ce titre : « Météorites repérées — à récolter cet été ».",
+        "<div class='vocab'>📚 Pour de vrai : des équipes menées par des chercheurs belges récoltent des météorites en Antarctique, près de la station Princesse Élisabeth. Elles sont envoyées pour être étudiées à l'Institut royal des Sciences naturelles, à Bruxelles.</div>",
+        "Voilà pourquoi quelqu'un voudrait tant ce carnet !"
+      ],
+      clues: ['station', 'meteorites'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'hall' } ]
+    },
+
+    pageStationKo: { title: "Une tache de café",
+      text: [
+        "La tache de café cache trop de mots. Tu refermes le carnet."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'hall' } ]
+    },
+
+    questionVargas: { title: "M. Vargas",
+      text: [
+        "M. Vargas tape du pied : <span class='speech'>« Alors, tu me le rends, ce carnet ? »</span>"
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Lui poser une question sur l'océan de la page « La station »", to: 'piege', requires: 'station', cls: 'obj' },
+        { label: "Lui donner le carnet", to: 'finVargas', accuse: true },
+        { label: "Lui dire qu'il ment et qu'il veut voler le carnet", to: 'finTropTot', accuse: true },
+        { label: "Retourner dans le hall", to: 'hall' }
+      ]
+    },
+
+    piege: { title: "La question piège",
+      text: [
+        "<span class='speech'>« Si c'est votre carnet, vous savez quel océan entoure l'Antarctique ? »</span>",
+        "M. Vargas hésite, puis répond avec assurance : <span class='speech'>« L'océan Arctique, voyons ! Tout le monde sait ça. »</span>",
+        "Tu ne dis rien… mais tu notes sa réponse."
+      ],
+      clues: ['ignorance'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'hall' } ]
+    },
+
+    meteo: { title: "L'écran météo",
+      text: [
+        "Un grand écran montre le temps qu'il fait dans quelques destinations. Juste à côté, M. Vargas a posé son sac ouvert : on voit dépasser une épaisse tenue polaire et des bottes de neige.",
+        "Sous l'écran, un petit jeu propose d'associer chaque lieu à son climat."
+      ],
+      enigme: { kind: 'classify',
+        title: "🌦️ Quel climat ?",
+        question: "Pour chaque lieu, touche son climat.",
+        categories: ['Océanique', 'Méditerranéen', 'Aride', 'Polaire'],
+        items: [
+          { label: "Bruxelles : pluie en toutes saisons, hiver doux, été frais.", answer: 0 },
+          { label: "Le Cap : été chaud et sec, hiver doux et pluvieux.", answer: 1 },
+          { label: "Dubaï : très chaud, il ne pleut presque jamais.", answer: 2 },
+          { label: "La station Princesse Élisabeth : froid toute l'année, très peu de précipitations.", answer: 3 }
+        ],
+        hint: "Le climat aride est le climat des déserts chauds : il n'y pleut presque jamais. Le climat méditerranéen a des étés chauds et secs. Le climat océanique, c'est le nôtre, en Belgique.",
+        success: "Bravo ! Bruxelles a un climat océanique, Le Cap un climat méditerranéen, Dubaï un climat aride, et la station un climat polaire. L'Antarctique est d'ailleurs le plus grand désert du monde : il y tombe très peu de neige chaque année !",
+        to: 'meteoOk', skipTo: 'meteoKo', skipLabel: "Laisser le jeu"
+      }
+    },
+
+    meteoOk: { title: "Une valise bizarre",
+      text: [
+        "Tu regardes à nouveau le sac de M. Vargas. Une tenue polaire et des bottes de neige… pour partir à Dubaï, où il fait très chaud et sec ? Bizarre."
+      ],
+      clues: ['equipement'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'hall' } ]
+    },
+
+    meteoKo: { title: "Trop de climats",
+      text: [
+        "Tu laisses le jeu. M. Vargas referme son sac et s'éloigne."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'hall' } ]
+    },
+
+    librairie: { title: "La librairie",
+      text: [
+        "À la librairie, Mme Dupuis range des atlas. <span class='speech'>« Tu cherches un livre ? Tiens, regarde ce tableau dans mon atlas. Une question piège : lequel de ces deux pays est le plus densément peuplé ? »</span>",
+        "<div class='doc'>🇧🇪 Belgique : près de 12 millions d'habitants — environ 385 habitants par km²<br>🇿🇦 Afrique du Sud : environ 63 millions d'habitants — environ 52 habitants par km²</div>",
+        "<div class='vocab'>📚 La <b>densité de population</b>, c'est le nombre moyen d'habitants par km². Un pays peut avoir beaucoup d'habitants et pourtant une faible densité, s'il est très grand.</div>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "👥 Population ou densité ?",
+        question: "Laquelle de ces phrases est vraie ?",
+        options: [
+          "L'Afrique du Sud a plus d'habitants, donc elle est plus densément peuplée que la Belgique.",
+          "L'Afrique du Sud a plus d'habitants, mais la Belgique est plus densément peuplée.",
+          "La Belgique a plus d'habitants que l'Afrique du Sud."
+        ],
+        answer: 1,
+        hint: "Ne confonds pas le nombre total d'habitants et la densité. Regarde la colonne « habitants par km² » : quel nombre est le plus grand ?",
+        success: "Exact ! L'Afrique du Sud a environ 5 fois plus d'habitants que la Belgique, mais elle est aussi environ 40 fois plus grande. En Belgique, il y a donc beaucoup plus d'habitants par km² : environ 385, contre environ 52.",
+        to: 'librairieOk', skipTo: 'librairieKo', skipLabel: "Remercier et partir"
+      }
+    },
+
+    librairieOk: { title: "Un client pressé",
+      text: [
+        "<span class='speech'>« Bien vu ! »</span> Mme Dupuis baisse la voix : <span class='speech'>« Tu sais, un monsieur en costume gris est passé tout à l'heure. Il a acheté un livre sur les météorites de l'Antarctique, et il m'a demandé à quelle porte embarque le vol pour Le Cap. »</span>"
+      ],
+      clues: ['libraire'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'hall' } ]
+    },
+
+    librairieKo: { title: "La librairie",
+      text: [
+        "Mme Dupuis retourne à ses atlas."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'hall' } ]
+    },
+
+    cafe: { title: "Le café",
+      text: [
+        "Au café, Yanis, le serveur, a trouvé une carte d'embarquement oubliée sur une table. Il te la montre avant de la porter à la police. Son propriétaire a sûrement la même sur son téléphone.",
+        "<div class='doc'>✈️ Passager : OSCAR VARGAS<br>Destination : LE CAP (avec une escale)<br>Départ : <b>11 h 20</b> — L'embarquement commence <b>45 minutes</b> avant le départ.</div>",
+        "<span class='speech'>« Le monsieur était drôlement pressé. Tu sais à quelle heure commence son embarquement ? »</span>"
+      ],
+      enigme: { kind: 'numbers',
+        title: "⏰ L'heure d'embarquement",
+        question: "Le départ est à 11 h 20, et l'embarquement commence 45 minutes avant. À quelle heure commence l'embarquement ?",
+        fields: [ { label: "Heures", answer: 10 }, { label: "Minutes", answer: 35 } ],
+        hint: "Recule d'abord de 20 minutes : 11 h 20 − 20 min = 11 h. Il reste 25 minutes à reculer.",
+        success: "Exact : 10 h 35. Et regarde bien la destination : M. Vargas ne part pas à Dubaï, il part au Cap, comme la propriétaire du carnet !",
+        to: 'cafeOk', skipTo: 'cafeKo', skipLabel: "Laisser Yanis travailler"
+      }
+    },
+
+    cafeOk: { title: "La carte d'embarquement",
+      text: [
+        "Yanis glisse la carte dans une enveloppe pour la police. Tu notes tout dans ton carnet d'enquête."
+      ],
+      clues: ['carte'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'hall' } ]
+    },
+
+    cafeKo: { title: "Le café",
+      text: [
+        "Yanis emporte la carte d'embarquement avant que tu aies pu bien la lire."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'hall' } ]
+    },
+
+    expo: { title: "L'exposition photo",
+      text: [
+        "Dans un coin de l'aéroport, une exposition photo présente la station belge Princesse Élisabeth, en Antarctique. M. Wouters, un bénévole, t'accueille.",
+        "<span class='speech'>« Cette station a été la première station polaire « zéro émission » : elle fonctionne avec des éoliennes et des panneaux solaires. Tu sais pourquoi c'est important ? »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🌡️ Le réchauffement climatique",
+        question: "Quelle est la principale cause du réchauffement climatique actuel ?",
+        options: [
+          "Les gaz à effet de serre, comme le dioxyde de carbone, rejetés quand on brule du charbon, du pétrole ou du gaz",
+          "Le Soleil qui se rapproche de la Terre chaque année",
+          "Les éoliennes et les panneaux solaires"
+        ],
+        answer: 0,
+        hint: "Les voitures, les avions, les usines et le chauffage brulent souvent du pétrole, du charbon ou du gaz. Que rejettent-ils dans l'air ?",
+        success: "Exact ! En brulant du charbon, du pétrole ou du gaz, on rejette des gaz à effet de serre, comme le dioxyde de carbone, qui réchauffent la Terre. Conséquences : les glaciers et les glaces des pôles fondent, et le niveau des mers monte. Solutions : économiser l'énergie, utiliser des énergies renouvelables comme le vent et le soleil, moins prendre l'avion…",
+        to: 'expoOk', skipTo: 'expoKo', skipLabel: "Regarder les photos sans répondre"
+      }
+    },
+
+    expoOk: { title: "La parka rouge",
+      text: [
+        "<span class='speech'>« Bravo ! Regarde cette photo : c'est Lina Maes, une géologue belge qui cherche des météorites près de la station. Elle part justement aujourd'hui ! »</span>",
+        "Sur la photo, la géologue sourit dans la neige… en parka rouge. C'est la femme qui a laissé tomber le carnet !"
+      ],
+      clues: ['photo'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'hall' } ]
+    },
+
+    expoKo: { title: "Des photos de glace",
+      text: [
+        "Tu regardes les photos de glace et de montagnes, puis tu repars."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'hall' } ]
+    },
+
+    police: { title: "La police de l'aéroport",
+      text: [
+        "Au bureau de la police de l'aéroport, l'agente Claes t'écoute. Une femme en parka rouge entre en courant : <span class='speech'>« J'ai perdu mon carnet de terrain ! »</span> Juste derrière elle arrive M. Vargas : <span class='speech'>« Ce carnet est à moi ! »</span>",
+        "L'agente Claes se tourne vers toi : <span class='speech'>« Tu as le carnet. À qui faut-il le rendre ? »</span>"
+      ],
+      prompt: "Que réponds-tu ?",
+      choices: [
+        { label: "À M. Vargas", to: 'finVargas', accuse: true },
+        { label: "À la femme en parka rouge, preuves à l'appui", to: 'preuves', accuse: true },
+        { label: "Je ne sais pas : je le laisse aux objets trouvés", to: 'finObjets', accuse: true }
+      ]
+    },
+
+    preuves: { title: "Tes preuves",
+      text: [
+        "<span class='speech'>« Pourquoi pas à M. Vargas ? »</span> demande l'agente Claes.",
+        "Tu ouvres ton carnet d'enquête."
+      ],
+      dynamic: function (g) {
+        const list = PREUVES.filter(c => g.clues.indexOf(c) !== -1);
+        if (!list.length) return "<p><b>Ton carnet d'enquête ne contient aucune preuve…</b></p>";
+        return "<p>Tu présentes <b>" + list.length + " preuve" + (list.length > 1 ? "s" : "") + "</b> :</p><ul class='proofs'>" + list.map(c => "<li>🔎 " + CLUES[c] + "</li>").join('') + "</ul>";
+      },
+      auto: function (g) {
+        const n = PREUVES.filter(c => g.clues.indexOf(c) !== -1).length;
+        return n >= 4 ? 'finGagne' : n >= 2 ? 'finMoitie' : 'finSansPreuve';
+      },
+      autoLabel: "Voir la réaction de l'agente Claes"
+    },
+
+    finGagne: { title: "Le carnet retrouvé",
+      text: [
+        "L'agente Claes se tourne vers M. Vargas : <span class='speech'>« Vous partez à Dubaï avec des bottes de neige ? Et votre carte d'embarquement dit Le Cap… »</span>",
+        "M. Vargas baisse la tête : <span class='speech'>« Je vends des météorites à des collectionneurs. Avec la carte de ce carnet, j'aurais pu… »</span> L'agente l'emmène pour lui poser quelques questions.",
+        "Lina Maes serre son carnet contre elle : <span class='speech'>« Ces météorites sont pour la science, pour comprendre l'histoire du système solaire. Merci ! Je t'enverrai une carte postale de la station. »</span>"
+      ],
+      dynamic: function (g) {
+        return g.clues.indexOf('photo') !== -1
+          ? "<p>Elle te reconnait : <span class='speech'>« Tu as même trouvé ma photo à l'exposition ? Quel sens de l'observation ! »</span></p>"
+          : "";
+      },
+      ending: { type: 'win', title: "Bravo, détective ! Grâce à tes connaissances du monde, le carnet est rendu à la bonne personne." }
+    },
+
+    finMoitie: { title: "Le doute",
+      text: [
+        "L'agente Claes hésite. <span class='speech'>« C'est un peu léger. Je garde le carnet le temps de vérifier. »</span>",
+        "Lina Maes regarde l'heure avec inquiétude : son avion part bientôt."
+      ],
+      ending: { backTo: 'hall', type: 'half', title: "Tu avais la bonne piste, mais il te fallait plus de preuves que M. Vargas ment. Explore tout l'aéroport !" }
+    },
+
+    finSansPreuve: { title: "Pas assez de preuves",
+      text: [
+        "<span class='speech'>« Sans preuve, je ne peux pas décider qui dit la vérité »</span>, dit l'agente Claes. Elle garde le carnet."
+      ],
+      ending: { backTo: 'hall', type: 'lose', title: "Ton intuition était peut-être bonne, mais il faut des preuves. Le carnet, les témoins et les documents t'en donneront !" }
+    },
+
+    finVargas: { title: "Le mauvais propriétaire",
+      text: [
+        "Tu donnes le carnet à M. Vargas. Il le glisse dans sa veste avec un grand sourire et file vers les portes d'embarquement.",
+        "Un peu plus tard, la femme en parka rouge revient, affolée, et cherche partout son carnet de terrain…"
+      ],
+      ending: { type: 'lose', title: "M. Vargas n'était pas le propriétaire du carnet. Avant de rendre un objet trouvé, vérifie à qui il appartient !" }
+    },
+
+    finTropTot: { title: "Trop tôt !",
+      text: [
+        "<span class='speech'>« Vous mentez ! Vous voulez voler ce carnet ! »</span>",
+        "M. Vargas éclate de rire : <span class='speech'>« Quelle imagination ! »</span> Puis il disparait dans la foule. Tu ne le revois plus… et sans preuve, personne ne pourra l'empêcher de recommencer."
+      ],
+      ending: { type: 'lose', title: "En l'accusant trop tôt, tu l'as prévenu. Rassemble tes preuves en silence, puis présente-les à la police !" }
+    },
+
+    finObjets: { title: "Aux objets trouvés",
+      text: [
+        "Tu laisses le carnet aux objets trouvés. Lina Maes ne peut pas attendre : elle doit embarquer.",
+        "Son carnet la rejoindra… bien après son arrivée au Cap."
+      ],
+      ending: { backTo: 'hall', type: 'lose', title: "Le carnet était en sécurité, mais sa propriétaire en avait besoin pour son expédition. Rassemble des preuves pour le rendre à la bonne personne !" }
+    }
+  };
+
+  const ENDINGS = [
+    { id: 'finGagne',      label: "📓 Le carnet rendu" },
+    { id: 'finMoitie',     label: "🤔 Le doute" },
+    { id: 'finSansPreuve', label: "😶 Pas assez de preuves" },
+    { id: 'finVargas',     label: "🕴️ Le mauvais propriétaire" },
+    { id: 'finTropTot',    label: "🏃 Trop tôt" },
+    { id: 'finObjets',     label: "📦 Les objets trouvés" }
+  ];
+  const FIRST = 'debut';
+
+  /* Numéros des paragraphes : mélangés comme dans un vrai livre-jeu (toujours les mêmes). */
+  (function numberParagraphs() {
+    const ids = Object.keys(S).filter(k => k !== FIRST);
+    let seed = 1800;
+    const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+    const nums = ids.map((_, i) => i + 2);
+    for (let i = nums.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [nums[i], nums[j]] = [nums[j], nums[i]]; }
+    S[FIRST].n = 1;
+    ids.forEach((k, i) => { S[k].n = nums[i]; });
+  })();
+
+  /* =====================================================================
+     SAUVEGARDE — par élève, sur l'appareil. Rien n'est envoyé.
+     ===================================================================== */
+  function who() {
+    try {
+      const st = window.parent && window.parent !== window && window.parent.state;
+      if (st && st.student) return '_' + (st.studentCls || '') + '_' + st.student;
+    } catch (e) {}
+    return '';
+  }
+  const KEY_FINS = () => 'lcml_enquete_carnet_fins' + who();
+  const KEY_SAVE = () => 'lcml_enquete_carnet_partie' + who();
+  function readJSON(k, def) { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? def : v; } catch (e) { return def; } }
+  function writeJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function removeKey(k) { try { localStorage.removeItem(k); } catch (e) {} }
+  // Fins découvertes aussi gardées en ligne, par élève (lcml_jeux_sync.js) : les tablettes changent d'un jour à l'autre
+  const finsSync = window.LCMLSync ? LCMLSync.create({ game: 'jeu_enquete_carnet', key: KEY_FINS, merge: LCMLSync.union }) : null;
+  function loadEndings() { const v = readJSON(KEY_FINS(), []); return Array.isArray(v) ? v.filter(id => S[id]) : []; }
+  function saveEnding(id) {
+    const list = loadEndings();
+    if (list.indexOf(id) === -1) { list.push(id); writeJSON(KEY_FINS(), list); if (finsSync) finsSync.push(); return true; }
+    return false;
+  }
+
+  /* =====================================================================
+     MOTEUR
+     ===================================================================== */
+  let game = null;
+  function newGame() { game = { at: FIRST, clues: [], objects: [], history: [], solved: {} }; }
+  const $ = (id) => document.getElementById(id);
+  const story = $('story');
+  let errors = 0, solvedNow = false, orderSeq = [];
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+  function has(x) { return game.clues.indexOf(x) !== -1 || game.objects.indexOf(x) !== -1; }
+
+  function renderTitle() {
+    const found = loadEndings();
+    $('endings-count').textContent = found.length;
+    $('endings-list').innerHTML = ENDINGS.map(e => {
+      const ok = found.indexOf(e.id) !== -1;
+      return `<span class="ending-chip ${ok ? 'found' : ''} ${ok && e.id === 'finGagne' ? 'win' : ''}">${ok ? e.label : '❔ ???'}</span>`;
+    }).join('');
+    const save = readJSON(KEY_SAVE(), null);
+    const canResume = save && S[save.at] && !S[save.at].ending;
+    $('btn-resume').classList.toggle('hidden', !canResume);
+    $('btn-start').textContent = canResume ? "Recommencer depuis le début" : (found.length ? "Recommencer l'enquête" : "Commencer l'enquête");
+    $('btn-start').classList.toggle('primary', !canResume);
+    $('screen-title').classList.remove('hidden');
+    $('screen-story').classList.add('hidden');
+  }
+
+  function showStory() { $('screen-title').classList.add('hidden'); $('screen-story').classList.remove('hidden'); }
+
+  function goTo(id, opts) {
+    opts = opts || {};
+    if (!opts.noHistory && game.at !== id) game.history.push(game.at);
+    game.at = id;
+    errors = 0; solvedNow = false; orderSeq = [];
+    const p = S[id];
+    const freshClues = [], freshObjs = [];
+    if (!opts.resume) {
+      (p.clues || []).forEach(c => { if (game.clues.indexOf(c) === -1) { game.clues.push(c); freshClues.push(c); } });
+      (p.objects || []).forEach(o => { if (game.objects.indexOf(o) === -1) { game.objects.push(o); freshObjs.push(o); } });
+    }
+    if (p.ending) removeKey(KEY_SAVE()); else writeJSON(KEY_SAVE(), game);
+    renderPara(p, freshClues, freshObjs);
+    updateCount();
+    window.scrollTo(0, 0);
+  }
+
+  function renderPara(p, freshClues, freshObjs) {
+    let html = `<div class="para-head"><span class="para-num">${p.n}</span><h2>${p.title}</h2></div>`;
+    html += p.text.map(t => /^<div/.test(t) ? t : `<p>${t}</p>`).join('');
+    if (p.dynamic) html += p.dynamic(game);
+    freshObjs.forEach(o => { html += `<div class="obj-found">🎒 <b>Objet ajouté à ton sac :</b> ${OBJECTS[o]}</div>`; });
+    freshClues.forEach(c => { html += `<div class="clue-found">📒 <b>Nouvel indice noté dans ton carnet :</b> ${CLUES[c]}</div>`; });
+
+    if (p.enigme) {
+      if (game.solved[game.at]) {
+        html += `<div class="feedback ok" style="margin-bottom:12px">✅ Tu as déjà résolu cette énigme.</div>`;
+        html += `<div class="choices">${choiceBtn({ label: "Continuer", to: p.enigme.to })}</div>`;
+      } else {
+        html += renderEnigme(p.enigme);
+        html += `<div class="choices" id="after-enigme"></div>`;
+      }
+    } else if (p.auto) {
+      html += `<div class="choices">${choiceBtn({ label: p.autoLabel || "Continuer", to: p.auto(game) })}</div>`;
+    } else if (p.ending) {
+      const isNew = saveEnding(game.at);
+      const icon = p.ending.type === 'win' ? '🏆' : p.ending.type === 'half' ? '🏃' : '❌';
+      const label = p.ending.type === 'win' ? 'Fin gagnante' : p.ending.type === 'half' ? 'Fin à moitié réussie' : 'Fin ratée';
+      html += `<div class="ending-box ${p.ending.type}"><div class="big">${icon}</div><h3>${label}</h3><p style="margin:6px 0 10px">${p.ending.title}</p>
+        <div class="muted">${isNew ? '✨ Nouvelle fin découverte ! ' : ''}Fins découvertes : ${loadEndings().length} / ${ENDINGS.length}</div></div><div class="ending-actions">`;
+      if (p.ending.type !== 'win' && p.ending.backTo) html += `<button class="btn" data-act="backTo" data-target="${p.ending.backTo}">↩ Retourner enquêter</button>`;
+      else if (p.ending.type !== 'win' && !p.ending.noBack && game.history.length) html += `<button class="btn" data-act="back">↩ Revenir au choix précédent</button>`;
+      html += `<button class="btn primary" data-act="restart">🔄 Recommencer l'enquête</button><button class="btn" data-act="menu">Menu</button></div>`;
+      // Plan de travail : l'enquête n'est cochée que lorsqu'elle est résolue (fin gagnante). Aucun score envoyé.
+      if (p.ending.type === 'win') { try { if (window.parent && window.parent !== window && typeof window.parent.ptEnqueteFinie === 'function') window.parent.ptEnqueteFinie('jeu_enquete_carnet'); } catch (e) {} }
+      if (p.ending.type === 'win' && typeof confetti === 'function') setTimeout(() => { try { confetti({ particleCount: 150, spread: 80, origin: { y: .6 } }); } catch (e) {} }, 250);
+    } else {
+      const list = p.choices.filter(c => (!c.requires || has(c.requires)) && (!c.requiresNot || !has(c.requiresNot)));
+      html += `<div class="choices">${p.prompt ? `<div class="prompt">${p.prompt}</div>` : ''}${list.map(choiceBtn).join('')}</div>`;
+    }
+    story.innerHTML = html;
+  }
+
+  function choiceBtn(c) {
+    const cls = c.accuse ? 'accuse' : (c.cls || '');
+    return `<button class="choice ${cls}" data-to="${c.to}">${c.accuse ? '⚖️ ' : ''}${esc(c.label)}<span class="go">Va au ${S[c.to].n}</span></button>`;
+  }
+
+  const inputAttrs = 'type="text" inputmode="numeric" pattern="[0-9]*" maxlength="5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"';
+  function renderEnigme(e) {
+    let h = `<div class="enigme" id="enigme"><h3>${e.title}</h3><p class="q">${e.question}</p>`;
+    if (e.kind === 'number') {
+      h += `<div class="answer-row"><input id="ans-0" ${inputAttrs} aria-label="Réponse">${e.unit ? `<span class="unit">${e.unit}</span>` : ''}</div>`;
+    } else if (e.kind === 'numbers') {
+      e.fields.forEach((f, i) => { h += `<div class="answer-row"><label for="ans-${i}">${f.label}</label><input id="ans-${i}" ${inputAttrs}></div>`; });
+    } else if (e.kind === 'qcm') {
+      h += `<div class="qcm">` + e.options.map((o, i) => `<button type="button" data-opt="${i}">${o}</button>`).join('') + `</div>`;
+    } else if (e.kind === 'zone') {
+      h += globeSVG();
+    } else if (e.kind === 'order') {
+      h += `<div class="order">` + e.items.map((it, i) => `<button type="button" data-ord="${i}"><span class="rank"></span><span>${it}</span></button>`).join('') + `</div>`;
+      h += `<div class="order-tools"><button class="btn" type="button" data-act="ordreset">↺ Tout effacer</button></div>`;
+    } else if (e.kind === 'classify') {
+      h += `<div class="classify">` + e.items.map((it, i) => `<div class="cl-row" data-row="${i}"><span class="cl-label">${it.label}</span><span class="cl-btns">` +
+        e.categories.map((c, k) => `<button type="button" data-cl="${k}">${c}</button>`).join('') + `</span></div>`).join('') + `</div>`;
+    }
+    h += `<button class="btn primary" data-act="check">Valider</button><div id="enigme-fb"></div></div>`;
+    return h;
+  }
+
+  function checkEnigme() {
+    if (solvedNow) return;
+    const e = S[game.at].enigme, fb = $('enigme-fb');
+    let ok = false, said = '';
+    if (e.kind === 'number' || e.kind === 'numbers') {
+      const answers = e.kind === 'number' ? [e.answer] : e.fields.map(f => f.answer);
+      const vals = answers.map((_, i) => ($('ans-' + i).value || '').replace(/\D/g, ''));
+      if (vals.some(v => !v)) { fb.innerHTML = `<div class="feedback info">${answers.length > 1 ? 'Complète <b>toutes</b> les cases' : 'Écris un nombre'} avant de valider.</div>`; return; }
+      ok = vals.every((v, i) => parseInt(v, 10) === answers[i]);
+      said = ` Tu as écrit ${vals.join(' et ')}.`;
+    } else if (e.kind === 'qcm') {
+      const sel = story.querySelector('.qcm button.sel');
+      if (!sel) { fb.innerHTML = `<div class="feedback info">Choisis une réponse avant de valider.</div>`; return; }
+      ok = parseInt(sel.getAttribute('data-opt'), 10) === e.answer;
+    } else if (e.kind === 'zone') {
+      const sel = story.querySelector('.globe .band.sel');
+      if (!sel) { fb.innerHTML = `<div class="feedback info">Touche une zone du globe avant de valider.</div>`; return; }
+      const z = parseInt(sel.getAttribute('data-zone'), 10);
+      ok = z === e.answer;
+      said = ' Tu as choisi : ' + ZONE_NAMES[z] + '.';
+    } else if (e.kind === 'order') {
+      if (orderSeq.length < e.items.length) { fb.innerHTML = `<div class="feedback info">Touche <b>tous</b> les évènements, du plus ancien au plus récent, avant de valider.</div>`; return; }
+      ok = orderSeq.every((v, i) => v === e.answer[i]);
+    } else if (e.kind === 'classify') {
+      const rows = Array.from(story.querySelectorAll('.cl-row'));
+      const picks = rows.map(r => { const b = r.querySelector('button.sel'); return b ? parseInt(b.getAttribute('data-cl'), 10) : -1; });
+      rows.forEach((r, i) => r.classList.toggle('missing', picks[i] === -1));
+      const left = picks.filter(v => v === -1).length;
+      if (left) { fb.innerHTML = `<div class="feedback info">Il reste ${left === 1 ? '<b>1 ligne</b>' : '<b>' + left + ' lignes</b>'} sans réponse : touche un bouton sur chaque ligne avant de valider.</div>`; return; }
+      const wrong = picks.filter((v, i) => v !== e.items[i].answer).length;
+      ok = wrong === 0;
+      said = wrong ? (wrong === 1 ? ' Une ligne est mal classée.' : ' ' + wrong + ' lignes sont mal classées.') : '';
+    }
+
+    if (ok) {
+      solvedNow = true;
+      game.solved[game.at] = true;
+      writeJSON(KEY_SAVE(), game);
+      story.querySelectorAll('#enigme input').forEach(i => { i.readOnly = true; });
+      const q = story.querySelector('.qcm'); if (q) { q.classList.add('done'); q.querySelector('.sel').classList.add('good'); }
+      const cl = story.querySelector('.classify'); if (cl) cl.classList.add('done');
+      const gl = story.querySelector('.globe'); if (gl) gl.classList.add('done');
+      const od = story.querySelector('.order'); if (od) { od.classList.add('done'); const rt = story.querySelector('[data-act="ordreset"]'); if (rt) rt.remove(); }
+      story.querySelector('[data-act="check"]').remove();
+      fb.innerHTML = `<div class="feedback ok">✅ ${e.success}</div>`;
+      $('after-enigme').innerHTML = choiceBtn({ label: "Continuer l'enquête", to: e.to });
+      return;
+    }
+    errors++;
+    fb.innerHTML = `<div class="feedback ko">❌ Ce n'est pas ça.${esc(said)}<br>💡 <b>Indice :</b> ${e.hint}</div>`;
+    if (errors >= 2 && !story.querySelector('.choice.skip')) {
+      $('after-enigme').innerHTML = `<button class="choice skip" data-to="${e.skipTo}">${esc(e.skipLabel)}<span class="go">Va au ${S[e.skipTo].n}</span></button>`;
+    }
+  }
+
+  /* Globe en vue de face : les parallèles sont des droites, à la hauteur R × sin(latitude). */
+  const ZONE_NAMES = ['la zone polaire nord', 'la zone tempérée nord', 'la zone chaude', 'la zone tempérée sud', 'la zone polaire sud'];
+  function globeSVG() {
+    const cx = 120, cy = 130, R = 110, y = lat => cy - R * Math.sin(lat * Math.PI / 180);
+    const cuts = [90, 66.56, 23.44, -23.44, -66.56, -90];
+    let bands = '';
+    for (let i = 0; i < 5; i++) {
+      const y1 = y(cuts[i]), y2 = y(cuts[i + 1]);
+      bands += `<g class="band${i % 2 ? ' alt' : ''}" data-zone="${i}" role="button" aria-label="${ZONE_NAMES[i]}"><rect x="${cx - R}" y="${y1.toFixed(1)}" width="${2 * R}" height="${(y2 - y1).toFixed(1)}" clip-path="url(#globe-clip)"/></g>`;
+    }
+    const lines = [[66.56, 'Cercle polaire arctique'], [23.44, 'Tropique du Cancer'], [0, 'Équateur'], [-23.44, 'Tropique du Capricorne'], [-66.56, 'Cercle polaire antarctique']];
+    let ls = '';
+    lines.forEach(([lat, name]) => {
+      const yy = y(lat), half = R * Math.cos(lat * Math.PI / 180);
+      ls += `<line class="line${lat === 0 ? ' eq' : ''}" x1="${(cx - half).toFixed(1)}" y1="${yy.toFixed(1)}" x2="${(cx + half).toFixed(1)}" y2="${yy.toFixed(1)}"/>`;
+      ls += `<line x1="${(cx + half).toFixed(1)}" y1="${yy.toFixed(1)}" x2="${cx + R + 12}" y2="${yy.toFixed(1)}" stroke="#8A8A9A" stroke-dasharray="3 3"/>`;
+      ls += `<text class="lbl" x="${cx + R + 16}" y="${(yy + 4).toFixed(1)}">${name}</text>`;
+    });
+    return `<svg class="globe" viewBox="0 0 470 270" role="group" aria-label="Globe terrestre et ses zones">
+      <defs><clipPath id="globe-clip"><circle cx="${cx}" cy="${cy}" r="${R}"/></clipPath></defs>
+      ${bands}
+      <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#1A1A2E" stroke-width="2.5" pointer-events="none"/>
+      <g pointer-events="none">${ls}</g>
+      <text class="pole" x="${cx}" y="${cy - R - 6}" text-anchor="middle" pointer-events="none">Pôle Nord</text>
+      <text class="pole" x="${cx}" y="${cy + R + 18}" text-anchor="middle" pointer-events="none">Pôle Sud</text>
+    </svg>`;
+  }
+
+  function paintOrder() {
+    story.querySelectorAll('.order button').forEach(b => {
+      const pos = orderSeq.indexOf(parseInt(b.dataset.ord, 10));
+      b.classList.toggle('sel', pos !== -1);
+      b.querySelector('.rank').textContent = pos === -1 ? '' : pos + 1;
+    });
+    const fb = $('enigme-fb'); if (fb && fb.querySelector('.feedback.info')) fb.innerHTML = '';
+  }
+
+  function updateCount() { $('clue-count').textContent = game ? game.clues.length + game.objects.length : 0; }
+  function openCarnet() {
+    $('carnet-list').innerHTML = game.clues.length ? game.clues.map(c => `<li>🔎 ${CLUES[c]}</li>`).join('') : `<li class="muted">Aucun indice pour l'instant. Mène l'enquête !</li>`;
+    $('carnet').classList.add('open');
+  }
+
+  story.addEventListener('click', (ev) => {
+    const zb = ev.target.closest && ev.target.closest('.globe .band');
+    if (zb) {
+      if (solvedNow) return;
+      story.querySelectorAll('.globe .band').forEach(b => b.classList.toggle('sel', b === zb));
+      const fb = $('enigme-fb'); if (fb && fb.querySelector('.feedback.info')) fb.innerHTML = '';
+      return;
+    }
+    const t = ev.target.closest('button');
+    if (!t) return;
+    if (t.dataset.to) { goTo(t.dataset.to); return; }
+    if (t.dataset.ord !== undefined) {
+      if (solvedNow) return;
+      const k = parseInt(t.dataset.ord, 10), pos = orderSeq.indexOf(k);
+      if (pos === -1) orderSeq.push(k); else orderSeq = orderSeq.slice(0, pos);
+      paintOrder();
+      return;
+    }
+    if (t.dataset.cl !== undefined) {
+      if (solvedNow) return;
+      const row = t.closest('.cl-row');
+      row.querySelectorAll('button').forEach(b => b.classList.toggle('sel', b === t));
+      row.classList.remove('missing');
+      return;
+    }
+    if (t.dataset.opt !== undefined) {
+      if (solvedNow) return;
+      t.parentNode.querySelectorAll('button').forEach(b => b.classList.toggle('sel', b === t));
+      return;
+    }
+    const act = t.dataset.act;
+    if (act === 'check') checkEnigme();
+    else if (act === 'ordreset') { if (!solvedNow) { orderSeq = []; paintOrder(); } }
+    else if (act === 'restart') { newGame(); goTo(FIRST, { noHistory: true }); }
+    else if (act === 'menu') renderTitle();
+    else if (act === 'back') { let prev = game.history.pop(); while (prev && S[prev].auto) prev = game.history.pop(); if (prev) goTo(prev, { noHistory: true }); }
+    else if (act === 'backTo') goTo(t.dataset.target, { noHistory: true });
+  });
+  story.addEventListener('keydown', (ev) => { if (ev.key === 'Enter' && ev.target.tagName === 'INPUT') { ev.preventDefault(); checkEnigme(); } });
+
+  $('btn-start').addEventListener('click', () => { newGame(); showStory(); goTo(FIRST, { noHistory: true }); });
+  $('btn-resume').addEventListener('click', () => {
+    const save = readJSON(KEY_SAVE(), null);
+    if (!save || !S[save.at]) { newGame(); } else {
+      game = { at: save.at, clues: save.clues || [], objects: save.objects || [], history: save.history || [], solved: save.solved || {} };
+    }
+    showStory(); goTo(game.at, { noHistory: true, resume: true });
+  });
+  $('btn-menu').addEventListener('click', renderTitle);
+  $('btn-carnet').addEventListener('click', openCarnet);
+  $('btn-carnet-close').addEventListener('click', () => $('carnet').classList.remove('open'));
+  $('carnet').addEventListener('click', (ev) => { if (ev.target.id === 'carnet') $('carnet').classList.remove('open'); });
+
+  window.__enquete = { S, CLUES, PREUVES, goTo, get game() { return game; }, newGame };
+  renderTitle();
+})();
+</script>
+</body>
+</html>
