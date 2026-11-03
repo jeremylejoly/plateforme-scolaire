@@ -14638,6 +14638,7 @@ function renderGeoBelgiqueMenu(){
 function renderGeoBelgiqueScreen(){
   const body = document.getElementById('geo-belgique-body');
   if(!body) return;
+  if(typeof geoTouchReset === 'function') geoTouchReset();
   geoBelgiqueState = {answers:{}, submitted:false, sel:null};
   GEO_BELGIQUE_DATA.forEach(d => { geoBelgiqueState.answers[d.num] = {province:'', chef:''}; });
 
@@ -14868,16 +14869,33 @@ let geoTouchClone = null;
 
 function setupGeoTouchEvents(){ /* handled via ontouchstart */ }
 
-let geoTouchX0 = 0, geoTouchY0 = 0, geoTouchMoved = false;
+let geoTouchX0 = 0, geoTouchY0 = 0, geoTouchMoved = false, geoTouchId = null;
+// Retire toute copie flottante restée à l'écran et remet les étiquettes à l'état normal.
+function geoTouchReset(){
+  geoStopAutoScroll();
+  if(geoTouchClone && geoTouchClone.parentNode) geoTouchClone.parentNode.removeChild(geoTouchClone);
+  document.querySelectorAll('body > .geo-tag').forEach(c => { if(c.style.position === 'fixed') c.remove(); });
+  document.querySelectorAll('#geo-tags-pool .geo-tag').forEach(t => { t.style.opacity = ''; });
+  document.querySelectorAll('#geo-belgique-body .geo-drop-zone').forEach(z => z.classList.remove('drag-over'));
+  geoTouchClone = null; geoTouchDragEl = null; geoTouchId = null; geoTouchMoved = false;
+}
+function geoFindTouch(list){
+  for(let i=0;i<list.length;i++){ if(list[i].identifier === geoTouchId) return list[i]; }
+  return null;
+}
 function geoTouchStart(e){
   const tag = e.currentTarget;
   if(geoBelgiqueState.submitted || tag.classList.contains('used')) return;
-  geoTouchDragEl = tag; geoTouchMoved = false;
-  geoTouchX0 = e.touches[0].clientX; geoTouchY0 = e.touches[0].clientY;
+  if(geoTouchDragEl) return;               // un glisser est déjà en cours : on ignore le 2e doigt
+  geoTouchReset();                         // sécurité : nettoie un éventuel fantôme
+  const t = e.changedTouches[0];
+  geoTouchDragEl = tag; geoTouchMoved = false; geoTouchId = t.identifier;
+  geoTouchX0 = t.clientX; geoTouchY0 = t.clientY;
 }
 function geoTouchMove(e){
   if(!geoTouchDragEl) return;
-  const touch = e.touches[0];
+  const touch = geoFindTouch(e.touches);
+  if(!touch) return;
   if(!geoTouchMoved && Math.hypot(touch.clientX - geoTouchX0, touch.clientY - geoTouchY0) < 10) return;
   e.preventDefault();
   if(!geoTouchMoved){
@@ -14885,6 +14903,7 @@ function geoTouchMove(e){
     const clone = geoTouchDragEl.cloneNode(true);
     clone.classList.remove('geo-sel');
     clone.removeAttribute('id');
+    ['ontouchstart','ontouchmove','ontouchend','ontouchcancel','onclick'].forEach(a => clone.removeAttribute(a));
     clone.style.position = 'fixed'; clone.style.zIndex = '9999'; clone.style.opacity = '0.85';
     clone.style.pointerEvents = 'none'; clone.style.transform = 'scale(1.1)';
     document.body.appendChild(clone);
@@ -14900,23 +14919,18 @@ function geoTouchMove(e){
 }
 function geoTouchEnd(e){
   if(!geoTouchDragEl) return;
+  const touch = geoFindTouch(e.changedTouches);
+  if(!touch) return;                       // c'est un autre doigt qui se lève : on l'ignore
   e.preventDefault();   // évite le clic fantôme
-  const tag = geoTouchDragEl; geoTouchDragEl = null;
-  if(!geoTouchMoved){ geoTagTap(tag); return; }
-  const touch = e.changedTouches[0];
-  if(geoTouchClone){ geoTouchClone.remove(); geoTouchClone = null; }
-  tag.style.opacity = '';
-  document.querySelectorAll('#geo-belgique-body .geo-drop-zone').forEach(z => z.classList.remove('drag-over'));
-  geoStopAutoScroll();
+  const tag = geoTouchDragEl, moved = geoTouchMoved;
+  geoTouchReset();
+  if(!moved){ geoTagTap(tag); return; }
   let zone = geoZoneAtTouch(touch);
   if(zone && !zone.closest('#geo-belgique-body')) zone = null;
   if(zone){ geoClearSel(); geoPlaceTag(zone, tag); }
 }
 function geoTouchCancel(e){
-  geoStopAutoScroll();
-  if(geoTouchClone){ if(geoTouchClone.parentNode) geoTouchClone.parentNode.removeChild(geoTouchClone); geoTouchClone = null; }
-  if(geoTouchDragEl){ geoTouchDragEl.style.opacity = ''; geoTouchDragEl = null; }
-  document.querySelectorAll('#geo-belgique-body .geo-drop-zone').forEach(z => z.classList.remove('drag-over'));
+  geoTouchReset();
 }
 
 // ===== VALIDATION =====
