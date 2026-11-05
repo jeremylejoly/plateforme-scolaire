@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Le Livre de l'empereur — Plateforme LCML</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+  :root {
+    --purple: #5B4FCF; --purple-light: #EEF0FF; --purple-mid: #C7C2F5;
+    --green: #1A9E75; --green-light: #E2F5EE;
+    --red: #D94F3D; --red-light: #FDECEA;
+    --amber: #F59E0B; --amber-dark: #C97B1A; --amber-light: #FEF3E2;
+    --blue: #1A6FA0; --blue-light: #E2F0FA;
+    --parchment: #F3FBF6;
+    --bg: #FDFBF7; --surface: #FFFFFF; --surface-alt: #F4F1EB;
+    --text: #1A1A2E; --muted: #6B7080; --border: #1A1A2E;
+    --shadow: 4px 4px 0 var(--border); --shadow-sm: 2px 2px 0 var(--border);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; }
+  body { padding: 16px; }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1, h2, h3, .fred { font-family: 'Fredoka', 'Inter', sans-serif; }
+  button { font: inherit; color: inherit; cursor: pointer; touch-action: manipulation; }
+
+  .topbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .topbar .title { flex: 1; min-width: 180px; font-family: 'Fredoka'; font-weight: 700; font-size: 1.25rem; }
+  .btn { border: 2px solid var(--border); border-radius: 12px; background: var(--surface); padding: 10px 14px; min-height: 48px; font-weight: 600; box-shadow: var(--shadow-sm); }
+  .btn:active { transform: translate(2px,2px); box-shadow: none; }
+  .btn.primary { background: var(--purple); color: #fff; }
+  .btn.amber { background: var(--amber-light); }
+  .btn .count { display: inline-block; min-width: 22px; padding: 0 6px; margin-left: 4px; border-radius: 999px; background: var(--purple); color: #fff; font-size: .85rem; }
+
+  .card { background: var(--surface); border: 2px solid var(--border); border-radius: 20px; box-shadow: var(--shadow); padding: 22px; }
+  .story.card { background: var(--parchment); }
+
+  .hero { text-align: center; }
+  .hero .owl { font-size: 4.5rem; line-height: 1; }
+  .hero h1 { font-size: 2rem; margin: 10px 0 6px; }
+  .hero p { line-height: 1.55; font-size: 1.05rem; }
+  .rules { text-align: left; background: var(--surface-alt); border-radius: 14px; padding: 14px 18px; margin: 16px 0; line-height: 1.5; }
+  .rules li { margin: 4px 0; }
+  .endings { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 12px 0 18px; }
+  .ending-chip { border: 2px solid var(--border); border-radius: 999px; padding: 6px 12px; font-size: .9rem; background: var(--surface-alt); color: var(--muted); }
+  .ending-chip.found { color: var(--text); background: var(--green-light); }
+  .ending-chip.found.win { background: #FFE9A8; }
+  .start-btns { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+  .para-num { display: inline-flex; align-items: center; justify-content: center; width: 58px; height: 58px; border-radius: 50%; flex-shrink: 0;
+    background: var(--purple); color: #fff; font-family: 'Fredoka'; font-weight: 700; font-size: 1.6rem; border: 2px solid var(--border); box-shadow: var(--shadow-sm); }
+  .para-head { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  .para-head h2 { margin: 0; font-size: 1.35rem; }
+  .story p { font-size: 1.12rem; line-height: 1.7; margin: 0 0 14px; }
+  .story .speech { font-style: italic; }
+  .doc { font-family: 'Fredoka'; background: #FFFBEA; border: 2px solid var(--border); border-radius: 6px; padding: 14px 18px; margin: 0 0 14px; font-size: 1.1rem; line-height: 1.8; }
+  .vocab { background: var(--surface); border-left: 5px solid var(--amber-dark); border-radius: 8px; padding: 8px 12px; margin: 0 0 14px; font-size: .98rem; line-height: 1.5; }
+
+  .clue-found { background: var(--blue-light); border: 2px solid var(--blue); border-radius: 12px; padding: 10px 14px; margin: 4px 0 12px; font-size: 1rem; line-height: 1.45; }
+  .clue-found b { color: var(--blue); }
+  .obj-found { background: var(--green-light); border: 2px solid var(--green); border-radius: 12px; padding: 10px 14px; margin: 4px 0 12px; font-size: 1rem; line-height: 1.45; }
+
+  .choices { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+  .choices .prompt { font-weight: 700; font-family: 'Fredoka'; font-size: 1.1rem; margin: 6px 0 2px; }
+  .choice { display: flex; align-items: center; gap: 12px; text-align: left; width: 100%; border: 2px solid var(--border); border-radius: 14px;
+    background: var(--purple-light); padding: 12px 14px; min-height: 56px; font-size: 1.05rem; font-weight: 600; box-shadow: var(--shadow-sm); }
+  .choice:active { transform: translate(2px,2px); box-shadow: none; }
+  .choice .go { margin-left: auto; flex-shrink: 0; font-family: 'Fredoka'; font-size: .95rem; background: var(--surface); border: 2px solid var(--border); border-radius: 999px; padding: 2px 10px; white-space: nowrap; }
+  .choice.accuse { background: var(--red-light); }
+  .choice.skip { background: var(--surface-alt); }
+  .choice.obj { background: var(--green-light); }
+
+  .enigme { border: 2px solid var(--border); border-radius: 16px; background: var(--amber-light); padding: 16px; margin: 6px 0 16px; }
+  .enigme h3 { margin: 0 0 8px; font-size: 1.15rem; }
+  .enigme .q { font-size: 1.05rem; line-height: 1.55; margin: 0 0 12px; font-weight: 600; }
+  .answer-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+  .answer-row label { font-weight: 600; min-width: 140px; }
+  .answer-row input { width: 120px; font-size: 1.4rem; font-family: 'Fredoka'; text-align: center; padding: 8px; border: 2px solid var(--border); border-radius: 10px; background: #fff; }
+  .answer-row .unit { font-family: 'Fredoka'; font-size: 1.2rem; font-weight: 600; }
+  .qcm { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  .qcm button { text-align: left; border: 2px solid var(--border); border-radius: 12px; background: #fff; padding: 10px 14px; min-height: 52px; font-size: 1.02rem; font-weight: 500; }
+  .qcm button.sel { background: var(--purple); color: #fff; }
+  .qcm button.good { background: var(--green); color: #fff; }
+  .qcm.done button:not(.sel) { opacity: .45; }
+  .classify { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  .cl-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; border: 2px solid var(--border); border-radius: 12px; background: #fff; padding: 8px 10px; }
+  .cl-row .cl-label { flex: 1 1 200px; font-weight: 500; line-height: 1.35; }
+  .cl-row .cl-btns { display: flex; flex-wrap: wrap; gap: 6px; }
+  .cl-row .cl-btns button { border: 2px solid var(--border); border-radius: 10px; background: #fff; padding: 8px 12px; min-height: 44px; font-size: .98rem; font-weight: 600; }
+  .cl-row .cl-btns button.sel { background: var(--purple); color: #fff; }
+  .cl-row.missing { border-color: var(--amber-dark); background: var(--amber-light); }
+  .classify.done .cl-btns button.sel { background: var(--green); }
+  .classify.done .cl-btns button:not(.sel) { opacity: .45; }
+  .order { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  .order button { display: flex; align-items: center; gap: 10px; text-align: left; border: 2px solid var(--border); border-radius: 12px; background: #fff; padding: 8px 12px; min-height: 52px; font-size: 1.02rem; font-weight: 500; }
+  .order button .rank { flex: 0 0 34px; height: 34px; border-radius: 50%; border: 2px dashed var(--purple-mid); display: flex; align-items: center; justify-content: center; font-family: 'Fredoka'; font-weight: 700; font-size: 1.1rem; }
+  .order button.sel .rank { background: var(--purple); border: 2px solid var(--purple); color: #fff; }
+  .order.done button .rank { background: var(--green); border-color: var(--green); }
+  .order-tools { margin: -2px 0 10px; }
+  .sym { width: 120px; height: 60px; display: block; }
+  .sym line, .sym circle, .schema line, .schema circle, .schema polyline { stroke: #1A1A2E; stroke-width: 2.5; }
+  .sym circle[r="2.5"], .schema circle[r="2.5"] { fill: #1A1A2E; }
+  .sym .plus, .schema .plus { font: 700 14px 'Inter', sans-serif; fill: #1A1A2E; stroke: none; }
+  .sym .m { font: 700 15px 'Inter', sans-serif; fill: #1A1A2E; stroke: none; }
+  .schema-box { text-align: center; }
+  .schema { width: 100%; max-width: 360px; }
+  .schema .cap { font: 500 13px 'Inter', sans-serif; fill: #555; stroke: none; }
+  .schema .q { font: 700 16px 'Inter', sans-serif; fill: #C97B1A; stroke: none; }
+  .circuit-svg { display: block; width: 100%; max-width: 420px; margin: 0 auto 6px; }
+  .circuit-svg .w { stroke: #1A1A2E; stroke-width: 4; fill: none; }
+  .circuit-svg .sw { cursor: pointer; }
+  .circuit-svg .sw-hit { fill: transparent; }
+  .circuit-svg .lbl { font: 600 14px 'Inter', sans-serif; fill: #1A1A2E; }
+  .circuit-svg .bulb { fill: #EEE; stroke: #1A1A2E; stroke-width: 3; }
+  .circuit-svg.lit .bulb { fill: #FFD84D; }
+  .circuit-svg .rays { display: none; stroke: #F59E0B; stroke-width: 3; }
+  .circuit-svg.lit .rays { display: inline; }
+  .mats { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+  .mats button { border: 2px solid var(--border); border-radius: 12px; background: #fff; padding: 8px 12px; min-height: 48px; font-size: 1rem; font-weight: 600; }
+  .mats button.sel { background: var(--purple); color: #fff; }
+  .nest .n1 { fill: #EAF6EE; stroke: #1A1A2E; stroke-width: 2; }
+  .nest .n2 { fill: #D3EEDC; stroke: #1A1A2E; stroke-width: 1.5; }
+  .nest .n3 { fill: #FFF7D6; stroke: #1A1A2E; stroke-width: 1.5; }
+  .nest .nt { font: 700 14px 'Inter', sans-serif; fill: #1A1A2E; }
+  .nest .ns { font: 600 12.5px 'Inter', sans-serif; fill: #1A1A2E; }
+  .nest .nx { font: 600 11px 'Inter', sans-serif; fill: #1A1A2E; }
+  .nest .nl { font: 700 26px 'Fredoka', sans-serif; fill: #5B4FCF; }
+  .schema.nest { max-width: 560px; min-width: 500px; }
+  .nest-scroll { overflow-x: auto; }
+  .grid-wrap { overflow-x: auto; margin-bottom: 10px; }
+  table.grid { border-collapse: collapse; width: 100%; background: #fff; }
+  table.grid th, table.grid td { border: 2px solid var(--border); padding: 4px; text-align: center; }
+  table.grid th { font-size: .8rem; font-weight: 700; line-height: 1.15; }
+  @media (max-width: 480px) { table.grid th { font-size: .64rem; } table.grid th, table.grid td { padding: 1px; } table.grid td.rl { font-size: .78rem; padding-left: 4px; } table.grid button { min-width: 26px; } }
+  table.grid td.rl { text-align: left; font-weight: 600; padding-left: 6px; font-size: .9rem; }
+  table.grid button { width: 100%; min-width: 36px; min-height: 44px; border: none; background: #fff; font-size: 1.4rem; font-weight: 700; color: var(--green); }
+  table.grid button.on { background: var(--green-light); }
+  .grid-done table.grid button { pointer-events: none; }
+  .globe { display: block; width: 100%; max-width: 540px; margin: 0 auto 10px; touch-action: manipulation; }
+  .globe .band { cursor: pointer; }
+  .globe .band rect { fill: #DCEFFB; stroke: none; }
+  .globe .band.alt rect { fill: #F4FAFF; }
+  .globe .band.sel rect { fill: var(--purple); }
+  .globe.done .band.sel rect { fill: var(--green); }
+  .globe .line { stroke: #1A1A2E; stroke-width: 1.5; }
+  .globe .line.eq { stroke-width: 2.5; }
+  .globe .lbl { font-family: 'Inter', sans-serif; font-size: 15px; fill: #1A1A2E; }
+  .globe .pole { font-family: 'Fredoka', sans-serif; font-size: 15px; font-weight: 700; fill: #1A1A2E; }
+  .feedback { margin-top: 12px; padding: 10px 14px; border-radius: 10px; line-height: 1.5; font-size: 1rem; }
+  .feedback.ok { background: var(--green-light); border: 2px solid var(--green); }
+  .feedback.ko { background: var(--red-light); border: 2px solid var(--red); }
+  .feedback.info { background: var(--surface); border: 2px solid var(--amber-dark); }
+
+  .proofs { list-style: none; padding: 0; margin: 0 0 14px; }
+  .proofs li { background: var(--surface); border: 2px solid var(--border); border-radius: 10px; padding: 8px 12px; margin-bottom: 8px; line-height: 1.45; }
+
+  .ending-box { text-align: center; border: 2px solid var(--border); border-radius: 16px; padding: 16px; margin: 10px 0 14px; }
+  .ending-box.win { background: #FFE9A8; }
+  .ending-box.half { background: var(--blue-light); }
+  .ending-box.lose { background: var(--red-light); }
+  .ending-box .big { font-size: 2.6rem; }
+  .ending-box h3 { margin: 6px 0; font-size: 1.3rem; }
+  .ending-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+  .overlay { position: fixed; inset: 0; background: rgba(26,26,46,.45); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 10; }
+  .overlay.open { display: flex; }
+  .overlay .card { max-width: 560px; width: 100%; max-height: 85vh; overflow: auto; }
+  .carnet-list { list-style: none; padding: 0; margin: 8px 0 14px; }
+  .carnet-list li { border-bottom: 2px dashed var(--purple-mid); padding: 10px 2px; line-height: 1.45; }
+  .muted { color: var(--muted); }
+  .hidden { display: none !important; }
+  @media (max-width: 480px) { body { padding: 10px; } .card { padding: 16px; } .story p { font-size: 1.05rem; } .hero h1 { font-size: 1.6rem; } .answer-row label { min-width: 0; width: 100%; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section id="screen-title" class="card hero">
+    <div class="owl">📖</div>
+    <h1>Le Livre de l'empereur</h1>
+    <p class="muted fred">Une enquête dont tu es le héros ou l'héroïne — à l'abbaye de Stavelot, en l'an 801</p>
+    <div class="rules">
+      <ul>
+        <li>📖 Le précieux livre préparé pour Charlemagne a disparu ! À toi de trouver le coupable avant l'arrivée des envoyés de l'empereur.</li>
+        <li>🗣️ Francs, langues, monastères et Charlemagne : l'<b>histoire du haut Moyen Âge</b> est ton meilleur outil.</li>
+        <li>🔐 Les <b>énigmes</b> te font gagner des preuves. Plus tu en résous, plus ton dossier est solide.</li>
+        <li>📒 Les indices sont notés dans ton <b>carnet</b>.</li>
+        <li>⚖️ Attention : accuser quelqu'un <b>sans preuve</b> n'est pas juste !</li>
+        <li>💾 La partie est <b>sauvegardée</b> : tu peux la reprendre plus tard.</li>
+      </ul>
+    </div>
+    <div class="fred" style="font-weight:600">Fins découvertes : <span id="endings-count">0</span> / <span id="endings-total">7</span></div>
+    <div class="endings" id="endings-list"></div>
+    <div class="start-btns">
+      <button class="btn primary hidden" id="btn-resume" style="font-size:1.1rem;padding:12px 24px">▶ Reprendre ma partie</button>
+      <button class="btn" id="btn-start" style="font-size:1.1rem;padding:12px 24px">Commencer l'enquête</button>
+    </div>
+  </section>
+
+  <section id="screen-story" class="hidden">
+    <div class="topbar">
+      <div class="title">📖 Le Livre de l'empereur</div>
+      <button class="btn amber" id="btn-carnet">📒 Carnet <span class="count" id="clue-count">0</span></button>
+      <button class="btn" id="btn-menu">⟲ Menu</button>
+    </div>
+    <article class="card story" id="story"></article>
+  </section>
+</div>
+
+<div class="overlay" id="carnet">
+  <div class="card">
+        <h2 style="margin:0 0 4px">🎒 Mon sac</h2>
+    <ul class="carnet-list" id="sac-list"></ul>
+    <h2 style="margin:0 0 4px">📒 Mes indices</h2>
+    <ul class="carnet-list" id="carnet-list"></ul>
+    <button class="btn primary" id="btn-carnet-close" style="width:100%">Fermer le carnet</button>
+  </div>
+</div>
+
+<script src="lcml_jeux_sync.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* =====================================================================
+     INDICES
+     PREUVES : indices qui comptent comme preuves devant l'abbé.
+     ===================================================================== */
+  const CLUES = {
+    gant:     "Sous la table du scriptorium, un gant de cuir brodé d'une petite clé. La clé brodée, c'est le signe de celui qui garde les clés de l'abbaye : le cellérier, frère Bertin.",
+    absent:   "Cette nuit, tous les moines étaient à l'église pour la prière de la nuit, sauf un : frère Bertin, le cellérier, qui avait dit avoir de la fièvre.",
+    temoin:   "Folcuin, un jeune élève, a vu cette nuit un moine avec une bougie et un gros trousseau de clés, qui portait un paquet du scriptorium vers le cellier.",
+    cire:     "Dans le cellier de frère Bertin, des gouttes de cire de bougie, toutes fraiches, mènent jusqu'à un tonneau vide.",
+    marchand: "Odon, le marchand, raconte que ce matin, à l'aube, frère Bertin lui a proposé de lui vendre « des plaques d'or et des pierres précieuses » contre de l'argent.",
+    fievre:   "Frère Bertin a dit avoir de la fièvre, mais il n'est pas allé à l'infirmerie, et ce matin, au réfectoire, il a mangé deux bols de bouillie : il n'était pas malade.",
+    cles:     "Le scriptorium est fermé à clé la nuit. Il n'y a que deux clés : celle de l'abbé, qui l'avait sur lui à l'église, et celle du cellérier, frère Bertin.",
+    alibiAnselme: "Frère Anselme, le copiste, était à l'église avec tous les autres moines pendant la prière de la nuit.",
+    alibiWido:    "Wido, le cavalier franc, a dormi à l'hôtellerie. Le frère hôtelier avait fermé la porte de l'extérieur, et il l'a rouverte à l'aube."
+  };
+  const PREUVES = ['gant', 'absent', 'fievre', 'temoin', 'cire', 'marchand', 'cles'];
+
+  const OBJECTS = {
+    lanterne: "🏮 Une petite lanterne, prêtée par l'abbé, pour fouiller les coins sombres de l'abbaye."
+  };
+
+  /* =====================================================================
+     L'HISTOIRE
+     ===================================================================== */
+  const S = {
+    debut: { title: "Le livre a disparu",
+      text: [
+        "Abbaye de Stavelot, au printemps de l'an 801. Tu vis au village, au pied de l'abbaye : ta mère cuit le pain pour les moines et pour l'hôtellerie. Ce matin, les cloches sonnent comme pour une catastrophe.",
+        "L'abbé Albéric te prend à part : <span class='speech'>« Le livre de l'empereur a disparu ! »</span> Pendant deux ans, les moines ont copié et décoré un évangéliaire, un livre qui contient les Évangiles. Sa couverture est en or et en pierres précieuses. C'est un cadeau pour Charlemagne.",
+        "<span class='speech'>« Demain, les envoyés de l'empereur viennent le chercher. Toi qui passes tous les jours à l'abbaye et qui en connais tous les recoins, aide-moi ! Mais d'abord, montre-moi que tu sais où nous en sommes dans l'Histoire. »</span>"
+      ],
+      objects: ['lanterne'],
+      enigme: { kind: 'order',
+        title: "📜 La frise de l'abbé",
+        question: "Touche les évènements dans l'ordre, du plus ancien au plus récent.",
+        items: [
+          "Saint Remacle fonde l'abbaye de Stavelot (vers 650)",
+          "Charlemagne est couronné empereur à Rome (800)",
+          "Fin de l'Empire romain d'Occident (476)",
+          "Mort de Childéric, roi franc, à Tournai (481)"
+        ],
+        answer: [2, 3, 0, 1],
+        hint: "Compare les années entre parenthèses : 476, 481, 650, 800. La plus petite est la plus ancienne.",
+        success: "Bravo ! L'Empire romain d'Occident disparait en 476 : c'est le début du Moyen Âge. Les Francs s'installent dans nos régions : leur roi Childéric meurt à Tournai en 481. Vers 650, saint Remacle fonde l'abbaye. Et l'année dernière, à Noël de l'an 800, Charlemagne a été couronné empereur.",
+        to: 'debutOk', skipTo: 'debutOk', skipLabel: "Commencer l'enquête"
+      }
+    },
+
+    debutOk: { title: "L'enquête commence",
+      text: [
+        "<span class='speech'>« Ce soir, je réunirai tout le monde dans le cloitre. Tu me diras alors qui a pris le livre. »</span>"
+      ],
+      prompt: "",
+      choices: [ { label: "Aller dans le cloitre", to: 'cloitre' } ]
+    },
+
+    cloitre: { title: "Le cloitre",
+      text: [
+        "Le cloitre est une cour carrée entourée d'une galerie couverte. Autour, il y a l'église, le scriptorium, l'école, le cellier, l'infirmerie et l'hôtellerie, où dorment les voyageurs. Des moines passent en silence, la tête sous leur capuchon. Au-delà de la porte, il y a le village.",
+        "<div class='vocab'>📚 Un <b>monastère</b> (ou une abbaye) : un lieu où vivent des moines. Ils y prient et y travaillent. L'<b>abbé</b> est leur chef.</div>"
+      ],
+      prompt: "Où vas-tu ?",
+      choices: [
+        { label: "✒️ Le scriptorium, où les moines copient les livres", to: 'scriptorium' },
+        { label: "⛪ L'église", to: 'eglise' },
+        { label: "📖 L'école", to: 'ecole' },
+        { label: "🛏️ L'hôtellerie", to: 'hotellerie' },
+        { label: "🛢️ Le cellier", to: 'cellier' },
+        { label: "🌿 L'infirmerie", to: 'infirmerie' },
+        { label: "🏘️ Le village", to: 'village' },
+        { label: "🗝️ La chambre de l'abbé", to: 'abbe' },
+        { label: "Ce soir : je présente mes conclusions à l'abbé", to: 'soir', accuse: true }
+      ]
+    },
+
+    scriptorium: { title: "Le scriptorium",
+      text: [
+        "Dans le scriptorium, il fait clair : de larges ouvertures laissent entrer la lumière dont les copistes ont besoin. Sur les tables, des plumes d'oie, des pots d'encre et des feuilles de parchemin, une peau d'animal préparée pour qu'on puisse écrire dessus. Frère Anselme, le copiste, regarde la table vide. <span class='speech'>« Deux ans de travail… J'ai écrit chaque page en latin, la langue de l'Église. »</span>",
+        "Il soupire : <span class='speech'>« Ici, les gens du pays parlent le roman, une langue qui vient du latin. Les Francs, eux, parlent le francique, une langue germanique. Les deux langues se mélangent. Tiens, essaie de deviner d'où viennent ces mots de ta langue. »</span>"
+      ],
+      enigme: { kind: 'classify',
+        title: "🗣️ Latin ou francique ?",
+        question: "Pour chaque mot de ta langue, touche la langue dont il vient.",
+        categories: ['Latin', 'Francique'],
+        items: [
+          { label: "mur (vient de « murus »)", answer: 0 },
+          { label: "gant (vient de « want »)", answer: 1 },
+          { label: "école (vient de « schola »)", answer: 0 },
+          { label: "jardin (vient de « gard »)", answer: 1 },
+          { label: "fenêtre (vient de « fenestra »)", answer: 0 },
+          { label: "blanc (vient de « blank »)", answer: 1 }
+        ],
+        hint: "Regarde le mot ancien entre parenthèses. Les mots latins finissent souvent par -us ou -a. Les mots franciques sont courts et ressemblent au néerlandais ou à l'anglais : pense aux « wanten », les moufles en néerlandais, ou à « blank », qui veut dire blanc en néerlandais.",
+        success: "Bravo ! Mur, école et fenêtre viennent du latin. Gant, jardin et blanc viennent du francique, la langue des Francs. Notre langue est un mélange des deux !",
+        to: 'scriptoriumOk', skipTo: 'scriptoriumKo', skipLabel: "Laisser frère Anselme"
+      }
+    },
+
+    scriptoriumOk: { title: "Le gant",
+      text: [
+        "<span class='speech'>« Gant… Tiens, justement ! »</span> Avec ta lanterne, tu éclaires sous la table. Il y a un gant de cuir, brodé d'une petite clé.",
+        "Frère Anselme pâlit : <span class='speech'>« La clé brodée… C'est le signe du cellérier, frère Bertin. C'est lui qui garde les clés de l'abbaye. »</span>"
+      ],
+      clues: ['gant'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le cloitre", to: 'cloitre' } ]
+    },
+
+    scriptoriumKo: { title: "Le scriptorium",
+      text: [
+        "Frère Anselme retourne à ses plumes, l'air triste. Après tout, c'est lui qui connaissait le mieux ce livre…"
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Retourner dans le cloitre", to: 'cloitre' },
+        { label: "Accuser frère Anselme : il connaissait le livre mieux que personne !", to: 'finAnselme', accuse: true }
+      ]
+    },
+
+    eglise: { title: "L'église",
+      text: [
+        "Dans l'église, frère Gérard, le prieur, allume les cierges. C'est lui qui aide l'abbé à diriger les moines. <span class='speech'>« Tu enquêtes ? Alors réponds d'abord à ma question. »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "⛪ À quoi sert un monastère ?",
+        question: "Depuis l'époque de saint Remacle, pourquoi construit-on des églises et des monastères dans nos régions ?",
+        options: [
+          "Pour répandre la religion chrétienne dans le pays",
+          "Pour abriter les soldats de l'empereur pendant les guerres",
+          "Pour garder les marchandises des marchands en sécurité"
+        ],
+        answer: 0,
+        hint: "Que font les moines toute la journée ? Ils prient à l'église, et au scriptorium, ils copient les Évangiles…",
+        success: "Exact ! C'est la christianisation : depuis plus de cent ans, les habitants de nos régions deviennent chrétiens. Les églises et les monastères se multiplient. Les moines y prient, y travaillent et y copient des livres.",
+        to: 'egliseOk', skipTo: 'egliseKo', skipLabel: "Laisser le prieur"
+      }
+    },
+
+    egliseOk: { title: "La prière de la nuit",
+      text: [
+        "<span class='speech'>« Bien. Cette nuit, tous les moines étaient ici pour la prière de la nuit, frère Anselme aussi. Tous… sauf frère Bertin, le cellérier. Il avait dit avoir de la fièvre. »</span>"
+      ],
+      clues: ['alibiAnselme', 'absent'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le cloitre", to: 'cloitre' } ]
+    },
+
+    egliseKo: { title: "L'église",
+      text: [
+        "Frère Gérard reprend ses cierges sans plus te regarder."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner dans le cloitre", to: 'cloitre' } ]
+    },
+
+    ecole: { title: "L'école",
+      text: [
+        "À l'école de l'abbaye, frère Hildebald fait réciter les élèves. Certains sont des fils de paysans, d'autres des fils de nobles. <span class='speech'>« Charlemagne a demandé une école dans chaque monastère. Sais-tu pourquoi ? »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "📖 Les écoles de Charlemagne",
+        question: "Pourquoi Charlemagne veut-il une école dans chaque monastère ?",
+        options: [
+          "Pour apprendre aux futurs soldats à se battre",
+          "Pour former des hommes instruits pour l'Église et le royaume",
+          "Pour que tous les enfants apprennent le francique"
+        ],
+        answer: 1,
+        hint: "Pour copier les livres, chanter à l'église ou écrire les lois de l'empereur, que faut-il savoir faire ?",
+        success: "Exact ! Charlemagne veut des hommes instruits pour l'Église et pour son royaume : à l'école, les garçons apprennent à lire, à chanter les prières et à compter. À cette époque, l'école est surtout réservée aux garçons, et très peu d'enfants y vont.",
+        to: 'ecoleOk', skipTo: 'ecoleKo', skipLabel: "Laisser la classe"
+      }
+    },
+
+    ecoleOk: { title: "Folcuin",
+      text: [
+        "À la récréation, un élève, Folcuin, te tire par la manche. <span class='speech'>« Cette nuit, je n'arrivais pas à dormir. Par la fenêtre, j'ai vu un moine qui traversait le cloitre avec une bougie et un gros trousseau de clés. Il portait un paquet. Il venait du scriptorium et il est entré dans le cellier. »</span>"
+      ],
+      clues: ['temoin'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le cloitre", to: 'cloitre' } ]
+    },
+
+    ecoleKo: { title: "L'école",
+      text: [
+        "Frère Hildebald reprend sa leçon. Tu repars sans avoir parlé aux élèves."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner dans le cloitre", to: 'cloitre' } ]
+    },
+
+    hotellerie: { title: "L'hôtellerie",
+      text: [
+        "À l'hôtellerie, un grand cavalier soigne son cheval. Il s'appelle Wido. Il parle le francique, et seulement quelques mots de roman. Le frère hôtelier traduit pour toi.",
+        "<span class='speech'>« Je suis arrivé hier pour annoncer les envoyés de l'empereur. Tu sais qui ils sont ? »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🐎 Les envoyés de l'empereur",
+        question: "Qui sont les missi dominici, les « envoyés du maitre » ?",
+        options: [
+          "Des marchands qui vendent dans tout l'empire les produits du palais",
+          "Des moines qui recopient dans les abbayes les livres de l'empereur",
+          "Des hommes qui voyagent par deux pour faire appliquer les décisions de Charlemagne"
+        ],
+        answer: 2,
+        hint: "Le mot « envoyé » est un bon indice : l'empereur ne peut pas être partout à la fois. Qui le remplace ?",
+        success: "Exact ! L'empire est immense. Les missi dominici voyagent par deux, souvent un comte et un évêque ou un abbé : ils vérifient que les comtes obéissent aux lois de Charlemagne. Demain, ce sont eux qui emporteront le livre.",
+        to: 'hotellerieOk', skipTo: 'hotellerieKo', skipLabel: "Laisser Wido à son cheval"
+      }
+    },
+
+    hotellerieOk: { title: "La porte fermée",
+      text: [
+        "Wido sourit et dit quelques mots. Le frère hôtelier traduit : <span class='speech'>« Il dit que l'empereur parle la même langue que lui, le francique. »</span>",
+        "Puis il ajoute : <span class='speech'>« Cette nuit, il a dormi ici. J'ai fermé la porte de l'hôtellerie de l'extérieur, comme chaque soir, et je ne l'ai rouverte qu'à l'aube. »</span>"
+      ],
+      clues: ['alibiWido'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le cloitre", to: 'cloitre' } ]
+    },
+
+    hotellerieKo: { title: "L'hôtellerie",
+      text: [
+        "Wido hausse les épaules et retourne à son cheval. Il est arrivé hier soir, juste avant le vol… Mais arriver le jour d'un vol, est-ce une preuve ?"
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Retourner dans le cloitre", to: 'cloitre' },
+        { label: "Accuser Wido : il ne parle même pas notre langue !", to: 'finWido', accuse: true }
+      ]
+    },
+
+    cellier: { title: "Le cellier",
+      text: [
+        "Dans le cellier, frère Bertin, le cellérier, compte des sacs de grain. À sa ceinture pend un gros trousseau de clés. Il n'a qu'un gant à la main…",
+        "<span class='speech'>« Que fais-tu ici ? Tu as l'air de connaitre l'Histoire, toi ? Alors dis-moi : nous sommes en l'an 801. En quel siècle sommes-nous ? »</span>"
+      ],
+      enigme: { kind: 'number',
+        title: "🔢 Le siècle",
+        question: "L'an 801 appartient à quel siècle ? Écris le numéro du siècle en chiffres.",
+        answer: 9, unit: "e siècle",
+        hint: "Le Ier siècle va de l'an 1 à l'an 100. Le IIe siècle va de l'an 101 à l'an 200. Continue ainsi, siècle par siècle !",
+        success: "Exact ! L'an 801 est la première année du IXe siècle (9e siècle), qui va de 801 à 900.",
+        to: 'cellierOk', skipTo: 'cellierKo', skipLabel: "Quitter le cellier"
+      }
+    },
+
+    cellierOk: { title: "Les gouttes de cire",
+      text: [
+        "<span class='speech'>« Hum. Bon. Maintenant, laisse-moi travailler. »</span> Frère Bertin sort chercher un sac.",
+        "Avec ta lanterne, tu remarques sur le sol des gouttes de cire de bougie, toutes fraiches. Elles mènent jusqu'à un grand tonneau fermé, au fond du cellier. Quand tu le frappes, il ne sonne pas comme un tonneau plein de vin…"
+      ],
+      clues: ['cire'],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Retourner dans le cloitre", to: 'cloitre' },
+        { label: "Accuser frère Bertin tout de suite, ici, dans le cellier", to: 'finTropTot', accuse: true }
+      ]
+    },
+
+    cellierKo: { title: "Le cellier",
+      text: [
+        "<span class='speech'>« Ce n'est pas ça ! Allez, dehors ! »</span> Frère Bertin te pousse vers la porte."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner dans le cloitre", to: 'cloitre' } ]
+    },
+
+    village: { title: "Le village",
+      text: [
+        "Devant la porte de l'abbaye, Odon, un marchand, charge ses mules avec du drap et du sel. <span class='speech'>« Je pars vendre mes marchandises au palais de l'empereur. Tu sais où il se trouve ? »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🏰 Le palais de Charlemagne",
+        question: "Dans quelle ville Charlemagne a-t-il fait construire son palais, avec une chapelle que l'on peut encore visiter aujourd'hui ?",
+        options: [
+          "À Rome",
+          "À Aix-la-Chapelle",
+          "À Tournai"
+        ],
+        answer: 1,
+        hint: "Cette ville se trouve aujourd'hui en Allemagne, tout près de la Belgique et de Liège.",
+        success: "Exact ! Charlemagne vit surtout dans son palais d'Aix-la-Chapelle. Sa chapelle existe toujours : elle fait partie de la cathédrale d'Aix-la-Chapelle.",
+        to: 'villageOk', skipTo: 'villageKo', skipLabel: "Laisser Odon partir"
+      }
+    },
+
+    villageOk: { title: "Une drôle d'offre",
+      text: [
+        "Odon baisse la voix : <span class='speech'>« Ce matin, à l'aube, un moine est venu me voir, frère Bertin, le cellérier. Il voulait me vendre des plaques d'or et des pierres précieuses, contre beaucoup d'argent. J'ai refusé : d'où un moine tiendrait-il ces trésors ? »</span>"
+      ],
+      clues: ['marchand'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le cloitre", to: 'cloitre' } ]
+    },
+
+    villageKo: { title: "Le village",
+      text: [
+        "Odon fait claquer sa langue et ses mules se mettent en route. Il part bien vite, ce marchand…"
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "Retourner dans le cloitre", to: 'cloitre' },
+        { label: "Accuser Odon : il s'enfuit avec le livre !", to: 'finOdon', accuse: true }
+      ]
+    },
+
+    infirmerie: { title: "L'infirmerie",
+      text: [
+        "L'infirmerie sent bon la sauge et la menthe. Frère Ursmer, l'infirmier, fait sécher des plantes. C'est lui qui soigne les moines malades, et aussi les pauvres et les voyageurs qui frappent à la porte de l'abbaye.",
+        "<span class='speech'>« Tu as vu le cavalier, à l'hôtellerie ? C'est un Franc, comme Charlemagne. Mais au fait, sais-tu qui sont les Francs ? »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🛡️ Les Francs",
+        question: "Qui sont les Francs ?",
+        options: [
+          "Des Romains venus d'Italie pour construire des routes",
+          "Un peuple germanique, venu de l'autre côté du Rhin, qui s'est installé dans nos régions à la fin de l'Empire romain",
+          "Des moines venus de Rome pour fonder des abbayes"
+        ],
+        answer: 1,
+        hint: "Repense à ta frise : Childéric, roi des Francs, est mort à Tournai en 481, juste après la fin de l'Empire romain d'Occident. Et frère Anselme t'a dit que le francique est une langue germanique.",
+        success: "Exact ! Les Francs sont un peuple germanique. À la fin de l'Empire romain, ils s'installent dans nos régions, où vivent déjà des Gallo-Romains. Ils y créent un royaume : celui de Childéric, puis de son fils Clovis… et, bien plus tard, celui de Charlemagne. Les deux peuples vivent ensemble, avec leurs deux langues.",
+        to: 'infirmerieOk', skipTo: 'infirmerieKo', skipLabel: "Laisser frère Ursmer"
+      }
+    },
+
+    infirmerieOk: { title: "Frère Ursmer",
+      text: [
+        "<span class='speech'>« Bravo ! Reviens me voir si quelqu'un a besoin de soins. »</span>"
+      ],
+      prompt: "",
+      choices: [
+        { label: "Demander si frère Bertin est venu soigner sa fièvre", to: 'infirmerieFievre', requires: 'absent' },
+        { label: "Retourner dans le cloitre", to: 'cloitre' }
+      ]
+    },
+
+    infirmerieFievre: { title: "Une drôle de fièvre",
+      text: [
+        "Tu demandes si frère Bertin est venu se faire soigner cette nuit. Frère Ursmer fronce les sourcils.",
+        "<span class='speech'>« Frère Bertin ? Il n'est pas venu me voir. Et ce matin, au réfectoire, il a mangé deux bols de bouillie : le frère cuisinier pourra te le dire. Drôle de malade ! »</span>"
+      ],
+      clues: ['fievre'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le cloitre", to: 'cloitre' } ]
+    },
+
+    infirmerieKo: { title: "L'infirmerie",
+      text: [
+        "Frère Ursmer retourne à ses plantes. Tu repars sans lui avoir posé de questions."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner dans le cloitre", to: 'cloitre' } ]
+    },
+
+    abbe: { title: "La chambre de l'abbé",
+      text: [
+        "L'abbé Albéric t'attend près d'un coffre. <span class='speech'>« Je vais te dire qui a les clés du scriptorium. Mais d'abord, une question sur notre empereur. »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "👑 Le couronnement",
+        question: "Le jour de Noël de l'an 800, qui a couronné Charlemagne empereur, et où ?",
+        options: [
+          "Le pape Léon III, à Rome",
+          "L'abbé de Stavelot, dans notre église",
+          "Le roi Childéric, à Tournai"
+        ],
+        answer: 0,
+        hint: "Regarde ta frise : Childéric est mort depuis plus de 300 ans. Et un abbé ne peut pas faire d'un roi un empereur. Qui est le chef de l'Église ?",
+        success: "Exact ! Le 25 décembre 800, à Rome, le pape Léon III a couronné Charlemagne empereur. Il était déjà roi des Francs depuis plus de 30 ans.",
+        to: 'abbeOk', skipTo: 'abbeKo', skipLabel: "Laisser l'abbé"
+      }
+    },
+
+    abbeOk: { title: "Les deux clés",
+      text: [
+        "<span class='speech'>« La nuit, le scriptorium est fermé à clé. Il n'y a que deux clés. La mienne ne m'a pas quitté : je l'avais sur moi à l'église, pendant la prière de la nuit. L'autre est dans le trousseau du cellérier, frère Bertin. »</span>"
+      ],
+      clues: ['cles'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le cloitre", to: 'cloitre' } ]
+    },
+
+    abbeKo: { title: "La chambre de l'abbé",
+      text: [
+        "On frappe à la porte : l'abbé est appelé ailleurs. Il referme son coffre."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner dans le cloitre", to: 'cloitre' } ]
+    },
+
+    soir: { title: "Le soir, dans le cloitre",
+      text: [
+        "Le soir, dans le cloitre, l'abbé Albéric a réuni les moines, Wido et Odon. Les bougies tremblent. Tout le monde se tait quand tu t'avances.",
+        "<span class='speech'>« Alors, qui a pris le livre de l'empereur ? »</span>"
+      ],
+      prompt: "Qui désignes-tu ?",
+      choices: [
+        { label: "Frère Anselme, le copiste", to: 'finAnselme', accuse: true },
+        { label: "Wido, le cavalier franc", to: 'finWido', accuse: true },
+        { label: "Odon, le marchand", to: 'finOdon', accuse: true },
+        { label: "Frère Bertin, le cellérier", to: 'preuves', accuse: true }
+      ]
+    },
+
+    preuves: { title: "Tes preuves",
+      text: [
+        "<span class='speech'>« Frère Bertin ? »</span> demande l'abbé. Le cellérier serre son trousseau de clés.",
+        "Tu rassembles tes indices."
+      ],
+      dynamic: function (g) {
+        const list = PREUVES.filter(c => g.clues.indexOf(c) !== -1);
+        if (!list.length) return "<p><b>Tu n'as aucune preuve…</b></p>";
+        return "<p>Tu présentes <b>" + list.length + " preuve" + (list.length > 1 ? "s" : "") + "</b> :</p><ul class='proofs'>" + list.map(c => "<li>🔎 " + CLUES[c] + "</li>").join('') + "</ul>";
+      },
+      auto: function (g) {
+        const n = PREUVES.filter(c => g.clues.indexOf(c) !== -1).length;
+        return n >= 5 ? 'finGagne' : n >= 2 ? 'finMoitie' : 'finSansPreuve';
+      },
+      autoLabel: "Voir la réaction de l'abbé"
+    },
+
+    finGagne: { title: "Le livre retrouvé",
+      text: [
+        "Frère Bertin tombe à genoux : <span class='speech'>« Pardon, père abbé ! Je voulais arracher l'or et les pierres de la couverture pour les vendre. J'ai caché le livre dans un tonneau du cellier. »</span>",
+        "On ouvre le tonneau : l'évangéliaire est intact. L'abbé décide que frère Bertin ne gardera plus les clés, et qu'il fera pénitence.",
+        "Le lendemain, les missi dominici emportent le livre vers le palais d'Aix-la-Chapelle. Avant de partir, Wido te fait un signe et te dit un mot en francique. Le frère hôtelier traduit : <span class='speech'>« Merci. »</span>"
+      ],
+      ending: { type: 'win', title: "Bravo, détective ! Grâce à tes connaissances sur l'époque de Charlemagne, le livre de l'empereur est sauvé." }
+    },
+
+    finMoitie: { title: "Le doute",
+      text: [
+        "L'abbé hésite. <span class='speech'>« Accuser un moine, c'est grave. Il me faut plus de preuves contre frère Bertin. »</span>"
+      ],
+      ending: { backTo: 'cloitre', type: 'half', title: "Tu avais la bonne piste, mais il te fallait plus de preuves contre lui. Retourne enquêter !" }
+    },
+
+    finSansPreuve: { title: "Pas assez de preuves",
+      text: [
+        "<span class='speech'>« Accuser quelqu'un sans preuve ? Impossible »</span>, dit l'abbé."
+      ],
+      ending: { backTo: 'cloitre', type: 'lose', title: "Ton intuition était peut-être bonne, mais il faut des preuves. Les moines, les élèves et les voyageurs t'en donneront !" }
+    },
+
+    finTropTot: { title: "Trop tôt !",
+      text: [
+        "<span class='speech'>« C'est vous qui avez pris le livre ! »</span>",
+        "Frère Bertin devient tout rouge : <span class='speech'>« Quelle insolence ! Sors d'ici ! »</span> Pendant la nuit, le tonneau a été vidé… et le livre a disparu pour toujours."
+      ],
+      ending: { type: 'lose', title: "En accusant frère Bertin tout de suite, tu as prévenu le coupable. Rassemble tes preuves en silence, puis présente-les à l'abbé !" }
+    },
+
+    finAnselme: { title: "Une erreur",
+      text: [
+        "<span class='speech'>« C'est frère Anselme ! »</span>",
+        "Le prieur secoue la tête : <span class='speech'>« Il était à l'église avec nous toute la nuit. »</span> Frère Anselme pleure : ce livre, c'était le travail de sa vie."
+      ],
+      ending: { type: 'lose', title: "Frère Anselme priait avec les autres moines. Qui n'était pas à l'église cette nuit-là ?" }
+    },
+
+    finWido: { title: "Une erreur",
+      text: [
+        "<span class='speech'>« C'est Wido ! Il ne parle même pas notre langue ! »</span>",
+        "Le frère hôtelier proteste : <span class='speech'>« J'avais fermé sa porte toute la nuit ! »</span> Et l'abbé ajoute : <span class='speech'>« Notre empereur lui-même parle le francique. Parler une autre langue ne fait pas de quelqu'un un voleur. »</span>"
+      ],
+      ending: { type: 'lose', title: "Wido était enfermé dans l'hôtellerie. On n'accuse pas quelqu'un parce qu'il parle une autre langue : il faut des preuves !" }
+    },
+
+    finOdon: { title: "Une erreur",
+      text: [
+        "<span class='speech'>« C'est Odon, le marchand ! »</span>",
+        "On fouille ses mules : il n'y a que du drap et du sel. Odon est furieux : <span class='speech'>« Moi, j'ai refusé d'acheter de l'or volé ! »</span>"
+      ],
+      ending: { type: 'lose', title: "Odon n'avait pas le livre. Mais il savait peut-être quelque chose… Parle-lui avant qu'il parte !" }
+    }
+  };
+
+  const ENDINGS = [
+    { id: 'finGagne',      label: "📖 Le livre retrouvé" },
+    { id: 'finMoitie',     label: "🤔 Le doute" },
+    { id: 'finSansPreuve', label: "😶 Pas assez de preuves" },
+    { id: 'finTropTot',    label: "🛢️ Trop tôt" },
+    { id: 'finAnselme',    label: "✒️ Le copiste" },
+    { id: 'finWido',       label: "🐎 Le cavalier franc" },
+    { id: 'finOdon',       label: "🫏 Le marchand" }
+  ];
+
+  const FIRST = 'debut';
+
+  /* Numéros des paragraphes : mélangés comme dans un vrai livre-jeu (toujours les mêmes). */
+  (function numberParagraphs() {
+    const ids = Object.keys(S).filter(k => k !== FIRST);
+    let seed = 801;
+    const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+    const nums = ids.map((_, i) => i + 2);
+    for (let i = nums.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [nums[i], nums[j]] = [nums[j], nums[i]]; }
+    S[FIRST].n = 1;
+    ids.forEach((k, i) => { S[k].n = nums[i]; });
+  })();
+
+  /* =====================================================================
+     SAUVEGARDE — par élève, sur l'appareil. Rien n'est envoyé.
+     ===================================================================== */
+  function who() {
+    try {
+      const st = window.parent && window.parent !== window && window.parent.state;
+      if (st && st.student) return '_' + (st.studentCls || '') + '_' + st.student;
+    } catch (e) {}
+    return '';
+  }
+  const KEY_FINS = () => 'lcml_enquete_empereur_fins' + who();
+  const KEY_SAVE = () => 'lcml_enquete_empereur_partie' + who();
+  function readJSON(k, def) { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? def : v; } catch (e) { return def; } }
+  function writeJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function removeKey(k) { try { localStorage.removeItem(k); } catch (e) {} }
+  // Fins découvertes aussi gardées en ligne, par élève (lcml_jeux_sync.js) : les tablettes changent d'un jour à l'autre
+  const finsSync = window.LCMLSync ? LCMLSync.create({ game: 'jeu_enquete_empereur', key: KEY_FINS, merge: LCMLSync.union }) : null;
+  function loadEndings() { const v = readJSON(KEY_FINS(), []); return Array.isArray(v) ? v.filter(id => S[id]) : []; }
+  function saveEnding(id) {
+    const list = loadEndings();
+    if (list.indexOf(id) === -1) { list.push(id); writeJSON(KEY_FINS(), list); if (finsSync) finsSync.push(); return true; }
+    return false;
+  }
+
+  /* =====================================================================
+     MOTEUR
+     ===================================================================== */
+  let game = null;
+  function newGame() { game = { at: FIRST, clues: [], objects: [], history: [], solved: {} }; }
+  const $ = (id) => document.getElementById(id);
+  const story = $('story');
+  let errors = 0, solvedNow = false, orderSeq = [], circ = { sw: false, mat: -1 };
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+  function has(x) { return game.clues.indexOf(x) !== -1 || game.objects.indexOf(x) !== -1; }
+
+  function renderTitle() {
+    const found = loadEndings();
+    $('endings-count').textContent = found.length;
+    const tot = $('endings-total'); if (tot) tot.textContent = ENDINGS.length;
+    $('endings-list').innerHTML = ENDINGS.map(e => {
+      const ok = found.indexOf(e.id) !== -1;
+      return `<span class="ending-chip ${ok ? 'found' : ''} ${ok && e.id === 'finGagne' ? 'win' : ''}">${ok ? e.label : '❔ ???'}</span>`;
+    }).join('');
+    const save = readJSON(KEY_SAVE(), null);
+    const canResume = save && S[save.at] && !S[save.at].ending;
+    $('btn-resume').classList.toggle('hidden', !canResume);
+    $('btn-start').textContent = canResume ? "Recommencer depuis le début" : (found.length ? "Recommencer l'enquête" : "Commencer l'enquête");
+    $('btn-start').classList.toggle('primary', !canResume);
+    $('screen-title').classList.remove('hidden');
+    $('screen-story').classList.add('hidden');
+  }
+
+  function showStory() { $('screen-title').classList.add('hidden'); $('screen-story').classList.remove('hidden'); }
+
+  function goTo(id, opts) {
+    opts = opts || {};
+    if (!opts.noHistory && game.at !== id) game.history.push(game.at);
+    game.at = id;
+    errors = 0; solvedNow = false; orderSeq = []; circ = { sw: false, mat: -1 };
+    const p = S[id];
+    const freshClues = [], freshObjs = [];
+    if (!opts.resume) {
+      (p.clues || []).forEach(c => { if (game.clues.indexOf(c) === -1) { game.clues.push(c); freshClues.push(c); } });
+      (p.objects || []).forEach(o => { if (game.objects.indexOf(o) === -1) { game.objects.push(o); freshObjs.push(o); } });
+    }
+    if (p.ending) removeKey(KEY_SAVE()); else writeJSON(KEY_SAVE(), game);
+    renderPara(p, freshClues, freshObjs);
+    updateCount();
+    window.scrollTo(0, 0);
+  }
+
+  function renderPara(p, freshClues, freshObjs) {
+    let html = `<div class="para-head"><span class="para-num">${p.n}</span><h2>${p.title}</h2></div>`;
+    if (p.before) html += p.before(game);
+    html += p.text.map(t => /^<div/.test(t) ? t : `<p>${t}</p>`).join('');
+    if (p.dynamic) html += p.dynamic(game);
+    freshObjs.forEach(o => { html += `<div class="obj-found">🎒 <b>Objet ajouté à ton sac :</b> ${OBJECTS[o]}</div>`; });
+    freshClues.forEach(c => { html += `<div class="clue-found">📒 <b>Nouvel indice noté dans ton carnet :</b> ${CLUES[c]}</div>`; });
+
+    if (p.enigme) {
+      if (game.solved[game.at]) {
+        html += `<div class="feedback ok" style="margin-bottom:12px">✅ Tu as déjà résolu cette énigme.</div>`;
+        html += `<div class="choices">${choiceBtn({ label: "Continuer", to: p.enigme.to })}</div>`;
+      } else {
+        html += renderEnigme(p.enigme);
+        html += `<div class="choices" id="after-enigme"></div>`;
+      }
+    } else if (p.auto) {
+      html += `<div class="choices">${choiceBtn({ label: p.autoLabel || "Continuer", to: p.auto(game) })}</div>`;
+    } else if (p.ending) {
+      const isNew = saveEnding(game.at);
+      const icon = p.ending.type === 'win' ? '🏆' : p.ending.type === 'half' ? '🏃' : '❌';
+      const label = p.ending.type === 'win' ? 'Fin gagnante' : p.ending.type === 'half' ? 'Fin à moitié réussie' : 'Fin ratée';
+      html += `<div class="ending-box ${p.ending.type}"><div class="big">${icon}</div><h3>${label}</h3><p style="margin:6px 0 10px">${p.ending.title}</p>
+        <div class="muted">${isNew ? '✨ Nouvelle fin découverte ! ' : ''}Fins découvertes : ${loadEndings().length} / ${ENDINGS.length}</div></div><div class="ending-actions">`;
+      if (p.ending.type !== 'win' && p.ending.backTo) html += `<button class="btn" data-act="backTo" data-target="${p.ending.backTo}">↩ Retourner enquêter</button>`;
+      else if (p.ending.type !== 'win' && !p.ending.noBack && game.history.length) html += `<button class="btn" data-act="back">↩ Revenir au choix précédent</button>`;
+      html += `<button class="btn primary" data-act="restart">🔄 Recommencer l'enquête</button><button class="btn" data-act="menu">Menu</button></div>`;
+      // Plan de travail : l'enquête n'est cochée que lorsqu'elle est résolue (fin gagnante). Aucun score envoyé.
+      if (p.ending.type === 'win') { try { if (window.parent && window.parent !== window && typeof window.parent.ptEnqueteFinie === 'function') window.parent.ptEnqueteFinie('jeu_enquete_empereur'); } catch (e) {} }
+      if (p.ending.type === 'win' && typeof confetti === 'function') setTimeout(() => { try { confetti({ particleCount: 150, spread: 80, origin: { y: .6 } }); } catch (e) {} }, 250);
+    } else {
+      const list = p.choices.filter(c => (!c.requires || has(c.requires)) && (!c.requiresNot || !has(c.requiresNot)));
+      html += `<div class="choices">${p.prompt ? `<div class="prompt">${p.prompt}</div>` : ''}${list.map(choiceBtn).join('')}</div>`;
+    }
+    story.innerHTML = html;
+  }
+
+  function choiceBtn(c) {
+    const cls = c.accuse ? 'accuse' : (c.cls || '');
+    return `<button class="choice ${cls}" data-to="${c.to}">${c.accuse ? '⚖️ ' : ''}${esc(c.label)}<span class="go">Va au ${S[c.to].n}</span></button>`;
+  }
+
+  const inputAttrs = 'type="text" inputmode="numeric" pattern="[0-9]*" maxlength="5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"';
+  function renderEnigme(e) {
+    let h = `<div class="enigme" id="enigme"><h3>${e.title}</h3><p class="q">${e.question}</p>`;
+    if (e.kind === 'number') {
+      h += `<div class="answer-row"><input id="ans-0" ${inputAttrs} aria-label="Réponse">${e.unit ? `<span class="unit">${e.unit}</span>` : ''}</div>`;
+    } else if (e.kind === 'numbers') {
+      e.fields.forEach((f, i) => { h += `<div class="answer-row"><label for="ans-${i}">${f.label}</label><input id="ans-${i}" ${inputAttrs}></div>`; });
+    } else if (e.kind === 'qcm') {
+      h += `<div class="qcm">` + e.options.map((o, i) => `<button type="button" data-opt="${i}">${o}</button>`).join('') + `</div>`;
+    } else if (e.kind === 'grid') {
+      h += `<div class="grid-wrap"><table class="grid"><thead><tr><th></th>` + e.cols.map(c => `<th>${c}</th>`).join('') + `</tr></thead><tbody>` +
+        e.rows.map((r, i) => `<tr><td class="rl">${r.label}</td>` + e.cols.map((c, k) => `<td><button type="button" data-gr="${i},${k}" aria-label="${r.label} : ${c}" aria-pressed="false"></button></td>`).join('') + `</tr>`).join('') +
+        `</tbody></table></div>`;
+    } else if (e.kind === 'circuit') {
+      h += `<div id="circuit-box">${circuitSVG(e)}</div><p class="muted" style="margin:0 0 6px">Objets à essayer :</p><div class="mats">` +
+        e.materials.map((m, i) => `<button type="button" data-mat="${i}">${m.icon} ${m.label}</button>`).join('') + `</div>`;
+    } else if (e.kind === 'zone') {
+      h += globeSVG();
+    } else if (e.kind === 'order') {
+      h += `<div class="order">` + e.items.map((it, i) => `<button type="button" data-ord="${i}"><span class="rank"></span><span>${it}</span></button>`).join('') + `</div>`;
+      h += `<div class="order-tools"><button class="btn" type="button" data-act="ordreset">↺ Tout effacer</button></div>`;
+    } else if (e.kind === 'classify') {
+      h += `<div class="classify">` + e.items.map((it, i) => `<div class="cl-row" data-row="${i}"><span class="cl-label">${it.label}</span><span class="cl-btns">` +
+        e.categories.map((c, k) => `<button type="button" data-cl="${k}">${c}</button>`).join('') + `</span></div>`).join('') + `</div>`;
+    }
+    h += `<button class="btn primary" data-act="check">Valider</button><div id="enigme-fb"></div></div>`;
+    return h;
+  }
+
+  function checkEnigme() {
+    if (solvedNow) return;
+    const e = S[game.at].enigme, fb = $('enigme-fb');
+    let ok = false, said = '';
+    if (e.kind === 'number' || e.kind === 'numbers') {
+      const answers = e.kind === 'number' ? [e.answer] : e.fields.map(f => f.answer);
+      const vals = answers.map((_, i) => ($('ans-' + i).value || '').replace(/\D/g, ''));
+      if (vals.some(v => !v)) { fb.innerHTML = `<div class="feedback info">${answers.length > 1 ? 'Complète <b>toutes</b> les cases' : 'Écris un nombre'} avant de valider.</div>`; return; }
+      ok = vals.every((v, i) => parseInt(v, 10) === answers[i]);
+      said = ` Tu as écrit ${vals.join(' et ')}.`;
+    } else if (e.kind === 'qcm') {
+      const sel = story.querySelector('.qcm button.sel');
+      if (!sel) { fb.innerHTML = `<div class="feedback info">Choisis une réponse avant de valider.</div>`; return; }
+      ok = parseInt(sel.getAttribute('data-opt'), 10) === e.answer;
+    } else if (e.kind === 'grid') {
+      let wrong = 0;
+      e.rows.forEach((r, i) => r.answer.forEach((v, k) => { const b = story.querySelector(`[data-gr="${i},${k}"]`); if ((b.classList.contains('on') ? 1 : 0) !== v) wrong++; }));
+      ok = wrong === 0;
+      said = wrong ? (wrong === 1 ? ' Une case n\'est pas juste.' : ' ' + wrong + ' cases ne sont pas justes.') : '';
+    } else if (e.kind === 'circuit') {
+      if (circ.mat === -1) { fb.innerHTML = `<div class="feedback info">Choisis d'abord un objet pour fermer le trou du circuit.</div>`; return; }
+      ok = circuitLit(e);
+      said = !e.materials[circ.mat].conductor ? ' L\'ampoule reste éteinte : le courant ne traverse pas cet objet.' : (!circ.sw ? ' L\'ampoule reste éteinte : regarde l\'interrupteur.' : '');
+    } else if (e.kind === 'zone') {
+      const sel = story.querySelector('.globe .band.sel');
+      if (!sel) { fb.innerHTML = `<div class="feedback info">Touche une zone du globe avant de valider.</div>`; return; }
+      const z = parseInt(sel.getAttribute('data-zone'), 10);
+      ok = z === e.answer;
+      said = ' Tu as choisi : ' + ZONE_NAMES[z] + '.';
+    } else if (e.kind === 'order') {
+      if (orderSeq.length < e.items.length) { fb.innerHTML = `<div class="feedback info">${e.incomplete || 'Touche <b>tous</b> les évènements, du plus ancien au plus récent, avant de valider.'}</div>`; return; }
+      ok = orderSeq.every((v, i) => v === e.answer[i]);
+    } else if (e.kind === 'classify') {
+      const rows = Array.from(story.querySelectorAll('.cl-row'));
+      const picks = rows.map(r => { const b = r.querySelector('button.sel'); return b ? parseInt(b.getAttribute('data-cl'), 10) : -1; });
+      rows.forEach((r, i) => r.classList.toggle('missing', picks[i] === -1));
+      const left = picks.filter(v => v === -1).length;
+      if (left) { fb.innerHTML = `<div class="feedback info">Il reste ${left === 1 ? '<b>1 ligne</b>' : '<b>' + left + ' lignes</b>'} sans réponse : touche un bouton sur chaque ligne avant de valider.</div>`; return; }
+      const wrong = picks.filter((v, i) => v !== e.items[i].answer).length;
+      ok = wrong === 0;
+      said = wrong ? (wrong === 1 ? ' Une ligne est mal classée.' : ' ' + wrong + ' lignes sont mal classées.') : '';
+    }
+
+    if (ok) {
+      solvedNow = true;
+      game.solved[game.at] = true;
+      writeJSON(KEY_SAVE(), game);
+      story.querySelectorAll('#enigme input').forEach(i => { i.readOnly = true; });
+      const q = story.querySelector('.qcm'); if (q) { q.classList.add('done'); q.querySelector('.sel').classList.add('good'); }
+      const cl = story.querySelector('.classify'); if (cl) cl.classList.add('done');
+      const gl = story.querySelector('.globe'); if (gl) gl.classList.add('done');
+      const gw = story.querySelector('.grid-wrap'); if (gw) gw.classList.add('grid-done');
+      const od = story.querySelector('.order'); if (od) { od.classList.add('done'); const rt = story.querySelector('[data-act="ordreset"]'); if (rt) rt.remove(); }
+      story.querySelector('[data-act="check"]').remove();
+      fb.innerHTML = `<div class="feedback ok">✅ ${e.success}</div>`;
+      $('after-enigme').innerHTML = choiceBtn({ label: "Continuer l'enquête", to: e.to });
+      return;
+    }
+    errors++;
+    fb.innerHTML = `<div class="feedback ko">❌ Ce n'est pas ça.${esc(said)}<br>💡 <b>Indice :</b> ${e.hint}</div>`;
+    if (errors >= 2 && !story.querySelector('.choice.skip')) {
+      $('after-enigme').innerHTML = `<button class="choice skip" data-to="${e.skipTo}">${esc(e.skipLabel)}<span class="go">Va au ${S[e.skipTo].n}</span></button>`;
+    }
+  }
+
+  /* Circuit à monter : pile, interrupteur, ampoule et un trou à boucher avec un objet. */
+  function circuitLit(e) { return circ.sw && circ.mat !== -1 && e.materials[circ.mat].conductor; }
+  function circuitSVG(e) {
+    const m = circ.mat === -1 ? null : e.materials[circ.mat];
+    const lever = circ.sw ? '<line class="w" x1="170" y1="40" x2="226" y2="40"/>' : '<line class="w" x1="170" y1="40" x2="218" y2="12"/>';
+    return `<svg class="circuit-svg${circuitLit(e) ? ' lit' : ''}" viewBox="0 0 400 250" role="group" aria-label="Circuit à réparer">
+      <polyline class="w" points="60,118 60,40 166,40"/>
+      <circle cx="170" cy="40" r="5" fill="#1A1A2E"/><circle cx="230" cy="40" r="5" fill="#1A1A2E"/>
+      ${lever}
+      <g class="sw" role="button" aria-label="Interrupteur ${circ.sw ? 'fermé' : 'ouvert'}"><rect class="sw-hit" x="150" y="0" width="100" height="62"/></g>
+      <text class="lbl" x="200" y="78" text-anchor="middle">interrupteur ${circ.sw ? 'fermé' : 'ouvert'} (touche-le)</text>
+      <polyline class="w" points="234,40 340,40 340,92"/>
+      <g class="rays"><line x1="372" y1="96" x2="392" y2="86"/><line x1="376" y1="118" x2="398" y2="118"/><line x1="372" y1="140" x2="392" y2="150"/><line x1="308" y1="96" x2="288" y2="86"/><line x1="304" y1="118" x2="282" y2="118"/><line x1="308" y1="140" x2="288" y2="150"/></g>
+      <circle class="bulb" cx="340" cy="118" r="26"/><line x1="322" y1="100" x2="358" y2="136" stroke="#1A1A2E" stroke-width="3"/><line x1="358" y1="100" x2="322" y2="136" stroke="#1A1A2E" stroke-width="3"/>
+      <polyline class="w" points="340,144 340,210 250,210"/>
+      <rect x="150" y="190" width="100" height="40" rx="8" fill="${m ? '#FFF7D6' : '#fff'}" stroke="#C97B1A" stroke-width="2.5" stroke-dasharray="${m ? '0' : '6 4'}"/>
+      <text class="lbl" x="200" y="215" text-anchor="middle">${m ? m.icon + ' ' + m.label.split(' ')[0] : 'trou'}</text>
+      <polyline class="w" points="150,210 60,210 60,130"/>
+      <line x1="34" y1="118" x2="86" y2="118" stroke="#1A1A2E" stroke-width="4"/><line x1="46" y1="130" x2="74" y2="130" stroke="#1A1A2E" stroke-width="9"/>
+      <text class="lbl" x="92" y="116">+</text><text class="lbl" x="92" y="150">pile</text>
+    </svg>`;
+  }
+  function paintCircuit() {
+    const e = S[game.at].enigme, box = $('circuit-box');
+    if (box) box.innerHTML = circuitSVG(e);
+    const fb = $('enigme-fb'); if (fb) fb.innerHTML = '';
+  }
+
+  /* Globe en vue de face : les parallèles sont des droites, à la hauteur R × sin(latitude). */
+  const ZONE_NAMES = ['la zone polaire nord', 'la zone tempérée nord', 'la zone chaude', 'la zone tempérée sud', 'la zone polaire sud'];
+  function globeSVG() {
+    const cx = 120, cy = 130, R = 110, y = lat => cy - R * Math.sin(lat * Math.PI / 180);
+    const cuts = [90, 66.56, 23.44, -23.44, -66.56, -90];
+    let bands = '';
+    for (let i = 0; i < 5; i++) {
+      const y1 = y(cuts[i]), y2 = y(cuts[i + 1]);
+      bands += `<g class="band${i % 2 ? ' alt' : ''}" data-zone="${i}" role="button" aria-label="${ZONE_NAMES[i]}"><rect x="${cx - R}" y="${y1.toFixed(1)}" width="${2 * R}" height="${(y2 - y1).toFixed(1)}" clip-path="url(#globe-clip)"/></g>`;
+    }
+    const lines = [[66.56, 'Cercle polaire arctique'], [23.44, 'Tropique du Cancer'], [0, 'Équateur'], [-23.44, 'Tropique du Capricorne'], [-66.56, 'Cercle polaire antarctique']];
+    let ls = '';
+    lines.forEach(([lat, name]) => {
+      const yy = y(lat), half = R * Math.cos(lat * Math.PI / 180);
+      ls += `<line class="line${lat === 0 ? ' eq' : ''}" x1="${(cx - half).toFixed(1)}" y1="${yy.toFixed(1)}" x2="${(cx + half).toFixed(1)}" y2="${yy.toFixed(1)}"/>`;
+      ls += `<line x1="${(cx + half).toFixed(1)}" y1="${yy.toFixed(1)}" x2="${cx + R + 12}" y2="${yy.toFixed(1)}" stroke="#8A8A9A" stroke-dasharray="3 3"/>`;
+      ls += `<text class="lbl" x="${cx + R + 16}" y="${(yy + 4).toFixed(1)}">${name}</text>`;
+    });
+    return `<svg class="globe" viewBox="0 0 470 270" role="group" aria-label="Globe terrestre et ses zones">
+      <defs><clipPath id="globe-clip"><circle cx="${cx}" cy="${cy}" r="${R}"/></clipPath></defs>
+      ${bands}
+      <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#1A1A2E" stroke-width="2.5" pointer-events="none"/>
+      <g pointer-events="none">${ls}</g>
+      <text class="pole" x="${cx}" y="${cy - R - 6}" text-anchor="middle" pointer-events="none">Pôle Nord</text>
+      <text class="pole" x="${cx}" y="${cy + R + 18}" text-anchor="middle" pointer-events="none">Pôle Sud</text>
+    </svg>`;
+  }
+
+  function paintOrder() {
+    story.querySelectorAll('.order button').forEach(b => {
+      const pos = orderSeq.indexOf(parseInt(b.dataset.ord, 10));
+      b.classList.toggle('sel', pos !== -1);
+      b.querySelector('.rank').textContent = pos === -1 ? '' : pos + 1;
+    });
+    const fb = $('enigme-fb'); if (fb && fb.querySelector('.feedback.info')) fb.innerHTML = '';
+  }
+
+  function updateCount() { $('clue-count').textContent = game ? game.clues.length + game.objects.length : 0; }
+  function openCarnet() {
+    $('sac-list').innerHTML = game.objects.length ? game.objects.map(o => `<li>${OBJECTS[o]}</li>`).join('') : `<li class="muted">Ton sac est vide.</li>`;
+    $('carnet-list').innerHTML = game.clues.length ? game.clues.map(c => `<li>🔎 ${CLUES[c]}</li>`).join('') : `<li class="muted">Aucun indice pour l'instant. Mène l'enquête !</li>`;
+    $('carnet').classList.add('open');
+  }
+
+  story.addEventListener('click', (ev) => {
+    const swb = ev.target.closest && ev.target.closest('.circuit-svg .sw');
+    if (swb) { if (!solvedNow) { circ.sw = !circ.sw; paintCircuit(); } return; }
+    const zb = ev.target.closest && ev.target.closest('.globe .band');
+    if (zb) {
+      if (solvedNow) return;
+      story.querySelectorAll('.globe .band').forEach(b => b.classList.toggle('sel', b === zb));
+      const fb = $('enigme-fb'); if (fb && fb.querySelector('.feedback.info')) fb.innerHTML = '';
+      return;
+    }
+    const t = ev.target.closest('button');
+    if (!t) return;
+    if (t.dataset.to) { goTo(t.dataset.to); return; }
+    if (t.dataset.gr !== undefined) {
+      if (solvedNow) return;
+      const on = !t.classList.contains('on');
+      t.classList.toggle('on', on); t.textContent = on ? '✓' : ''; t.setAttribute('aria-pressed', on ? 'true' : 'false');
+      return;
+    }
+    if (t.dataset.mat !== undefined) {
+      if (solvedNow) return;
+      circ.mat = parseInt(t.dataset.mat, 10);
+      story.querySelectorAll('.mats button').forEach(b => b.classList.toggle('sel', b === t));
+      paintCircuit();
+      return;
+    }
+    if (t.dataset.ord !== undefined) {
+      if (solvedNow) return;
+      const k = parseInt(t.dataset.ord, 10), pos = orderSeq.indexOf(k);
+      if (pos === -1) orderSeq.push(k); else orderSeq = orderSeq.slice(0, pos);
+      paintOrder();
+      return;
+    }
+    if (t.dataset.cl !== undefined) {
+      if (solvedNow) return;
+      const row = t.closest('.cl-row');
+      row.querySelectorAll('button').forEach(b => b.classList.toggle('sel', b === t));
+      row.classList.remove('missing');
+      return;
+    }
+    if (t.dataset.opt !== undefined) {
+      if (solvedNow) return;
+      t.parentNode.querySelectorAll('button').forEach(b => b.classList.toggle('sel', b === t));
+      return;
+    }
+    const act = t.dataset.act;
+    if (act === 'check') checkEnigme();
+    else if (act === 'ordreset') { if (!solvedNow) { orderSeq = []; paintOrder(); } }
+    else if (act === 'restart') { newGame(); goTo(FIRST, { noHistory: true }); }
+    else if (act === 'menu') renderTitle();
+    else if (act === 'back') { let prev = game.history.pop(); while (prev && S[prev].auto) prev = game.history.pop(); if (prev) goTo(prev, { noHistory: true }); }
+    else if (act === 'backTo') goTo(t.dataset.target, { noHistory: true });
+  });
+  story.addEventListener('keydown', (ev) => { if (ev.key === 'Enter' && ev.target.tagName === 'INPUT') { ev.preventDefault(); checkEnigme(); } });
+
+  $('btn-start').addEventListener('click', () => { newGame(); showStory(); goTo(FIRST, { noHistory: true }); });
+  $('btn-resume').addEventListener('click', () => {
+    const save = readJSON(KEY_SAVE(), null);
+    if (!save || !S[save.at]) { newGame(); } else {
+      game = { at: save.at, clues: save.clues || [], objects: save.objects || [], history: save.history || [], solved: save.solved || {} };
+    }
+    showStory(); goTo(game.at, { noHistory: true, resume: true });
+  });
+  $('btn-menu').addEventListener('click', renderTitle);
+  $('btn-carnet').addEventListener('click', openCarnet);
+  $('btn-carnet-close').addEventListener('click', () => $('carnet').classList.remove('open'));
+  $('carnet').addEventListener('click', (ev) => { if (ev.target.id === 'carnet') $('carnet').classList.remove('open'); });
+
+  window.__enquete = { S, CLUES, PREUVES, goTo, get game() { return game; }, newGame };
+  renderTitle();
+})();
+</script>
+</body>
+</html>
