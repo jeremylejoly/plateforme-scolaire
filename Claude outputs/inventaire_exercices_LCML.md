@@ -720,7 +720,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 
 - **05/11 — Grammaire › Fonctions › Le CDV et le CIV › 1. CDV ou pas ?** (nouveau) : 50 phrases (25 CDV soulignés ; 25 autres : 8 CIV, 10 CC, 4 attributs, 3 sujets), 10 par série avec 3 à 7 CDV au hasard, jamais deux phrases de la même famille. Oui / Non, correction et explication immédiates. Résultat : `gram_cdv_civ_oui_non`.
 - **05/11 — Grammaire › Fonctions › Le CDV et le CIV › 2. Trouve le CDV** (nouveau) : 40 phrases à un seul CDV, pièges CC et CIV, 10 par série. Juste → phrase suivante ; 1re erreur → réessaie ; 2e erreur → correction + explication de chaque erreur. Point au premier essai seulement. Résultat : `gram_cdv_civ_trouve`.
-  - Le plan de travail n'a qu'un élément « Le CDV et le CIV » (`gram_cdv_civ`) : il se coche quand l'un des trois exercices est terminé.
+  - Plan de travail et liste des activités : chaque exercice a son élément (`gram_cdv_civ_oui_non`, `gram_cdv_civ_trouve`, `gram_cdv_civ_phrase`), coché quand l'exercice est terminé ; « Le CDV et le CIV » (`gram_cdv_civ`) devient un menu, coché à l'ouverture (comme « Le sujet »). Chaque carte a son bouton Masquer / Réactiver.
 
 - **05/10 — Grammaire › Fonctions › Le complément circonstanciel › Repérer et classer les CC** (40 phrases ; 7 CC de lieu, temps ou manière et 3 de condition, cause ou but par partie) :
   - **Faux CC.** Dans « Les clés perdues **se trouvaient** derrière le buffet », le complément ne peut pas être supprimé (« se trouver » exige un lieu) : ce n'est donc pas un CC. La phrase devient « J'ai **retrouvé** les clés perdues derrière le lourd buffet en chêne », et l'explication rappelle le test de suppression.
