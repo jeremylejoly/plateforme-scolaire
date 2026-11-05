@@ -14838,3 +14838,28 @@ window.EXERCICES_CDV_TROUVE = [
   {k:'t40', s:"S:Le photographe|V:prend|D:une photo de la classe{quoi}|C:dans la cour{où}"},
 ];
 
+// ===== CDV : « Remplacer le CDV par un pronom » (05/11/2026) =====
+// s = phrase ; sujet, verbe, cdv ; p = pronom attendu (le, la, l', les) ; gn = genre et nombre du CDV (ms, fs, p) ;
+// r = réponse attendue ; alt = autres réponses acceptées (validées par Jérémy).
+window.EXERCICES_CDV_PRONOM = [
+  {s:"Lucie arrose la fleur.", sujet:"Lucie", verbe:"arrose", cdv:"la fleur", p:"l'", gn:"fs", r:"Lucie l'arrose."},
+  {s:"Le chat mange la souris grise.", sujet:"Le chat", verbe:"mange", cdv:"la souris grise", p:"la", gn:"fs", r:"Le chat la mange."},
+  {s:"Tom range tous ses jouets.", sujet:"Tom", verbe:"range", cdv:"tous ses jouets", p:"les", gn:"p", r:"Tom les range.", alt:["Tom les range tous."]},
+  {s:"Papa lave la voiture de mon oncle.", sujet:"Papa", verbe:"lave", cdv:"la voiture de mon oncle", p:"la", gn:"fs", r:"Papa la lave."},
+  {s:"Les enfants regardent le dessin animé du mercredi.", sujet:"Les enfants", verbe:"regardent", cdv:"le dessin animé du mercredi", p:"le", gn:"ms", r:"Les enfants le regardent."},
+  {s:"Emma écoute la nouvelle chanson de son groupe préféré.", sujet:"Emma", verbe:"écoute", cdv:"la nouvelle chanson de son groupe préféré", p:"l'", gn:"fs", r:"Emma l'écoute."},
+  {s:"Le facteur apporte les lettres.", sujet:"Le facteur", verbe:"apporte", cdv:"les lettres", p:"les", gn:"p", r:"Le facteur les apporte."},
+  {s:"Maman prépare un délicieux gâteau au chocolat.", sujet:"Maman", verbe:"prépare", cdv:"un délicieux gâteau au chocolat", p:"le", gn:"ms", r:"Maman le prépare.", alt:["Maman en prépare un."]},
+  {s:"Le chien cherche son os.", sujet:"Le chien", verbe:"cherche", cdv:"son os", p:"le", gn:"ms", r:"Le chien le cherche."},
+  {s:"Léo ouvre la grande porte du garage.", sujet:"Léo", verbe:"ouvre", cdv:"la grande porte du garage", p:"l'", gn:"fs", r:"Léo l'ouvre."},
+  {s:"Les élèves lisent une histoire de pirates.", sujet:"Les élèves", verbe:"lisent", cdv:"une histoire de pirates", p:"la", gn:"fs", r:"Les élèves la lisent.", alt:["Les élèves en lisent une."]},
+  {s:"Le boulanger vend des croissants tout chauds.", sujet:"Le boulanger", verbe:"vend", cdv:"des croissants tout chauds", p:"les", gn:"p", r:"Le boulanger les vend.", alt:["Le boulanger en vend."]},
+  {s:"Sarah aime son petit frère.", sujet:"Sarah", verbe:"aime", cdv:"son petit frère", p:"l'", gn:"ms", r:"Sarah l'aime."},
+  {s:"Le jardinier plante les tomates.", sujet:"Le jardinier", verbe:"plante", cdv:"les tomates", p:"les", gn:"p", r:"Le jardinier les plante."},
+  {s:"Mon frère répare son vélo rouge.", sujet:"Mon frère", verbe:"répare", cdv:"son vélo rouge", p:"le", gn:"ms", r:"Mon frère le répare."},
+  {s:"La maitresse corrige nos cahiers de mathématiques.", sujet:"La maitresse", verbe:"corrige", cdv:"nos cahiers de mathématiques", p:"les", gn:"p", r:"La maitresse les corrige."},
+  {s:"Julien attend l'autobus de huit heures.", sujet:"Julien", verbe:"attend", cdv:"l'autobus de huit heures", p:"l'", gn:"ms", r:"Julien l'attend."},
+  {s:"Les pompiers éteignent l'incendie de la forêt.", sujet:"Les pompiers", verbe:"éteignent", cdv:"l'incendie de la forêt", p:"l'", gn:"ms", r:"Les pompiers l'éteignent."},
+  {s:"Le bébé tient sa peluche préférée.", sujet:"Le bébé", verbe:"tient", cdv:"sa peluche préférée", p:"la", gn:"fs", r:"Le bébé la tient."},
+  {s:"Nina invite toutes ses amies de classe.", sujet:"Nina", verbe:"invite", cdv:"toutes ses amies de classe", p:"les", gn:"p", r:"Nina les invite.", alt:["Nina les invite toutes."]},
+];
