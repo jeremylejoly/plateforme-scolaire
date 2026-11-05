@@ -14728,3 +14728,113 @@ window.EXERCICES_ADJECTIF_NOM = [
     exp: "C'est la chambre qui est rangée : l'adjectif « rangée » qualifie le nom « chambre » (féminin singulier), pas « frère » (masculin singulier)."
   }
 ];
+
+// ===== CDV : « CDV ou pas ? » et « Trouve le CDV » (05/11/2026) =====
+// Groupes séparés par « | » : S sujet, V verbe, D CDV, I CIV, C complément circonstanciel, A attribut, P ponctuation.
+// {…} = question posée par le groupe ; * = groupe souligné ; k = famille (jamais deux fois dans la même série).
+window.EXERCICES_CDV_OUI_NON = [
+  // ---- CDV (25)
+  {k:'chat1',   s:"S:Le chat|V:attrape|*D:une souris{qui}"},
+  {k:'tarte',   s:"S:Maman|V:prépare|*D:une tarte aux pommes{quoi}|C:pour le gouter{pourquoi}"},
+  {k:'roman',   s:"S:Les élèves|V:lisent|*D:un roman d'aventures{quoi}|C:en classe{où}"},
+  {k:'bouillon',s:"C:Pendant les vacances{quand}|P:,|S:Lucas|V:a visité|*D:le château de Bouillon{quoi}"},
+  {k:'facteur', s:"S:Le facteur|V:distribue|*D:le courrier{quoi}|C:chaque matin{quand}"},
+  {k:'tele',    s:"S:Mon frère|V:regarde|*D:la télévision{quoi}|C:après l'école{quand}"},
+  {k:'pompiers',s:"S:Les pompiers|V:éteignent|*D:l'incendie{quoi}|C:rapidement{comment}"},
+  {k:'os',      s:"S:Le chien|V:ronge|*D:son os{quoi}|C:dans sa niche{où}"},
+  {k:'frites',  s:"S:Nous|V:mangeons|*D:des frites{quoi}|C:le vendredi{quand}"},
+  {k:'peintre', s:"S:Le peintre|V:a terminé|*D:son tableau{quoi}|C:hier{quand}"},
+  {k:'cles',    s:"S:Léa|V:cherche|*D:ses clés{quoi}|C:partout{où}"},
+  {k:'fermier', s:"S:Le fermier|V:nourrit|*D:les vaches{qui}|C:tôt le matin{quand}"},
+  {k:'cahier',  s:"S:Tu|V:as oublié|*D:ton cahier de français{quoi}|C:à la maison{où}"},
+  {k:'atomium', s:"S:Les touristes|V:photographient|*D:l'Atomium{quoi}"},
+  {k:'vent',    s:"S:Le vent|V:emporte|*D:les feuilles mortes{quoi}"},
+  {k:'anglais', s:"S:Ma sœur|V:apprend|*D:l'anglais{quoi}|C:depuis deux ans{depuis quand}"},
+  {k:'pain',    s:"S:Le boulanger|V:vend|*D:du pain frais{quoi}"},
+  {k:'eau',     s:"S:Tom|V:boit|*D:un grand verre d'eau{quoi}|C:après le match{quand}"},
+  {k:'dictees', s:"S:Le maitre|V:corrige|*D:nos dictées{quoi}|C:le soir{quand}"},
+  {k:'cabane',  s:"S:Les enfants|V:construisent|*D:une cabane{quoi}|C:dans la forêt{où}"},
+  {k:'tulipes', s:"C:Au printemps{quand}|P:,|S:le jardinier|V:plante|*D:des tulipes{quoi}"},
+  {k:'supp',    s:"S:Les supporters|V:encouragent|*D:leur équipe{qui}|C:pendant le match{quand}"},
+  {k:'meca',    s:"S:Le mécanicien|V:répare|*D:la voiture de mon oncle{quoi}"},
+  {k:'ecureuil',s:"C:En automne{quand}|P:,|S:l'écureuil|V:cache|*D:des noisettes{quoi}"},
+  {k:'prof',    s:"S:Le professeur|V:explique|*D:la règle{quoi}|I:aux élèves{à qui}"},
+  // ---- CIV (8)
+  {k:'prof',    s:"S:Le professeur|V:explique|D:la règle{quoi}|*I:aux élèves{à qui}"},
+  {k:'julie',   s:"S:Julie|V:téléphone|*I:à sa grand-mère{à qui}"},
+  {k:'livre',   s:"S:Ce livre|V:appartient|*I:à mon cousin{à qui}"},
+  {k:'obeir',   s:"S:Les enfants|V:obéissent|*I:à leurs parents{à qui}"},
+  {k:'voyage',  s:"S:Marc|V:parle|*I:de son voyage{de quoi}|I:à ses amis{à qui}"},
+  {k:'cadeau',  s:"S:Jules|V:offre|D:un cadeau{quoi}|*I:à sa sœur{à qui}"},
+  {k:'penser',  s:"S:Je|V:pense|*I:à mes prochaines vacances{à quoi}"},
+  {k:'robe',    s:"S:Cette robe|V:plait|*I:à ma maman{à qui}"},
+  // ---- Compléments circonstanciels (10)
+  {k:'chat2',   s:"S:Le chat|V:dort|*C:sur le canapé{où}"},
+  {k:'train',   s:"S:Le train|V:arrive|*C:à dix heures{quand}"},
+  {k:'samedi',  s:"*C:Le samedi{quand}|P:,|S:mon père|V:lave|D:la voiture{quoi}"},
+  {k:'oiseaux', s:"S:Les oiseaux|V:chantent|*C:dans les arbres{où}"},
+  {k:'soupe',   s:"S:Léa|V:mange|D:sa soupe{quoi}|*C:lentement{comment}"},
+  {k:'magasin', s:"S:Le marchand|V:ouvre|D:son magasin{quoi}|*C:à huit heures{quand}"},
+  {k:'recre',   s:"*C:Pendant la récréation{quand}|P:,|S:les élèves|V:jouent|I:au ballon{à quoi}"},
+  {k:'pizza',   s:"S:Nous|V:avons mangé|D:une pizza{quoi}|*C:au restaurant{où}"},
+  {k:'bebe',    s:"S:Le bébé|V:a pleuré|*C:toute la nuit{pendant combien de temps}"},
+  {k:'bxl',     s:"S:Mon cousin|V:travaille|*C:à Bruxelles{où}"},
+  // ---- Attributs du sujet (4)
+  {k:'ciel',    s:"S:Le ciel|V:est|*A:gris"},
+  {k:'pompier', s:"S:Mon frère|V:deviendra|*A:pompier"},
+  {k:'pommes',  s:"S:Ces pommes|V:semblent|*A:mûres"},
+  {k:'mamie',   s:"S:Ma grand-mère|V:reste|*A:calme"},
+  // ---- Sujets (3)
+  {k:'facteur', s:"*S:Le facteur|V:distribue|D:le courrier{quoi}|C:chaque matin{quand}"},
+  {k:'jeux',    s:"*S:Mes cousins|V:adorent|D:les jeux de société{quoi}"},
+  {k:'vent',    s:"*S:Le vent|V:souffle|C:très fort{comment}"},
+];
+
+// Exercice 2 — Trouve le CDV (40 phrases, un seul CDV par phrase, pièges : CC et CIV)
+window.EXERCICES_CDV_TROUVE = [
+  // CDV + CC
+  {k:'t1',  s:"S:Le jardinier|V:arrose|D:les tomates{quoi}|C:tous les soirs{quand}"},
+  {k:'t2',  s:"C:Ce matin{quand}|P:,|S:maman|V:a préparé|D:une soupe aux légumes{quoi}"},
+  {k:'t3',  s:"S:Les élèves|V:écoutent|D:la maitresse{qui}|C:en silence{comment}"},
+  {k:'t4',  s:"C:Dans le grenier{où}|P:,|S:le chat|V:poursuit|D:une souris{qui}"},
+  {k:'t5',  s:"C:Le mercredi{quand}|P:,|S:Lucas|V:range|D:sa chambre{quoi}"},
+  {k:'t6',  s:"C:Hier soir{quand}|P:,|S:les pompiers|V:ont sauvé|D:un petit chaton{qui}"},
+  {k:'t7',  s:"S:Le boulanger|V:prépare|D:les croissants{quoi}|C:très tôt{quand}"},
+  {k:'t8',  s:"S:Mon père|V:lave|D:la voiture{quoi}|C:le dimanche{quand}"},
+  {k:'t9',  s:"S:Les enfants|V:mangent|D:leur gouter{quoi}|C:après l'école{quand}"},
+  {k:'t10', s:"S:Le chien|V:enterre|D:son os{quoi}|C:au fond du jardin{où}"},
+  {k:'t11', s:"S:Léa|V:lit|D:une bande dessinée{quoi}|C:avant de dormir{quand}"},
+  {k:'t12', s:"S:Les supporters|V:encouragent|D:leur équipe{qui}|C:avec enthousiasme{comment}"},
+  {k:'t13', s:"S:Le mécanicien|V:répare|D:le moteur{quoi}|C:en une heure{en combien de temps}"},
+  {k:'t14', s:"S:Nous|V:visiterons|D:le musée des dinosaures{quoi}|C:la semaine prochaine{quand}"},
+  {k:'t15', s:"C:En automne{quand}|P:,|S:l'écureuil|V:cache|D:des noisettes{quoi}"},
+  {k:'t16', s:"C:Pendant les vacances{quand}|P:,|S:Emma|V:a appris|D:une nouvelle chanson{quoi}"},
+  {k:'t17', s:"S:Les ouvriers|V:construisent|D:une maison{quoi}|C:depuis trois mois{depuis quand}"},
+  {k:'t18', s:"S:Le gardien|V:arrête|D:le ballon{quoi}|C:d'une seule main{comment}"},
+  {k:'t19', s:"S:Mes parents|V:regardent|D:le journal télévisé{quoi}|C:chaque soir{quand}"},
+  // CDV + CIV
+  {k:'t20', s:"S:Le facteur|V:apporte|D:un colis{quoi}|I:à la voisine{à qui}"},
+  {k:'t21', s:"S:Jules|V:offre|D:des fleurs{quoi}|I:à sa maman{à qui}"},
+  {k:'t22', s:"S:La maitresse|V:explique|D:la leçon{quoi}|I:aux élèves{à qui}"},
+  {k:'t23', s:"S:Mamie|V:raconte|D:une histoire{quoi}|I:à ses petits-enfants{à qui}"},
+  {k:'t24', s:"S:Le vendeur|V:montre|D:un vélo rouge{quoi}|I:au client{à qui}"},
+  {k:'t25', s:"S:Tom|V:prête|D:sa gomme{quoi}|I:à son voisin{à qui}"},
+  {k:'t26', s:"S:Le guide|V:indique|D:le chemin{quoi}|I:aux touristes{à qui}"},
+  {k:'t27', s:"S:Nina|V:envoie|D:une carte postale{quoi}|I:à son cousin{à qui}"},
+  {k:'t28', s:"S:Papa|V:lit|D:un conte{quoi}|I:à mon petit frère{à qui}"},
+  {k:'t29', s:"S:Le médecin|V:donne|D:un sirop{quoi}|I:au malade{à qui}"},
+  // CDV + CIV + CC
+  {k:'t30', s:"C:Chaque soir{quand}|P:,|S:maman|V:lit|D:une histoire{quoi}|I:à ma sœur{à qui}"},
+  {k:'t31', s:"C:À Noël{quand}|P:,|S:mes grands-parents|V:offrent|D:des livres{quoi}|I:à leurs petits-enfants{à qui}"},
+  {k:'t32', s:"C:Pendant la récréation{quand}|P:,|S:Hugo|V:a prêté|D:son ballon{quoi}|I:à Sami{à qui}"},
+  {k:'t33', s:"S:Le maitre|V:rend|D:les contrôles{quoi}|I:aux élèves{à qui}|C:le vendredi{quand}"},
+  {k:'t34', s:"C:Au marché{où}|P:,|S:le fermier|V:vend|D:des œufs frais{quoi}|I:aux clients{à qui}"},
+  // Sujet ou CDV plus longs
+  {k:'t35', s:"S:Le petit garçon aux cheveux roux|V:cherche|D:son chat{qui}"},
+  {k:'t36', s:"S:Les touristes japonais|V:photographient|D:la Grand-Place de Bruxelles{quoi}"},
+  {k:'t37', s:"S:Ma voisine|V:a adopté|D:un chien très affectueux{qui}"},
+  {k:'t38', s:"S:L'équipe de mon frère|V:a gagné|D:le tournoi de football{quoi}"},
+  {k:'t39', s:"S:Le vent|V:emporte|D:les feuilles mortes du jardin{quoi}"},
+  {k:'t40', s:"S:Le photographe|V:prend|D:une photo de la classe{quoi}|C:dans la cour{où}"},
+];
+
