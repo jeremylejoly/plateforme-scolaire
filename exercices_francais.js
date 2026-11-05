@@ -6103,7 +6103,7 @@ window.EXERCICES_CDV_CIV = [
       { text: "arrose" },
       { text: ".", punctuation: true }
     ],
-    explanation: "Le pronom « les » remplace un groupe nominal CDV (il répond à la question : Le jardinier arrose qui ? -> les)."
+    explanation: "Le pronom « les » remplace un groupe nominal CDV (il répond à la question : Le jardinier arrose quoi ? -> les)."
   },
   {
     text: "Le boulanger le prépare .",
