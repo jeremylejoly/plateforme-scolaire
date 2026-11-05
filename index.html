@@ -3875,6 +3875,7 @@ input[type=text].calc-input.incorrect {
       'screen-orthographe': "Menu d'Orthographe",
       'screen-homophones': "Menu des Homophones",
       'screen-participe-passe': "Menu du Participe passé",
+      'screen-ortho-dictees': "Menu des Dictées",
       'screen-ortho-accord-participe': "Exercice : L'Accord parfait",
       'screen-ortho-participe-passe-texte': "Exercice : Détective des participes passés",
       'ortho_participe_texte': "Exercice : Détective des participes passés",
@@ -4998,6 +4999,13 @@ input[type=text].calc-input.incorrect {
     <button class="back-btn" onclick="showScreen('screen-orthographe');renderOrthographeMenu();">← Retour</button>
     <div class="page-title">🔀 Homophones</div>
     <div id="homophones-menu"></div>
+  </div>
+
+  <!-- SCREEN: Dictées (ajoutées par l'enseignant) -->
+  <div id="screen-ortho-dictees" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-orthographe');renderOrthographeMenu();">← Retour</button>
+    <div class="page-title">🎧 Dictées</div>
+    <div id="ortho-dictees-menu"></div>
   </div>
 
   <!-- SCREEN: Participe passé -->
@@ -10252,7 +10260,7 @@ function doRenderStudentDetail(studentName, _retakesLoaded){
           <div class="bar-wrap"><div class="bar-fill" style="width:${r.pct}%;background:${c}"></div></div>
         </div>
         <div style="flex-shrink:0;display:flex;align-items:center;">
-          ${retakeBtn}${deleteSingleBtn}
+          ${typeof dicteeResultBtn === 'function' ? dicteeResultBtn(r) : ''}${retakeBtn}${deleteSingleBtn}
         </div>
       </div>`;
     });
@@ -11650,6 +11658,18 @@ function isActivityLocked(id){
     }
     return false;
   }
+  // Dictées : visibles ou masquées classe par classe (réglage enregistré avec la dictée)
+  if (typeof id === 'string' && id.startsWith('dictee_') && typeof dicteesCache === 'function') {
+    return !dicteeVisible(dicteesCache()[id.slice(7)]);
+  }
+  // Carte « Dictées » : masquée à la main, ou (élève) aucune dictée visible ni proposée dans son plan
+  if (id === 'ortho_dictees') {
+    if (locked.includes('ortho_dictees')) return true;
+    if (typeof state !== 'undefined' && state.role === 'student' && typeof dicteesList === 'function') {
+      return !dicteesList().some(d => dicteeVisible(d) || isProposedInPlan('dictee_' + d.id));
+    }
+    return false;
+  }
   if (id === 'contes') {
     return locked.includes('conte_chatbotte') && locked.includes('conte_breme');
   }
@@ -11732,6 +11752,12 @@ function toggleActivity(id){
       refreshAllToggles();
       return;
     }
+  }
+
+  // Dictées : visibilité enregistrée avec la dictée (Firebase « dictees »)
+  if (typeof id === 'string' && id.startsWith('dictee_') && typeof dicteeToggleVisible === 'function') {
+    dicteeToggleVisible(id.slice(7));
+    return;
   }
 
   // Carte « Récits Express » : indicateur dédié ; à la réactivation, si tous les livres
@@ -15460,6 +15486,7 @@ function renderOrthographeMenu(){
     {id:'ortho_participe_passe', screen:'screen-participe-passe', label:'Participe passé', icon:'<img src="assets/logos/subject_participe_passe.png" class="w-full h-full object-contain" />', desc:'Accord du participe passé…', fn:'renderParticipePasseMenu'},
     {id:'ortho_pluriels', screen:'screen-ortho-pluriels', label:'Les Pluriels particuliers', icon:'<img src="assets/logos/subject_pluriels.jpg" class="w-full h-full object-contain" />', desc:'Règles, exceptions, et exercices d\'entrainement', fn:null},
     {id:'ortho_adjectifs_couleur', screen:'screen-ortho-adjectifs-couleur', label:'L\'accord des adjectifs de couleur', icon:'<img src="assets/logos/gram_adjectif.png" class="w-full h-full object-contain" />', desc:'Règles d\'accord, invariabilité et adjectifs composés', fn:null},
+    {id:'ortho_dictees', screen:'screen-ortho-dictees', label:'Dictées', icon:'🎧', desc:'J\'écoute, j\'écris, je me relis et je me corrige', fn:'renderDicteesMenu'},
   ];
   let html = '';
   items.forEach(t => {
@@ -15552,6 +15579,421 @@ function renderParticipePasseMenu(){
     </div>`;
   });
   menu.innerHTML = html ? '<div class="sub-subjects-grid">' + html + '</div>' : '<p style="color:var(--muted);text-align:center;padding:2rem">Aucun exercice disponible.</p>';
+}
+
+// ===== DICTÉES (ajoutées par l'enseignant depuis le site) =====
+// Firebase : dictees/{id}       = { titre, texte, variantes (texte brut), duree, taille, cree, modifie, visible:{classe:true} }
+//            dictees_audio/{id} = "data:audio/...;base64,..."  (à part : la liste se charge sans les audios)
+// Exercice : fiches/dictee.html?id={id}  —  identifiant de résultat / plan de travail : « dictee_{id} »
+// Une dictée est commune à toutes les classes ; elle est visible ou masquée classe par classe.
+const DICTEE_MAX_OCTETS = 4 * 1024 * 1024;   // ≈ 4 Mo (une minute de dictaphone ≈ 0,5 Mo)
+const DICTEE_MAX_SEC = 4 * 60;
+let dicteeEditId = null;      // null = pas de formulaire ; '' = nouvelle dictée ; sinon id modifié
+let dicteeNotice = {txt:'', jusqua:0};   // message affiché en haut de la liste (élève), pendant 20 s
+
+function dEsc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function dFmtDuree(sec){ sec = Math.round(sec || 0); return Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0'); }
+function dFmtNote(n){ return String(n).replace('.', ','); }
+
+function dicteesCache(){
+  try { const c = JSON.parse(localStorage.getItem('lq_dictees_cache') || '{}'); return (c && typeof c === 'object') ? c : {}; }
+  catch(e){ return {}; }
+}
+function dicteesList(){
+  const c = dicteesCache();
+  return Object.keys(c).map(id => Object.assign({}, c[id], {id})).sort((a, b) => (a.cree || 0) - (b.cree || 0));
+}
+function dicteeVisible(d, cls){ return !!(d && d.visible && d.visible[cls || getCurrentClassId()]); }
+
+let _dicteesLoading = null;
+function dicteesRefresh(){
+  if (_dicteesLoading) return _dicteesLoading;
+  _dicteesLoading = (async () => {
+    try {
+      if (!window.FB_waitAuth || !window.FB_get) return dicteesCache();
+      await window.FB_waitAuth(15000);
+      const snap = await window.FB_get(window.FB_ref(window.FB_DB, 'dictees'));
+      const val = snap.exists() ? (snap.val() || {}) : {};
+      localStorage.setItem('lq_dictees_cache', JSON.stringify(val));
+      window.__planAllIds = null; // la liste des exercices du plan doit inclure les nouvelles dictées
+      // La carte « Dictées » du menu Orthographe dépend de la liste : on la remet à jour si le menu est affiché
+      const so = document.getElementById('screen-orthographe');
+      if (so && so.classList.contains('active') && typeof renderOrthographeMenu === 'function') renderOrthographeMenu();
+      return val;
+    } catch(e) { console.warn('Dictées : liste non chargée', e); return dicteesCache(); }
+    finally { _dicteesLoading = null; }
+  })();
+  return _dicteesLoading;
+}
+window.dicteesRefresh = dicteesRefresh;
+window.addEventListener('load', () => { if (window.FB_authReady) window.FB_authReady.then(() => dicteesRefresh()); });
+
+// « Autres orthographes acceptées » : une ligne par mot → « mot attendu = autre forme, autre forme »
+function dicteeParseVariantes(txt){
+  const out = {};
+  String(txt || '').split(/\n/).forEach(line => {
+    const m = line.split('=');
+    if (m.length < 2) return;
+    const k = m[0].trim().replace(/[’]/g, "'");
+    const vals = m.slice(1).join('=').split(/[,;]/).map(v => v.trim().replace(/[’]/g, "'")).filter(Boolean);
+    if (k && vals.length) out[k] = (out[k] || []).concat(vals);
+  });
+  return out;
+}
+
+// Appelée par fiches/dictee.html pour charger la dictée (texte + audio)
+window.dicteeLoad = async function(id){
+  await window.FB_waitAuth(15000);
+  const [m, a] = await Promise.all([
+    window.FB_get(window.FB_ref(window.FB_DB, 'dictees/' + id)),
+    window.FB_get(window.FB_ref(window.FB_DB, 'dictees_audio/' + id))
+  ]);
+  if (!m.exists()) return null;
+  const d = m.val();
+  return { titre: d.titre, texte: d.texte, variantes: dicteeParseVariantes(d.variantes), audio: a.exists() ? a.val() : '' };
+};
+
+// Dictées faites pendant cette session : le résultat met quelques secondes à revenir de Firebase,
+// l'élève ne doit pas pouvoir relancer la dictée entre-temps.
+const _dicteesFaitesSession = {};
+window.dicteeMarquerFaite = function(actId, r){ if (state.role === 'student') _dicteesFaitesSession[state.student + '|' + actId] = r; };
+function dicteeResultat(actId){
+  if (state.role !== 'student') return null;
+  return getStudentResult(actId) || _dicteesFaitesSession[state.student + '|' + actId] || null;
+}
+
+function openDictee(id, sourceScreen){
+  const d = dicteesCache()[id];
+  const src = sourceScreen || 'screen-ortho-dictees';
+  // Un élève ne refait pas une dictée : il a vu le texte corrigé à la fin.
+  // Pour la lui faire refaire, l'enseignant supprime son résultat (Résultats › élève › 🗑).
+  if (state.role === 'student' && dicteeResultat('dictee_' + id)) {
+    const r = dicteeResultat('dictee_' + id);
+    dicteeNotice.jusqua = Date.now() + 20000;
+    dicteeNotice.txt = `Tu as déjà fait la dictée « ${dEsc(d ? d.titre : '')} » (${dFmtNote(r.score)}/${r.total}). Demande à ton enseignant si tu dois la refaire.`;
+    showScreen('screen-ortho-dictees'); renderDicteesMenu();
+    return;
+  }
+  ficheViewerSourceScreen = src;
+  const titleEl = document.getElementById('fiche-viewer-title');
+  if (titleEl) titleEl.innerText = 'Dictée : ' + (d ? d.titre : '');
+  const iframe = document.getElementById('fiche-viewer-iframe');
+  if (iframe) iframe.src = 'fiches/dictee.html?id=' + encodeURIComponent(id) + '&v=' + encodeURIComponent((d && d.modifie) || '');
+  showScreen('screen-fiche-viewer');
+}
+window.openDictee = openDictee;
+
+// Affiche la liste avec le cache, puis la recharge depuis Firebase
+function renderDicteesMenu(){
+  renderDicteesMenuSync();
+  dicteesRefresh().then(() => { if (dicteeEditId === null) renderDicteesMenuSync(); });
+}
+window.renderDicteesMenu = renderDicteesMenu;
+
+function renderDicteesMenuSync(){
+  const menu = document.getElementById('ortho-dictees-menu');
+  if (!menu) return;
+  const isTeacher = state.role === 'teacher';
+  const cls = getCurrentClassId();
+  const list = dicteesList();
+  let html = '';
+
+  if (isTeacher) {
+    const clsName = (CLASSES[cls] && CLASSES[cls].name) || cls;
+    html += `<div class="card" style="padding:1rem 1.25rem;">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:220px;font-size:14px;color:var(--muted);">Ajoute tes dictées ici : un titre, le texte et ton enregistrement.
+          Une dictée est <b>masquée</b> tant que tu ne la rends pas visible pour la classe (<b>${dEsc(clsName)}</b>).</div>
+        ${dicteeEditId === null ? `<button class="btn btn-primary" onclick="dicteeEdit('')">➕ Nouvelle dictée</button>` : ''}
+      </div>
+    </div>`;
+    if (dicteeEditId !== null) html += dicteeFormHTML();
+  } else if (dicteeNotice.txt && Date.now() < dicteeNotice.jusqua) {
+    html += `<div class="alert alert-info" style="margin-bottom:1rem;font-weight:600;">ℹ️ ${dicteeNotice.txt}</div>`;
+  }
+
+  let cards = '';
+  list.forEach(d => {
+    const actId = 'dictee_' + d.id;
+    const visible = dicteeVisible(d, cls);
+    if (!isTeacher && !visible && !isProposedInPlan(actId)) return;
+    const toggleBtn = isTeacher
+      ? `<button class="card-teacher-toggle ${visible ? 'btn-hide' : 'btn-show'}"
+           onclick="event.stopPropagation();dicteeToggleVisible('${d.id}');">
+           ${visible ? '🔒 Masquer' : '🔓 Réactiver'}
+         </button>` : '';
+    let badge = '';
+    if (!isTeacher) {
+      const r = dicteeResultat(actId);
+      badge = r
+        ? `<div style="margin-top:6px;font-size:12px;font-weight:800;color:var(--green);">✅ Faite — ${dFmtNote(r.score)}/${r.total}</div>`
+        : '<div style="font-size:11px;color:var(--muted);margin-top:4px;">⬜ Non faite</div>';
+    }
+    const tools = isTeacher
+      ? `<div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:8px;" onclick="event.stopPropagation()">
+           <button class="btn btn-sm" onclick="dicteeEdit('${d.id}')">✏️ Modifier</button>
+           <button class="btn btn-sm" onclick="dicteeDelete('${d.id}')">🗑️</button>
+         </div>
+         <div style="font-size:11px;color:var(--muted);margin-top:6px;">${visible ? '👁️ Visible pour la classe' : '🙈 Masquée pour la classe'}</div>` : '';
+    const nbMots = (String(d.texte || '').match(/[A-Za-zÀ-ÿŒœ0-9]+(?:['’\-][A-Za-zÀ-ÿŒœ0-9]+)*/g) || []).length;
+    cards += `<div class="sub-subject-card active-card" onclick="openDictee('${d.id}')" style="position:relative;${isTeacher && !visible ? 'opacity:.75;' : ''}">
+      ${toggleBtn}
+      <div class="sub-icon">🎧</div>
+      <div class="sub-title">${dEsc(d.titre)}</div>
+      <div class="sub-desc">${nbMots} mots${d.duree ? ' · ' + dFmtDuree(d.duree) : ''}</div>
+      ${badge}${tools}
+    </div>`;
+  });
+  if (cards) html += '<div class="sub-subjects-grid">' + cards + '</div>';
+  else html += `<p style="color:var(--muted);text-align:center;padding:2rem">${isTeacher ? 'Aucune dictée pour l\'instant. Clique sur « ➕ Nouvelle dictée ».' : 'Aucune dictée disponible pour le moment.'}</p>`;
+  menu.innerHTML = html;
+}
+
+/* ---------- Formulaire enseignant ---------- */
+function dicteeFormHTML(){
+  const d = dicteeEditId ? (dicteesCache()[dicteeEditId] || {}) : {};
+  const cls = getCurrentClassId();
+  const clsName = (CLASSES[cls] && CLASSES[cls].name) || cls;
+  const lab = 'display:block;font-weight:700;font-size:14px;margin:12px 0 4px;';
+  const inp = 'width:100%;padding:9px 12px;border:2px solid var(--border);border-radius:10px;font-size:15px;font-family:inherit;';
+  return `<div class="card" id="dictee-form" style="padding:1.1rem 1.25rem;">
+    <div class="card-title" style="margin-bottom:.25rem;">${dicteeEditId ? '✏️ Modifier la dictée' : '➕ Nouvelle dictée'}</div>
+    <label style="${lab}" for="df-titre">Titre</label>
+    <input id="df-titre" style="${inp}" maxlength="80" placeholder="Ex. : Au parc" value="${dEsc(d.titre || '')}">
+    <label style="${lab}" for="df-texte">Texte exact de la dictée <span style="font-weight:500;color:var(--muted)">(avec majuscules et ponctuation, comme l'élève doit l'écrire)</span></label>
+    <textarea id="df-texte" style="${inp}height:120px;line-height:1.5;resize:vertical;" spellcheck="true" oninput="dicteeCompteMots()">${dEsc(d.texte || '')}</textarea>
+    <div id="df-mots" style="font-size:12px;color:var(--muted);margin-top:3px;"></div>
+    <label style="${lab}" for="df-audio">Enregistrement ${dicteeEditId ? '<span style="font-weight:500;color:var(--muted)">(laisse vide pour garder l\'enregistrement actuel)</span>' : ''}</label>
+    <input type="file" id="df-audio" accept="audio/*,.m4a,.mp3,.wav,.aac,.ogg" onchange="dicteeAudioChoisi()">
+    <div style="font-size:12px;color:var(--muted);margin-top:3px;">Formats : .m4a (iPhone), .mp3, .aac, .wav — ${Math.round(DICTEE_MAX_SEC / 60)} minutes et ${Math.round(DICTEE_MAX_OCTETS / 1048576)} Mo au maximum.</div>
+    <div id="df-audio-info" style="margin-top:8px;">${dicteeEditId && d.duree ? `<span style="font-size:13px;">🎧 Enregistrement actuel : ${dFmtDuree(d.duree)}</span> <button class="btn btn-sm" type="button" onclick="dicteeEcouterActuel()">▶ Écouter</button>` : ''}</div>
+    <details style="margin-top:12px;font-size:14px;">
+      <summary style="cursor:pointer;font-weight:700;">Autres orthographes acceptées (facultatif)</summary>
+      <div style="font-size:12px;color:var(--muted);margin:6px 0;">Une ligne par mot : <code>mot de la dictée = autre forme acceptée</code>. Exemple : <code>clé = clef</code>.
+        Les verbes en -ayer sont déjà acceptés sous les deux formes (paie / paye).</div>
+      <textarea id="df-variantes" style="${inp}height:70px;font-size:14px;" spellcheck="false">${dEsc(d.variantes || '')}</textarea>
+    </details>
+    <label style="display:flex;gap:8px;align-items:center;margin-top:12px;font-size:14px;font-weight:600;">
+      <input type="checkbox" id="df-visible" ${dicteeVisible(d, cls) ? 'checked' : ''} style="width:18px;height:18px;"> Visible pour les élèves de la classe (${dEsc(clsName)})
+    </label>
+    <div id="df-msg" style="margin-top:10px;font-size:14px;font-weight:600;"></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap;">
+      <button class="btn" type="button" onclick="dicteeEdit(null)">Annuler</button>
+      <button class="btn btn-primary" type="button" id="df-save" onclick="dicteeSave()">💾 Enregistrer</button>
+    </div>
+  </div>`;
+}
+function dicteeEdit(id){
+  dicteeEditId = id;
+  dicteeAudioPret = null;
+  renderDicteesMenuSync();
+  if (id !== null) {
+    dicteeCompteMots();
+    const f = document.getElementById('dictee-form');
+    if (f) f.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+}
+function dicteeCompteMots(){
+  const t = document.getElementById('df-texte'), out = document.getElementById('df-mots');
+  if (!t || !out) return;
+  const n = (t.value.match(/[A-Za-zÀ-ÿŒœ0-9]+(?:['’\-][A-Za-zÀ-ÿŒœ0-9]+)*/g) || []).length;
+  out.textContent = n + ' mot' + (n > 1 ? 's' : '');
+}
+function dicteeMsg(txt, ok){
+  const m = document.getElementById('df-msg');
+  if (m) { m.textContent = txt; m.style.color = ok ? 'var(--green)' : (ok === false ? 'var(--red)' : 'var(--muted)'); }
+}
+// Type MIME fiable (iPhone : .m4a souvent annoncé « audio/x-m4a » ou sans type)
+function dicteeMime(file){
+  const ext = (file.name.split('.').pop() || '').toLowerCase();
+  const byExt = {m4a:'audio/mp4', mp4:'audio/mp4', aac:'audio/aac', mp3:'audio/mpeg', wav:'audio/wav', ogg:'audio/ogg', oga:'audio/ogg', opus:'audio/ogg', webm:'audio/webm', caf:'audio/x-caf'};
+  if (byExt[ext]) return byExt[ext];
+  return file.type || 'audio/mpeg';
+}
+let dicteeAudioPret = null;   // { dataURL, duree, taille }
+function dicteeAudioChoisi(){
+  const inp = document.getElementById('df-audio'), info = document.getElementById('df-audio-info');
+  dicteeAudioPret = null;
+  const file = inp && inp.files && inp.files[0];
+  if (!file || !info) return;
+  if (file.size > DICTEE_MAX_OCTETS) {
+    info.innerHTML = `<span style="color:var(--red);font-weight:700;font-size:13px;">⚠️ Fichier trop lourd (${(file.size / 1048576).toFixed(1).replace('.', ',')} Mo, maximum ${Math.round(DICTEE_MAX_OCTETS / 1048576)} Mo).</span>`;
+    return;
+  }
+  info.innerHTML = '<span style="font-size:13px;color:var(--muted);">⏳ Vérification de l\'enregistrement…</span>';
+  const blob = new Blob([file], {type: dicteeMime(file)});
+  const url = URL.createObjectURL(blob);
+  const a = new Audio();
+  let fini = false;
+  const echec = () => {
+    if (fini) return; fini = true;
+    info.innerHTML = `<span style="color:var(--red);font-weight:700;font-size:13px;">⚠️ Ce fichier ne peut pas être lu par un navigateur. Enregistre plutôt en .m4a ou .mp3.</span>`;
+  };
+  const timer = setTimeout(echec, 10000);
+  a.addEventListener('error', () => { clearTimeout(timer); echec(); });
+  a.addEventListener('loadedmetadata', () => {
+    if (fini) return;
+    const finir = (duree) => {
+      if (fini) return; fini = true; clearTimeout(timer);
+      if (duree > DICTEE_MAX_SEC) {
+        info.innerHTML = `<span style="color:var(--red);font-weight:700;font-size:13px;">⚠️ Enregistrement trop long (${dFmtDuree(duree)}, maximum ${Math.round(DICTEE_MAX_SEC / 60)} minutes).</span>`;
+        return;
+      }
+      const fr = new FileReader();
+      fr.onload = () => {
+        dicteeAudioPret = { dataURL: String(fr.result).replace(/^data:[^;]*;/, 'data:' + dicteeMime(file) + ';'), duree, taille: file.size };
+        info.innerHTML = `<div style="font-size:13px;font-weight:600;color:var(--green);margin-bottom:4px;">✅ Enregistrement prêt : ${dFmtDuree(duree)} · ${(file.size / 1048576).toFixed(1).replace('.', ',')} Mo</div>
+          <audio controls src="${url}" style="width:100%;max-width:420px;"></audio>`;
+      };
+      fr.onerror = echec;
+      fr.readAsDataURL(file);
+    };
+    if (isFinite(a.duration) && a.duration > 0) finir(a.duration);
+    else { // durée inconnue au départ (certains fichiers) : on va à la fin pour la connaitre
+      a.addEventListener('durationchange', () => { if (isFinite(a.duration) && a.duration > 0) finir(a.duration); });
+      try { a.currentTime = 1e7; } catch(e) {}
+    }
+  });
+  a.preload = 'metadata';
+  a.src = url;
+}
+async function dicteeEcouterActuel(){
+  const info = document.getElementById('df-audio-info');
+  try {
+    await window.FB_waitAuth(15000);
+    const snap = await window.FB_get(window.FB_ref(window.FB_DB, 'dictees_audio/' + dicteeEditId));
+    if (!snap.exists()) { dicteeMsg('Aucun enregistrement trouvé pour cette dictée.', false); return; }
+    const old = info.querySelector('audio'); if (old) old.remove();
+    const au = document.createElement('audio'); au.controls = true; au.style.cssText = 'display:block;width:100%;max-width:420px;margin-top:6px;';
+    const m = /^data:([^;]+);base64,(.*)$/.exec(snap.val());
+    if (m) { const bin = atob(m[2]); const buf = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i); au.src = URL.createObjectURL(new Blob([buf], {type: m[1]})); }
+    else au.src = snap.val();
+    info.appendChild(au); au.play().catch(() => {});
+  } catch(e) { dicteeMsg('Impossible de charger l\'enregistrement.', false); }
+}
+async function dicteeSave(){
+  const titre = (document.getElementById('df-titre').value || '').trim();
+  const texte = (document.getElementById('df-texte').value || '').trim().replace(/\s+/g, ' ');
+  const variantes = (document.getElementById('df-variantes').value || '').trim();
+  const visible = document.getElementById('df-visible').checked;
+  const fileChosen = document.getElementById('df-audio').files.length > 0;
+  const isNew = !dicteeEditId;
+  if (!titre) return dicteeMsg('⚠️ Donne un titre à la dictée.', false);
+  if (!texte) return dicteeMsg('⚠️ Écris le texte de la dictée.', false);
+  if (fileChosen && !dicteeAudioPret) return dicteeMsg('⚠️ L\'enregistrement choisi n\'est pas valide (voir le message au-dessus).', false);
+  if (isNew && !dicteeAudioPret) return dicteeMsg('⚠️ Ajoute ton enregistrement.', false);
+  if (!window.FB_isTeacher) return dicteeMsg('⚠️ Tu dois être connecté avec ton compte enseignant pour enregistrer une dictée.', false);
+  const btn = document.getElementById('df-save'); if (btn) btn.disabled = true;
+  dicteeMsg('⏳ Enregistrement en cours…');
+  const id = dicteeEditId || ('d' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5));
+  const old = dicteesCache()[id] || {};
+  const cls = getCurrentClassId();
+  const vis = Object.assign({}, old.visible || {});
+  if (visible) vis[cls] = true; else delete vis[cls];
+  const meta = {
+    titre, texte, variantes,
+    duree: dicteeAudioPret ? Math.round(dicteeAudioPret.duree) : (old.duree || 0),
+    taille: dicteeAudioPret ? dicteeAudioPret.taille : (old.taille || 0),
+    cree: old.cree || Date.now(), modifie: Date.now(),
+    visible: vis
+  };
+  try {
+    await window.FB_waitAuth(15000);
+    if (dicteeAudioPret) await window.FB_set(window.FB_ref(window.FB_DB, 'dictees_audio/' + id), dicteeAudioPret.dataURL);
+    await window.FB_set(window.FB_ref(window.FB_DB, 'dictees/' + id), meta);
+    const c = dicteesCache(); c[id] = meta; localStorage.setItem('lq_dictees_cache', JSON.stringify(c));
+    window.__planAllIds = null;
+    dicteeEditId = null; dicteeAudioPret = null;
+    renderDicteesMenuSync();
+  } catch(e) {
+    console.error('Dictée non enregistrée', e);
+    if (btn) btn.disabled = false;
+    dicteeMsg('⚠️ La dictée n\'a pas pu être enregistrée' + (/permission/i.test(String(e && (e.code || e.message))) ? ' : accès refusé par Firebase (règles « dictees » à publier, ou compte enseignant non connecté).' : ' (connexion internet ?).'), false);
+  }
+}
+async function dicteeToggleVisible(id){
+  const cls = getCurrentClassId();
+  const c = dicteesCache(); const d = c[id]; if (!d) return;
+  const now = !dicteeVisible(d, cls);
+  try {
+    await window.FB_waitAuth(15000);
+    await window.FB_set(window.FB_ref(window.FB_DB, 'dictees/' + id + '/visible/' + cls), now ? true : null);
+    d.visible = Object.assign({}, d.visible || {}); if (now) d.visible[cls] = true; else delete d.visible[cls];
+    localStorage.setItem('lq_dictees_cache', JSON.stringify(c));
+  } catch(e) { alert('La visibilité n\'a pas pu être changée (connexion ou compte enseignant).'); }
+  renderDicteesMenuSync();
+}
+async function dicteeDelete(id){
+  const d = dicteesCache()[id]; if (!d) return;
+  if (!confirm(`Supprimer définitivement la dictée « ${d.titre} » et son enregistrement ?\nLes résultats déjà obtenus par les élèves restent visibles.`)) return;
+  try {
+    await window.FB_waitAuth(15000);
+    await window.FB_remove(window.FB_ref(window.FB_DB, 'dictees_audio/' + id));
+    await window.FB_remove(window.FB_ref(window.FB_DB, 'dictees/' + id));
+    const c = dicteesCache(); delete c[id]; localStorage.setItem('lq_dictees_cache', JSON.stringify(c));
+    window.__planAllIds = null;
+    if (dicteeEditId === id) dicteeEditId = null;
+  } catch(e) { alert('La dictée n\'a pas pu être supprimée (connexion ou compte enseignant).'); }
+  renderDicteesMenuSync();
+}
+
+/* ---------- Page enseignant : détail d'un résultat de dictée ---------- */
+const _dicteeResultats = [];
+function dicteeResultBtn(r){
+  if (!r || !r.dictee) return '';
+  const i = _dicteeResultats.push(r) - 1;
+  return `<button onclick="event.stopPropagation(); dicteeShowResult(${i})" title="Voir le texte et la correction de l'élève" style="background:var(--purple-light);color:var(--purple);border:1px solid var(--purple);border-radius:8px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer;margin-left:6px;">📝 Voir</button>`;
+}
+function dicteeTexteHTML(ops){
+  let html = '', prev = null;
+  const noBefore = t => /^[.,…)]$/.test(t), noAfter = t => /^[(«]$/.test(t) || /'$/.test(t);
+  (ops || []).forEach(o => {
+    const type = o[0], ref = o[1] || '', stu = o[2] || '';
+    const tok = type === 'd' ? ref : stu;
+    const sp = prev !== null && !noBefore(tok) && !noAfter(prev) ? ' ' : '';
+    if (type === 'o') html += sp + dEsc(stu);
+    else if (type === 's') html += sp + `<span style="color:var(--red);font-weight:700;text-decoration:underline wavy var(--red);">${dEsc(stu)}</span><sup style="color:var(--green);font-weight:700;font-size:11px;">${dEsc(ref)}</sup>`;
+    else if (type === 'i') html += sp + `<span style="color:var(--red);text-decoration:line-through;">${dEsc(stu)}</span>`;
+    else html += sp + `<span style="color:var(--red);font-weight:800;">⌃</span><sup style="color:var(--green);font-weight:700;font-size:11px;">${dEsc(ref)}</sup>`;
+    prev = tok;
+  });
+  return html;
+}
+function dicteeShowResult(i){
+  const r = _dicteeResultats[i]; if (!r) return;
+  const D = r.dictee || {};
+  const corr = Array.isArray(D.corrections) ? D.corrections : (D.corrections ? Object.values(D.corrections) : []);
+  const ops = Array.isArray(D.ops) ? D.ops : (D.ops ? Object.values(D.ops) : []);
+  const good = corr.filter(c => c && c.ok).length;
+  const rows = corr.map(c => `<tr>
+      <td>${dEsc(c.type)}</td><td><b>${dEsc(c.attendu) || '—'}</b></td>
+      <td>${dEsc(c.avant) || '<i>(rien)</i>'}</td>
+      <td>${dEsc(c.apres) || (c.type && /en trop/.test(c.type) ? '<i>(effacé)</i>' : '<i>(rien)</i>')}</td>
+      <td>${c.ok ? '✅' : '❌'}</td></tr>`).join('');
+  const th = 'style="text-align:left;font-size:11px;text-transform:uppercase;color:var(--muted);padding:4px 6px;border-bottom:2px solid var(--border);"';
+  let suite;
+  if (!D.fautes) suite = '<p style="margin-top:10px;font-weight:700;color:var(--green);">Aucune faute : pas de correction à faire.</p>';
+  else if (!D.correctionFaite) suite = '<p style="margin-top:10px;font-weight:700;color:var(--amber);">⚠️ L\'élève a quitté la dictée sans faire sa correction.</p>';
+  else suite = `<div style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:16px;margin:14px 0 4px;">Sa correction : ${good}/${corr.length} bien corrigée${good > 1 ? 's' : ''}</div>
+      <div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:14px;"><tr><th ${th}>Type</th><th ${th}>Attendu</th><th ${th}>Écrit</th><th ${th}>Corrigé en</th><th ${th}></th></tr>${rows}</table></div>`;
+  const box = document.createElement('div');
+  box.id = 'dictee-result-modal';
+  box.style.cssText = 'position:fixed;inset:0;z-index:10000;background:rgba(26,26,46,.45);display:flex;align-items:flex-start;justify-content:center;padding:4vh 12px;overflow:auto;';
+  box.innerHTML = `<div class="card" style="max-width:760px;width:100%;margin:0;position:relative;">
+    <button class="btn btn-sm" style="position:absolute;top:12px;right:12px;" onclick="document.getElementById('dictee-result-modal').remove()">✕ Fermer</button>
+    <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:20px;padding-right:90px;">${dEsc(r.bookTitle || 'Dictée')}</div>
+    <div style="font-size:13px;color:var(--muted);margin:2px 0 10px;">${dEsc(r.student)} · ${dEsc(r.date)} ${dEsc(r.time || '')}</div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+      <span style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:28px;background:#FFE27A;border:3px solid var(--border);border-radius:12px;padding:2px 10px;">${dFmtNote(r.score)} <span style="font-size:16px;">/ ${r.total}</span></span>
+      <span style="font-weight:700;">${D.fautes || 0} faute${(D.fautes || 0) > 1 ? 's' : ''} <span style="font-weight:500;color:var(--muted);font-size:13px;">(−0,5 par faute)</span></span>
+    </div>
+    <div style="font-family:'Fredoka',sans-serif;font-weight:600;font-size:16px;margin:6px 0 4px;">Texte de l'élève</div>
+    <div style="font-size:16px;line-height:1.9;">${ops.length ? dicteeTexteHTML(ops) : dEsc(D.texte1 || '')}</div>
+    ${suite}
+    <details style="margin-top:12px;font-size:14px;"><summary style="cursor:pointer;font-weight:700;">Texte de la dictée</summary><p style="margin-top:6px;line-height:1.6;">${dEsc(D.reference || '')}</p></details>
+  </div>`;
+  box.addEventListener('click', e => { if (e.target === box) box.remove(); });
+  document.body.appendChild(box);
 }
 
 // ===== VOCABULAIRE =====
@@ -25207,6 +25649,7 @@ function refreshCurrentMenu(){
     'screen-vocabulaire': 'renderVocabulaireMenu',
     'screen-homophones': 'renderHomophonesMenu',
     'screen-participe-passe': 'renderParticipePasseMenu',
+    'screen-ortho-dictees': 'renderDicteesMenu',
     'screen-traitement-donnees': 'renderTraitementDonneesMenu',
     'screen-td-la-moyenne-menu': 'renderLaMoyenneMenu',
     'screen-td-moyenne-qcm': 'renderTDMoyenneQCM',
@@ -33735,6 +34178,26 @@ function getActivitiesMasterRegistry() {
       } else {
         registry.push(recitsSection);
       }
+    }
+  }
+
+  // 1 bis. Ajouter les dictées créées par l'enseignant (liste gardée en cache, rechargée depuis Firebase)
+  if (typeof dicteesList === 'function') {
+    const dl = dicteesList();
+    if (dl.length) {
+      const sec = {
+        cat: '📖 Français',
+        sub: '🎧 Orthographe — Dictées',
+        items: dl.map(d => ({
+          id: 'dictee_' + d.id,
+          label: 'Dictée : ' + d.titre,
+          icon: '🎧',
+          screen: 'screen-fiche-viewer',
+          fn: `() => openDictee('${d.id}', 'screen-plan-travail-student')`
+        }))
+      };
+      const iOrtho = registry.findIndex(x => x.sub === '✏️ Orthographe — Règles & Accords');
+      if (iOrtho !== -1) registry.splice(iOrtho + 1, 0, sec); else registry.push(sec);
     }
   }
 

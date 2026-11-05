@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dictée</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --purple:#5B4FCF; --purple-light:#EEF0FF; --purple-mid:#C7C2F5;
+    --green:#1A9E75; --green-light:#E2F5EE;
+    --red:#D94F3D; --red-light:#FDECEA;
+    --amber:#C97B1A; --amber-light:#FEF3E2;
+    --blue:#1A6FA0; --blue-light:#E2F0FA;
+    --mauve:#A23CC4; --mauve-light:#F6E8FB;
+    --bg:#FDFBF7; --surface:#FFFFFF;
+    --text:#1A1A2E; --muted:#6B7080; --border:#1A1A2E;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{min-height:100%}
+  body{font-family:'Inter',system-ui,-apple-system,sans-serif;color:var(--text);background:var(--bg);-webkit-tap-highlight-color:transparent}
+  h1,h2,h3,.fred{font-family:'Fredoka',sans-serif}
+  button{cursor:pointer;touch-action:manipulation}
+  .hidden{display:none !important}
+  .wrap{max-width:860px;margin:0 auto;padding:14px 14px 22px}
+
+  /* Cartes et boutons du site */
+  .card{background:var(--surface);border:3px solid var(--border);border-radius:18px;padding:14px 16px;margin-bottom:12px;box-shadow:5px 5px 0 var(--border)}
+  .btn{font-family:'Fredoka',sans-serif;font-size:15px;font-weight:700;color:var(--text);background:var(--surface);border:2px solid var(--border);border-radius:10px;padding:9px 18px;box-shadow:2px 2px 0 var(--border);display:inline-flex;align-items:center;gap:8px;transition:transform .1s, box-shadow .1s}
+  .btn:active:not(:disabled){transform:translate(1px,1px);box-shadow:1px 1px 0 var(--border)}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .btn-primary{background:var(--purple);color:#fff}
+  .btn-green{background:var(--green);color:#fff}
+  .btn-ghost{background:#fff}
+  .btn-big{font-size:18px;padding:11px 26px;border-width:3px;box-shadow:4px 4px 0 var(--border);border-radius:14px}
+  .btn-big:active:not(:disabled){box-shadow:2px 2px 0 var(--border)}
+  .small{font-size:12.5px;color:var(--muted)}
+  .warn{background:var(--amber-light);border:2px solid var(--amber);color:#7a4a0c;border-radius:10px;padding:6px 10px;font-size:14px;font-weight:600}
+
+  /* ---------- Accueil ---------- */
+  .hero{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+  .hero-icon{width:58px;height:58px;flex:0 0 58px;border:3px solid var(--border);border-radius:16px;background:#FFE27A;box-shadow:3px 3px 0 var(--border);display:flex;align-items:center;justify-content:center;font-size:30px;transform:rotate(-3deg)}
+  .kicker{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .hero h1{font-size:clamp(24px,4vw,30px);font-weight:700;line-height:1.1}
+  .how{font-family:'Fredoka',sans-serif;font-size:17px;font-weight:600;margin:4px 0 10px}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media (max-width:640px){.steps{grid-template-columns:1fr}}
+  .step{border:3px solid var(--border);border-radius:16px;background:#fff;box-shadow:4px 4px 0 var(--border);overflow:hidden;display:flex;flex-direction:column}
+  .step-head{display:flex;align-items:center;gap:10px;padding:9px 12px;color:#fff;border-bottom:3px solid var(--border)}
+  .s1 .step-head{background:var(--purple)} .s2 .step-head{background:var(--blue)} .s3 .step-head{background:var(--green)}
+  .step-num{width:32px;height:32px;flex:0 0 32px;border-radius:50%;background:#fff;color:var(--text);border:2px solid var(--border);font-family:'Fredoka',sans-serif;font-weight:700;font-size:18px;display:flex;align-items:center;justify-content:center}
+  .step-title{font-family:'Fredoka',sans-serif;font-size:19px;font-weight:600;line-height:1.1}
+  .step-icon{margin-left:auto;font-size:24px}
+  .step ul{list-style:none;padding:10px 12px 12px;display:flex;flex-direction:column;gap:7px}
+  .step li{display:flex;gap:8px;align-items:flex-start;font-size:15px;line-height:1.3;font-weight:500}
+  .step li .ic{flex:0 0 22px;text-align:center}
+  .step li.no{color:#8a3226}
+  .after{margin:14px 0 4px;display:flex;align-items:center;gap:10px;background:var(--amber-light);border:2px solid var(--border);border-radius:12px;padding:8px 12px;font-size:14.5px;font-weight:500}
+  .start-row{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:14px;flex-wrap:wrap}
+  details.teach{margin:18px auto 0;max-width:640px;background:#fff;border:2px dashed var(--muted);border-radius:12px;padding:8px 12px;font-size:13.5px}
+  details.teach summary{cursor:pointer;font-weight:700;color:var(--muted)}
+  details.teach label{display:block;margin-top:8px;font-weight:700}
+  details.teach textarea{width:100%;height:80px;font:inherit;font-size:13.5px;padding:6px;border-radius:8px;border:2px solid var(--border);margin-top:4px}
+
+  /* ---------- Étapes ---------- */
+function setRules(title, rules){
+  $('consigne').textContent = title;
+  $('rules').innerHTML = rules.map(([ok, t]) => `<span class="rule${ok ? '' : ' no'}">${ok ? '✅' : '🚫'} ${t}</span>`).join('');
+}
+  .topbar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+  .pill{display:flex;align-items:center;gap:8px;background:#fff;border:2px solid #c9cbd6;border-radius:999px;padding:4px 10px 4px 4px;font-family:'Fredoka',sans-serif;font-size:15px;font-weight:600;color:var(--muted)}
+  .pill .num{width:26px;height:26px;flex:0 0 26px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#e4e6ee;color:var(--muted);font-weight:700}
+  .pill.on{border:2px solid var(--border);color:var(--text);box-shadow:2px 2px 0 var(--border)}
+  #p1.on .num{background:var(--purple);color:#fff} #p2.on .num{background:var(--blue);color:#fff} #p3.on .num{background:var(--green);color:#fff}
+  .pill.done{color:var(--green)} .pill.done .num{background:var(--green-light);color:var(--green)}
+
+  .player{padding:12px 14px}
+  .player.c1{border-left:12px solid var(--purple)} .player.c2{border-left:12px solid var(--blue)} .player.c3{border-left:12px solid var(--green)}
+  .consigne{font-family:'Fredoka',sans-serif;font-size:18px;font-weight:600;margin-bottom:6px}
+  .rules{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+  .rule{font-size:13.5px;font-weight:600;border:2px solid var(--border);border-radius:999px;padding:2px 10px;background:var(--green-light)}
+  .rule.no{background:var(--red-light)}
+  .prow{display:flex;align-items:center;gap:10px}
+  .ctl{width:48px;height:48px;flex:0 0 48px;border-radius:50%;border:3px solid var(--border);background:var(--purple);color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;box-shadow:2px 2px 0 var(--border)}
+  .ctl:active:not(:disabled){transform:translate(1px,1px);box-shadow:1px 1px 0 var(--border)}
+  .ctl:disabled{opacity:.55;cursor:default}
+  .ctl.sm{width:42px;height:42px;flex-basis:42px;border-width:2px;background:#fff;color:var(--text);font-family:'Fredoka',sans-serif;font-size:13px;font-weight:700}
+  .bar{flex:1;height:16px;background:#eceef4;border:2px solid var(--border);border-radius:999px;overflow:hidden}
+  .bar > div{height:100%;width:0;background:var(--purple)}
+  .c3 .bar > div{background:var(--green)}
+  input[type=range]{flex:1;accent-color:var(--blue);height:30px}
+  .time{font-variant-numeric:tabular-nums;font-size:13px;font-weight:600;color:var(--muted);min-width:84px;text-align:right}
+
+  .writer{margin-top:2px}
+  textarea.dictee{display:block;width:100%;height:230px;resize:vertical;font-family:'Inter',system-ui,sans-serif;font-size:20px;line-height:1.6;color:var(--text);background:#fff;border:3px solid var(--border);border-radius:16px;padding:10px 14px;outline:none;box-shadow:4px 4px 0 var(--border);
+    background-image:linear-gradient(transparent calc(1.6em - 1px), #e8eaf2 1px);background-size:100% 1.6em;background-attachment:local;background-position-y:10px}
+  textarea.dictee:focus{box-shadow:4px 4px 0 var(--purple)}
+  .listen-card{height:230px;border-radius:16px;border:3px dashed var(--purple-mid);background:var(--purple-light);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--purple);font-family:'Fredoka',sans-serif;font-size:19px;font-weight:600;text-align:center}
+  .listen-card .ear{font-size:46px}
+  .actions{display:flex;justify-content:flex-end;gap:10px;margin-top:14px;align-items:center;flex-wrap:wrap}
+
+  /* ---------- Résultat ---------- */
+  .score-row{display:flex;align-items:center;gap:16px}
+  .score{font-family:'Fredoka',sans-serif;font-weight:700;font-size:40px;line-height:1;background:#FFE27A;border:3px solid var(--border);border-radius:14px;padding:6px 12px;box-shadow:3px 3px 0 var(--border);white-space:nowrap}
+  .score small{font-size:20px;color:var(--text)}
+  .score-msg{font-family:'Fredoka',sans-serif;font-weight:600;font-size:20px}
+  .text-fix{font-size:20px;line-height:2.1}
+  .text-fix input.fix{font:inherit;font-size:19px;line-height:1.3;padding:1px 3px;border:none;border-bottom:3px solid var(--red);background:var(--red-light);border-radius:6px 6px 0 0;color:var(--text);outline:none;min-width:1.4em;text-align:center}
+  .text-fix input.fix.gap{border-bottom-style:dashed;background:#fff5f4}
+  .text-fix input.fix.changed{border-bottom:3px solid var(--mauve);background:var(--mauve-light)}
+  .text-fix input.fix:focus{background:#fff;box-shadow:0 0 0 2px var(--text)}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted);margin-top:8px}
+  .legend .s1,.legend .s2,.legend .s3{color:var(--text);padding:0 4px;margin-right:4px}
+  .legend .s1{background:var(--red-light);border-bottom:3px solid var(--red)}
+  .legend .s2{background:#fff5f4;border-bottom:3px dashed var(--red);padding:0 10px}
+  .legend .s3{background:var(--mauve-light);border-bottom:3px solid var(--mauve)}
+  .model{font-size:18px;line-height:1.6;background:var(--green-light);border:2px solid var(--border);border-radius:12px;padding:10px 14px}
+  .fixed{background:var(--green-light);color:var(--green);font-weight:700;padding:0 3px;border-radius:4px}
+  .notfixed{background:var(--red-light);color:var(--red);font-weight:700;padding:0 3px;border-radius:4px}
+
+  /* ---------- Vue enseignant ---------- */
+  .t-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px;flex-wrap:wrap}
+  .t-text{font-size:16px;line-height:1.9}
+  .bad{color:var(--red);font-weight:700;text-decoration:underline wavy var(--red)}
+  .xtra{color:var(--red);text-decoration:line-through}
+  .miss{color:var(--red);font-weight:800}
+  sup.exp{color:var(--green);font-weight:700;font-size:12px;margin-left:1px}
+  table.err{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px}
+  table.err th,table.err td{border-bottom:1px solid #e6e7ee;padding:4px 6px;text-align:left}
+  table.err th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+  h3{font-size:16px;font-weight:600;margin:10px 0 4px}
+</style>
+</head>
+<body>
+<audio id="au" preload="auto" playsinline></audio>
+
+<div class="wrap">
+
+<!-- ====== ACCUEIL ====== -->
+<section id="start">
+  <div class="hero">
+    <div class="hero-icon">✍️</div>
+    <div><div class="kicker">Orthographe · Dictée</div><h1 id="titre">Dictée</h1></div>
+  </div>
+  <div class="how">Comment se passe la dictée ?</div>
+  <div class="steps">
+    <div class="step s1">
+      <div class="step-head"><span class="step-num">1</span><span class="step-title">J'écoute</span><span class="step-icon">🎧</span></div>
+      <ul>
+        <li><span class="ic">✅</span>J'écoute toute la dictée, du début à la fin.</li>
+        <li class="no"><span class="ic">🚫</span>Je n'écris pas encore.</li>
+        <li class="no"><span class="ic">🚫</span>Je ne peux pas mettre pause.</li>
+      </ul>
+    </div>
+    <div class="step s2">
+      <div class="step-head"><span class="step-num">2</span><span class="step-title">J'écris</span><span class="step-icon">✏️</span></div>
+      <ul>
+        <li><span class="ic">✅</span>J'écris la dictée dans le cadre.</li>
+        <li><span class="ic">⏸️</span>Je peux mettre pause quand je veux.</li>
+        <li><span class="ic">⏪</span>Je peux reculer ou avancer.</li>
+      </ul>
+    </div>
+    <div class="step s3">
+      <div class="step-head"><span class="step-num">3</span><span class="step-title">Je me relis</span><span class="step-icon">🔍</span></div>
+      <ul>
+        <li><span class="ic">✅</span>J'écoute toute la dictée une dernière fois.</li>
+        <li><span class="ic">✅</span>Je relis et je corrige mon texte.</li>
+        <li class="no"><span class="ic">🚫</span>Je ne peux pas mettre pause.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="after"><span style="font-size:20px">🏁</span><span><b>Ensuite</b>, tu vois ta note sur 10 et tu corriges les mots en rouge.</span></div>
+  <div class="start-row">
+    <button class="btn btn-primary btn-big" id="btn-start" disabled>⏳ Chargement de la dictée…</button>
+    <span class="small">🎧 Mets ton casque ou tes écouteurs.</span>
+  </div>
+  <p id="audio-err" class="warn hidden" style="margin:10px auto 0;max-width:520px"></p>
+
+</section>
+
+<!-- ====== DICTÉE (étapes 1 à 3) ====== -->
+<section id="game" class="hidden">
+  <div class="topbar">
+    <div class="pill" id="p1"><span class="num">1</span>J'écoute</div>
+    <div class="pill" id="p2"><span class="num">2</span>J'écris</div>
+    <div class="pill" id="p3"><span class="num">3</span>Je me relis</div>
+  </div>
+
+  <div class="card player" id="player-card">
+    <div class="consigne" id="consigne"></div>
+    <div class="rules" id="rules"></div>
+    <!-- Lecteur sans pause (étapes 1 et 3) -->
+    <div class="prow" id="player-lock">
+      <button class="ctl" id="btn-play-lock" aria-label="Écouter">▶</button>
+      <div class="bar"><div id="bar-fill"></div></div>
+      <span class="time" id="time-lock">0:00 / 0:00</span>
+    </div>
+    <div id="player-slot"><!-- Lecteur libre (étape 2 et correction) -->
+    <div class="prow hidden" id="player-free">
+      <button class="ctl" id="btn-pp" aria-label="Lecture / pause">▶</button>
+      <button class="ctl sm" id="btn-back" aria-label="Reculer de 5 secondes">−5 s</button>
+      <input type="range" id="seek" min="0" max="100" step="0.1" value="0" aria-label="Position dans l'enregistrement">
+      <button class="ctl sm" id="btn-fwd" aria-label="Avancer de 5 secondes">+5 s</button>
+      <span class="time" id="time-free">0:00 / 0:00</span>
+    </div>
+    </div>
+  </div>
+
+  <div class="listen-card" id="listen-card"><div class="ear">👂</div><div>Écoute bien toute la dictée.<br>Tu écriras juste après.</div></div>
+
+  <div class="writer hidden" id="writer">
+    <textarea class="dictee" id="txt"
+      autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+      writingsuggestions="false" translate="no"
+      data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false" data-lt-active="false"
+      aria-label="Écris la dictée ici"></textarea>
+  </div>
+
+  <div class="actions">
+    <span id="confirm-msg" class="warn hidden">Tu ne pourras plus mettre pause. Tu es prêt ?</span>
+    <button class="btn btn-ghost hidden" id="btn-cancel">Non, je continue</button>
+    <button class="btn btn-primary hidden" id="btn-next1">Étape 2 : j'écris →</button>
+    <button class="btn btn-primary hidden" id="btn-next2">J'ai fini d'écrire →</button>
+    <button class="btn btn-primary hidden" id="btn-yes">Oui, je me relis →</button>
+    <button class="btn btn-green hidden" id="btn-validate" disabled>✅ Valider ma dictée</button>
+  </div>
+</section>
+
+<!-- ====== RÉSULTAT + CORRECTION ====== -->
+<section id="result" class="hidden">
+  <div class="card score-row">
+    <div class="score" id="score"></div>
+    <div>
+      <div class="score-msg" id="score-msg"></div>
+      <div class="small" id="score-detail"></div>
+    </div>
+  </div>
+  <div class="card" id="fix-card">
+    <div class="consigne">✏️ Je corrige mes erreurs</div>
+    <div class="rules"><span class="rule">✅ Je corrige les mots en rouge</span><span class="rule">⏸️ Je peux réécouter, mettre pause, reculer ou avancer</span></div>
+    <div id="fix-player" style="margin-bottom:8px"></div>
+    <div class="text-fix" id="fix-text"></div>
+    <div class="legend"><span><span class="s1">mot</span>à corriger (s'il est en trop, efface-le)</span><span><span class="s2">&nbsp;</span>il manque quelque chose ici</span><span><span class="s3">mot</span>tu l'as modifié</span></div>
+    <div class="actions"><button class="btn btn-green" id="btn-fix">✅ Valider ma correction</button></div>
+  </div>
+  <div id="final" class="hidden">
+    <div class="card">
+      <div class="score-msg" id="final-msg"></div>
+      <div class="text-fix" id="final-text" style="font-size:18px;line-height:1.8;margin-top:6px"></div>
+      <h3>Le texte de la dictée</h3>
+      <div class="model" id="model"></div>
+      <div class="actions"><button class="btn btn-primary" id="btn-home">🏁 Terminer</button></div>
+    </div>
+  </div>
+</section>
+
+
+</div>
+
+<script>
+/* =========================================================
+   DICTÉE CHARGÉE DEPUIS LE SITE (Firebase) : fiches/dictee.html?id=...
+   Les dictées sont ajoutées par l'enseignant dans Français › Orthographe › Dictées.
+   ========================================================= */
+const DID = new URLSearchParams(location.search).get('id') || '';
+let DICTEE = { id: 'dictee_' + DID, titre: 'Dictée', texte: '', variantes: {} };
+const POINTS = 10, PAR_FAUTE = 0.5;
+
+/* ========================================================= */
+const $ = id => document.getElementById(id);
+const au = $('au');
+let step = 0, audioURL = '', reference = '';
+let S = null; // essai en cours
+
+function store(k, v){ try { if (v === undefined) return JSON.parse(localStorage.getItem(k)); localStorage.setItem(k, JSON.stringify(v)); } catch(e){ return null; } }
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function fmt(t){ if (!isFinite(t)) t = 0; t = Math.floor(t); return Math.floor(t/60) + ':' + String(t%60).padStart(2,'0'); }
+function fmtNote(n){ return String(n).replace('.', ','); }
+
+/* ---------- Découpage du texte en mots et ponctuation ---------- */
+const L = "A-Za-zÀ-ÖØ-öø-ÿŒœÆæ0-9";
+const TOK = new RegExp("[" + L + "]+(?:['\\-][" + L + "]+)*'?|[.,;:!?«»\"()…]|[-–—]", "g");
+function tokenize(s){
+  s = (s || '').normalize('NFC').replace(/[’ʼ‘`´]/g, "'").replace(/[  ]/g, ' ');
+  return s.match(TOK) || [];
+}
+const isPunct = t => !/[A-Za-zÀ-ÿŒœÆæ0-9]/.test(t);
+// Verbes en -ayer : les deux formes sont correctes (paie / paye, essaiera / essayera…)
+const ayer = w => w.replace(/aye/g, 'aie');
+function same(r, s){
+  if (r === s) return true;
+  if (/a[iy]e/.test(r) && ayer(r) === ayer(s)) return true;
+  const v = DICTEE.variantes[r];
+  return !!(v && v.includes(s));
+}
+function plain(s){ return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+function lev(a, b){
+  const m = a.length, n = b.length; let prev = Array.from({length:n+1}, (_, j) => j);
+  for (let i = 1; i <= m; i++){
+    const cur = [i];
+    for (let j = 1; j <= n; j++) cur[j] = Math.min(prev[j]+1, cur[j-1]+1, prev[j-1] + (a[i-1] === b[j-1] ? 0 : 1));
+    prev = cur;
+  }
+  return prev[n];
+}
+function subCost(r, s){
+  if (same(r, s)) return 0;
+  const pr = isPunct(r), ps = isPunct(s);
+  if (pr !== ps) return 2.5;          // un mot ne remplace jamais une ponctuation
+  if (pr) return 1;
+  const a = plain(r), b = plain(s);
+  return 1 + 0.9 * (lev(a, b) / Math.max(a.length, b.length, 1));
+}
+/* Aligne le texte de l'élève sur le texte de référence.
+   Chaque opération : ok | sub (mal écrit) | del (oublié) | ins (en trop) */
+function align(refT, stuT){
+  const n = refT.length, m = stuT.length;
+  const D = Array.from({length:n+1}, () => new Float64Array(m+1));
+  for (let i = 0; i <= n; i++) D[i][0] = i;
+  for (let j = 0; j <= m; j++) D[0][j] = j;
+  for (let i = 1; i <= n; i++) for (let j = 1; j <= m; j++)
+    D[i][j] = Math.min(D[i-1][j-1] + subCost(refT[i-1], stuT[j-1]), D[i-1][j] + 1, D[i][j-1] + 1);
+  const ops = []; let i = n, j = m;
+  const eq = (a, b) => Math.abs(a - b) < 1e-9;
+  while (i > 0 || j > 0){
+    if (i > 0 && j > 0 && eq(D[i][j], D[i-1][j-1] + subCost(refT[i-1], stuT[j-1]))){
+      const ok = same(refT[i-1], stuT[j-1]);
+      ops.push({type: ok ? 'ok' : 'sub', ref: refT[i-1], stu: stuT[j-1]}); i--; j--;
+    } else if (i > 0 && eq(D[i][j], D[i-1][j] + 1)){
+      ops.push({type:'del', ref: refT[i-1]}); i--;
+    } else {
+      ops.push({type:'ins', stu: stuT[j-1]}); j--;
+    }
+  }
+  return ops.reverse();
+}
+function kind(op){
+  const p = isPunct(op.ref || op.stu);
+  if (op.type === 'del') return p ? 'ponctuation oubliée' : 'mot oublié';
+  if (op.type === 'ins') return p ? 'ponctuation en trop' : 'mot en trop';
+  if (p) return 'ponctuation';
+  if (op.ref.toLowerCase() === op.stu.toLowerCase()) return 'majuscule';
+  return 'orthographe';
+}
+function evaluate(text){
+  const ops = align(tokenize(reference), tokenize(text));
+  const errors = ops.filter(o => o.type !== 'ok').length;
+  return { ops, errors, note: Math.max(0, POINTS - PAR_FAUTE * errors) };
+}
+const noSpaceBefore = t => /^[.,…)]$/.test(t);
+const noSpaceAfter = t => /^[(«]$/.test(t) || /'$/.test(t);
+
+/* ---------- Audio ---------- */
+function setAudio(url){ audioURL = url; au.src = url; au.load(); }
+au.addEventListener('error', () => {
+  if (!au.src) return;
+  $('audio-err').textContent = "⚠️ L'enregistrement de la dictée ne peut pas être lu sur cet appareil. Préviens ton enseignant.";
+  $('audio-err').classList.remove('hidden');
+  $('btn-start').disabled = true;
+});
+au.addEventListener('loadedmetadata', () => { $('seek').max = au.duration || 100; updateTime(); });
+au.addEventListener('timeupdate', updateTime);
+au.addEventListener('play', () => { $('btn-pp').textContent = '❚❚'; });
+au.addEventListener('pause', () => {
+  $('btn-pp').textContent = '▶';
+  // Étapes 1 et 3 : si la lecture s'arrête toute seule (appel, autre appli…), on peut seulement reprendre
+  if ((step === 1 || step === 3) && !au.ended){ $('btn-play-lock').disabled = false; $('btn-play-lock').textContent = '▶'; }
+});
+au.addEventListener('ended', () => {
+  if (step === 1){ S.listened1 = true; $('btn-next1').classList.remove('hidden'); $('btn-play-lock').textContent = '✓'; }
+  if (step === 3){ S.listened3 = true; $('btn-validate').disabled = false; $('btn-play-lock').textContent = '✓';
+    setRules('🔍 Étape 3 — Je me relis', [[1,'Tu as tout écouté'],[1,'Termine ta relecture, puis valide ta dictée']]); }
+});
+function updateTime(){
+  const d = au.duration || 0, t = au.currentTime || 0;
+  $('bar-fill').style.width = (d ? t / d * 100 : 0) + '%';
+  $('time-lock').textContent = $('time-free').textContent = fmt(t) + ' / ' + fmt(d);
+  if (!seeking) $('seek').value = t;
+}
+let seeking = false;
+$('seek').addEventListener('input', () => { seeking = true; au.currentTime = +$('seek').value; });
+$('seek').addEventListener('change', () => { seeking = false; });
+$('btn-pp').addEventListener('click', () => { if (au.paused) au.play(); else au.pause(); });
+$('btn-back').addEventListener('click', () => { au.currentTime = Math.max(0, au.currentTime - 5); });
+$('btn-fwd').addEventListener('click', () => { au.currentTime = Math.min(au.duration || 0, au.currentTime + 5); });
+$('btn-play-lock').addEventListener('click', () => {
+  if (au.ended || au.currentTime === 0) au.currentTime = 0;
+  au.play().catch(() => {});
+  $('btn-play-lock').disabled = true; $('btn-play-lock').textContent = '♪';
+});
+
+/* ---------- Étapes ---------- */
+function setRules(title, rules){
+  $('consigne').textContent = title;
+  $('rules').innerHTML = rules.map(([ok, t]) => `<span class="rule${ok ? '' : ' no'}">${ok ? '✅' : '🚫'} ${t}</span>`).join('');
+}
+function show(id){ ['start','game','result'].forEach(s => $(s).classList.toggle('hidden', s !== id)); window.scrollTo(0, 0); }
+function hideActions(){ ['confirm-msg','btn-cancel','btn-next1','btn-next2','btn-yes','btn-validate'].forEach(i => $(i).classList.add('hidden')); }
+function setStep(n){
+  step = n; au.pause();
+  [1,2,3].forEach(k => { $('p'+k).classList.toggle('on', k === n); $('p'+k).classList.toggle('done', k < n); });
+  hideActions();
+  const lock = (n === 1 || n === 3);
+  $('player-lock').classList.toggle('hidden', !lock);
+  $('player-free').classList.toggle('hidden', lock);
+  $('listen-card').classList.toggle('hidden', n !== 1);
+  $('writer').classList.toggle('hidden', n === 1);
+  au.currentTime = 0; updateTime();
+  $('player-card').className = 'card player c' + n;
+  if (n === 1){
+    setRules('🎧 Étape 1 — J\'écoute', [[1,'J\'écoute toute la dictée'],[0,'Je n\'écris pas encore'],[0,'Pas de pause']]);
+    $('btn-play-lock').disabled = false; $('btn-play-lock').textContent = '▶';
+  }
+  if (n === 2){
+    setRules('✏️ Étape 2 — J\'écris', [[1,'J\'écris la dictée'],[1,'⏸️ Je peux mettre pause'],[1,'⏪ Je peux reculer ou avancer ⏩']]);
+    $('btn-next2').classList.remove('hidden');
+    $('btn-pp').textContent = '▶';
+  }
+  if (n === 3){
+    setRules('🔍 Étape 3 — Je me relis', [[1,'J\'écoute toute la dictée une dernière fois'],[1,'Je corrige mon texte'],[0,'Pas de pause']]);
+    $('btn-play-lock').disabled = false; $('btn-play-lock').textContent = '▶';
+    $('btn-validate').classList.remove('hidden'); $('btn-validate').disabled = true;
+  }
+}
+
+$('btn-start').addEventListener('click', () => {
+  S = { listened1:false, listened3:false };
+  $('player-slot').appendChild($('player-free'));
+  $('txt').value = '';
+  show('game'); setStep(1);
+});
+$('btn-next1').addEventListener('click', () => { setStep(2); $('txt').focus(); });
+$('btn-next2').addEventListener('click', () => {
+  au.pause();
+  ['confirm-msg','btn-cancel','btn-yes'].forEach(i => $(i).classList.remove('hidden'));
+  $('btn-next2').classList.add('hidden');
+});
+$('btn-cancel').addEventListener('click', () => {
+  ['confirm-msg','btn-cancel','btn-yes'].forEach(i => $(i).classList.add('hidden'));
+  $('btn-next2').classList.remove('hidden');
+});
+$('btn-yes').addEventListener('click', () => setStep(3));
+
+/* ---------- Validation et correction ---------- */
+$('btn-validate').addEventListener('click', () => {
+  au.pause();
+  const text = $('txt').value;
+  const ev = evaluate(text);
+  S.texte1 = text; S.ev1 = ev; S.date = new Date();
+  $('score').innerHTML = fmtNote(ev.note) + ' <small>/ ' + POINTS + '</small>';
+  $('score-msg').textContent = ev.errors === 0 ? 'Bravo, aucune faute !' : (ev.errors === 1 ? '1 faute' : ev.errors + ' fautes');
+  $('score-detail').textContent = '−' + fmtNote(PAR_FAUTE) + ' point par faute (orthographe, majuscule, ponctuation, mot oublié ou en trop).';
+  show('result');
+  $('final').classList.add('hidden');
+  if (ev.errors === 0){ $('fix-card').classList.add('hidden'); S.ev2 = null; finish(); return; }
+  $('fix-card').classList.remove('hidden');
+  // Correction : lecteur libre (pause, reculer, avancer), comme à l'étape 2
+  step = 4; au.currentTime = 0; updateTime(); $('btn-pp').textContent = '▶';
+  $('fix-player').appendChild($('player-free'));
+  $('player-free').classList.remove('hidden');
+  renderFix(ev.ops);
+});
+
+const w = v => Math.max(1.6, v.length * 0.6 + 0.9).toFixed(2) + 'em';
+function renderFix(ops){
+  let html = '', prev = null;
+  ops.forEach((op, i) => {
+    const tok = op.type === 'del' ? (op.ref) : op.stu;
+    const space = prev !== null && !noSpaceBefore(tok) && !noSpaceAfter(prev) ? ' ' : '';
+    if (op.type === 'ok') html += space + esc(op.stu);
+    else {
+      const val = op.type === 'del' ? '' : op.stu;
+      const cls = op.type === 'del' ? 'fix gap' : 'fix';
+      html += space + `<input class="${cls}" data-i="${i}" value="${esc(val)}" data-orig="${esc(val)}" style="width:${w(val)}"
+        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="À corriger">`;
+    }
+    prev = tok;
+  });
+  $('fix-text').innerHTML = html;
+  $('fix-text').querySelectorAll('input.fix').forEach(inp =>
+    inp.addEventListener('input', () => {
+      inp.style.width = w(inp.value);
+      // Mauve = l'élève a modifié cette case (ça ne veut pas dire que c'est juste)
+      inp.classList.toggle('changed', inp.value.trim() !== inp.dataset.orig.trim());
+    }));
+}
+
+$('btn-fix').addEventListener('click', () => {
+  au.pause();
+  const ops = S.ev1.ops;
+  const parts = [], fixes = [];
+  ops.forEach((op, i) => {
+    if (op.type === 'ok'){ parts.push(op.stu); return; }
+    const v = $('fix-text').querySelector(`input[data-i="${i}"]`).value;
+    if (v.trim()) parts.push(v.trim());
+    const toks = tokenize(v);
+    const ok = op.type === 'ins' ? toks.length === 0 : (toks.length === 1 && same(op.ref, toks[0]));
+    fixes.push({ type: op.type, kind: kind(op), ref: op.ref || '', avant: op.stu || '', apres: v.trim(), ok });
+  });
+  S.texte2 = parts.join(' ');
+  S.fixes = fixes;
+  S.ev2 = evaluate(S.texte2);
+  $('fix-card').classList.add('hidden');
+  finish();
+});
+
+function finish(){
+  if (S.fixes){
+    const good = S.fixes.filter(f => f.ok).length;
+    $('final-msg').textContent = `Tu as bien corrigé ${good} faute${good > 1 ? 's' : ''} sur ${S.fixes.length}.`;
+    // Texte de l'élève : en vert ce qui est bien corrigé, en rouge ce qui reste faux
+    let html = '', prev = null, k = 0;
+    S.ev1.ops.forEach(op => {
+      const tok = op.type === 'del' ? op.ref : op.stu;
+      const space = prev !== null && !noSpaceBefore(tok) && !noSpaceAfter(prev) ? ' ' : '';
+      if (op.type === 'ok') html += space + esc(op.stu);
+      else {
+        const f = S.fixes[k++];
+        const shown = f.apres || (f.type === 'ins' ? '' : '…');
+        if (shown) html += space + `<span class="${f.ok ? 'fixed' : 'notfixed'}">${esc(shown)}</span>`;
+        else if (!f.ok) html += space + `<span class="notfixed">…</span>`;
+      }
+      prev = tok;
+    });
+    $('final-text').innerHTML = html;
+  } else {
+    $('final-msg').textContent = 'Ton texte est parfait !';
+    $('final-text').textContent = '';
+  }
+  $('model').textContent = reference;
+  $('final').classList.remove('hidden');
+  sendToSite();
+}
+$('btn-home').addEventListener('click', () => {
+  au.pause();
+  try { if (window.parent && window.parent !== window && window.parent.closeFicheViewer) { window.parent.closeFicheViewer(); return; } } catch(e){}
+  show('start');
+});
+
+/* ---------- Envoi du résultat à la page enseignant ----------
+   Envoyé une seule fois : à la fin de la correction, ou si l'élève quitte la page après avoir validé
+   sa dictée sans finir sa correction (le 1er texte et la note ne sont alors pas perdus). */
+function sendToSite(){
+  if (!S || !S.ev1 || S.sent) return; S.sent = true;
+  try {
+    if (window.parent && window.parent !== window && window.parent.dicteeMarquerFaite)
+      window.parent.dicteeMarquerFaite(DICTEE.id, { score: S.ev1.note, total: POINTS });
+  } catch(e){}
+  try {
+    if (window.parent && window.parent !== window && window.parent.saveResult){
+      const now = S.date || new Date();
+      window.parent.saveResult({
+        activity: DICTEE.id, bookTitle: 'Dictée : ' + DICTEE.titre,
+        score: S.ev1.note, total: POINTS, pct: Math.round(S.ev1.note / POINTS * 100),
+        date: now.toLocaleDateString('fr-BE'),
+        time: now.toLocaleTimeString('fr-BE', {hour:'2-digit', minute:'2-digit'}),
+        dictee: {
+          reference, texte1: S.texte1, fautes: S.ev1.errors,
+          ops: S.ev1.ops.map(o => [o.type[0], o.ref || '', o.stu || '']),
+          texte2: S.texte2 || '', fautesApres: S.ev2 ? S.ev2.errors : -1,
+          correctionFaite: !!S.fixes,
+          corrections: S.fixes ? S.fixes.map(f => ({attendu:f.ref, avant:f.avant, apres:f.apres, ok:f.ok, type:f.kind})) : []
+        }
+      });
+    }
+  } catch(e){}
+}
+window.addEventListener('pagehide', sendToSite);
+window.lcmlOnLeave = sendToSite;
+
+/* ---------- Chargement de la dictée ---------- */
+function b64ToBlobURL(dataURL){
+  const m = /^data:([^;]+);base64,(.*)$/.exec(dataURL || '');
+  if (!m) return dataURL;
+  const bin = atob(m[2]), buf = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
+  return URL.createObjectURL(new Blob([buf], {type: m[1]}));
+}
+function loadError(msg){
+  $('btn-start').textContent = '⚠️ Dictée indisponible';
+  $('audio-err').textContent = msg;
+  $('audio-err').classList.remove('hidden');
+}
+async function init(){
+  let d = null;
+  try {
+    if (!DID) throw new Error('id');
+    const loader = window.parent && window.parent !== window ? window.parent.dicteeLoad : null;
+    if (!loader) throw new Error('site');
+    d = await loader(DID);
+  } catch(e){
+    loadError(e && e.message === 'site' ? "Cette page s'ouvre depuis le site LCML." : "Impossible de charger la dictée. Vérifie ta connexion à internet, puis réessaie.");
+    return;
+  }
+  if (!d || !d.texte || !d.audio){ loadError("Cette dictée n'existe plus ou n'est pas complète. Préviens ton enseignant."); return; }
+  DICTEE.titre = d.titre || 'Dictée';
+  DICTEE.variantes = d.variantes || {};
+  reference = d.texte;
+  $('titre').textContent = DICTEE.titre;
+  document.title = DICTEE.titre;
+  setAudio(b64ToBlobURL(d.audio));
+  $('btn-start').disabled = false;
+  $('btn-start').textContent = '🎧 Je commence la dictée';
+}
+init();
+</script>
+</body>
+</html>
