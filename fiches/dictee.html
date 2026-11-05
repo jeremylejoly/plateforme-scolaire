@@ -166,7 +166,7 @@
       </ul>
     </div>
   </div>
-  <div class="after"><span style="font-size:20px">🏁</span><span><b>Ensuite</b>, tu vois ta note sur 10 et tu corriges les mots en rouge.</span></div>
+  <div class="after"><span style="font-size:20px">🏁</span><span><b>Ensuite</b>, tu corriges les mots en rouge. Ta note sur 10 arrive après ta correction : −0,5 par faute qui reste.</span></div>
   <div class="start-row">
     <button class="btn btn-primary btn-big" id="btn-start" disabled>⏳ Chargement de la dictée…</button>
     <span class="small">🎧 Mets ton casque ou tes écouteurs.</span>
@@ -225,7 +225,7 @@
 
 <!-- ====== RÉSULTAT + CORRECTION ====== -->
 <section id="result" class="hidden">
-  <div class="card score-row">
+  <div class="card score-row hidden" id="score-card">
     <div class="score" id="score"></div>
     <div>
       <div class="score-msg" id="score-msg"></div>
@@ -444,9 +444,10 @@ $('btn-validate').addEventListener('click', () => {
   const text = $('txt').value;
   const ev = evaluate(text);
   S.texte1 = text; S.ev1 = ev; S.date = new Date();
-  $('score').innerHTML = fmtNote(ev.note) + ' <small>/ ' + POINTS + '</small>';
-  $('score-msg').textContent = ev.errors === 0 ? 'Bravo, aucune faute !' : (ev.errors === 1 ? '1 faute' : ev.errors + ' fautes');
-  $('score-detail').textContent = '−' + fmtNote(PAR_FAUTE) + ' point par faute (orthographe, majuscule, ponctuation, mot oublié ou en trop).';
+  // La note n'est donnée qu'après la correction : seules les fautes qui restent comptent (décision de Jérémy, 05/11/2026)
+  // Aucune note ni aucun nombre de fautes avant la fin de la correction.
+  $('score-card').classList.add('hidden');
+  if (ev.errors === 0) showNote(0);
   show('result');
   $('final').classList.add('hidden');
   if (ev.errors === 0){ $('fix-card').classList.add('hidden'); S.ev2 = null; finish(); return; }
@@ -457,6 +458,21 @@ $('btn-validate').addEventListener('click', () => {
   $('player-free').classList.remove('hidden');
   renderFix(ev.ops);
 });
+
+// Note finale : −0,5 par faute qui reste (toutes les fautes de départ si la correction n'est pas faite)
+function fautesRestantes(){ return S.fixes ? S.fixes.filter(f => !f.ok).length : S.ev1.errors; }
+function noteFinale(){ return Math.max(0, POINTS - PAR_FAUTE * fautesRestantes()); }
+function showNote(restantes){
+  $('score-card').classList.remove('hidden');
+  $('score').innerHTML = fmtNote(Math.max(0, POINTS - PAR_FAUTE * restantes)) + ' <small>/ ' + POINTS + '</small>';
+  if (S.ev1.errors === 0){
+    $('score-msg').textContent = 'Bravo, aucune faute !';
+    $('score-detail').textContent = 'Ta dictée est parfaite du premier coup.';
+  } else {
+    $('score-msg').textContent = restantes === 0 ? 'Bravo, tout est corrigé !' : (restantes === 1 ? '1 faute reste' : restantes + ' fautes restent');
+    $('score-detail').textContent = 'Au départ : ' + S.ev1.errors + ' faute' + (S.ev1.errors > 1 ? 's' : '') + '. −' + fmtNote(PAR_FAUTE) + ' point par faute qui reste après ta correction.';
+  }
+}
 
 const w = v => Math.max(1.6, v.length * 0.6 + 0.9).toFixed(2) + 'em';
 function renderFix(ops){
@@ -502,6 +518,7 @@ $('btn-fix').addEventListener('click', () => {
 });
 
 function finish(){
+  if (S.fixes) showNote(fautesRestantes());
   if (S.fixes){
     const good = S.fixes.filter(f => f.ok).length;
     $('final-msg').textContent = `Tu as bien corrigé ${good} faute${good > 1 ? 's' : ''} sur ${S.fixes.length}.`;
@@ -543,18 +560,19 @@ function sendToSite(){
   if (!S || !S.ev1 || S.sent) return; S.sent = true;
   try {
     if (window.parent && window.parent !== window && window.parent.dicteeMarquerFaite)
-      window.parent.dicteeMarquerFaite(DICTEE.id, { score: S.ev1.note, total: POINTS });
+      window.parent.dicteeMarquerFaite(DICTEE.id, { score: noteFinale(), total: POINTS });
   } catch(e){}
   try {
     if (window.parent && window.parent !== window && window.parent.saveResult){
       const now = S.date || new Date();
       window.parent.saveResult({
         activity: DICTEE.id, bookTitle: 'Dictée : ' + DICTEE.titre,
-        score: S.ev1.note, total: POINTS, pct: Math.round(S.ev1.note / POINTS * 100),
+        score: noteFinale(), total: POINTS, pct: Math.round(noteFinale() / POINTS * 100),
         date: now.toLocaleDateString('fr-BE'),
         time: now.toLocaleTimeString('fr-BE', {hour:'2-digit', minute:'2-digit'}),
         dictee: {
           reference, texte1: S.texte1, fautes: S.ev1.errors,
+          noteDepart: S.ev1.note, fautesRestantes: fautesRestantes(), calcul: 'fautes restantes après correction',
           ops: S.ev1.ops.map(o => [o.type[0], o.ref || '', o.stu || '']),
           texte2: S.texte2 || '', fautesApres: S.ev2 ? S.ev2.errors : -1,
           correctionFaite: !!S.fixes,
