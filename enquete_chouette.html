@@ -103,6 +103,7 @@
   .ending-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
 
   /* Carnet */
+  .btn.relecture { opacity: .55; cursor: not-allowed; box-shadow: none; }
   .overlay { position: fixed; inset: 0; background: rgba(26,26,46,.45); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 10; }
   .overlay.open { display: flex; }
   .overlay .card { max-width: 560px; width: 100%; max-height: 85vh; overflow: auto; }
@@ -164,7 +165,7 @@
      Chaque paragraphe a un numéro (n), comme dans un vrai livre-jeu.
      - text : paragraphes (HTML autorisé)
      - clues : indices ajoutés au carnet en arrivant ici
-     - enigme : énigme à résoudre (ok → to, skip → skipTo après 2 erreurs)
+     - enigme : énigme à résoudre (ok → to, skip → skipTo plus de passage possible sans réussir)
      - choices : { label, to, accuse?, requires? (indice nécessaire) }
      - ending : { type: 'win' | 'half' | 'lose', title }
      ===================================================================== */
@@ -215,7 +216,7 @@
           "La somme de ses chiffres vaut 13."
         ],
         question: "Quel est le code ?",
-        hint: "Un nombre pair <b>et</b> divisible par 5 se termine forcément par 0. Il commence par 4. Quel chiffre faut-il au milieu pour que 4 + ? + 0 = 13 ?",
+        hint: "Relis chaque condition du code, une par une : par quel chiffre se termine un nombre à la fois pair et divisible par 5 ? Par quel chiffre commence le code ? Utilise ensuite la somme des chiffres.",
         success: "Bravo ! 490 : il est entre 400 et 500, pair, divisible par 5, et 4 + 9 + 0 = 13.",
         to: 'boite', skipTo: 'boitePasser', skipLabel: "Laisser tomber la boite à clés"
       }
@@ -317,7 +318,7 @@
       enigme: { kind: 'time', answer: [18, 55],
         title: "⏱️ L'heure de sortie",
         question: "À quelle heure la camionnette est-elle sortie du parking ?",
-        hint: "Ajoute d'abord l'heure : 17 h 05 + 1 h = 18 h 05. Ajoute ensuite les 50 minutes.",
+        hint: "Relis l'heure d'entrée et la durée. Ajoute d'abord les heures, puis les minutes.",
         success: "Exact : 17 h 05 + 1 h 50 min = 18 h 55.",
         to: 'ticketOk', skipTo: 'ticketPasser', skipLabel: "Reposer le ticket : on dirait qu'il revient !"
       }
@@ -356,7 +357,7 @@
           ['mon', "m'ont"], " camion. Je vous ", ['la', "l'a", 'là'], " donnerai à 15 h, sur le parking. — D."
         ],
         answers: ['sans', 'mon', 'la'],
-        hint: "Remplace pour vérifier : <b>sans</b> est le contraire de « avec » ; <b>mon</b> peut être remplacé par « ton » ; <b>la</b> peut être remplacé par « le » (je vous le donnerai).",
+        hint: "Pour chaque tache, essaie de remplacer le mot par un autre mot qui a le même rôle (comme « ton » ou « le ») : si la phrase garde son sens, c'est le bon.",
         success: "Parfait, le message est reconstitué !",
         to: 'messageOk', skipTo: 'messageIllisible', skipLabel: "Renoncer : le message est trop abimé"
       }
@@ -599,7 +600,24 @@
     return h;
   }
 
+
+  /* Temps de relecture après une erreur : « Valider » reste bloqué quelques secondes. */
+  function lockRelecture() {
+    const btn = story.querySelector('[data-act="check"]'); if (!btn) return;
+    if (!btn.dataset.label) btn.dataset.label = btn.textContent;
+    const fin = Date.now() + 10 * 1000;
+    btn.disabled = true; btn.classList.add('relecture');
+    const tick = () => {
+      const s = Math.ceil((fin - Date.now()) / 1000);
+      if (!btn.isConnected) { clearInterval(t); return; }
+      if (s <= 0) { clearInterval(t); btn.disabled = false; btn.classList.remove('relecture'); btn.textContent = btn.dataset.label; return; }
+      btn.textContent = '⏳ Relis… ' + s;
+    };
+    const t = setInterval(tick, 250); tick();
+  }
+
   function checkEnigme() {
+    { const cb = story.querySelector('[data-act="check"]'); if (cb && cb.disabled) return; }
     if (game.solved) return;
     const p = S[game.at], e = p.enigme;
     const fb = $('enigme-fb');
@@ -639,10 +657,8 @@
     if (e.kind === 'blanks') msg = `❌ ${e._wrong === 1 ? 'Un mot n\'est pas le bon' : e._wrong + ' mots ne sont pas les bons'} (entouré${e._wrong > 1 ? 's' : ''} en rouge).`;
     if (e.kind === 'time') msg += ` Tu as écrit ${esc($('ans-h').value)} h ${esc($('ans-m').value)}.`;
     if (e.kind === 'number') msg += ` Tu as écrit ${esc($('ans-num').value)}.`;
-    fb.innerHTML = `<div class="feedback ko">${msg}<br>💡 <b>Indice :</b> ${e.hint}</div>`;
-    if (game.errors >= 2 && !story.querySelector('.choice.skip')) {
-      $('after-enigme').innerHTML = `<button class="choice skip" data-to="${e.skipTo}">${esc(e.skipLabel)}<span class="go">Va au ${S[e.skipTo].n}</span></button>`;
-    }
+    fb.innerHTML = `<div class="feedback ko">${msg}<br>${game.errors >= 2 ? `💡 <b>Indice :</b> ${e.hint}` : `📖 Relis bien le texte et la question : la réponse s'y trouve. Prends ton temps !`}</div>`;
+    lockRelecture();
   }
 
   /* Carnet */
