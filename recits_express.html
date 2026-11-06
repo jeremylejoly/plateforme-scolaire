@@ -373,6 +373,7 @@
             <option value="verryken">Mr Verryken</option>
           </select>
         </div>
+        <button type="button" id="cloud-sync-status" onclick="cloudSyncNow()" class="text-[10px] font-semibold px-2 py-0.5 rounded-full border whitespace-nowrap bg-neutral-50 text-neutral-500 border-neutral-200">☁️ …</button>
       </div>
     </div>
 
@@ -998,7 +999,7 @@
       </div>
 
       <p class="text-xs text-neutral-600 leading-relaxed">
-        Vos données (livres, élèves et lectures) sont stockées en local dans votre navigateur (<code class="font-mono bg-neutral-100 px-1 py-0.5 rounded">localStorage</code>).
+        Vos données (livres, élèves et lectures) sont enregistrées sur cet appareil <strong>et en ligne</strong> (compte enseignant) : elles sont les mêmes sur la tablette et sur les autres ordinateurs. Le fichier JSON reste une sauvegarde de secours.
       </p>
 
       <div class="grid grid-cols-2 gap-3 pt-2">
@@ -1775,6 +1776,7 @@
       loadData();
       initUI();
       renderAll();
+      cloudStart();
     });
 
     function getLCMLStudentsForClass(cls) {
@@ -1855,7 +1857,13 @@
       }
     }
 
+    // Le chargement n'est pas une modification : rien n'est marqué « modifié » pour la synchro
     function loadData() {
+      cloudSuppress++;
+      try { loadDataInner(); } finally { cloudSuppress--; }
+    }
+
+    function loadDataInner() {
       currentClass = getCurrentClass();
       updateClassUI();
 
@@ -1931,6 +1939,7 @@
       loadData();
       renderAll();
       updateClassUI();
+      if (cloudStarted) cloudSyncNow();
       const mStudents = document.getElementById('modal-students');
       if (mStudents && !mStudents.classList.contains('hidden')) {
         renderModalStudentsList();
@@ -1958,10 +1967,16 @@
 
     function saveBooksList() {
       sortBooks();
-      localStorage.setItem(STORAGE_KEY_BOOKS, JSON.stringify(state.books));
+      const json = JSON.stringify(state.books);
+      const changed = localStorage.getItem(STORAGE_KEY_BOOKS) !== json;
+      localStorage.setItem(STORAGE_KEY_BOOKS, json);
+      if (changed) cloudMarkEdited('books');
     }
 
     function saveData() {
+      const prev = localStorage.getItem(getDataKey());
+      let prevContent = null;
+      try { const o = JSON.parse(prev); prevContent = JSON.stringify([o.readings || {}, o.archivedStudents || {}]); } catch(e) {}
       const payload = {
         version: 2,
         class: currentClass,
@@ -1970,11 +1985,233 @@
         archivedStudents: state.archivedStudents || {}
       };
       localStorage.setItem(getDataKey(), JSON.stringify(payload));
+      if (prevContent !== JSON.stringify([payload.readings || {}, payload.archivedStudents])) cloudMarkEdited('class_' + currentClass);
     }
 
     function saveStudentsList() {
-      localStorage.setItem(getStudentsKey(), JSON.stringify(state.students));
+      const json = JSON.stringify(state.students);
+      const changed = localStorage.getItem(getStudentsKey()) !== json;
+      localStorage.setItem(getStudentsKey(), json);
+      if (changed) cloudMarkEdited('class_' + currentClass);
     }
+
+    // =====================================================================
+    // SYNCHRONISATION EN LIGNE (06/11/2026)
+    // Avant : tout restait dans le navigateur (localStorage) → la tablette ou un autre
+    // ordinateur ne voyait pas les emprunts ni les livres lus.
+    // Maintenant : chaque appareil garde sa copie locale ET la recopie dans Firebase
+    // (compte enseignant uniquement) :
+    //   recits_express/books              = { editedAt, json }  (liste des livres, commune)
+    //   recits_express/classes/{classe}   = { editedAt, json }  (lectures + élèves de la classe)
+    // « editedAt » n'avance que lors d'une VRAIE modification (pas au simple chargement),
+    // si bien que la version la plus récemment modifiée gagne. Avant de remplacer les données
+    // d'un appareil, une copie est gardée dans localStorage (« tbi_recits_backup_… »).
+    // =====================================================================
+    const CLOUD_ROOT = 'recits_express';
+    let cloudSuppress = 0;            // > 0 pendant le chargement / l'application d'une version en ligne
+    const cloudTimers = {};
+    const cloudKnownRemote = {};      // dernier editedAt vu en ligne, par document
+    let cloudListeners = {};
+    let cloudStarted = false;
+
+    function cloudParent() {
+      try {
+        const p = window.parent;
+        if (p && p !== window && p.FB_DB && p.FB_ref && p.FB_get && p.FB_set) return p;
+      } catch(e) {}
+      return null;
+    }
+    function cloudAvailable() {
+      const p = cloudParent();
+      return !!(p && p.FB_isTeacher);
+    }
+    function cloudPath(docKey) {
+      return docKey === 'books' ? CLOUD_ROOT + '/books' : CLOUD_ROOT + '/classes/' + docKey.replace(/^class_/, '');
+    }
+    function cloudEditKey(docKey) { return 'tbi_recits_edited_' + docKey; }
+    function cloudLocalEdited(docKey) { return Number(localStorage.getItem(cloudEditKey(docKey))) || 0; }
+
+    // Contenu local d'un document (chaîne JSON) et application d'un contenu reçu
+    function cloudLocalContent(docKey) {
+      if (docKey === 'books') {
+        const b = localStorage.getItem(STORAGE_KEY_BOOKS);
+        return b ? JSON.stringify({ books: JSON.parse(b) }) : null;
+      }
+      const cls = docKey.replace(/^class_/, '');
+      let data = {}, students = [];
+      try { data = JSON.parse(localStorage.getItem(STORAGE_KEY_DATA_PREFIX + cls)) || {}; } catch(e) {}
+      try { students = JSON.parse(localStorage.getItem(STORAGE_KEY_STUDENTS_PREFIX + cls)) || []; } catch(e) {}
+      return JSON.stringify({ readings: data.readings || {}, archivedStudents: data.archivedStudents || {}, students: students });
+    }
+    function cloudHasContent(docKey) {
+      const c = cloudLocalContent(docKey);
+      if (!c) return false;
+      try {
+        const o = JSON.parse(c);
+        if (docKey === 'books') return Array.isArray(o.books) && o.books.length > 0;
+        return Object.values(o.readings || {}).some(r => r && Object.keys(r).length > 0);
+      } catch(e) { return false; }
+    }
+    function cloudApplyContent(docKey, json, editedAt) {
+      const o = JSON.parse(json);
+      // Copie de sécurité de ce qu'il y avait sur cet appareil
+      const before = cloudLocalContent(docKey);
+      if (before && before !== json) {
+        try { localStorage.setItem('tbi_recits_backup_' + docKey, JSON.stringify({ savedAt: new Date().toISOString(), json: before })); } catch(e) {}
+      }
+      if (docKey === 'books') {
+        if (Array.isArray(o.books)) localStorage.setItem(STORAGE_KEY_BOOKS, JSON.stringify(o.books));
+      } else {
+        const cls = docKey.replace(/^class_/, '');
+        localStorage.setItem(STORAGE_KEY_DATA_PREFIX + cls, JSON.stringify({
+          version: 2, class: cls, lastUpdated: new Date(editedAt).toISOString(),
+          readings: o.readings || {}, archivedStudents: o.archivedStudents || {}
+        }));
+        localStorage.setItem(STORAGE_KEY_STUDENTS_PREFIX + cls, JSON.stringify(Array.isArray(o.students) ? o.students : []));
+      }
+      localStorage.setItem(cloudEditKey(docKey), String(editedAt));
+      cloudKnownRemote[docKey] = editedAt;
+    }
+
+    // Appelé par les fonctions d'enregistrement : une vraie modification a eu lieu
+    function cloudMarkEdited(docKey) {
+      if (cloudSuppress > 0) return;
+      const ts = Math.max(Date.now(), (cloudKnownRemote[docKey] || 0) + 1);
+      localStorage.setItem(cloudEditKey(docKey), String(ts));
+      clearTimeout(cloudTimers[docKey]);
+      cloudTimers[docKey] = setTimeout(() => cloudPush(docKey), 800);
+      cloudSetStatus('pending');
+    }
+
+    async function cloudPush(docKey) {
+      const p = cloudParent();
+      if (!p || !p.FB_isTeacher) { cloudSetStatus('offline'); return false; }
+      const json = cloudLocalContent(docKey);
+      if (!json) return false;
+      const editedAt = cloudLocalEdited(docKey) || Date.now();
+      localStorage.setItem(cloudEditKey(docKey), String(editedAt));
+      try {
+        await p.FB_set(p.FB_ref(p.FB_DB, cloudPath(docKey)), { editedAt: editedAt, json: json });
+        cloudKnownRemote[docKey] = editedAt;
+        cloudSetStatus('ok');
+        return true;
+      } catch(e) {
+        console.warn('Récits express : envoi en ligne refusé', e);
+        cloudSetStatus('error');
+        return false;
+      }
+    }
+
+    // Compare la version en ligne et la version de l'appareil, garde la plus récente.
+    // Renvoie true si les données de l'appareil ont été remplacées.
+    async function cloudReconcile(docKey, remote) {
+      const p = cloudParent();
+      if (!p || !p.FB_isTeacher) return false;
+      if (remote === undefined) {
+        try {
+          const snap = await p.FB_get(p.FB_ref(p.FB_DB, cloudPath(docKey)));
+          remote = snap.exists() ? snap.val() : null;
+        } catch(e) { console.warn('Récits express : lecture en ligne refusée', e); cloudSetStatus('error'); return false; }
+      }
+      const localEd = cloudLocalEdited(docKey);
+      if (!remote || !remote.json) {
+        // Rien en ligne : on envoie ce que cet appareil connait (s'il connait quelque chose)
+        if (cloudHasContent(docKey)) {
+          if (!localEd) localStorage.setItem(cloudEditKey(docKey), String(Date.now()));
+          await cloudPush(docKey);
+        } else cloudSetStatus('ok');
+        return false;
+      }
+      const remoteEd = Number(remote.editedAt) || 0;
+      cloudKnownRemote[docKey] = Math.max(cloudKnownRemote[docKey] || 0, remoteEd);
+      if (remoteEd > localEd) {
+        if (remote.json === cloudLocalContent(docKey)) {
+          localStorage.setItem(cloudEditKey(docKey), String(remoteEd));
+          cloudSetStatus('ok');
+          return false;
+        }
+        // Appareil jamais synchronisé qui a ses propres lectures : on demande (une seule fois)
+        if (!localEd && docKey !== 'books' && cloudHasContent(docKey)) {
+          const when = new Date(remoteEd).toLocaleString('fr-BE');
+          const label = CLASS_LABELS[docKey.replace(/^class_/, '')] || docKey;
+          const ok = confirm(`Récits express — classe de ${label}\n\nDes données sont déjà enregistrées EN LIGNE (dernière modification le ${when}).\n\nOK : remplacer les données de cet appareil par celles en ligne (une copie de sécurité est gardée).\nAnnuler : garder les données de cet appareil et les envoyer en ligne.`);
+          if (!ok) {
+            localStorage.setItem(cloudEditKey(docKey), String(Math.max(Date.now(), remoteEd + 1)));
+            await cloudPush(docKey);
+            return false;
+          }
+        }
+        cloudApplyContent(docKey, remote.json, remoteEd);
+        cloudSetStatus('ok');
+        return true;
+      }
+      if (localEd > remoteEd) { await cloudPush(docKey); return false; }
+      cloudSetStatus('ok');
+      return false;
+    }
+
+    function cloudReloadView() {
+      loadData();
+      renderAll();
+      const mStudents = document.getElementById('modal-students');
+      if (mStudents && !mStudents.classList.contains('hidden')) renderModalStudentsList();
+    }
+
+    async function cloudSyncNow() {
+      if (!cloudAvailable()) { cloudSetStatus('offline'); return; }
+      cloudSetStatus('sync');
+      const a = await cloudReconcile('books');
+      const b = await cloudReconcile('class_' + currentClass);
+      if (a || b) cloudReloadView();
+      cloudListen();
+    }
+
+    // Écoute en direct : une modification faite sur un autre appareil arrive ici sans recharger
+    function cloudListen() {
+      const p = cloudParent();
+      if (!p || !p.FB_isTeacher || !p.FB_onValue) return;
+      const wanted = ['books', 'class_' + currentClass];
+      Object.keys(cloudListeners).forEach(k => {
+        if (!wanted.includes(k)) { try { cloudListeners[k](); } catch(e) {} delete cloudListeners[k]; }
+      });
+      wanted.forEach(docKey => {
+        if (cloudListeners[docKey]) return;
+        cloudListeners[docKey] = p.FB_onValue(p.FB_ref(p.FB_DB, cloudPath(docKey)), snap => {
+          const remote = snap.exists() ? snap.val() : null;
+          if (!remote || !remote.json) return;
+          const remoteEd = Number(remote.editedAt) || 0;
+          if (remoteEd <= cloudLocalEdited(docKey)) return;
+          if (cloudTimers[docKey]) return; // un envoi local est en attente : il passera devant
+          cloudReconcile(docKey, remote).then(changed => { if (changed) cloudReloadView(); });
+        }, err => { console.warn('Récits express : écoute en ligne refusée', err); cloudSetStatus('error'); });
+      });
+    }
+
+    function cloudSetStatus(st) {
+      const el = document.getElementById('cloud-sync-status');
+      if (!el) return;
+      const map = {
+        ok:      ['☁️ Synchronisé en ligne', 'bg-emerald-50 text-emerald-700 border-emerald-200'],
+        sync:    ['☁️ Synchronisation…', 'bg-sky-50 text-sky-700 border-sky-200'],
+        pending: ['☁️ Envoi en cours…', 'bg-sky-50 text-sky-700 border-sky-200'],
+        offline: ['⚠️ Hors ligne : enregistré sur cet appareil seulement', 'bg-amber-50 text-amber-800 border-amber-200'],
+        error:   ['⚠️ Envoi en ligne refusé (règles Firebase ?)', 'bg-red-50 text-red-700 border-red-200']
+      };
+      const m = map[st] || map.offline;
+      el.textContent = m[0];
+      el.className = 'text-[10px] font-semibold px-2 py-0.5 rounded-full border whitespace-nowrap ' + m[1];
+      el.title = 'Cliquer pour synchroniser maintenant';
+    }
+
+    // Démarrage : attendre que la connexion enseignant du site soit prête
+    function cloudStart() {
+      if (cloudStarted) return;
+      if (cloudAvailable()) { cloudStarted = true; cloudSyncNow(); return; }
+      cloudSetStatus('offline');
+      setTimeout(cloudStart, 2000);
+    }
+    document.addEventListener('visibilitychange', () => { if (!document.hidden && cloudStarted) cloudSyncNow(); });
+    window.lcmlOnShow = function() { if (cloudStarted) cloudSyncNow(); else cloudStart(); };
 
     // --- GESTION DES LIVRES (AJOUT / DÉCALAGE / ÉDITION / SUPPRESSION) ---
     function openAddBookModal() {
