@@ -52041,5 +52041,208 @@ init();
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
 })();
 </script>
+
+<!-- ===== CALCULATRICE DU SITE (06/11/2026) =====
+     Bouton « 🧮 » flottant, visible seulement dans Mathématiques › Grandeurs, Solides & figures
+     et Traitement de données (pas en Opérations ni en Numération : décision de Jérémy).
+     Un écran est concerné si, en remontant ses boutons « ← Retour », on arrive à l'un de ces trois menus.
+     Priorités respectées (× et ÷ avant + et −), signe ÷, virgule, déplaçable au doigt. -->
+<style>
+  #lcml-calc-btn {
+    position: fixed; right: 16px; bottom: 16px; z-index: 9000; display: none; align-items: center; gap: 6px;
+    background: #FEF3E2; color: #1A1A2E; border: 2.5px solid #1A1A2E; border-radius: 14px; padding: 8px 12px;
+    font-family: 'Fredoka', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer;
+    box-shadow: 3px 3px 0 #1A1A2E; touch-action: manipulation;
+  }
+  #lcml-calc-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 #1A1A2E; }
+  #lcml-calc-btn.ouverte { background: #C97B1A; color: #fff; }
+  #lcml-calc {
+    position: fixed; right: 16px; bottom: 70px; z-index: 9001; width: 236px; display: none; touch-action: none;
+    background: #EEF0FF; border: 3px solid #1A1A2E; border-radius: 18px; padding: 10px; box-shadow: 5px 5px 0 #1A1A2E;
+    font-family: 'Fredoka', sans-serif; color: #1A1A2E;
+  }
+  #lcml-calc.ouverte { display: block; }
+  #lcml-calc .lc-haut { cursor: grab; user-select: none; -webkit-user-select: none; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 15px; margin-bottom: 8px; }
+  #lcml-calc .lc-fermer { background: #FDECEA; color: #D94F3D; border: 2px solid #1A1A2E; border-radius: 8px; width: 30px; height: 28px; font-size: 14px; font-weight: 900; cursor: pointer; box-shadow: 1.5px 1.5px 0 #1A1A2E; }
+  #lcml-calc .lc-ecran { background: #fff; border: 2.5px solid #1A1A2E; border-radius: 10px; padding: 5px 9px; text-align: right; margin-bottom: 9px; min-height: 58px; }
+  #lcml-calc .lc-expr { font-family: 'Nunito', sans-serif; font-size: 13px; color: #6B7080; font-weight: 700; min-height: 17px; word-break: break-all; }
+  #lcml-calc .lc-res { font-size: 26px; font-weight: 700; word-break: break-all; line-height: 1.2; }
+  #lcml-calc .lc-touches { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  #lcml-calc .ck { height: 38px; border: 2px solid #1A1A2E; border-radius: 9px; background: #fff; color: #1A1A2E; font-family: 'Fredoka', sans-serif; font-size: 18px; font-weight: 700; cursor: pointer; box-shadow: 2px 2px 0 #1A1A2E; touch-action: manipulation; }
+  #lcml-calc .ck:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 #1A1A2E; }
+  #lcml-calc .ck.op { background: #FEF3E2; color: #C97B1A; }
+  #lcml-calc .ck.eg { background: #1A9E75; color: #fff; }
+  #lcml-calc .ck.ef { background: #FDECEA; color: #D94F3D; }
+  @media print { #lcml-calc-btn, #lcml-calc { display: none !important; } }
+</style>
+<button id="lcml-calc-btn" type="button" aria-label="Ouvrir la calculatrice">🧮 Calculatrice</button>
+<div id="lcml-calc" role="dialog" aria-label="Calculatrice">
+  <div class="lc-haut" id="lcml-calc-haut"><span>✥ 🧮 Calculatrice</span><button type="button" class="lc-fermer" id="lcml-calc-fermer" aria-label="Fermer la calculatrice">✕</button></div>
+  <div class="lc-ecran"><div class="lc-expr" id="lcml-calc-expr"></div><div class="lc-res" id="lcml-calc-res">0</div></div>
+  <div class="lc-touches" id="lcml-calc-touches">
+    <button type="button" class="ck ef" data-c="C">C</button><button type="button" class="ck ef" data-c="del">⌫</button><button type="button" class="ck op" data-c="÷">÷</button><button type="button" class="ck op" data-c="×">×</button>
+    <button type="button" class="ck" data-c="7">7</button><button type="button" class="ck" data-c="8">8</button><button type="button" class="ck" data-c="9">9</button><button type="button" class="ck op" data-c="−">−</button>
+    <button type="button" class="ck" data-c="4">4</button><button type="button" class="ck" data-c="5">5</button><button type="button" class="ck" data-c="6">6</button><button type="button" class="ck op" data-c="+">+</button>
+    <button type="button" class="ck" data-c="1">1</button><button type="button" class="ck" data-c="2">2</button><button type="button" class="ck" data-c="3">3</button><button type="button" class="ck eg" data-c="=" style="grid-row: span 2; height: auto">=</button>
+    <button type="button" class="ck" data-c="0" style="grid-column: span 2">0</button><button type="button" class="ck" data-c=",">,</button>
+  </div>
+</div>
+<script>
+(function () {
+  // Menus dont les exercices reçoivent la calculatrice
+  var RACINES = { 'screen-grandeurs': 1, 'screen-solides': 1, 'screen-traitement-donnees': 1 };
+  // Écrans qui ont déjà leur propre calculatrice
+  var EXCLUS = { 'screen-grandeur-aire-rectangle': 1 };
+  var parents = null;
+  // Parents lus une seule fois dans les boutons « ← Retour » d'origine (avant toute modification dynamique)
+  function lireParents() {
+    parents = {};
+    document.querySelectorAll('.screen').forEach(function (s) {
+      var b = s.querySelector('.back-btn'); if (!b) return;
+      var txt = b.getAttribute('onclick') || '', re = /showScreen\(\s*['"]([^'"]+)['"]/g, m, liste = [];
+      while ((m = re.exec(txt))) liste.push(m[1]);
+      if (liste.length) parents[s.id] = liste;
+    });
+  }
+  function concerne(id) {
+    if (!id || RACINES[id] || EXCLUS[id]) return false;
+    if (!parents) lireParents();
+    var vus = {}, file = [id];
+    while (file.length) {
+      var cur = file.shift();
+      if (vus[cur]) continue; vus[cur] = 1;
+      var ps = parents[cur] || [];
+      for (var i = 0; i < ps.length; i++) { if (RACINES[ps[i]]) return true; file.push(ps[i]); }
+    }
+    return false;
+  }
+  window.lcmlCalcConcerne = concerne;
+
+  var btn = document.getElementById('lcml-calc-btn'), box = document.getElementById('lcml-calc');
+  function ouvrir() { box.classList.add('ouverte'); btn.classList.add('ouverte'); }
+  function fermer() { box.classList.remove('ouverte'); btn.classList.remove('ouverte'); }
+  window.lcmlCalcMaj = function (id) {
+    var ok = concerne(id);
+    btn.style.display = ok ? 'flex' : 'none';
+    if (!ok) fermer();
+  };
+  btn.addEventListener('click', function () { box.classList.contains('ouverte') ? fermer() : ouvrir(); });
+  document.getElementById('lcml-calc-fermer').addEventListener('click', fermer);
+
+  // ----- Calculs -----
+  var OPS = ['+', '−', '×', '÷'], expr = '', fini = false, resultat = 0;
+  var fr = function (n) { return String(n).replace('.', ','); };
+  var mille = function (s) { return s.replace(/\B(?=(\d{3})+(?!\d))/g, ' '); };
+  function joli(r) {
+    if (r === 'Erreur') return 'Erreur';
+    var neg = r < 0, t = fr(Math.abs(r)).split(',');
+    return (neg ? '−' : '') + mille(t[0]) + (t[1] ? ',' + t[1] : '');
+  }
+  function afficher(res) {
+    document.getElementById('lcml-calc-expr').textContent = fini ? expr + ' =' : '';
+    document.getElementById('lcml-calc-res').textContent = res !== undefined ? res : (expr || '0');
+  }
+  function evaluer(e) {
+    var tokens = e.match(/\d+(,\d*)?|[+−×÷]/g);
+    if (!tokens) return null;
+    if (OPS.indexOf(tokens[tokens.length - 1]) >= 0) tokens.pop();
+    if (tokens[0] === '−' && tokens.length > 1) tokens.splice(0, 2, '-' + tokens[1]);
+    var nums = [], ops = [];
+    tokens.forEach(function (t) { if (OPS.indexOf(t) >= 0) ops.push(t); else nums.push(parseFloat(t.replace(',', '.'))); });
+    if (nums.length !== ops.length + 1 || nums.some(isNaN)) return null;
+    var n2 = [nums[0]], o2 = [];
+    for (var i = 0; i < ops.length; i++) {
+      if (ops[i] === '×') n2.push(n2.pop() * nums[i + 1]);
+      else if (ops[i] === '÷') { if (nums[i + 1] === 0) return 'Erreur'; n2.push(n2.pop() / nums[i + 1]); }
+      else { o2.push(ops[i]); n2.push(nums[i + 1]); }
+    }
+    var r = n2[0];
+    o2.forEach(function (o, i) { r = o === '+' ? r + n2[i + 1] : r - n2[i + 1]; });
+    return Math.round(r * 1e8) / 1e8;
+  }
+  window.lcmlCalcEvaluer = evaluer;
+  function touche(k) {
+    if (k === 'C') { expr = ''; fini = false; return afficher(); }
+    if (k === 'del') { if (fini) { fini = false; expr = ''; } expr = expr.slice(0, -1); return afficher(); }
+    if (k === '=') {
+      if (!expr) return;
+      var r = evaluer(expr);
+      if (r === null) return;
+      fini = true; resultat = r; afficher(joli(r));
+      return;
+    }
+    if (fini) { // une opération continue avec le résultat, un chiffre commence un nouveau calcul
+      fini = false;
+      expr = (OPS.indexOf(k) >= 0 && resultat !== 'Erreur') ? (resultat < 0 ? '−' + fr(-resultat) : fr(resultat)) : '';
+    }
+    var dernier = expr.slice(-1);
+    if (OPS.indexOf(k) >= 0) {
+      if (!expr) return;
+      if (OPS.indexOf(dernier) >= 0 || dernier === ',') expr = expr.slice(0, -1);
+      expr += k;
+    } else if (k === ',') {
+      var courant = expr.split(/[+−×÷]/).pop();
+      if (courant.indexOf(',') >= 0) return;
+      expr += courant === '' ? '0,' : ',';
+    } else {
+      if (expr.replace(/\D/g, '').length > 14) return;
+      expr += k;
+    }
+    afficher();
+  }
+  window.lcmlCalcTouche = touche;
+  // pointerdown + preventDefault : ne ferme pas le clavier de la tablette et ne vole pas le champ en cours
+  document.getElementById('lcml-calc-touches').addEventListener('pointerdown', function (e) {
+    var b = e.target.closest('.ck'); if (!b) return;
+    e.preventDefault(); touche(b.getAttribute('data-c'));
+  });
+  // Clavier de l'ordinateur : seulement quand la calculatrice est ouverte et qu'on n'écrit pas dans un champ de la page
+  document.addEventListener('keydown', function (e) {
+    if (!box.classList.contains('ouverte')) return;
+    var a = document.activeElement;
+    if (a && (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA' || a.isContentEditable)) return;
+    var map = { '+': '+', '-': '−', '*': '×', 'x': '×', '/': '÷', ',': ',', '.': ',', 'Enter': '=', '=': '=', 'Backspace': 'del', 'Escape': 'C' };
+    if (e.key >= '0' && e.key <= '9') { e.preventDefault(); touche(e.key); }
+    else if (map[e.key]) { e.preventDefault(); touche(map[e.key]); }
+  });
+
+  // ----- Déplacement au doigt (barre du haut) -----
+  var barre = document.getElementById('lcml-calc-haut'), dx = 0, dy = 0, tire = false;
+  barre.addEventListener('pointerdown', function (e) {
+    if (e.target.closest('button')) return;
+    var r = box.getBoundingClientRect();
+    dx = e.clientX - r.left; dy = e.clientY - r.top; tire = true;
+    try { barre.setPointerCapture(e.pointerId); } catch (err) {}
+    e.preventDefault();
+  });
+  barre.addEventListener('pointermove', function (e) {
+    if (!tire) return;
+    var x = Math.min(Math.max(0, e.clientX - dx), window.innerWidth - box.offsetWidth);
+    var y = Math.min(Math.max(0, e.clientY - dy), window.innerHeight - box.offsetHeight);
+    box.style.left = x + 'px'; box.style.top = y + 'px'; box.style.right = 'auto'; box.style.bottom = 'auto';
+  });
+  function lacher() { tire = false; }
+  barre.addEventListener('pointerup', lacher); barre.addEventListener('pointercancel', lacher);
+
+  // Suivre l'écran affiché : 1) chaque appel de showScreen ; 2) filet de sécurité : tout changement
+  //    de classe dans la page (écrans reconstruits ou activés autrement), regroupé une fois par image
+  var dernierId = null;
+  function suivre() {
+    var actif = document.querySelector('.screen.active');
+    var id = actif ? actif.id : null;
+    if (id !== dernierId) { dernierId = id; window.lcmlCalcMaj(id); }
+  }
+  if (typeof window.showScreen === 'function') {
+    var origine = window.showScreen;
+    window.showScreen = function () { var r = origine.apply(this, arguments); suivre(); return r; };
+  }
+  var prevu = false;
+  new MutationObserver(function () {
+    if (prevu) return; prevu = true;
+    requestAnimationFrame(function () { prevu = false; suivre(); });
+  }).observe(document.body, { attributes: true, attributeFilter: ['class'], subtree: true, childList: true });
+  suivre();
+})();
+</script>
 </body>
 </html>
