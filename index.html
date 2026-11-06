@@ -34373,10 +34373,33 @@ function getActivitiesMasterRegistry() {
   return registry;
 }
 
-function onGestionActivitiesSearch(val) {
+function onGestionActivitiesSearch(val, ev) {
   gestionActivitiesSearch = val;
+  // Pendant la saisie d'un accent (touche morte ^ ¨ sur Mac), on attend la fin (compositionend).
+  if (ev && ev.isComposing) return;
+  const old = document.getElementById('gact-search-input');
+  const hadFocus = old && document.activeElement === old;
+  const pos = (old && hadFocus) ? old.selectionStart : null;
   renderGestionActivities();
+  // Le rendu remplace la barre de recherche : on y remet le curseur pour pouvoir continuer à taper.
+  const inp = document.getElementById('gact-search-input');
+  if (inp && (hadFocus || val === '')) {
+    inp.focus();
+    const p = (pos === null || pos > inp.value.length) ? inp.value.length : pos;
+    try { inp.setSelectionRange(p, p); } catch (e) {}
+  }
 }
+
+// Recherche, filtre et catégories repliées propres à une classe : remis à zéro
+// quand on change de classe, à la connexion et à la déconnexion enseignant.
+var gestionActivitiesClsShown = null;
+function resetGestionActivitiesView() {
+  gestionActivitiesSearch = '';
+  gestionActivitiesFilter = 'all';
+  gestionActivitiesCollapsed = {};
+  gestionActivitiesClsShown = null;
+}
+window.resetGestionActivitiesView = resetGestionActivitiesView;
 
 function setGestionActivitiesFilter(f) {
   gestionActivitiesFilter = f;
@@ -34598,6 +34621,7 @@ function returnFromTeacherPreview() {
 
 // Réinitialise l'aperçu enseignant (appelé à chaque connexion / déconnexion)
 function resetTeacherPreviewState() {
+  try { if (typeof resetGestionActivitiesView === 'function') resetGestionActivitiesView(); } catch (e) {}
   window.teacherPreviewActive = false;
   window.teacherPreviewReturn = null;
   const bar = document.getElementById('teacher-preview-floating-bar');
@@ -34629,6 +34653,11 @@ function renderGestionActivities() {
 
   const currentCls = (typeof teacherCls !== 'undefined' && teacherCls) ? teacherCls : getCurrentClassId();
   const classTitle = currentCls === 'verryken' ? 'Classe de Mr Verryken' : 'Classe de Mr Lejoly';
+
+  if (gestionActivitiesClsShown !== currentCls) {
+    if (gestionActivitiesClsShown !== null) resetGestionActivitiesView();
+    gestionActivitiesClsShown = currentCls;
+  }
 
   const registry = getActivitiesMasterRegistry();
   const lockedArr = getLockedActivities();
@@ -34725,7 +34754,7 @@ function renderGestionActivities() {
       <div style="position:relative;flex:1;min-width:260px;">
         <input type="text" id="gact-search-input" value="${escapeHTML(gestionActivitiesSearch)}" 
                placeholder="🔍 Rechercher un exercice, un jeu, un mot-clé (ex: fraction, verbe, tétraèdre)..." 
-               oninput="onGestionActivitiesSearch(this.value)" 
+               oninput="onGestionActivitiesSearch(this.value, event)" oncompositionend="onGestionActivitiesSearch(this.value)" 
                style="width:100%;padding:10px 38px 10px 14px;border:1.5px solid #cbd5e1;border-radius:12px;font-size:14px;background:#ffffff;outline:none;font-family:'Inter',sans-serif;margin-bottom:0;transition:border-color .15s;" 
                onfocus="this.style.borderColor='var(--purple)'" onblur="this.style.borderColor='#cbd5e1'" />
         ${gestionActivitiesSearch ? `
