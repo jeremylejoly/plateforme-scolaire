@@ -16019,17 +16019,28 @@ async function dicteeSave(){
     dicteeMsg('⚠️ La dictée n\'a pas pu être enregistrée' + (/permission/i.test(String(e && (e.code || e.message))) ? ' : accès refusé par Firebase (règles « dictees » à publier, ou compte enseignant non connecté).' : ' (connexion internet ?).'), false);
   }
 }
+// Rafraîchit l'écran « Gestion des activités » s'il est affiché (après un changement de visibilité d'une dictée)
+function dicteeRefreshGestion(){
+  if (typeof renderGestionActivities !== 'function') return;
+  const actTab = document.getElementById('gtab-activities');
+  if (actTab && actTab.style.display !== 'none') renderGestionActivities();
+}
 async function dicteeToggleVisible(id){
+  const d = dicteesCache()[id]; if (!d) return;
+  return dicteeSetVisible(id, !dicteeVisible(d, getCurrentClassId()));
+}
+// Rend une dictée visible (true) ou masquée (false) pour la classe en cours
+async function dicteeSetVisible(id, now, silent){
   const cls = getCurrentClassId();
   const c = dicteesCache(); const d = c[id]; if (!d) return;
-  const now = !dicteeVisible(d, cls);
+  if (dicteeVisible(d, cls) === !!now) return;
   try {
     await window.FB_waitAuth(15000);
     await window.FB_set(window.FB_ref(window.FB_DB, 'dictees/' + id + '/visible/' + cls), now ? true : null);
     d.visible = Object.assign({}, d.visible || {}); if (now) d.visible[cls] = true; else delete d.visible[cls];
     localStorage.setItem('lq_dictees_cache', JSON.stringify(c));
-  } catch(e) { alert('La visibilité n\'a pas pu être changée (connexion ou compte enseignant).'); }
-  renderDicteesMenuSync();
+  } catch(e) { if (!silent) alert('La visibilité n\'a pas pu être changée (connexion ou compte enseignant).'); else throw e; }
+  if (!silent) { renderDicteesMenuSync(); dicteeRefreshGestion(); }
 }
 async function dicteeDelete(id){
   const d = dicteesCache()[id]; if (!d) return;
@@ -34417,6 +34428,14 @@ function toggleActivityVisibility(id) {
 }
 
 function bulkToggleSubCategory(itemIds, makeActive) {
+  // Dictées : visibilité enregistrée avec la dictée (Firebase), pas dans la liste des activités masquées
+  const dicteeIds = itemIds.filter(id => typeof id === 'string' && id.startsWith('dictee_'));
+  if (dicteeIds.length && typeof dicteeSetVisible === 'function') {
+    itemIds = itemIds.filter(id => !dicteeIds.includes(id));
+    Promise.all(dicteeIds.map(id => dicteeSetVisible(id.slice(7), makeActive, true)))
+      .catch(() => alert('La visibilité des dictées n\'a pas pu être changée (connexion ou compte enseignant).'))
+      .finally(() => { if (typeof renderDicteesMenuSync === 'function') renderDicteesMenuSync(); dicteeRefreshGestion(); });
+  }
   let arr = getLockedActivities();
   const books = (typeof loadBooks === 'function') ? loadBooks() : [];
   const bookIdSet = new Set(books.map(b => b.id));
