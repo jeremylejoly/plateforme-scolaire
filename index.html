@@ -9044,6 +9044,8 @@ function goHome(){
 }
 
 function showScreen(id){
+  // Plan de travail : un « Retour » qui sortirait de l'activité ramène au plan (voir ptRetourFilter)
+  if (typeof ptRetourFilter === 'function') id = ptRetourFilter(id);
   if (id !== 'screen-jeu-tetris') {
     if (typeof tetStop === 'function') {
       tetStop();
@@ -9070,6 +9072,7 @@ function showScreen(id){
 
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  if (typeof ptRetourRelabel === 'function') ptRetourRelabel(id);
   if (id === 'screen-subjects' || id === 'screen-teacher-subjects') { try { majCarteAstrelune(); } catch(e) {} }
   // Bouton « Espace enseignant » : jamais visible pendant la session d'un élève
   const _tl = document.querySelector('.teacher-link');
@@ -12199,6 +12202,7 @@ function openCEB(file, title, sourceScreen) {
 }
 
 function closeCEBViewer() {
+  if (window.ptRetour) window.ptRetour.backUntil = Date.now() + 1500;
   const iframe = document.getElementById('ceb-viewer-iframe');
   if (iframe) iframe.src = 'about:blank';
   showScreen(cebViewerSourceScreen);
@@ -33543,7 +33547,7 @@ const PLAN_CATALOGUE = [
     { id:'gram_nom', label:'Le nom', icon:'<img src="assets/logos/gram_nom.png" class="w-full h-full object-contain" />', screen:'screen-gram-nom', fn:'renderNomMenu' },
     { id:"gram_nom_identifier", label:"Le nom — Identifier les noms", icon:"🔍", screen:"screen-gram-nom", fn:"startNomExercise" },
     { id:"gram_nom_reconnaître", label:"Le nom — Est-ce un nom ?", icon:"❓", screen:"screen-gram-nom", fn:"startNomReconnaîtreExercise" },
-    { id:'gram_determinant', label:'Le déterminant', icon:'<img src="assets/logos/gram_determinant.png" class="w-full h-full object-contain" />', screen:'screen-gram-determinant', fn:'' },
+    { id:'gram_determinant', label:'Le déterminant', icon:'<img src="assets/logos/gram_determinant.png" class="w-full h-full object-contain" />', screen:'screen-gram-determinant', fn:'renderDeterminantMenu' },
     { id:"gram_determinant_reconnaitre", label:"Le déterminant — Reconnaitre les déterminants", icon:"🔍", screen:"screen-gram-determinant", fn:"startDeterminantExercise" },
     { id:"gram_determinant_tri", label:"Le déterminant — Le tri des déterminants", icon:"🗂️", screen:"screen-gram-determinant-tri", fn:"startTriExercise" },
     { id:'gram_determinant_ex', label:'Le déterminant (Exercices)', icon:'✏️', screen:'screen-vocabulaire', fn:"() => openFiche('determinant_exercice.html', 'Le déterminant (Exercices)', 'screen-plan-travail-student')" },
@@ -33554,12 +33558,12 @@ const PLAN_CATALOGUE = [
     { id:"gram_adjectif_nom", label:"L'adjectif — Retrouver le nom qualifié", icon:"🎯", screen:"screen-gram-adjectif", fn:"startAdjectifNomExercise" },
     { id:'gram_verbe', label:'Le verbe', icon:'<img src="assets/logos/gram_verbe.png" class="w-full h-full object-contain" />', screen:'screen-gram-verbe', fn:'renderVerbeClassMenu' },
     { id:"gram_verbe_identifier", label:"Le verbe — Identifier les verbes", icon:"🔍", screen:"screen-gram-verbe", fn:"startVerbeClassExercise" },
-    { id:'gram_pronom', label:'Le pronom', icon:'<img src="assets/logos/gram_pronom.png" class="w-full h-full object-contain" />', screen:'screen-gram-pronom', fn:'' },
+    { id:'gram_pronom', label:'Le pronom', icon:'<img src="assets/logos/gram_pronom.png" class="w-full h-full object-contain" />', screen:'screen-gram-pronom', fn:'renderPronomMenu' },
     { id:"gram_pronom_piege", label:"Le pronom — Déterminant ou pronom ?", icon:"❓", screen:"screen-gram-pronom-piege", fn:"startPronomPiegeExercise" },
     { id:"gram_pronom_referents", label:"Le pronom — Le détecteur de référents", icon:"🔍", screen:"screen-gram-detecteur-referents", fn:"" },
     { id:"gram_pronom_remplacant", label:"Le pronom — Le remplaçant", icon:"🔄", screen:"screen-gram-remplacant-pronom", fn:"" },
     { id:"gram_pronom_repetitions", label:"Le pronom — La chasse aux répétitions", icon:"📝", screen:"screen-gram-chasse-repetitions", fn:"" },
-    { id:'gram_adverbe', label:"L'adverbe", icon:'<img src="assets/logos/gram_adverbe.png" class="w-full h-full object-contain" />', screen:'screen-gram-adverbe', fn:'' },
+    { id:'gram_adverbe', label:"L'adverbe", icon:'<img src="assets/logos/gram_adverbe.png" class="w-full h-full object-contain" />', screen:'screen-gram-adverbe', fn:'renderAdverbeMenu' },
     { id:"gram_adverbe_reconnaitre", label:"L'adverbe — Reconnaître les adverbes", icon:"🔍", screen:"screen-gram-adverbe-exercice", fn:"" },
     { id:"gram_adverbe_accord", label:"L'adverbe — Adjectif ou adverbe ?", icon:"⚖️", screen:"screen-gram-adverbe-accord-exercice", fn:"" },
     { id:'gram_complement_nom', label:'Le complément du nom', icon:'<img src="assets/logos/gram_complement_nom.png" class="w-full h-full object-contain" />', screen:'screen-gram-complement-nom', fn:'' },
@@ -34275,15 +34279,171 @@ function planNavigateToId(itemId) {
   }
   if (foundItem) {
     try { if (typeof ptMarkOpened === 'function') ptMarkOpened(itemId); } catch(e) {}
+    ptRetourStart(itemId);
     if (foundItem.screen === 'screen-fiche-viewer' && foundItem.filename) {
       openFiche(foundItem.filename, foundItem.label, 'screen-plan-travail-student');
     } else {
       planNavigateTo(foundItem.screen, foundItem.fn);
     }
+    ptRetourEntryDone();
   } else {
     console.warn('Plan item not found in catalogue:', itemId);
   }
 }
+
+// ============================================================
+// RETOUR AU PLAN DE TRAVAIL (06/11/2026, demande de Jérémy)
+// L'élève ouvre une activité avec « → Aller » depuis son plan : tout bouton « Retour »
+// qui le ferait SORTIR de l'activité (vers un menu qu'il n'a pas traversé) le ramène
+// au plan de travail, où l'activité terminée apparait cochée. Les « Retour » internes
+// à l'activité (exercice → menu de l'activité, niveaux…) gardent leur comportement.
+// Le bouton concerné affiche « ← Plan de travail ».
+// ============================================================
+const PT_RETOUR_PLAN = 'screen-plan-travail-student';
+window.ptRetour = null; // { itemId, visited:Set, backUntil:number }
+
+function ptRetourStart(itemId) {
+  ptRetourStop();
+  window.ptRetourHoldUntil = 0;
+  if (window.teacherPreviewActive) return;
+  if (typeof state === 'undefined' || state.role !== 'student' || !state.student) return;
+  window.ptRetour = { itemId: itemId, visited: new Set(), backUntil: 0, forcePlan: false,
+                      entryScreen: null, entrySigs: new Map(), clicked: false };
+}
+// « Signature » d'un bouton = ce que fait son clic (onclick écrit dans la page ou ajouté par le script)
+function ptRetourSig(b) {
+  return b.getAttribute('onclick') || (typeof b.onclick === 'function' ? String(b.onclick) : '');
+}
+function ptRetourIsBackBtn(b) {
+  const txt = (b.dataset.ptLabelOrig !== undefined) ? b.dataset.ptLabelOrig : (b.textContent || '');
+  return b.classList.contains('back-btn') || b.classList.contains('back-to-list') || /Retour/.test(txt);
+}
+// Mémorise les boutons « Retour » de l'écran d'arrivée tels qu'ils sont à l'ouverture de l'activité :
+// tant qu'ils n'ont pas changé, ils ramènent au plan (même s'ils ne font que changer de vue dans l'écran).
+function ptRetourRecordEntry(scr) {
+  const r = window.ptRetour; if (!r || !scr) return;
+  r.entryScreen = scr.id;
+  r.entrySigs = new Map();
+  scr.querySelectorAll('button, a, [onclick]').forEach(b => {
+    if (b.id === 'home-logo-btn' || !ptRetourIsBackBtn(b)) return;
+    const sg = ptRetourSig(b);
+    if (sg) r.entrySigs.set(b, sg);
+  });
+}
+function ptRetourIsEntryBack(b) {
+  const r = window.ptRetour; if (!r || !r.entryScreen) return false;
+  const scr = b.closest('.screen');
+  if (!scr || scr.id !== r.entryScreen || !r.entrySigs.has(b)) return false;
+  return r.entrySigs.get(b) === ptRetourSig(b);
+}
+// Après l'ouverture : seul l'écran réellement affiché compte comme « dans l'activité »
+// (les écrans traversés techniquement pendant l'ouverture ne comptent pas).
+function ptRetourEntryDone() {
+  const r = window.ptRetour; if (!r) return;
+  const act = document.querySelector('.screen.active');
+  r.visited = new Set(act ? [act.id] : []);
+  ptRetourRecordEntry(act);
+  // menus dessinés juste après coup : on remémorise si l'élève n'a encore rien touché
+  setTimeout(() => { const r2 = window.ptRetour; if (r2 === r && !r.clicked && act && act.classList.contains('active')) ptRetourRecordEntry(act); }, 200);
+  if (act) ptRetourRelabel(act.id);
+}
+function ptRetourStop() {
+  window.ptRetour = null;
+  document.querySelectorAll('[data-pt-label-orig]').forEach(b => {
+    b.innerHTML = b.dataset.ptLabelOrig;
+    delete b.dataset.ptLabelOrig;
+  });
+}
+function ptRetourBackPlan(itemId) {
+  // Quelques « Retour » appellent showScreen deux fois (ex. showScreen(menu); renderMenu();) :
+  // pendant un court instant, on reste sur le plan.
+  window.ptRetourHoldUntil = Date.now() + 700;
+  setTimeout(() => {
+    try { if (typeof renderPlanTravailStudent === 'function') renderPlanTravailStudent(); } catch (e) {}
+    const lbl = itemId ? document.querySelector(`#plan-student-body [data-id="${itemId}"]`) : null;
+    const itemEl = lbl ? (lbl.closest('.pt-item') || lbl) : null;
+    if (itemEl) {
+      itemEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      itemEl.classList.remove('pt-item-highlight');
+      void itemEl.offsetWidth;
+      itemEl.classList.add('pt-item-highlight');
+      setTimeout(() => itemEl.classList.remove('pt-item-highlight'), 2600);
+    }
+  }, 60);
+}
+// Appelé au début de showScreen : renvoie l'écran à afficher réellement.
+function ptRetourFilter(id) {
+  const r = window.ptRetour;
+  if (!r) {
+    if (window.ptRetourHoldUntil > Date.now() && id !== PT_RETOUR_PLAN && !id.startsWith('screen-teacher') &&
+        typeof state !== 'undefined' && state.role === 'student') return PT_RETOUR_PLAN;
+    return id;
+  }
+  if (window.teacherPreviewActive || (typeof state !== 'undefined' && state.role !== 'student')) { ptRetourStop(); return id; }
+  const isBack = r.backUntil > Date.now();
+  r.backUntil = 0;
+  if (r.forcePlan) { r.forcePlan = false; const it = r.itemId; ptRetourStop(); ptRetourBackPlan(it); return PT_RETOUR_PLAN; }
+  if (id === PT_RETOUR_PLAN) { const it = r.itemId; ptRetourStop(); ptRetourBackPlan(it); return id; }
+  if (isBack && !r.visited.has(id)) { const it = r.itemId; ptRetourStop(); ptRetourBackPlan(it); return PT_RETOUR_PLAN; }
+  if (HOME_SCREENS.has(id) || id.startsWith('screen-teacher')) { ptRetourStop(); return id; }
+  r.visited.add(id);
+  return id;
+}
+// Écran vers lequel mène un bouton (d'après son onclick), ou null.
+function ptRetourTargetOf(b) {
+  const oc = b.getAttribute('onclick') || (typeof b.onclick === 'function' ? String(b.onclick) : '');
+  if (/closeFicheViewer\(/.test(oc)) return (typeof ficheViewerSourceScreen !== 'undefined') ? ficheViewerSourceScreen : null;
+  if (/closeCEBViewer\(/.test(oc)) return (typeof cebViewerSourceScreen !== 'undefined') ? cebViewerSourceScreen : null;
+  const m = oc.match(/showScreen\(\s*['"]([^'"]+)['"]/);
+  return m ? m[1] : null;
+}
+// Les boutons « Retour » qui ramèneront au plan affichent « ← Plan de travail ».
+function ptRetourRelabel(id) {
+  const run = () => {
+    const r = window.ptRetour; if (!r) return;
+    const scr = document.getElementById(id); if (!scr || !scr.classList.contains('active')) return;
+    scr.querySelectorAll('button, a, [onclick]').forEach(b => {
+      const labeled = b.dataset.ptLabelOrig !== undefined;
+      if (!labeled && !/Retour/.test(b.textContent || '')) return;
+      // Le même bouton peut changer de rôle (menu de l'activité ↔ exercice) : on recalcule à chaque fois
+      const target = ptRetourTargetOf(b);
+      const toPlan = ptRetourIsEntryBack(b) ||
+                     (!!target && target !== id && (target === PT_RETOUR_PLAN || !r.visited.has(target)));
+      if (toPlan && !labeled) {
+        b.dataset.ptLabelOrig = b.innerHTML;
+        b.innerHTML = '← Plan de travail';
+      } else if (!toPlan && labeled) {
+        b.innerHTML = b.dataset.ptLabelOrig;
+        delete b.dataset.ptLabelOrig;
+      }
+    });
+  };
+  run();
+  setTimeout(run, 120); // menus dessinés après coup
+}
+// Un clic sur un bouton « Retour » arme la redirection ; tout autre clic la désarme.
+document.addEventListener('click', function(e) {
+  window.ptRetourHoldUntil = 0; // nouveau geste de l'élève : fin du court maintien sur le plan
+  const r = window.ptRetour; if (!r) return;
+  const b = e.target && e.target.closest ? e.target.closest('button, a, [onclick], [role="button"]') : null;
+  if (!b) return;
+  r.clicked = true;
+  if (b.id === 'home-logo-btn' || b.closest('#home-logo-btn')) { r.backUntil = 0; return; }
+  const txt = b.textContent || '';
+  const isBack = b.classList.contains('back-btn') || b.classList.contains('back-to-list') ||
+                 b.dataset.ptLabelOrig !== undefined || /Retour|←/.test(txt);
+  r.backUntil = isBack ? Date.now() + 1500 : 0;
+  if (isBack && ptRetourIsEntryBack(b)) {
+    // « Retour » de l'écran d'arrivée, inchangé depuis l'ouverture : on laisse le bouton faire son
+    // nettoyage, puis on va au plan (le prochain showScreen est redirigé ; s'il n'y en a pas, on y va nous-mêmes).
+    r.forcePlan = true;
+    setTimeout(() => { if (window.ptRetour === r && r.forcePlan) showScreen(PT_RETOUR_PLAN); }, 0);
+  }
+  // Après le clic (changement de vue dans le même écran), remettre les étiquettes à jour
+  setTimeout(() => { const a = document.querySelector('.screen.active'); if (a && window.ptRetour) ptRetourRelabel(a.id); }, 150);
+}, true);
+window.ptRetourStart = ptRetourStart;
+window.ptRetourStop = ptRetourStop;
 
 // ============================================================
 // GESTION — LISTE DES ACTIVITÉS & MODE APERÇU ENSEIGNANT
@@ -51876,6 +52036,7 @@ function openEnquete(filename, title, sourceScreen) {
 window.openEnquete = openEnquete;
 
 function closeFicheViewer() {
+  if (window.ptRetour) window.ptRetour.backUntil = Date.now() + 1500; // fermeture = retour (aussi depuis la page intégrée)
   const iframe = document.getElementById('fiche-viewer-iframe');
   if (iframe) iframe.src = 'about:blank';
   if (typeof window.teacherPreviewActive !== 'undefined' && window.teacherPreviewActive && typeof state !== 'undefined' && state.role === 'teacher') {
