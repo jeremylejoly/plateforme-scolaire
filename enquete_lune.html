@@ -7,7 +7,7 @@
 <link rel="icon" type="image/svg+xml" href="logo.svg"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Uncial+Antiqua&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <style>
   :root {
@@ -166,6 +166,25 @@
   .ending-box h3 { margin: 6px 0; font-size: 1.3rem; }
   .ending-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
 
+
+  /* ---- Images : énigme « touche l'indice » et documents sur fond d'image ---- */
+  .spot, .parch { position: relative; margin: 0 auto 14px; max-width: min(100%, 78vh); }
+  .spot img, .parch img { display: block; width: 100%; height: auto; border-radius: 12px; border: 2px solid var(--border); }
+  .spot { cursor: crosshair; touch-action: manipulation; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+  .spot-mark { position: absolute; width: 44px; height: 44px; margin: -22px 0 0 -22px; border: 4px solid var(--purple); border-radius: 50%; box-shadow: 0 0 0 3px #fff, 0 2px 8px rgba(0,0,0,.4); display: none; pointer-events: none; }
+  .spot-mark.on { display: block; }
+  .spot.done .spot-mark { border-color: var(--green); }
+  .spot-help { margin: -6px 0 10px; text-align: center; font-size: .9rem; }
+  .parch { container-type: inline-size; cursor: zoom-in; }
+  .parch-txt { position: absolute; display: flex; flex-direction: column; color: #3B2412; line-height: 1.3; }
+  .latin { font-family: 'Uncial Antiqua', Georgia, serif; }
+  .manuscrit { font-family: 'Caveat', 'Comic Sans MS', cursive; color: #2B2B5E; line-height: 1.15; }
+  .parch.page .parch-txt { left: 24%; top: 21%; width: 62%; height: 58%; font-size: 8cqw; justify-content: flex-start; text-align: left; }
+  .parch .lettrine { position: absolute; left: 3.6%; top: 5%; width: 18.6%; height: 27%; display: flex; align-items: center; justify-content: center; font-family: 'Uncial Antiqua', Georgia, serif; font-size: 15cqw; color: #8B1A1A; text-shadow: 1px 1px 0 #F6DE97; }
+  .parch.feuille .parch-txt { left: 6%; top: 11%; width: 72%; height: 56%; font-size: 5.4cqw; justify-content: center; text-align: center; gap: 1.2cqw; }
+  #zoom { flex-direction: column; gap: 12px; }
+  #zoom .zoom-box { width: min(96vw, 140vh); }
+  #zoom .parch { max-width: none; margin: 0; cursor: default; }
   .overlay { position: fixed; inset: 0; background: rgba(26,26,46,.45); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 10; }
   .overlay.open { display: flex; }
   .overlay .card { max-width: 560px; width: 100%; max-height: 85vh; overflow: auto; }
@@ -221,6 +240,12 @@
   </div>
 </div>
 
+
+<div class="overlay" id="zoom">
+  <div class="zoom-box" id="zoom-box"></div>
+  <button class="btn primary" id="btn-zoom-close">✕ Fermer</button>
+</div>
+
 <script src="lcml_jeux_sync.js"></script>
 <script>
 (function () {
@@ -234,7 +259,7 @@
     vitrine:  "La vitrine du planétaire n'a pas été forcée : la serrure est intacte. Le voleur l'a ouverte avec une clé.",
     cles:     "Registre des clés : la clé n° 2 (Mme Benali) a été rendue hier à 21 h et rangée dans le coffre du bureau. La clé n° 1 est restée toute la nuit chez M. Peeters, le gardien. La directrice est rentrée chez elle à 21 h 30, avec sa clé.",
     mensonge: "M. Peeters dit avoir vu la Lune se lever à l'ouest. C'est impossible : comme le Soleil, la Lune se lève toujours du côté de l'est. Son histoire d'intrus qui s'enfuit est inventée.",
-    photo:    "La caméra du ciel, sous la verrière de la salle du planétaire, a pris une photo à 1 h 10 : on y voit le faisceau d'une lampe de poche et une casquette marquée « Gardien ». Pourtant, M. Peeters dit être resté dans sa loge toute la nuit.",
+    photo:    "La caméra du ciel, sous la verrière de la salle du planétaire, a pris une photo à 1 h 10 : dans le reflet de la verrière, on voit le faisceau d'une lampe de poche et la casquette du gardien, avec son écusson doré en forme d'étoile. Pourtant, M. Peeters dit être resté dans sa loge toute la nuit.",
     recitGardien: "M. Peeters, le gardien : « Vers minuit, j'ai vu une silhouette s'enfuir dans le parc. La Lune se levait à l'ouest, au-dessus des arbres. C'était surement le garçon d'hier ! »",
     alibiTom:    "Tom est parti hier à 17 h avec sa maman. Il n'a jamais eu de clé de la vitrine.",
     alibiBenali: "Mme Benali a rendu sa clé à 21 h. De 21 h 30 à 23 h, elle donnait une conférence à la bibliothèque, puis elle est rentrée chez elle."
@@ -318,7 +343,23 @@
       }
     },
 
-    planetaireOk: { title: "La serrure",
+    planetaireOk: { title: "Le crochet vide",
+      text: [
+        "Mme Claes arrête la manivelle. <span class='speech'>« Maintenant, observe bien le planétaire. Tu vois où il manque quelque chose ? »</span>"
+      ],
+      enigme: { kind: 'spot',
+        title: "🔎 Où était la Lune ?",
+        question: "Observe le planétaire. Touche l'endroit où devrait se trouver la Lune, puis valide.",
+        img: 'assets/enquetes/lune_planetaire.webp',
+        alt: "Le planétaire dans sa vitrine : une grosse boule dorée au centre, et une petite boule bleue et verte au bout d'un bras",
+        zone: { x1: 0.64, y1: 0.36, x2: 0.73, y2: 0.50 },
+        hint: "La Lune est le satellite de la Terre : autour de quel astre tourne-t-elle ? Cherche-la tout près de cet astre-là.",
+        success: "Exact ! La Lune tourne autour de la Terre. Sur le planétaire, la petite boule d'argent pendait à ce crochet, tout près de la Terre. Le crochet est vide !",
+        to: 'planetaireSerrure', skipTo: 'planetaireSerrure', skipLabel: "Demander à Mme Claes de te montrer"
+      }
+    },
+
+    planetaireSerrure: { title: "La serrure",
       text: [
         "En te penchant sur la vitrine, tu remarques quelque chose : la vitre n'est pas cassée, et la serrure n'a pas une seule griffe.",
         "<span class='speech'>« Tu as raison »</span>, dit Mme Claes. <span class='speech'>« On l'a ouverte avec une clé ! »</span>"
@@ -353,8 +394,8 @@
 
     bureauOk: { title: "Le registre des clés",
       text: [
-        "Mme Claes te montre le registre :",
-        "<div class='doc'>🗝️ Clés de la vitrine du planétaire<br>– Clé n° 1 : M. Peeters, gardien de nuit. Gardée toute la nuit.<br>– Clé n° 2 : Mme Benali, astronome. Rendue à 21 h, rangée dans le coffre du bureau.<br>– Clé de la directrice : dans mon sac. Je suis rentrée chez moi à 21 h 30, à 30 km.</div>"
+        "Mme Claes te montre le registre des clés, écrit à la main :",
+        "<div class='parch zoomable' role='img' aria-label=\"Registre des clés de la vitrine du planétaire. Clé numéro 1 : M. Peeters, gardien de nuit, gardée toute la nuit. Clé numéro 2 : Mme Benali, astronome, rendue à 21 h et rangée dans le coffre du bureau. Clé de la directrice : dans son sac ; elle est rentrée chez elle à 21 h 30, à 30 km.\"><img src='assets/enquetes/lune_registre.webp' alt=''><span class='parch-txt manuscrit' style='left:11%;top:9%;width:34%;height:80%;font-size:3.9cqw;justify-content:flex-start;gap:2.2cqw'><b style='font-size:4.6cqw'>Clés de la vitrine du planétaire</b><span>Clé n° 1 : M. Peeters, gardien de nuit. Gardée toute la nuit.</span><span>Clé n° 2 : Mme Benali, astronome. Rendue à 21 h, rangée dans le coffre du bureau.</span></span><span class='parch-txt manuscrit' style='left:51%;top:9%;width:33%;height:80%;font-size:3.9cqw;justify-content:flex-start;gap:2.2cqw'><span>Clé de la directrice : dans mon sac.</span><span>Je suis rentrée chez moi à 21 h 30, à 30 km.</span><span style='text-align:right'>Mme Claes</span></span></div>"
       ],
       clues: ['cles'],
       prompt: "",
@@ -409,7 +450,7 @@
 
     loge: { title: "La loge du gardien",
       text: [
-        "M. Peeters, le gardien de nuit, boit un café. Sa casquette « Gardien » est posée sur la table.",
+        "M. Peeters, le gardien de nuit, boit un café. Sa casquette bleu marine, avec un écusson doré en forme d'étoile, est posée sur la table.",
         "<span class='speech'>« Le voleur ? Je l'ai vu ! Vers minuit, pendant ma ronde, une silhouette s'est enfuie dans le parc. La Lune se levait à l'ouest, au-dessus des arbres : je l'ai bien vue. Ensuite, je suis resté dans ma loge jusqu'au matin. Moi, je pense que c'est le garçon d'hier, celui qui posait plein de questions ! »</span>"
       ],
       clues: ['recitGardien'],
@@ -494,8 +535,23 @@
 
     techniqueOk: { title: "La photo de 1 h 10",
       text: [
-        "Karim fait défiler les photos de la nuit. Soudain, il s'arrête : <span class='speech'>« Tiens ! Celle de 1 h 10 est ratée. »</span>",
-        "Sur la photo, la Lune est cachée par un reflet dans la verrière : le faisceau d'une lampe de poche, et dessous, une casquette marquée « Gardien »."
+        "Karim fait défiler les photos de la nuit. Soudain, il s'arrête : <span class='speech'>« Tiens ! Celle de 1 h 10 est ratée : il y a des reflets dans la verrière. Quelqu'un était dans la salle du planétaire, avec une lampe ! »</span>"
+      ],
+      enigme: { kind: 'spot',
+        title: "🔎 Un reflet dans la verrière",
+        question: "Observe la photo de 1 h 10. Touche l'indice qui montre QUI était dans la salle, puis valide.",
+        img: 'assets/enquetes/lune_photo.webp',
+        alt: "Photo de nuit à travers une verrière : la pleine Lune en haut à droite, le faisceau d'une lampe de poche et des reflets",
+        zone: { x1: 0.01, y1: 0.72, x2: 0.20, y2: 0.90 },
+        hint: "La lampe montre que quelqu'un était là, mais pas qui. Cherche dans les reflets un objet que tu as déjà vu chez quelqu'un…",
+        success: "Bien vu ! En bas à gauche, dans le reflet, il y a une casquette bleu marine avec un écusson doré en forme d'étoile.",
+        to: 'techniquePhoto', skipTo: 'techniquePhoto', skipLabel: "Demander à Karim d'agrandir la photo"
+      }
+    },
+
+    techniquePhoto: { title: "La casquette",
+      text: [
+        "Karim agrandit la photo. Plus de doute : c'est une casquette de gardien, avec un écusson doré en forme d'étoile. À 1 h 10, quelqu'un qui la portait était dans la salle du planétaire, avec une lampe de poche."
       ],
       clues: ['photo'],
       prompt: "",
@@ -642,7 +698,7 @@
   function newGame() { game = { at: FIRST, clues: [], objects: [], history: [], solved: {} }; }
   const $ = (id) => document.getElementById(id);
   const story = $('story');
-  let errors = 0, solvedNow = false, orderSeq = [], circ = { sw: false, mat: -1 };
+  let errors = 0, solvedNow = false, orderSeq = [], circ = { sw: false, mat: -1 }, spotSel = null;
 
   function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
   function has(x) { return game.clues.indexOf(x) !== -1 || game.objects.indexOf(x) !== -1; }
@@ -670,7 +726,7 @@
     opts = opts || {};
     if (!opts.noHistory && game.at !== id) game.history.push(game.at);
     game.at = id;
-    errors = 0; solvedNow = false; orderSeq = []; circ = { sw: false, mat: -1 };
+    errors = 0; solvedNow = false; orderSeq = []; circ = { sw: false, mat: -1 }; spotSel = null;
     const p = S[id];
     const freshClues = [], freshObjs = [];
     if (!opts.resume) {
@@ -749,6 +805,8 @@
     } else if (e.kind === 'classify') {
       h += `<div class="classify">` + e.items.map((it, i) => `<div class="cl-row" data-row="${i}"><span class="cl-label">${it.label}</span><span class="cl-btns">` +
         e.categories.map((c, k) => `<button type="button" data-cl="${k}">${c}</button>`).join('') + `</span></div>`).join('') + `</div>`;
+    } else if (e.kind === 'spot') {
+      h += `<div class="spot"><img src="${e.img}" alt="${esc(e.alt || '')}" draggable="false"><span class="spot-mark"></span></div><p class="muted spot-help">Touche l'image : un cercle apparait. Tu peux le déplacer en touchant ailleurs.</p>`;
     }
     h += `<button class="btn primary" data-act="check">Valider</button><div id="enigme-fb"></div></div>`;
     return h;
@@ -795,6 +853,10 @@
       const wrong = picks.filter((v, i) => v !== e.items[i].answer).length;
       ok = wrong === 0;
       said = wrong ? (wrong === 1 ? ' Une ligne est mal classée.' : ' ' + wrong + ' lignes sont mal classées.') : '';
+    } else if (e.kind === 'spot') {
+      if (!spotSel) { fb.innerHTML = `<div class="feedback info">Touche d'abord l'endroit de l'image où tu vois un indice, puis valide.</div>`; return; }
+      const z = e.zone;
+      ok = spotSel.x >= z.x1 && spotSel.x <= z.x2 && spotSel.y >= z.y1 && spotSel.y <= z.y2;
     }
 
     if (ok) {
@@ -804,6 +866,7 @@
       story.querySelectorAll('#enigme input').forEach(i => { i.readOnly = true; });
       const q = story.querySelector('.qcm'); if (q) { q.classList.add('done'); q.querySelector('.sel').classList.add('good'); }
       const cl = story.querySelector('.classify'); if (cl) cl.classList.add('done');
+      const spd = story.querySelector('.spot'); if (spd) spd.classList.add('done');
       const gl = story.querySelector('.globe'); if (gl) gl.classList.add('done');
       const gw = story.querySelector('.grid-wrap'); if (gw) gw.classList.add('grid-done');
       const od = story.querySelector('.order'); if (od) { od.classList.add('done'); const rt = story.querySelector('[data-act="ordreset"]'); if (rt) rt.remove(); }
@@ -892,6 +955,19 @@
   }
 
   story.addEventListener('click', (ev) => {
+    const sp = ev.target.closest && ev.target.closest('.spot');
+    if (sp) {
+      if (solvedNow) return;
+      const r = sp.querySelector('img').getBoundingClientRect();
+      if (!r.width || !r.height) return;
+      spotSel = { x: Math.min(1, Math.max(0, (ev.clientX - r.left) / r.width)), y: Math.min(1, Math.max(0, (ev.clientY - r.top) / r.height)) };
+      const mk = sp.querySelector('.spot-mark');
+      mk.style.left = (spotSel.x * 100) + '%'; mk.style.top = (spotSel.y * 100) + '%'; mk.classList.add('on');
+      const fb = $('enigme-fb'); if (fb && fb.querySelector('.feedback.info')) fb.innerHTML = '';
+      return;
+    }
+    const zm = ev.target.closest && ev.target.closest('.zoomable');
+    if (zm) { $('zoom-box').innerHTML = zm.outerHTML; $('zoom').classList.add('open'); return; }
     const swb = ev.target.closest && ev.target.closest('.circuit-svg .sw');
     if (swb) { if (!solvedNow) { circ.sw = !circ.sw; paintCircuit(); } return; }
     const zb = ev.target.closest && ev.target.closest('.globe .band');
@@ -957,6 +1033,7 @@
   $('btn-menu').addEventListener('click', renderTitle);
   $('btn-carnet').addEventListener('click', openCarnet);
   $('btn-carnet-close').addEventListener('click', () => $('carnet').classList.remove('open'));
+  $('zoom').addEventListener('click', () => { $('zoom').classList.remove('open'); $('zoom-box').innerHTML = ''; });
   $('carnet').addEventListener('click', (ev) => { if (ev.target.id === 'carnet') $('carnet').classList.remove('open'); });
 
   window.__enquete = { S, CLUES, PREUVES, goTo, get game() { return game; }, newGame };
