@@ -7,7 +7,7 @@
 <link rel="icon" type="image/svg+xml" href="logo.svg"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Uncial+Antiqua&family=Caveat:wght@500;700&family=IM+Fell+English&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <style>
   :root {
@@ -166,6 +166,26 @@
   .ending-box h3 { margin: 6px 0; font-size: 1.3rem; }
   .ending-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
 
+
+  /* ---- Images : énigme « touche l'indice » et documents sur fond d'image ---- */
+  .spot, .parch { position: relative; margin: 0 auto 14px; max-width: min(100%, 78vh); }
+  .spot img, .parch img { display: block; width: 100%; height: auto; border-radius: 12px; border: 2px solid var(--border); }
+  .spot { cursor: crosshair; touch-action: manipulation; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+  .spot-mark { position: absolute; width: 44px; height: 44px; margin: -22px 0 0 -22px; border: 4px solid var(--purple); border-radius: 50%; box-shadow: 0 0 0 3px #fff, 0 2px 8px rgba(0,0,0,.4); display: none; pointer-events: none; }
+  .spot-mark.on { display: block; }
+  .spot.done .spot-mark { border-color: var(--green); }
+  .spot-help { margin: -6px 0 10px; text-align: center; font-size: .9rem; }
+  .parch { container-type: inline-size; cursor: zoom-in; }
+  .parch-txt { position: absolute; display: flex; flex-direction: column; color: #3B2412; line-height: 1.3; }
+  .latin { font-family: 'Uncial Antiqua', Georgia, serif; }
+  .imprime { font-family: 'IM Fell English', Georgia, serif; color: #2A1C10; line-height: 1.25; }
+  .manuscrit { font-family: 'Caveat', 'Comic Sans MS', cursive; color: #2B2B5E; line-height: 1.15; }
+  .parch.page .parch-txt { left: 24%; top: 21%; width: 62%; height: 58%; font-size: 8cqw; justify-content: flex-start; text-align: left; }
+  .parch .lettrine { position: absolute; left: 3.6%; top: 5%; width: 18.6%; height: 27%; display: flex; align-items: center; justify-content: center; font-family: 'Uncial Antiqua', Georgia, serif; font-size: 15cqw; color: #8B1A1A; text-shadow: 1px 1px 0 #F6DE97; }
+  .parch.feuille .parch-txt { left: 6%; top: 11%; width: 72%; height: 56%; font-size: 5.4cqw; justify-content: center; text-align: center; gap: 1.2cqw; }
+  #zoom { flex-direction: column; gap: 12px; }
+  #zoom .zoom-box { width: min(96vw, 140vh); }
+  #zoom .parch { max-width: none; margin: 0; cursor: default; }
   .overlay { position: fixed; inset: 0; background: rgba(26,26,46,.45); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 10; }
   .overlay.open { display: flex; }
   .overlay .card { max-width: 560px; width: 100%; max-height: 85vh; overflow: auto; }
@@ -219,6 +239,12 @@
     <ul class="carnet-list" id="carnet-list"></ul>
     <button class="btn primary" id="btn-carnet-close" style="width:100%">Fermer le carnet</button>
   </div>
+</div>
+
+
+<div class="overlay" id="zoom">
+  <div class="zoom-box" id="zoom-box"></div>
+  <button class="btn primary" id="btn-zoom-close">✕ Fermer</button>
 </div>
 
 <script src="lcml_jeux_sync.js"></script>
@@ -337,10 +363,26 @@
       }
     },
 
-    inventaireOk: { title: "Le tuyau",
+    inventaireOk: { title: "D'où vient la mousse ?",
       text: [
-        "Mme Hennaux note le tableau dans son cahier. En longeant la berge, tu remarques quelque chose : la mousse bleue sort du tuyau qui amène l'eau du ruisseau dans l'étang !",
-        "<span class='speech'>« Bien vu ! La pollution vient donc du ruisseau. »</span>"
+        "Mme Hennaux note le tableau dans son cahier. <span class='speech'>« Maintenant, observe bien l'étang. Cette mousse bleue doit bien venir de quelque part… »</span>"
+      ],
+      enigme: { kind: 'spot',
+        title: "🔎 Au bord de l'étang",
+        question: "Observe l'étang. Touche l'endroit d'où vient la mousse bleue, puis valide.",
+        img: 'assets/enquetes/etang_tuyau.webp',
+        alt: "L'étang entouré de roseaux et de saules, avec un banc au premier plan et une mousse bleue sur l'eau",
+        zone: { x1: 0.13, y1: 0.30, x2: 0.27, y2: 0.48 },
+        hint: "Regarde où la mousse est la plus épaisse, puis cherche ce qui amène de l'eau dans l'étang, caché dans les roseaux…",
+        success: "Bien vu ! Dans les roseaux, la mousse bleue sort du tuyau qui amène l'eau du ruisseau dans l'étang.",
+        to: 'inventaireTuyau', skipTo: 'inventaireTuyau', skipLabel: "Longer la berge avec Mme Hennaux"
+      }
+    },
+
+    inventaireTuyau: { title: "Le tuyau",
+      text: [
+        "Tu t'approches du tuyau, sans toucher l'eau : la mousse bleue en sort, plus épaisse juste devant.",
+        "<span class='speech'>« Bien vu ! »</span> dit Mme Hennaux. <span class='speech'>« La pollution vient donc du ruisseau. »</span>"
       ],
       clues: ['mousse'],
       prompt: "",
@@ -501,9 +543,26 @@
 
     communeOk: { title: "La rue de la Gare",
       text: [
-        "M. Pirotte fronce les sourcils : <span class='speech'>« L'avaloir de la rue de la Gare… c'est juste devant le garage Lambeau. »</span> Tu vas jeter un œil : à côté de l'avaloir, dans l'herbe, il y a un bidon vide de 20 litres de « Lave-Tout Pro », avec un autocollant « Garage Lambeau ». Tu le laisses en place, sans y toucher, pour la police."
+        "M. Pirotte fronce les sourcils : <span class='speech'>« L'avaloir de la rue de la Gare… c'est juste devant le garage Lambeau. »</span> Tu vas jeter un œil dans la rue de la Gare."
       ],
-      clues: ['plan', 'bidon'],
+      clues: ['plan'],
+      enigme: { kind: 'spot',
+        title: "🔎 Rue de la Gare",
+        question: "Observe la rue de la Gare. Touche l'endroit où se trouve un indice, puis valide.",
+        img: 'assets/enquetes/etang_avaloir.webp',
+        alt: "La rue de la Gare : des maisons en brique, un lampadaire, un avaloir au bord de la route et, au fond, un garage ouvert",
+        zone: { x1: 0.76, y1: 0.67, x2: 0.95, y2: 0.88 },
+        hint: "Le produit a été versé dans l'avaloir. Le coupable a peut-être laissé quelque chose tout près… Regarde dans l'herbe.",
+        success: "Bien vu ! Dans l'herbe, au pied de l'arbre, il y a un bidon bleu, couché sur le côté.",
+        to: 'communeBidon', skipTo: 'communeBidon', skipLabel: "Fouiller les bords de la route"
+      }
+    },
+
+    communeBidon: { title: "Le bidon",
+      text: [
+        "Tu t'approches : c'est un bidon vide de 20 litres de « Lave-Tout Pro », avec un autocollant « Garage Lambeau ». Tu le laisses en place, sans y toucher, pour la police."
+      ],
+      clues: ['bidon'],
       prompt: "",
       choices: [ { label: "Retourner au bord de l'étang", to: 'etang' } ]
     },
@@ -723,6 +782,7 @@
   function newGame() { game = { at: FIRST, clues: [], objects: [], history: [], solved: {} }; }
   const $ = (id) => document.getElementById(id);
   const story = $('story');
+  let spotSel = null;
   let errors = 0, solvedNow = false, orderSeq = [], circ = { sw: false, mat: -1 };
 
   function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
@@ -751,7 +811,7 @@
     opts = opts || {};
     if (!opts.noHistory && game.at !== id) game.history.push(game.at);
     game.at = id;
-    errors = 0; solvedNow = false; orderSeq = []; circ = { sw: false, mat: -1 };
+    errors = 0; solvedNow = false; orderSeq = []; spotSel = null; circ = { sw: false, mat: -1 };
     const p = S[id];
     const freshClues = [], freshObjs = [];
     if (!opts.resume) {
@@ -830,6 +890,8 @@
     } else if (e.kind === 'classify') {
       h += `<div class="classify">` + e.items.map((it, i) => `<div class="cl-row" data-row="${i}"><span class="cl-label">${it.label}</span><span class="cl-btns">` +
         e.categories.map((c, k) => `<button type="button" data-cl="${k}">${c}</button>`).join('') + `</span></div>`).join('') + `</div>`;
+    } else if (e.kind === 'spot') {
+      h += `<div class="spot"><img src="${e.img}" alt="${esc(e.alt || '')}" draggable="false"><span class="spot-mark"></span></div><p class="muted spot-help">Touche l'image : un cercle apparait. Tu peux le déplacer en touchant ailleurs.</p>`;
     }
     h += `<button class="btn primary" data-act="check">Valider</button><div id="enigme-fb"></div></div>`;
     return h;
@@ -876,6 +938,10 @@
       const wrong = picks.filter((v, i) => v !== e.items[i].answer).length;
       ok = wrong === 0;
       said = wrong ? (wrong === 1 ? ' Une ligne est mal classée.' : ' ' + wrong + ' lignes sont mal classées.') : '';
+    } else if (e.kind === 'spot') {
+      if (!spotSel) { fb.innerHTML = `<div class="feedback info">Touche d'abord l'endroit de l'image où tu vois un indice, puis valide.</div>`; return; }
+      const z = e.zone;
+      ok = spotSel.x >= z.x1 && spotSel.x <= z.x2 && spotSel.y >= z.y1 && spotSel.y <= z.y2;
     }
 
     if (ok) {
@@ -885,6 +951,7 @@
       story.querySelectorAll('#enigme input').forEach(i => { i.readOnly = true; });
       const q = story.querySelector('.qcm'); if (q) { q.classList.add('done'); q.querySelector('.sel').classList.add('good'); }
       const cl = story.querySelector('.classify'); if (cl) cl.classList.add('done');
+      const spd = story.querySelector('.spot'); if (spd) spd.classList.add('done');
       const gl = story.querySelector('.globe'); if (gl) gl.classList.add('done');
       const gw = story.querySelector('.grid-wrap'); if (gw) gw.classList.add('grid-done');
       const od = story.querySelector('.order'); if (od) { od.classList.add('done'); const rt = story.querySelector('[data-act="ordreset"]'); if (rt) rt.remove(); }
@@ -973,6 +1040,19 @@
   }
 
   story.addEventListener('click', (ev) => {
+    const sp = ev.target.closest && ev.target.closest('.spot');
+    if (sp) {
+      if (solvedNow) return;
+      const r = sp.querySelector('img').getBoundingClientRect();
+      if (!r.width || !r.height) return;
+      spotSel = { x: Math.min(1, Math.max(0, (ev.clientX - r.left) / r.width)), y: Math.min(1, Math.max(0, (ev.clientY - r.top) / r.height)) };
+      const mk = sp.querySelector('.spot-mark');
+      mk.style.left = (spotSel.x * 100) + '%'; mk.style.top = (spotSel.y * 100) + '%'; mk.classList.add('on');
+      const fb = $('enigme-fb'); if (fb && fb.querySelector('.feedback.info')) fb.innerHTML = '';
+      return;
+    }
+    const zm = ev.target.closest && ev.target.closest('.zoomable');
+    if (zm) { $('zoom-box').innerHTML = zm.outerHTML; $('zoom').classList.add('open'); return; }
     const swb = ev.target.closest && ev.target.closest('.circuit-svg .sw');
     if (swb) { if (!solvedNow) { circ.sw = !circ.sw; paintCircuit(); } return; }
     const zb = ev.target.closest && ev.target.closest('.globe .band');
@@ -1038,6 +1118,7 @@
   $('btn-menu').addEventListener('click', renderTitle);
   $('btn-carnet').addEventListener('click', openCarnet);
   $('btn-carnet-close').addEventListener('click', () => $('carnet').classList.remove('open'));
+  $('zoom').addEventListener('click', () => { $('zoom').classList.remove('open'); $('zoom-box').innerHTML = ''; });
   $('carnet').addEventListener('click', (ev) => { if (ev.target.id === 'carnet') $('carnet').classList.remove('open'); });
 
   window.__enquete = { S, CLUES, PREUVES, goTo, get game() { return game; }, newGame };
