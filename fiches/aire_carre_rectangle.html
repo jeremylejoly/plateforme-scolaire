@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Le Maître Carreleur</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  /* Charte LCML : fond crème, contours #1A1A2E, ombres décalées, Fredoka + Nunito */
+  :root {
+    --purple: #5B4FCF; --purple-light: #EEF0FF; --purple-mid: #C7C2F5;
+    --green: #1A9E75; --green-light: #E2F5EE;
+    --red: #D94F3D; --red-light: #FDECEA;
+    --amber: #C97B1A; --amber-light: #FEF3E2;
+    --blue: #1A6FA0; --blue-light: #E2F0FA;
+    --correction: #1f5fbf;
+    --bg: #FDFBF7; --surface: #FFFFFF;
+    --text: #1A1A2E; --muted: #6B7080; --border: #1A1A2E;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); }
+  body { font-family: 'Nunito', sans-serif; color: var(--text); padding: 12px 16px 16px; -webkit-font-smoothing: antialiased; }
+  button { font-family: inherit; touch-action: manipulation; color: var(--text); }
+  .container { max-width: 860px; margin: 0 auto; }
+
+  /* ----- En-tête ----- */
+  header {
+    text-align: center; background: var(--blue-light); border: 3px solid var(--border); border-radius: 18px;
+    padding: 8px 14px; margin-bottom: 12px; box-shadow: 4px 4px 0 var(--border);
+  }
+  h1 { font-family: 'Fredoka', sans-serif; font-size: 22px; font-weight: 700; line-height: 1.2; }
+  .subtitle { font-size: 13px; color: var(--muted); font-weight: 700; }
+
+  /* ----- Choix du niveau (comme le Code Secret) ----- */
+  .niveaux { display: grid; grid-template-columns: 1fr; gap: 14px; max-width: 720px; margin: 4px auto 0; }
+  @media (min-width: 600px) { .niveaux { grid-template-columns: 1fr 1fr; } }
+  .carte-niveau {
+    background: var(--surface); border: 3px solid var(--border); border-radius: 16px; padding: 12px 14px;
+    text-align: left; cursor: pointer; box-shadow: 4px 4px 0 var(--border); display: flex; gap: 12px; align-items: center;
+    transition: transform .12s, box-shadow .12s;
+  }
+  .carte-niveau:hover { transform: translate(-1px, -1px); box-shadow: 5px 5px 0 var(--border); }
+  .carte-niveau:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--border); }
+  .badge-niv {
+    flex: 0 0 50px; height: 50px; border-radius: 12px; border: 2.5px solid var(--border); box-shadow: 2px 2px 0 var(--border);
+    display: flex; align-items: center; justify-content: center; font-family: 'Fredoka', sans-serif; font-size: 24px; font-weight: 700; color: #fff;
+  }
+  .carte-niveau h2 { font-family: 'Fredoka', sans-serif; font-size: 17px; font-weight: 700; color: var(--purple); margin-bottom: 2px; }
+  .carte-niveau p { font-size: 13px; color: var(--muted); font-weight: 700; line-height: 1.35; }
+  .record { display: inline-block; font-size: 12px; font-weight: 800; color: var(--green); background: var(--green-light); border: 1.5px solid var(--green); border-radius: 99px; padding: 1px 9px; margin-top: 5px; }
+
+  /* ----- Barre d'info ----- */
+  .info-card {
+    background: var(--blue-light); border: 3px solid var(--border); border-radius: 16px; padding: 6px 10px; margin-bottom: 12px;
+    display: flex; justify-content: space-between; align-items: center; gap: 8px; box-shadow: 4px 4px 0 var(--border);
+  }
+  .info-card p { font-family: 'Fredoka', sans-serif; font-size: 16px; color: var(--blue); font-weight: 700; white-space: nowrap; }
+  .btn-mini {
+    border: 2px solid var(--border); background: var(--surface); border-radius: 8px; padding: 5px 10px; font-size: 13px; font-weight: 800;
+    cursor: pointer; white-space: nowrap; box-shadow: 2px 2px 0 var(--border);
+  }
+  .btn-mini:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--border); }
+  .btn-mini.calc { background: var(--amber-light); }
+  .btn-mini.calc.ouverte { background: var(--amber); color: #fff; }
+  .dots { display: flex; gap: 6px; }
+  .dot { width: 13px; height: 13px; border-radius: 50%; background: #D1D5DB; border: 1.5px solid var(--border); transition: all .3s; }
+  .dot.current { background: var(--purple); transform: scale(1.2); }
+  .dot.correct { background: var(--green); }
+  .dot.incorrect { background: var(--red); }
+  .gauche, .droite { display: flex; align-items: center; gap: 8px; }
+
+  .main { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media (min-width: 640px) { .main { grid-template-columns: 1.15fr 1fr; align-items: start; } }
+
+  .shape-card {
+    background: var(--surface); border: 3px solid var(--border); border-radius: 18px; padding: 8px;
+    box-shadow: 4px 4px 0 var(--border); display: flex; flex-direction: column; align-items: center;
+  }
+  .shape-svg { width: 100%; max-width: 420px; height: auto; display: block; }
+  .legende { font-size: 12px; color: var(--muted); font-weight: 700; text-align: center; min-height: 16px; }
+
+  .step-card { background: var(--surface); border: 3px solid var(--border); border-radius: 18px; padding: 12px 14px; box-shadow: 4px 4px 0 var(--border); }
+  .step-title {
+    font-family: 'Fredoka', sans-serif; font-size: 17px; font-weight: 700; text-align: center; line-height: 1.35; margin-bottom: 12px;
+    background: var(--amber-light); border: 2.5px solid var(--border); border-radius: 12px; padding: 8px 10px; box-shadow: 2px 2px 0 var(--border);
+  }
+  .attention { display: block; font-size: 13px; color: var(--amber); font-family: 'Nunito', sans-serif; font-weight: 800; margin-top: 2px; }
+  .input-zone { display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .answer-input {
+    width: 170px; height: 46px; border: 3px solid var(--border); border-radius: 12px; text-align: center; font-size: 22px; font-weight: 800;
+    font-family: 'Nunito', sans-serif; color: var(--text); background: var(--bg); outline: none; box-shadow: 2px 2px 0 var(--border);
+  }
+  .answer-input.correct { background: var(--green-light); color: var(--green); }
+  .answer-input.incorrect { background: var(--red-light); color: var(--red); }
+  .answer-unit { font-family: 'Fredoka', sans-serif; font-size: 22px; font-weight: 700; color: var(--text); }
+
+  .keypad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-width: 300px; margin: 0 auto; }
+  .key {
+    height: 42px; border: 2.5px solid var(--border); background: var(--surface); border-radius: 10px; font-size: 18px; font-weight: 800;
+    cursor: pointer; box-shadow: 2px 2px 0 var(--border); font-family: 'Fredoka', sans-serif;
+  }
+  .key:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--border); }
+  .key.action { background: var(--red-light); color: var(--red); }
+  .key.submit { background: var(--green); color: #fff; grid-column: span 4; font-size: 17px; }
+  .message { font-size: 13px; font-weight: 800; color: var(--red); text-align: center; min-height: 18px; margin-top: 6px; }
+
+  .feedback-box { padding: 10px 12px; border-radius: 12px; font-size: 13.5px; line-height: 1.45; font-weight: 600; display: none; border: 2.5px solid var(--border); box-shadow: 2px 2px 0 var(--border); }
+  .feedback-box.correct { display: block; background: var(--green-light); color: var(--green); }
+  .feedback-box.incorrect { display: block; background: var(--red-light); color: var(--red); }
+  .feedback-box .bonne { color: var(--correction); }
+  .feedback-box .ligne { display: block; margin-top: 3px; color: var(--text); font-weight: 600; }
+  .feedback-box .piece { display: inline-block; min-width: 20px; text-align: center; border-radius: 6px; border: 1.5px solid var(--border); font-weight: 900; color: #fff; padding: 0 5px; margin-right: 3px; }
+  .feedback-box .autre { display: block; margin-top: 6px; font-size: 12.5px; color: var(--muted); font-style: italic; }
+
+  .btn-next {
+    width: 100%; padding: 11px; background: var(--purple); color: #fff; border: 3px solid var(--border); border-radius: 12px;
+    font-size: 16px; font-weight: 700; cursor: pointer; font-family: 'Fredoka', sans-serif; margin-top: 12px; box-shadow: 3px 3px 0 var(--border);
+  }
+  .btn-next:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--border); }
+  .btn-next.secondaire { background: var(--surface); color: var(--text); }
+
+  /* ----- Score ----- */
+  .score-card { display: none; background: var(--surface); border: 3px solid var(--border); border-radius: 20px; padding: 16px; text-align: center; box-shadow: 6px 6px 0 var(--border); max-width: 560px; margin: 0 auto; }
+  .score-emoji { font-size: 42px; }
+  .score-title { font-family: 'Fredoka', sans-serif; font-size: 22px; font-weight: 700; }
+  .score-num { font-family: 'Fredoka', sans-serif; font-size: 32px; font-weight: 700; color: var(--purple); margin: 2px 0 4px; }
+  .congrats { font-size: 14px; color: var(--muted); margin-bottom: 10px; line-height: 1.45; font-weight: 600; }
+  .score-details { text-align: left; border: 2.5px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .score-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; font-size: 13.5px; border-bottom: 1.5px solid #E5E1D8; gap: 8px; }
+  .score-row:last-child { border-bottom: none; }
+  .tag { font-size: 12px; font-weight: 800; padding: 2px 8px; border-radius: 99px; white-space: nowrap; border: 1.5px solid currentColor; }
+  .tag.ok { background: var(--green-light); color: var(--green); }
+  .tag.ko { background: var(--red-light); color: var(--red); }
+  .tag .bonne { color: var(--correction); }
+  .boutons-fin { display: flex; gap: 10px; }
+
+  /* ----- Calculatrice ----- */
+  .calculatrice {
+    position: fixed; left: 14px; bottom: 14px; z-index: 40; width: 236px; display: none; touch-action: none;
+    background: var(--purple-light); border: 3px solid var(--border); border-radius: 18px; padding: 10px; box-shadow: 5px 5px 0 var(--border);
+  }
+  .calculatrice.ouverte { display: block; }
+  .calc-haut { cursor: grab; user-select: none; -webkit-user-select: none; display: flex; justify-content: space-between; align-items: center; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 15px; margin-bottom: 8px; }
+  .calc-fermer { background: var(--red-light); color: var(--red); border: 2px solid var(--border); border-radius: 8px; width: 30px; height: 28px; font-size: 14px; font-weight: 900; cursor: pointer; box-shadow: 1.5px 1.5px 0 var(--border); }
+  .calc-ecran { background: #fff; border: 2.5px solid var(--border); border-radius: 10px; padding: 5px 9px; text-align: right; margin-bottom: 9px; min-height: 58px; }
+  .calc-expr { font-size: 13px; color: var(--muted); font-weight: 700; min-height: 17px; word-break: break-all; }
+  .calc-res { font-family: 'Fredoka', sans-serif; font-size: 26px; font-weight: 700; color: var(--text); word-break: break-all; line-height: 1.2; }
+  .calc-touches { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .ck { height: 38px; border: 2px solid var(--border); border-radius: 9px; background: #fff; font-size: 18px; font-weight: 700; cursor: pointer; box-shadow: 2px 2px 0 var(--border); font-family: 'Fredoka', sans-serif; }
+  .ck:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--border); }
+  .ck.op { background: var(--amber-light); color: var(--amber); }
+  .ck.eg { background: var(--green); color: #fff; }
+  .ck.ef { background: var(--red-light); color: var(--red); }
+
+  .confetti { position: fixed; top: -12px; z-index: 50; border-radius: 2px; animation: tombe linear forwards; pointer-events: none; }
+  @keyframes tombe { to { transform: translateY(105vh) rotate(540deg); } }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>📏 Le Maître Carreleur</h1>
+    <div class="subtitle" id="sous-titre">Aire du carré et du rectangle</div>
+  </header>
+
+  <!-- ===== ÉCRAN 1 : choix du niveau ===== -->
+  <div id="ecran-niveaux">
+    <div class="niveaux" id="liste-niveaux"></div>
+  </div>
+
+  <!-- ===== ÉCRAN 2 : exercice ===== -->
+  <div id="exercice-zone" style="display:none">
+    <div class="info-card">
+      <div class="gauche">
+        <button class="btn-mini" id="btn-retour">← Niveaux</button>
+        <p id="info-numero">Question 1/5</p>
+      </div>
+      <div class="droite">
+        <div class="dots" id="dots-progress"></div>
+        <button class="btn-mini calc" id="btn-calc">🧮 Calculatrice</button>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="shape-card">
+        <svg id="shape-svg" class="shape-svg" viewBox="0 0 340 250" role="img" aria-label="Figure de la question"></svg>
+        <div class="legende" id="legende"></div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-title" id="question-text"></div>
+        <div id="zone-reponse">
+          <div class="input-zone">
+            <input type="text" class="answer-input" id="answer-input" readonly inputmode="none" placeholder="Réponse" aria-label="Ta réponse"/>
+            <span class="answer-unit" id="answer-unit">cm²</span>
+          </div>
+          <div class="keypad" id="keypad">
+            <button class="key" data-k="1">1</button><button class="key" data-k="2">2</button><button class="key" data-k="3">3</button><button class="key action" data-k="del" aria-label="Effacer un chiffre">⌫</button>
+            <button class="key" data-k="4">4</button><button class="key" data-k="5">5</button><button class="key" data-k="6">6</button><button class="key action" data-k="clear" aria-label="Tout effacer">C</button>
+            <button class="key" data-k="7">7</button><button class="key" data-k="8">8</button><button class="key" data-k="9">9</button><button class="key" data-k="0">0</button>
+            <button class="key submit" data-k="ok">Valider</button>
+          </div>
+          <div class="message" id="message"></div>
+        </div>
+        <div class="feedback-box" id="feedback-box"></div>
+        <button class="btn-next" id="btn-next" style="display:none">Question suivante ➡️</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ÉCRAN 3 : score ===== -->
+  <div class="score-card" id="score-screen">
+    <div class="score-emoji" id="final-emoji">🏆</div>
+    <div class="score-title" id="final-title">Excellent travail !</div>
+    <div class="score-num" id="final-score">5 / 5</div>
+    <div class="congrats" id="congrats-msg"></div>
+    <div class="score-details" id="final-details"></div>
+    <div class="boutons-fin">
+      <button class="btn-next" id="btn-restart">🔄 Recommencer ce niveau</button>
+      <button class="btn-next secondaire" id="btn-autre">Choisir un niveau</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Calculatrice ===== -->
+<div class="calculatrice" id="calculatrice" aria-label="Calculatrice">
+  <div class="calc-haut" id="calc-haut"><span>✥ 🧮 Calculatrice</span><button class="calc-fermer" id="calc-fermer" aria-label="Fermer la calculatrice">✕</button></div>
+  <div class="calc-ecran"><div class="calc-expr" id="calc-expr"></div><div class="calc-res" id="calc-res">0</div></div>
+  <div class="calc-touches" id="calc-touches">
+    <button class="ck ef" data-c="C">C</button><button class="ck ef" data-c="del">⌫</button><button class="ck op" data-c="÷">÷</button><button class="ck op" data-c="×">×</button>
+    <button class="ck" data-c="7">7</button><button class="ck" data-c="8">8</button><button class="ck" data-c="9">9</button><button class="ck op" data-c="−">−</button>
+    <button class="ck" data-c="4">4</button><button class="ck" data-c="5">5</button><button class="ck" data-c="6">6</button><button class="ck op" data-c="+">+</button>
+    <button class="ck" data-c="1">1</button><button class="ck" data-c="2">2</button><button class="ck" data-c="3">3</button><button class="ck eg" data-c="=" style="grid-row: span 2; height: auto">=</button>
+    <button class="ck" data-c="0" style="grid-column: span 2">0</button><button class="ck" data-c=",">,</button>
+  </div>
+</div>
+
+<script>
+// ===================== SONS =====================
+let audioCtx = null;
+function playSound(type) {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    const t = audioCtx.currentTime;
+    if (type === 'success') {
+      [523.25, 659.25, 783.99].forEach((f, i) => osc.frequency.setValueAtTime(f, t + i * 0.1));
+      gain.gain.setValueAtTime(0.12, t); gain.gain.exponentialRampToValueAtTime(0.005, t + 0.4); osc.start(); osc.stop(t + 0.4);
+    } else if (type === 'error') {
+      osc.frequency.setValueAtTime(220, t); osc.frequency.setValueAtTime(147, t + 0.15);
+      gain.gain.setValueAtTime(0.14, t); gain.gain.exponentialRampToValueAtTime(0.005, t + 0.4); osc.start(); osc.stop(t + 0.4);
+    } else {
+      osc.frequency.setValueAtTime(580, t); gain.gain.setValueAtTime(0.04, t); gain.gain.exponentialRampToValueAtTime(0.005, t + 0.07); osc.start(); osc.stop(t + 0.07);
+    }
+  } catch (e) { /* pas de son */ }
+}
+
+// ===================== OUTILS =====================
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+const fr = n => String(n).replace('.', ',');
+const mille = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); // 24000 → « 24 000 »
+function aireLacet(p) { let s = 0; for (let i = 0; i < p.length; i++) { const [x1, y1] = p[i], [x2, y2] = p[(i + 1) % p.length]; s += x1 * y2 - x2 * y1; } return Math.abs(s) / 2; }
+const COULEURS = ['#1A6FA0', '#C97B1A', '#1A9E75', '#D94F3D']; // bleu, ambre, vert, rouge de la charte LCML
+const LETTRES = ['A', 'B', 'C', 'D'];
+
+/* Une question :
+   poly   : sommets de la figure (grille, x vers la droite, y vers le bas)
+   cotes  : {x1,y1,x2,y2, cote:'top'|'bottom'|'left'|'right', v (nombre) ou t (texte), off?, e1?, e2?}
+   pieces : découpage montré dans la correction {x,y,w,h,id}
+   centre : texte écrit au milieu de la figure (périmètre)
+   lignes : lignes de correction (niveaux 1 et 2) ; deduit / autre : niveau 3 */
+
+// ---------- NIVEAU 1 : côtés donnés ----------
+function rect(L, l, unit, debout) {
+  const w = debout ? l : L, h = debout ? L : l;
+  return {
+    titre: `Rectangle ${L} × ${l}`, desc: 'Calcule l\'aire de ce rectangle.', unit,
+    poly: [[0, 0], [w, 0], [w, h], [0, h]],
+    cotes: [{ x1: 0, y1: h, x2: w, y2: h, cote: 'bottom', v: w }, { x1: 0, y1: 0, x2: 0, y2: h, cote: 'left', v: h }],
+    pieces: [{ x: 0, y: 0, w, h }], correct: L * l,
+    lignes: [`Aire du rectangle = longueur × largeur`, `= ${L} × ${l} = <strong>${mille(L * l)} ${unit}²</strong>`]
+  };
+}
+function carre(c, unit) {
+  return {
+    titre: `Carré de ${c} ${unit}`, desc: 'Calcule l\'aire de ce carré.', unit,
+    poly: [[0, 0], [c, 0], [c, c], [0, c]],
+    cotes: [{ x1: 0, y1: c, x2: c, y2: c, cote: 'bottom', v: c }],
+    pieces: [{ x: 0, y: 0, w: c, h: c }], correct: c * c,
+    lignes: [`Les 4 côtés d'un carré ont la même longueur.`, `Aire du carré = côté × côté = ${c} × ${c} = <strong>${mille(c * c)} ${unit}²</strong>`]
+  };
+}
+const BANQUE_1 = [
+  () => rect(8, 5, 'cm'), () => rect(12, 7, 'm'), () => carre(6, 'dm'), () => carre(9, 'cm'),
+  () => rect(15, 4, 'm', true), () => rect(20, 13, 'cm'), () => carre(12, 'm'), () => rect(9, 6, 'dm'),
+  () => rect(25, 10, 'm'), () => carre(15, 'cm'), () => rect(11, 3, 'dm', true), () => rect(30, 12, 'm'),
+  () => carre(7, 'm'), () => rect(18, 5, 'cm', true), () => carre(20, 'dm')
+];
+
+// ---------- NIVEAU 2 : unités différentes / périmètre ----------
+// Rectangle dont les côtés sont donnés dans deux unités différentes
+function rectUnites(tL, tl, L, l, unit, conv, debout) {
+  const w = debout ? l : L, h = debout ? L : l;
+  return {
+    titre: `Rectangle ${tL} × ${tl}`, unit,
+    desc: `Calcule l'aire de ce rectangle en <strong>${unit}²</strong>.<span class="attention">⚠️ Attention aux unités !</span>`,
+    poly: [[0, 0], [w, 0], [w, h], [0, h]],
+    cotes: [{ x1: 0, y1: h, x2: w, y2: h, cote: 'bottom', t: debout ? tl : tL }, { x1: 0, y1: 0, x2: 0, y2: h, cote: 'left', t: debout ? tL : tl }],
+    pieces: [{ x: 0, y: 0, w, h }], correct: L * l,
+    lignes: [`Les deux côtés doivent être dans la même unité (${unit}).`].concat(conv.map(c => `• ${c}`)).concat([`Aire = ${mille(L)} × ${l} = <strong>${mille(L * l)} ${unit}²</strong>`])
+  };
+}
+function carreUnites(tc, c, unit, conv) {
+  return {
+    titre: `Carré de ${tc}`, unit,
+    desc: `Calcule l'aire de ce carré en <strong>${unit}²</strong>.<span class="attention">⚠️ Attention aux unités !</span>`,
+    poly: [[0, 0], [c, 0], [c, c], [0, c]],
+    cotes: [{ x1: 0, y1: c, x2: c, y2: c, cote: 'bottom', t: tc }],
+    pieces: [{ x: 0, y: 0, w: c, h: c }], correct: c * c,
+    lignes: [`• ${conv}`, `Aire = ${c} × ${c} = <strong>${mille(c * c)} ${unit}²</strong>`]
+  };
+}
+// Carré dont on donne seulement le périmètre
+function carrePerim(P, unit, uRep, facteur) {
+  const c = P / 4, cR = c * facteur;
+  const lignes = [`Le carré a 4 côtés égaux : côté = ${P} ÷ 4 = ${c} ${unit}`];
+  if (facteur !== 1) lignes.push(`• ${c} ${unit} = ${cR} ${uRep}`);
+  lignes.push(`Aire = ${cR} × ${cR} = <strong>${mille(cR * cR)} ${uRep}²</strong>`);
+  return {
+    titre: `Carré de périmètre ${P} ${unit}`, unit: uRep,
+    desc: `Le périmètre de ce carré mesure <strong>${P} ${unit}</strong>.<br>Calcule son aire${facteur !== 1 ? ` en <strong>${uRep}²</strong>` : ''}.`,
+    poly: [[0, 0], [10, 0], [10, 10], [0, 10]], cotes: [], centre: `Périmètre : ${P} ${unit}`,
+    pieces: [{ x: 0, y: 0, w: 10, h: 10 }], correct: cR * cR, lignes
+  };
+}
+// Rectangle dont on donne le périmètre et un côté
+function rectPerim(P, connu, quoi, unit) {
+  const demi = P / 2, autre = demi - connu;
+  const L = Math.max(connu, autre), l = Math.min(connu, autre);
+  const connuEstLong = connu >= autre;
+  return {
+    titre: `Rectangle de périmètre ${P} ${unit}`, unit,
+    desc: `Le périmètre de ce rectangle mesure <strong>${P} ${unit}</strong> et sa ${quoi} mesure <strong>${connu} ${unit}</strong>.<br>Calcule son aire.`,
+    poly: [[0, 0], [L, 0], [L, l], [0, l]],
+    cotes: connuEstLong ? [{ x1: 0, y1: l, x2: L, y2: l, cote: 'bottom', v: connu }, { x1: 0, y1: 0, x2: 0, y2: l, cote: 'left', t: '?' }]
+                        : [{ x1: 0, y1: l, x2: L, y2: l, cote: 'bottom', t: '?' }, { x1: 0, y1: 0, x2: 0, y2: l, cote: 'left', v: connu }],
+    centre: `Périmètre : ${P} ${unit}`,
+    pieces: [{ x: 0, y: 0, w: L, h: l }], correct: L * l,
+    lignes: [`Longueur + largeur = la moitié du périmètre = ${P} ÷ 2 = ${demi} ${unit}`, `• Côté manquant : ${demi} − ${connu} = ${autre} ${unit}`, `Aire = ${L} × ${l} = <strong>${mille(L * l)} ${unit}²</strong>`]
+  };
+}
+const BANQUE_2 = [
+  () => rectUnites('100 m', '5 dam', 100, 50, 'm', ['5 dam = 50 m']),
+  () => rectUnites('40 dm', '3 m', 40, 30, 'dm', ['3 m = 30 dm']),
+  () => carreUnites('6 dm', 60, 'cm', '6 dm = 60 cm'),
+  () => rectUnites('3 hm', '80 m', 300, 80, 'm', ['3 hm = 300 m']),
+  () => rectUnites('25 cm', '2 dm', 25, 20, 'cm', ['2 dm = 20 cm']),
+  () => rectUnites('4 dam', '15 m', 40, 15, 'm', ['4 dam = 40 m'], true),
+  () => rectUnites('12 dm', '50 cm', 120, 50, 'cm', ['12 dm = 120 cm']),
+  () => rectUnites('2 dam', '8 m', 20, 8, 'm', ['2 dam = 20 m']),
+  () => carrePerim(40, 'm', 'm', 1),
+  () => carrePerim(36, 'cm', 'cm', 1),
+  () => carrePerim(60, 'dm', 'dm', 1),
+  () => rectPerim(300, 100, 'longueur', 'm'),
+  () => rectPerim(30, 9, 'longueur', 'cm'),
+  () => rectPerim(26, 5, 'largeur', 'dm'),
+  () => carrePerim(8, 'dam', 'm', 10)
+];
+
+// ---------- NIVEAU 3 : figures à découper ----------
+function figL(a, W, H, b, unit) {
+  const w2 = W - a;
+  return { titre: 'Figure en L', unit, desc: 'Calcule l\'aire de cette figure.',
+    poly: [[0, 0], [a, 0], [a, H - b], [W, H - b], [W, H], [0, H]],
+    cotes: [{ x1: 0, y1: 0, x2: a, y2: 0, cote: 'top', v: a }, { x1: 0, y1: 0, x2: 0, y2: H, cote: 'left', v: H },
+            { x1: 0, y1: H, x2: W, y2: H, cote: 'bottom', v: W }, { x1: W, y1: H - b, x2: W, y2: H, cote: 'right', v: b }],
+    pieces: [{ id: 0, x: 0, y: 0, w: a, h: H }, { id: 1, x: a, y: H - b, w: w2, h: b }],
+    deduit: [`Côté manquant de #1 : ${W} − ${a} = ${w2}`],
+    autre: `Autre façon : grand rectangle ${W} × ${H} = ${W * H}, moins le morceau vide ${w2} × ${H - b} = ${w2 * (H - b)} → ${W * H} − ${w2 * (H - b)} = ${W * H - w2 * (H - b)}.` };
+}
+function figGamma(W, b, a, H, unit) {
+  const h2 = H - b;
+  return { titre: 'Figure en Γ', unit, desc: 'Calcule l\'aire de cette figure.',
+    poly: [[0, 0], [W, 0], [W, b], [a, b], [a, H], [0, H]],
+    cotes: [{ x1: 0, y1: 0, x2: W, y2: 0, cote: 'top', v: W }, { x1: W, y1: 0, x2: W, y2: b, cote: 'right', v: b },
+            { x1: 0, y1: 0, x2: 0, y2: H, cote: 'left', v: H }, { x1: 0, y1: H, x2: a, y2: H, cote: 'bottom', v: a }],
+    pieces: [{ id: 0, x: 0, y: 0, w: W, h: b }, { id: 1, x: 0, y: b, w: a, h: h2 }],
+    deduit: [`Côté manquant de #1 : ${H} − ${b} = ${h2}`],
+    autre: `Autre façon : grand rectangle ${W} × ${H} = ${W * H}, moins le morceau vide ${W - a} × ${h2} = ${(W - a) * h2} → ${W * H} − ${(W - a) * h2} = ${W * H - (W - a) * h2}.` };
+}
+function figT(s, c, b, H, unit) {
+  const W = s + 2 * c, h2 = H - b;
+  return { titre: 'Figure en T', unit, desc: 'Calcule l\'aire de cette figure en T.',
+    poly: [[0, 0], [W, 0], [W, b], [c + s, b], [c + s, H], [c, H], [c, b], [0, b]],
+    cotes: [{ x1: 0, y1: 0, x2: W, y2: 0, cote: 'top', v: W }, { x1: 0, y1: 0, x2: 0, y2: b, cote: 'left', v: b },
+            { x1: c, y1: H, x2: c + s, y2: H, cote: 'bottom', v: s }, { x1: W, y1: 0, x2: W, y2: H, cote: 'right', v: H, e2: [c + s, H] }],
+    pieces: [{ id: 0, x: 0, y: 0, w: W, h: b }, { id: 1, x: c, y: b, w: s, h: h2 }],
+    deduit: [`Côté manquant de #1 : ${H} − ${b} = ${h2}`] };
+}
+function figU(a, a2, creux, H, d, unit) {
+  const W = a + a2 + creux, bas = H - d;
+  return { titre: 'Figure en U', unit, desc: 'Calcule l\'aire de cette figure.',
+    poly: [[0, 0], [a, 0], [a, d], [W - a2, d], [W - a2, 0], [W, 0], [W, H], [0, H]],
+    cotes: [{ x1: 0, y1: 0, x2: a, y2: 0, cote: 'top', v: a }, { x1: W - a2, y1: 0, x2: W, y2: 0, cote: 'top', v: a2 },
+            { x1: 0, y1: 0, x2: 0, y2: H, cote: 'left', v: H }, { x1: 0, y1: H, x2: W, y2: H, cote: 'bottom', v: W },
+            { x1: a, y1: 0, x2: a, y2: d, cote: 'right', v: d, off: 9 }],
+    pieces: [{ id: 0, x: 0, y: 0, w: a, h: H }, { id: 1, x: W - a2, y: 0, w: a2, h: H }, { id: 2, x: a, y: d, w: creux, h: bas }],
+    deduit: [`Côtés manquants de #2 : ${W} − ${a} − ${a2} = ${creux} et ${H} − ${d} = ${bas}`],
+    autre: `Autre façon : grand rectangle ${W} × ${H} = ${W * H}, moins le creux ${creux} × ${d} = ${creux * d} → ${W * H} − ${creux * d} = ${W * H - creux * d}.` };
+}
+function figEscalier(w1, w2, w3, H3, r2, r1, unit) {
+  const H2 = H3 + r2, H1 = H2 + r1, W = w1 + w2 + w3;
+  return { titre: 'Escalier', unit, desc: 'Calcule l\'aire de cet escalier.',
+    poly: [[0, 0], [w1, 0], [w1, r1], [w1 + w2, r1], [w1 + w2, H1 - H3], [W, H1 - H3], [W, H1], [0, H1]],
+    cotes: [{ x1: 0, y1: H1, x2: w1, y2: H1, cote: 'bottom', v: w1 }, { x1: w1, y1: H1, x2: w1 + w2, y2: H1, cote: 'bottom', v: w2 },
+            { x1: w1 + w2, y1: H1, x2: W, y2: H1, cote: 'bottom', v: w3 }, { x1: 0, y1: 0, x2: 0, y2: H1, cote: 'left', v: H1 },
+            { x1: W, y1: H1 - H3, x2: W, y2: H1, cote: 'right', v: H3 }, { x1: w1 + w2, y1: r1, x2: w1 + w2, y2: H1 - H3, cote: 'right', v: r2, off: 9 }],
+    pieces: [{ id: 0, x: 0, y: 0, w: w1, h: H1 }, { id: 1, x: w1, y: r1, w: w2, h: H2 }, { id: 2, x: w1 + w2, y: H1 - H3, w: w3, h: H3 }],
+    deduit: [`Côté manquant de #1 : ${H3} + ${r2} = ${H2}`] };
+}
+function figCroix(c, bh, bv, unit) {
+  const W = c + 2 * bh, H = c + 2 * bv;
+  return { titre: 'Croix', unit, desc: 'Calcule l\'aire de cette croix.',
+    poly: [[bh, 0], [bh + c, 0], [bh + c, bv], [W, bv], [W, bv + c], [bh + c, bv + c], [bh + c, H], [bh, H], [bh, bv + c], [0, bv + c], [0, bv], [bh, bv]],
+    cotes: [{ x1: bh, y1: 0, x2: bh + c, y2: 0, cote: 'top', v: c }, { x1: W, y1: bv, x2: W, y2: bv + c, cote: 'right', v: c },
+            { x1: 0, y1: H, x2: W, y2: H, cote: 'bottom', v: W, e1: [0, bv + c], e2: [W, bv + c] },
+            { x1: 0, y1: 0, x2: 0, y2: H, cote: 'left', v: H, e1: [bh, 0], e2: [bh, H] }],
+    pieces: [{ id: 0, x: bh, y: 0, w: c, h: H }, { id: 1, x: 0, y: bv, w: bh, h: c }, { id: 2, x: bh + c, y: bv, w: bh, h: c }],
+    deduit: [`Côté manquant de #1 et de #2 : (${W} − ${c}) ÷ 2 = ${bh}`],
+    autre: `Autre façon : la barre ${c} × ${H} = ${c * H}, plus les deux bras ensemble ${W - c} × ${c} = ${(W - c) * c} → ${c * H} + ${(W - c) * c} = ${c * H + (W - c) * c}.` };
+}
+// Un carré posé sur un rectangle (seul un côté du carré est donné)
+function figCarreSurRect(W, b, c, p, unit) {
+  return { titre: 'Carré sur un rectangle', unit, desc: 'Calcule l\'aire de cette figure (le petit morceau est un carré).',
+    poly: [[p, 0], [p + c, 0], [p + c, c], [W, c], [W, c + b], [0, c + b], [0, c], [p, c]],
+    cotes: [{ x1: p, y1: 0, x2: p + c, y2: 0, cote: 'top', v: c }, { x1: 0, y1: c + b, x2: W, y2: c + b, cote: 'bottom', v: W },
+            { x1: 0, y1: c, x2: 0, y2: c + b, cote: 'left', v: b }],
+    pieces: [{ id: 0, x: p, y: 0, w: c, h: c }, { id: 1, x: 0, y: c, w: W, h: b }],
+    deduit: [`#0 est un carré : ses 4 côtés mesurent ${c}`] };
+}
+// Transformations (miroir, rotation) pour varier l'orientation des figures
+function bornes(q) { return { W: Math.max(...q.poly.map(p => p[0])), H: Math.max(...q.poly.map(p => p[1])) }; }
+function miroirH(q) {
+  const { W } = bornes(q), sw = { left: 'right', right: 'left', top: 'top', bottom: 'bottom' }, fx = x => W - x;
+  q.poly = q.poly.map(([x, y]) => [fx(x), y]).reverse();
+  q.cotes.forEach(c => { c.x1 = fx(c.x1); c.x2 = fx(c.x2); c.cote = sw[c.cote]; if (c.e1) c.e1 = [fx(c.e1[0]), c.e1[1]]; if (c.e2) c.e2 = [fx(c.e2[0]), c.e2[1]]; });
+  q.pieces.forEach(p => { p.x = W - p.x - p.w; });
+  return q;
+}
+function miroirV(q) {
+  const { H } = bornes(q), sw = { top: 'bottom', bottom: 'top', left: 'left', right: 'right' }, fy = y => H - y;
+  q.poly = q.poly.map(([x, y]) => [x, fy(y)]).reverse();
+  q.cotes.forEach(c => { c.y1 = fy(c.y1); c.y2 = fy(c.y2); c.cote = sw[c.cote]; if (c.e1) c.e1 = [c.e1[0], fy(c.e1[1])]; if (c.e2) c.e2 = [c.e2[0], fy(c.e2[1])]; });
+  q.pieces.forEach(p => { p.y = H - p.y - p.h; });
+  return q;
+}
+function rotation(q) { // quart de tour dans le sens des aiguilles d'une montre
+  const { H } = bornes(q), sw = { top: 'right', right: 'bottom', bottom: 'left', left: 'top' }, r = ([x, y]) => [H - y, x];
+  q.poly = q.poly.map(r);
+  q.cotes.forEach(c => {
+    const [a1, b1] = r([c.x1, c.y1]), [a2, b2] = r([c.x2, c.y2]);
+    Object.assign(c, { x1: a1, y1: b1, x2: a2, y2: b2, cote: sw[c.cote] });
+    if (c.e1) c.e1 = r(c.e1); if (c.e2) c.e2 = r(c.e2);
+  });
+  q.pieces.forEach(p => { const nx = H - (p.y + p.h), ny = p.x; Object.assign(p, { x: nx, y: ny, w: p.h, h: p.w }); });
+  return q;
+}
+const BANQUE_3 = [
+  () => figL(3, 9, 8, 3, 'cm'),
+  () => miroirH(figL(4, 11, 10, 4, 'm')),
+  () => figGamma(10, 3, 4, 9, 'dm'),
+  () => miroirH(figGamma(12, 4, 3, 10, 'cm')),
+  () => figT(4, 3, 3, 9, 'm'),
+  () => miroirV(figT(3, 4, 4, 11, 'dm')),
+  () => figU(3, 4, 5, 9, 5, 'cm'),
+  () => miroirV(figU(4, 4, 4, 10, 6, 'm')),
+  () => rotation(figU(3, 3, 5, 10, 6, 'dm')),
+  () => figEscalier(4, 3, 5, 3, 2, 3, 'm'),
+  () => miroirH(figEscalier(3, 4, 4, 4, 3, 2, 'cm')),
+  () => figCroix(3, 4, 4, 'dm'),
+  () => figCroix(4, 3, 3, 'm'),
+  () => figCarreSurRect(12, 4, 5, 3, 'cm'),
+  () => rotation(figCarreSurRect(10, 3, 4, 6, 'dm'))
+];
+
+const NIVEAUX = [
+  { n: 1, couleur: '#1A9E75', titre: 'Les côtés sont donnés', desc: 'Calcule l\'aire de carrés et de rectangles.', banque: () => BANQUE_1 },
+  { n: 2, couleur: '#1A6FA0', titre: 'Unités et périmètre', desc: 'Des côtés dans des unités différentes, ou seulement le périmètre.', banque: () => BANQUE_2 },
+  { n: 3, couleur: '#C97B1A', titre: 'Figures à découper', desc: 'Découpe la figure en carrés et rectangles, puis additionne.', banque: () => BANQUE_3 },
+  { n: 4, couleur: '#5B4FCF', titre: 'Tout mélangé', desc: 'Des exercices des niveaux 1, 2 et 3.', banque: null }
+];
+const PAR_SERIE = 5;
+
+// Prépare une question : lettres des morceaux de gauche à droite, correction écrite, vérification
+function construire(q, niveau) {
+  q.niveau = niveau;
+  q.pieces.sort((p1, p2) => p1.x - p2.x || p1.y - p2.y);
+  const lettreDe = {}; q.pieces.forEach((p, i) => { if (p.id !== undefined) lettreDe[p.id] = i; });
+  if (!q.lignes) q.correct = q.pieces.reduce((s, p) => s + p.w * p.h, 0);
+  if (!q.lignes && aireLacet(q.poly) !== q.correct) console.error('Découpage faux :', q.titre);
+  const u = q.unit, u2 = u + '²';
+  if (q.lignes) {
+    q.explication = q.lignes.map(l => `<span class="ligne">${l}</span>`).join('');
+  } else {
+    const badge = i => `<span class="piece" style="background:${COULEURS[i]}">${LETTRES[i]}</span>`;
+    let h = `<span class="ligne">Je découpe la figure en ${q.pieces.length} morceaux (carrés ou rectangles).</span>`;
+    (q.deduit || []).forEach(t => { h += `<span class="ligne">• ${t.replace(/#(\d)/g, (m, id) => badge(lettreDe[id]))} ${u}</span>`; });
+    q.pieces.forEach((p, i) => { h += `<span class="ligne">${badge(i)} ${p.w} × ${p.h} = ${p.w * p.h} ${u2}</span>`; });
+    h += `<span class="ligne">Aire totale : ${q.pieces.map(p => p.w * p.h).join(' + ')} = <strong>${q.correct} ${u2}</strong></span>`;
+    if (q.autre) h += `<span class="autre">${q.autre}</span>`;
+    q.explication = h;
+  }
+  return q;
+}
+
+// Tirage : 5 exercices parmi 15, sans reprendre ceux de la série précédente du même niveau
+const dernierTirage = {};
+function tirer(niv, nombre) {
+  const banque = NIVEAUX[niv - 1].banque();
+  const indices = banque.map((_, i) => i);
+  const deja = dernierTirage[niv] || [];
+  const neufs = shuffle(indices.filter(i => !deja.includes(i)));
+  const choix = neufs.concat(shuffle(indices.filter(i => deja.includes(i)))).slice(0, nombre);
+  dernierTirage[niv] = choix;
+  return choix.map(i => construire(banque[i](), niv));
+}
+function genererSerie(niv) {
+  if (niv < 4) return tirer(niv, PAR_SERIE);
+  // Niveau 4 : au moins un exercice de chaque niveau (1 + 2 + 2), dans le désordre
+  const rep = shuffle([1, 2, 2]); // 1 exercice d'un niveau, 2 de chacun des deux autres
+  return shuffle([].concat(tirer(1, rep[0]), tirer(2, rep[1]), tirer(3, rep[2])));
+}
+
+// ===================== DESSIN =====================
+const NS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs, parent) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+const VB = { w: 340, h: 250, g: 64, d: 64, hh: 34, b: 38 };
+function mise(q) {
+  const { W, H } = bornes(q);
+  const dW = VB.w - VB.g - VB.d, dH = VB.h - VB.hh - VB.b;
+  const s = Math.min(dW / W, dH / H, 24);
+  const ox = VB.g + (dW - W * s) / 2, oy = VB.hh + (dH - H * s) / 2;
+  return { s, W, H, X: x => ox + x * s, Y: y => oy + y * s };
+}
+function dessiner(q, correction) {
+  const svg = document.getElementById('shape-svg');
+  svg.innerHTML = '';
+  const m = mise(q);
+  const pts = q.poly.map(p => `${m.X(p[0]).toFixed(1)},${m.Y(p[1]).toFixed(1)}`).join(' ');
+  const decoupe = correction && q.pieces.length > 1;
+  el('polygon', { points: pts, fill: correction ? (decoupe ? '#fff' : '#E2F0FA') : '#EEF0FF', stroke: '#1A1A2E', 'stroke-width': 3, 'stroke-linejoin': 'round' }, svg);
+  if (decoupe) {
+    q.pieces.forEach((p, i) => {
+      el('rect', { x: m.X(p.x), y: m.Y(p.y), width: p.w * m.s, height: p.h * m.s, fill: COULEURS[i], 'fill-opacity': 0.22, stroke: COULEURS[i], 'stroke-width': 2.5, 'stroke-dasharray': '6,4' }, svg);
+      el('text', { x: m.X(p.x + p.w / 2), y: m.Y(p.y + p.h / 2) + 6, 'text-anchor': 'middle', 'font-size': 19, 'font-weight': 700, fill: COULEURS[i], 'font-family': 'Fredoka, sans-serif' }, svg).textContent = LETTRES[i];
+    });
+    el('polygon', { points: pts, fill: 'none', stroke: '#1A1A2E', 'stroke-width': 3, 'stroke-linejoin': 'round' }, svg);
+  }
+  if (q.centre) {
+    el('text', { x: m.X(m.W / 2), y: m.Y(m.H / 2) + 5, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 900, fill: '#5B4FCF', 'font-family': 'Nunito, sans-serif' }, svg).textContent = q.centre;
+  }
+  q.cotes.forEach(c => dessinerCote(svg, m, c, q.unit));
+}
+function dessinerCote(svg, m, c, unit) {
+  const off = c.off || 15, col = '#1A1A2E';
+  const horiz = c.y1 === c.y2;
+  const e1 = c.e1 || [c.x1, c.y1], e2 = c.e2 || [c.x2, c.y2];
+  let x1 = m.X(c.x1), y1 = m.Y(c.y1), x2 = m.X(c.x2), y2 = m.Y(c.y2);
+  const sgn = (c.cote === 'bottom' || c.cote === 'right') ? 1 : -1;
+  if (horiz) { y1 += sgn * off; y2 = y1; } else { x1 += sgn * off; x2 = x1; }
+  [e1, e2].forEach(e => {
+    const ex = m.X(e[0]), ey = m.Y(e[1]);
+    if (horiz) el('line', { x1: ex, y1: ey, x2: ex, y2: y1 + sgn * 4, stroke: '#6B7080', 'stroke-width': 1, 'stroke-dasharray': '2,2' }, svg);
+    else el('line', { x1: ex, y1: ey, x2: x1 + sgn * 4, y2: ey, stroke: '#6B7080', 'stroke-width': 1, 'stroke-dasharray': '2,2' }, svg);
+  });
+  el('line', { x1, y1, x2, y2, stroke: col, 'stroke-width': 1.4 }, svg);
+  const fl = 5, a = Math.min(x1, x2), b = Math.max(x1, x2), ya = Math.min(y1, y2), yb = Math.max(y1, y2);
+  if (horiz) {
+    el('path', { d: `M${a + fl},${y1 - 3} L${a},${y1} L${a + fl},${y1 + 3} M${b - fl},${y1 - 3} L${b},${y1} L${b - fl},${y1 + 3}`, fill: 'none', stroke: col, 'stroke-width': 1.4 }, svg);
+  } else {
+    el('path', { d: `M${x1 - 3},${ya + fl} L${x1},${ya} L${x1 + 3},${ya + fl} M${x1 - 3},${yb - fl} L${x1},${yb} L${x1 + 3},${yb - fl}`, fill: 'none', stroke: col, 'stroke-width': 1.4 }, svg);
+  }
+  const at = { 'font-size': 13, 'font-weight': 900, fill: c.t === '?' ? '#D94F3D' : '#1A1A2E', 'font-family': 'Nunito, sans-serif', stroke: '#fff', 'stroke-width': 3.5, 'paint-order': 'stroke', 'stroke-linejoin': 'round' };
+  let t;
+  if (horiz) t = el('text', Object.assign({ x: (x1 + x2) / 2, y: c.cote === 'bottom' ? y1 + 15 : y1 - 6, 'text-anchor': 'middle' }, at), svg);
+  else t = el('text', Object.assign({ x: c.cote === 'right' ? x1 + 6 : x1 - 6, y: (y1 + y2) / 2 + 4.5, 'text-anchor': c.cote === 'right' ? 'start' : 'end' }, at), svg);
+  t.textContent = c.t !== undefined ? c.t : `${c.v} ${unit}`;
+}
+
+// ===================== DÉROULEMENT =====================
+let niveau = 1, questions = [], idx = 0, score = 0, aRepondu = false, reponses = [], saved = false;
+const ecran = id => ['ecran-niveaux', 'exercice-zone', 'score-screen'].forEach(e => { document.getElementById(e).style.display = e === id ? 'block' : 'none'; });
+
+// Meilleur score par niveau, gardé sur l'appareil (simple confort ; rien d'important n'y est stocké)
+function lireRecords() { try { return JSON.parse(localStorage.getItem('lcml_aire_rect_records') || '{}'); } catch (e) { return {}; } }
+function ecrireRecord(n, s) { try { const r = lireRecords(); if (!(r[n] >= s)) { r[n] = s; localStorage.setItem('lcml_aire_rect_records', JSON.stringify(r)); } } catch (e) { } }
+
+function afficherNiveaux() {
+  fermerCalc();
+  document.getElementById('sous-titre').textContent = 'Aire du carré et du rectangle — choisis ton niveau';
+  const rec = lireRecords();
+  const box = document.getElementById('liste-niveaux');
+  box.innerHTML = '';
+  NIVEAUX.forEach(nv => {
+    const b = document.createElement('button');
+    b.className = 'carte-niveau';
+    b.innerHTML = `<div class="badge-niv" style="background:${nv.couleur}">${nv.n}</div><div><h2>Niveau ${nv.n} — ${nv.titre}</h2><p>${nv.desc}</p>${rec[nv.n] !== undefined ? `<div class="record">Meilleur score : ${rec[nv.n]} / ${PAR_SERIE}</div>` : ''}</div>`;
+    b.addEventListener('click', () => { playSound('click'); demarrer(nv.n); });
+    box.appendChild(b);
+  });
+  ecran('ecran-niveaux');
+}
+
+function demarrer(n) {
+  niveau = n;
+  questions = genererSerie(n);
+  idx = 0; score = 0; reponses = []; saved = false;
+  const nv = NIVEAUX[n - 1];
+  document.getElementById('sous-titre').textContent = `Niveau ${n} — ${nv.titre}`;
+  const dots = document.getElementById('dots-progress');
+  dots.innerHTML = '';
+  questions.forEach(() => { const d = document.createElement('div'); d.className = 'dot'; dots.appendChild(d); });
+  ecran('exercice-zone');
+  chargerQuestion();
+}
+
+function chargerQuestion() {
+  aRepondu = false;
+  const q = questions[idx];
+  document.getElementById('info-numero').textContent = `Question ${idx + 1}/${questions.length}`;
+  document.getElementById('question-text').innerHTML = q.desc;
+  document.getElementById('answer-unit').textContent = q.unit + '²';
+  const input = document.getElementById('answer-input');
+  input.value = ''; input.className = 'answer-input';
+  document.getElementById('zone-reponse').style.display = 'block';
+  document.getElementById('message').textContent = '';
+  const fb = document.getElementById('feedback-box'); fb.className = 'feedback-box'; fb.innerHTML = '';
+  document.getElementById('btn-next').style.display = 'none';
+  document.getElementById('legende').textContent = q.pieces.length > 1 ? 'Astuce : découpe la figure dans ta tête en carrés et rectangles.' : '';
+  const dots = document.getElementById('dots-progress').children;
+  for (const d of dots) d.classList.remove('current');
+  dots[idx].classList.add('current');
+  dessiner(q, false);
+}
+
+function touche(k) {
+  if (aRepondu) return;
+  const input = document.getElementById('answer-input');
+  document.getElementById('message').textContent = '';
+  if (k === 'ok') return valider();
+  playSound('click');
+  if (k === 'del') input.value = input.value.replace(/\s/g, '').slice(0, -1);
+  else if (k === 'clear') input.value = '';
+  else { const v = input.value.replace(/\s/g, ''); if (v.length < 8) input.value = (v === '0' ? '' : v) + k; }
+  input.value = mille(input.value.replace(/\s/g, ''));
+}
+
+function valider() {
+  if (aRepondu) return;
+  const input = document.getElementById('answer-input');
+  const brut = input.value.replace(/\s/g, '');
+  if (!/^\d+$/.test(brut)) { document.getElementById('message').textContent = 'Écris ta réponse avant de valider.'; return; }
+  aRepondu = true;
+  const q = questions[idx];
+  const ok = parseInt(brut, 10) === q.correct;
+  const dots = document.getElementById('dots-progress').children;
+  if (ok) { score++; playSound('success'); input.classList.add('correct'); dots[idx].classList.add('correct'); }
+  else { playSound('error'); input.classList.add('incorrect'); dots[idx].classList.add('incorrect'); }
+  reponses.push({ n: idx + 1, titre: q.titre, saisi: brut, juste: q.correct, ok, unit: q.unit });
+  document.getElementById('zone-reponse').style.display = 'none';
+  const fb = document.getElementById('feedback-box');
+  fb.className = 'feedback-box ' + (ok ? 'correct' : 'incorrect');
+  fb.innerHTML = (ok ? `<strong>Bravo !</strong> ${mille(brut)} ${q.unit}², c'est juste.` : `<strong>Oups !</strong> Tu as écrit ${mille(brut)} ${q.unit}². La bonne réponse est <strong class="bonne">${mille(q.correct)} ${q.unit}²</strong>.`) + q.explication;
+  document.getElementById('legende').textContent = '';
+  dessiner(q, true);
+  const btn = document.getElementById('btn-next');
+  btn.textContent = idx + 1 < questions.length ? 'Question suivante ➡️' : 'Voir mon score 🏁';
+  btn.style.display = 'block';
+}
+
+function suivante() {
+  if (!aRepondu) return;
+  aRepondu = false;
+  playSound('click');
+  idx++;
+  if (idx < questions.length) chargerQuestion(); else afficherScore();
+}
+
+function afficherScore() {
+  fermerCalc();
+  ecran('score-screen');
+  const total = questions.length, pct = Math.round(score / total * 100);
+  ecrireRecord(niveau, score);
+  document.getElementById('final-score').textContent = `${score} / ${total}`;
+  const em = document.getElementById('final-emoji'), ti = document.getElementById('final-title'), msg = document.getElementById('congrats-msg');
+  if (score === total) { em.textContent = '🏆'; ti.textContent = 'Maître Carreleur !'; msg.innerHTML = `<strong>Niveau ${niveau} réussi sans faute !</strong>${niveau < 4 ? ' Essaie le niveau suivant.' : ''}`; confettis(); }
+  else if (score >= 4) { em.textContent = '⭐'; ti.textContent = 'Très bien !'; msg.innerHTML = `<strong>${pct} % de réussite.</strong> Regarde bien l'erreur ci-dessous.`; }
+  else if (score >= 3) { em.textContent = '👍'; ti.textContent = 'Pas mal !'; msg.innerHTML = `<strong>${pct} % de réussite.</strong> Relis bien chaque énoncé et cherche les longueurs qui ne sont pas écrites.`; }
+  else { em.textContent = '💪'; ti.textContent = 'Il faut encore t\'entrainer'; msg.innerHTML = `<strong>${pct} % de réussite.</strong> Aire du rectangle = longueur × largeur ; aire du carré = côté × côté.`; }
+
+  if (!saved && window.parent && window.parent !== window && typeof window.parent.saveResult === 'function') {
+    saved = true;
+    try {
+      window.parent.saveResult({
+        activity: 'grandeur_aire_rectangle',
+        bookTitle: `Le Maître Carreleur — Niveau ${niveau}`,
+        score, total, pct,
+        date: new Date().toLocaleDateString('fr-BE'),
+        time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+      });
+    } catch (e) { console.warn('Erreur sauvegarde', e); }
+  }
+  const det = document.getElementById('final-details');
+  det.innerHTML = '';
+  reponses.forEach(r => {
+    const row = document.createElement('div');
+    row.className = 'score-row';
+    row.innerHTML = `<span>Q${r.n} : <strong>${r.titre}</strong></span><span class="tag ${r.ok ? 'ok' : 'ko'}">${r.ok ? '✅ ' + mille(r.juste) + ' ' + r.unit + '²' : '❌ ' + mille(r.saisi) + ' → <span class="bonne">' + mille(r.juste) + ' ' + r.unit + '²</span>'}</span>`;
+    det.appendChild(row);
+  });
+}
+
+function confettis() {
+  const cols = ['#5B4FCF', '#1A9E75', '#D94F3D', '#C97B1A', '#1A6FA0', '#C7C2F5'];
+  for (let i = 0; i < 70; i++) {
+    const c = document.createElement('div'); c.className = 'confetti';
+    const t = 6 + Math.random() * 7;
+    Object.assign(c.style, { left: Math.random() * 100 + 'vw', width: t + 'px', height: t + 'px', background: cols[i % cols.length], animationDelay: Math.random() * 1.2 + 's', animationDuration: 1.6 + Math.random() * 1.8 + 's' });
+    document.body.appendChild(c); setTimeout(() => c.remove(), 4000);
+  }
+}
+
+// ===================== CALCULATRICE =====================
+// Respecte les priorités (× et ÷ avant + et −), comme les calculatrices de l'école.
+let calcExpr = '', calcFini = false, calcResultat = 0;
+const OPS = ['+', '−', '×', '÷'];
+function calcAfficher(res) {
+  document.getElementById('calc-expr').textContent = calcFini ? calcExpr + ' =' : '';
+  document.getElementById('calc-res').textContent = res !== undefined ? res : (calcExpr || '0');
+}
+function calcEvaluer(expr) {
+  const tokens = expr.match(/\d+(,\d*)?|[+−×÷]/g);
+  if (!tokens) return null;
+  if (OPS.includes(tokens[tokens.length - 1])) tokens.pop();
+  // Nombre négatif en tête (après un résultat négatif)
+  if (tokens[0] === '−' && tokens.length > 1) { tokens.splice(0, 2, '-' + tokens[1]); }
+  const nums = [], ops = [];
+  for (const t of tokens) { if (OPS.includes(t)) ops.push(t); else nums.push(parseFloat(t.replace(',', '.'))); }
+  if (nums.length !== ops.length + 1 || nums.some(isNaN)) return null;
+  // 1) × et ÷ de gauche à droite
+  const n2 = [nums[0]], o2 = [];
+  for (let i = 0; i < ops.length; i++) {
+    if (ops[i] === '×') n2.push(n2.pop() * nums[i + 1]);
+    else if (ops[i] === '÷') { if (nums[i + 1] === 0) return 'Erreur'; n2.push(n2.pop() / nums[i + 1]); }
+    else { o2.push(ops[i]); n2.push(nums[i + 1]); }
+  }
+  // 2) + et − de gauche à droite
+  let r = n2[0];
+  o2.forEach((o, i) => { r = o === '+' ? r + n2[i + 1] : r - n2[i + 1]; });
+  r = Math.round(r * 1e8) / 1e8;
+  return r;
+}
+function calcTouche(k) {
+  playSound('click');
+  if (k === 'C') { calcExpr = ''; calcFini = false; return calcAfficher(); }
+  if (k === 'del') { if (calcFini) { calcFini = false; calcExpr = ''; } calcExpr = calcExpr.slice(0, -1); return calcAfficher(); }
+  if (k === '=') {
+    if (!calcExpr) return;
+    const r = calcEvaluer(calcExpr);
+    if (r === null) return;
+    calcFini = true;
+    const txt = r === 'Erreur' ? 'Erreur' : mille(fr(r).split(',')[0]).replace('-', '−') + (fr(r).includes(',') ? ',' + fr(r).split(',')[1] : '');
+    calcAfficher(txt);
+    calcResultat = r;
+    return;
+  }
+  if (calcFini) { // on repart du résultat si on tape une opération, sinon d'un nouveau calcul
+    calcFini = false;
+    const r = calcResultat;
+    calcExpr = (OPS.includes(k) && r !== 'Erreur') ? (r < 0 ? '−' + fr(-r) : fr(r)) : '';
+  }
+  const dernier = calcExpr.slice(-1);
+  if (OPS.includes(k)) {
+    if (!calcExpr) return;
+    if (OPS.includes(dernier)) calcExpr = calcExpr.slice(0, -1);
+    if (dernier === ',') calcExpr = calcExpr.slice(0, -1);
+    calcExpr += k;
+  } else if (k === ',') {
+    const nbCourant = calcExpr.split(/[+−×÷]/).pop();
+    if (nbCourant.includes(',')) return;
+    calcExpr += nbCourant === '' ? '0,' : ',';
+  } else {
+    if (calcExpr.replace(/\D/g, '').length > 14) return;
+    calcExpr += k;
+  }
+  calcAfficher();
+}
+function ouvrirCalc() { document.getElementById('calculatrice').classList.add('ouverte'); document.getElementById('btn-calc').classList.add('ouverte'); }
+function fermerCalc() { document.getElementById('calculatrice').classList.remove('ouverte'); document.getElementById('btn-calc').classList.remove('ouverte'); }
+const calcOuverte = () => document.getElementById('calculatrice').classList.contains('ouverte');
+
+// ===================== ÉVÈNEMENTS =====================
+document.getElementById('keypad').addEventListener('pointerdown', e => { const b = e.target.closest('.key'); if (!b) return; e.preventDefault(); touche(b.dataset.k); });
+document.getElementById('calc-touches').addEventListener('pointerdown', e => { const b = e.target.closest('.ck'); if (!b) return; e.preventDefault(); calcTouche(b.dataset.c); });
+document.getElementById('btn-calc').addEventListener('click', () => { playSound('click'); calcOuverte() ? fermerCalc() : ouvrirCalc(); });
+document.getElementById('calc-fermer').addEventListener('click', fermerCalc);
+// La calculatrice se déplace en la tirant par sa barre du haut (doigt ou souris)
+(function () {
+  const box = document.getElementById('calculatrice'), barre = document.getElementById('calc-haut');
+  let dx = 0, dy = 0, tire = false;
+  barre.addEventListener('pointerdown', e => {
+    if (e.target.closest('button')) return;
+    const r = box.getBoundingClientRect();
+    dx = e.clientX - r.left; dy = e.clientY - r.top; tire = true;
+    barre.setPointerCapture(e.pointerId); e.preventDefault();
+  });
+  barre.addEventListener('pointermove', e => {
+    if (!tire) return;
+    const x = Math.min(Math.max(0, e.clientX - dx), window.innerWidth - box.offsetWidth);
+    const y = Math.min(Math.max(0, e.clientY - dy), window.innerHeight - box.offsetHeight);
+    Object.assign(box.style, { left: x + 'px', top: y + 'px', bottom: 'auto', right: 'auto' });
+  });
+  const lacher = () => { tire = false; };
+  barre.addEventListener('pointerup', lacher); barre.addEventListener('pointercancel', lacher);
+})();
+document.getElementById('btn-next').addEventListener('click', suivante);
+document.getElementById('btn-retour').addEventListener('click', () => { playSound('click'); afficherNiveaux(); });
+document.getElementById('btn-restart').addEventListener('click', () => { playSound('click'); demarrer(niveau); });
+document.getElementById('btn-autre').addEventListener('click', () => { playSound('click'); afficherNiveaux(); });
+document.addEventListener('keydown', e => {
+  if (document.getElementById('exercice-zone').style.display !== 'block') return;
+  if (calcOuverte()) { // le clavier de l'ordinateur sert à la calculatrice quand elle est ouverte
+    const map = { '+': '+', '-': '−', '*': '×', 'x': '×', '/': '÷', ',': ',', '.': ',', 'Enter': '=', '=': '=', 'Backspace': 'del', 'Escape': 'C' };
+    if (e.key >= '0' && e.key <= '9') { e.preventDefault(); calcTouche(e.key); }
+    else if (map[e.key]) { e.preventDefault(); calcTouche(map[e.key]); }
+    return;
+  }
+  if (aRepondu) { if (e.key === 'Enter') { e.preventDefault(); suivante(); } return; }
+  if (e.key >= '0' && e.key <= '9') touche(e.key);
+  else if (e.key === 'Backspace') { e.preventDefault(); touche('del'); }
+  else if (e.key === 'Enter') { e.preventDefault(); touche('ok'); }
+});
+// Dans le site : quitter l'écran ramène au choix du niveau
+window.lcmlOnLeave = function () { afficherNiveaux(); };
+
+afficherNiveaux();
+</script>
+</body>
+</html>

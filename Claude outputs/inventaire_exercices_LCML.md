@@ -2658,6 +2658,7 @@ Spécifique :
 | ✅ 05/10 | Le Géomètre des Carreaux (Quadrillage) | `grandeur_aire_quadrillage` | fiches/aire_quadrillage.html |  |
 | ✅ 05/10 | L'Arpenteur Impérial (Conversions d'Aire) | `grandeur_aire_conversions` | fiches/aire_conversions.html |  |
 | ✅ 05/10 | Mesures Agraires & Superficies | `grandeur_aire_agraire` | fiches/aire_agraire.html |  |
+| ✅ 06/11 | Le Maître Carreleur (Aire du carré et du rectangle) — nouveau | `grandeur_aire_rectangle` | fiches/aire_carre_rectangle.html |  |
 | ✅ 05/10 | L'Arpenteur du Château (Formules d'aire) | `grandeur_aire_formules` | fiches/aire_formules.html |  |
 | ✅ 05/10 | Le Calcul d'Aires Composées | `grandeur_aire_composee` | fiches/aire_composee.html |  |
 | ✅ 06/10 | Le Bâtisseur de Cubes (Volume 3D) | `grandeur_volume_cubes` | fiches/volume_cubes.html |  |
@@ -3009,4 +3010,10 @@ Non corrigé (signalé) : balance_fractions n'enregistre qu'à la réussite du n
 - index.html : titres, écran `screen-ortho-participe-passe-detective`, carte dans `renderParticipePasseMenu()`, liste des activités connues, rubrique parente `ortho_participe_passe`, plan de travail (Orthographe — Règles & Accords).
 - Testé : 6 enquêtes simulées (réponses justes, 0 erreur JS), affichage sans défilement à 1280×720, iPad paysage dans l'iframe (≈ 620 px) et iPad portrait. À confirmer sur un vrai iPad.
 - Sur les classes existantes, la carte est visible des élèves dès la mise en ligne (non masquée par défaut, comme les autres exercices).
+
+### 06/11 — Maths › Grandeurs › L'aire › Le Maître Carreleur (`grandeur_aire_rectangle`, `fiches/aire_carre_rectangle.html` + copie public) — NOUVEAU — sw.js v883
+- Nouveau cadre placé avant « L'Arpenteur du Château » (demande de Jérémy), validé en local (`Exercices (local)/aire_carre_rectangle.html`).
+- 4 niveaux, 5 exercices tirés d'une banque de 15 : (1) côtés donnés ; (2) unités différentes ou périmètre donné ; (3) figures à découper en carrés et rectangles (L, Γ, T, U, C, escaliers, croix, carré sur rectangle), correction colorée A/B/C + « autre façon » ; (4) mélange 1/2/2.
+- Réponse : seulement le nombre, unité affichée. Calculatrice déplaçable (priorités, ÷, virgule). Mise en page à la charte du site. Logo `assets/logos/grandeur_aire_rectangle.png` (+ .svg).
+- Tests : 45 réponses vérifiées (formule du lacet pour les figures), 4 niveaux joués en 820 et 390 px, menu Aire et écran vérifiés dans index.html.
 
