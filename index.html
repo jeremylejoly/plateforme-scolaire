@@ -975,6 +975,11 @@ input:focus{border-color:var(--purple);}
   background-color: #FEF9C3 !important;
   border-color: #FDE047 !important;
 }
+[onclick="goToSubject('astrelune')"],
+[onclick="teacherGoToSubject('astrelune')"] {
+  background-color: #F3F1FB !important;
+  border-color: #D6D0F0 !important;
+}
 [onclick="goToSubject('jeux')"],
 [onclick="teacherGoToSubject('jeux')"] {
   background-color: #FFF7ED !important;
@@ -3804,6 +3809,16 @@ input[type=text].calc-input.incorrect {
     try { const snap = await get(ref(db, path)); return snap.exists() ? snap.val() : null; }
     catch(e) { console.warn('Firebase loadGameProgress error:', e); return null; }
   };
+  // Enseignant (06/11/2026, Astrelune) : les parties de toute une classe pour un jeu → { élève: données }
+  window.FB_loadClassGameProgress = async function(cls, game) {
+    const g = String(game).replace(/[.#$\[\]\/]/g, '_');
+    try {
+      const snap = await get(ref(db, 'game_progress/' + cls)); if (!snap.exists()) return {};
+      const out = {}, all = snap.val() || {};
+      for (const [eleve, jeux] of Object.entries(all)) if (jeux && jeux[g]) out[eleve] = jeux[g];
+      return out;
+    } catch(e) { console.warn('Firebase loadClassGameProgress error:', e); return null; }
+  };
   window.FB_saveGameProgress = async function(game, data) {
     const path = gameProgressPath(game); if (!path) return false;
     try { await set(ref(db, path), data); return true; }
@@ -3851,6 +3866,7 @@ input[type=text].calc-input.incorrect {
       'screen-subjects': "Navigue sur l'accueil",
       'screen-plan-travail-student': "Consulte son plan de travail",
       'screen-books': "Choisit un livre de lecture",
+      'screen-astrelune': "Joue à Astrelune",
       'screen-jeux': "Choisit un jeu",
       'screen-jeu-tables': "Jeu : Tables de multiplication",
       'screen-jeu-memory': "Jeu : Memory Calcul",
@@ -4681,6 +4697,28 @@ input[type=text].calc-input.incorrect {
         </div>
       </div>
 
+      <!-- ASTRELUNE (06/11/2026) : le jeu d'aventure de la classe -->
+      <div class="subject-card cursor-pointer bg-white rounded-[24px] border border-neutral-200 shadow-xs hover:shadow-md transition-all duration-300 p-5 flex flex-col gap-4" onclick="goToSubject('astrelune')">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full" style="background:#c99a2e"></span>
+            <span class="font-display font-black text-lg text-neutral-800" style="font-family: 'Fredoka', sans-serif;">Astrelune</span>
+          </div>
+          <span class="text-neutral-400 font-bold text-sm">→</span>
+        </div>
+        <div class="overflow-hidden relative w-full h-36 rounded-2xl flex items-center justify-center transition-all duration-300" style="background:linear-gradient(160deg,#eef0fb 0%,#f6f1fb 55%,#fdf3d8 100%)">
+          <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#3b4a8c_1px,transparent_1px)] [background-size:15px_15px]"></div>
+          <div class="relative flex items-center justify-center w-full h-full">
+            <div class="absolute w-24 h-24 rounded-full border border-dashed animate-[spin_20s_linear_infinite] opacity-70" style="border-color:#c9b98a"></div>
+            <img src="assets/logos/subject_astrelune.png" class="w-20 h-20 object-contain relative z-10" alt="Astrelune" />
+          </div>
+        </div>
+        <div class="flex flex-col gap-1">
+          <span class="text-[10px] tracking-wider text-neutral-400 font-bold" style="font-family: 'Inter', sans-serif;">LES CHRONIQUES D'ASTRELUNE :</span>
+          <p class="text-xs text-neutral-500 font-medium leading-relaxed" style="font-family: 'Inter', sans-serif;">Pars à l'aventure dans quatre mondes, relève les défis des habitants et répare la Boussole d'Or.</p>
+        </div>
+      </div>
+
       <!-- JEUX -->
       <div class="subject-card cursor-pointer bg-white rounded-[24px] border border-neutral-200 shadow-xs hover:shadow-md transition-all duration-300 p-5 flex flex-col gap-4" onclick="goToSubject('jeux')">
         <div class="flex items-center justify-between">
@@ -4887,6 +4925,20 @@ input[type=text].calc-input.incorrect {
   <div id="screen-jeu-sudoku" class="screen">
     <button class="back-btn" onclick="showScreen('screen-jeux');renderJeuxMenu();">← Retour</button>
     <iframe data-lazy-src="fiches/sudoku.html" style="width:100%;height:calc(100vh - 60px);border:none;border-radius:12px;" allowfullscreen></iframe>
+  </div>
+
+  <!-- SCREEN: Astrelune, élève (06/11/2026) : le jeu complet ; il voit l'élève connecté et enregistre sa partie en ligne -->
+  <div id="screen-astrelune" class="screen">
+    <button class="back-btn" onclick="showScreen(state.role==='teacher'?'screen-teacher-astrelune':'screen-subjects')">← Retour</button>
+    <iframe id="astrelune-jeu" data-lazy-src="../astrelune/index.html" style="width:100%;height:calc(100vh - 60px);height:calc(100dvh - 60px);border:none;border-radius:12px;background:#0a1030;" allow="fullscreen; autoplay" allowfullscreen></iframe>
+  </div>
+  <!-- SCREEN: Astrelune, enseignant : le tableau de bord de la classe -->
+  <div id="screen-teacher-astrelune" class="screen">
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px">
+      <button class="back-btn" style="position:static" onclick="showScreen('screen-teacher-subjects')">← Retour</button>
+      <button class="btn" onclick="showScreen('screen-astrelune')">🧭 Ouvrir le jeu</button>
+    </div>
+    <iframe id="astrelune-tableau" data-lazy-src="../astrelune/tableau.html" style="width:100%;height:calc(100vh - 70px);height:calc(100dvh - 70px);border:none;border-radius:12px;background:#f6f4ef;"></iframe>
   </div>
 
   <!-- SCREEN: Flux Connecté (9ème jeu) -->
@@ -7989,6 +8041,28 @@ input[type=text].calc-input.incorrect {
         </div>
       </div>
 
+      <!-- ASTRELUNE (06/11/2026) : le jeu d'aventure de la classe -->
+      <div class="subject-card cursor-pointer bg-white rounded-[24px] border border-neutral-200 shadow-xs hover:shadow-md transition-all duration-300 p-5 flex flex-col gap-4" onclick="teacherGoToSubject('astrelune')">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full" style="background:#c99a2e"></span>
+            <span class="font-display font-black text-lg text-neutral-800" style="font-family: 'Fredoka', sans-serif;">Astrelune</span>
+          </div>
+          <span class="text-neutral-400 font-bold text-sm">→</span>
+        </div>
+        <div class="overflow-hidden relative w-full h-36 rounded-2xl flex items-center justify-center transition-all duration-300" style="background:linear-gradient(160deg,#eef0fb 0%,#f6f1fb 55%,#fdf3d8 100%)">
+          <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#3b4a8c_1px,transparent_1px)] [background-size:15px_15px]"></div>
+          <div class="relative flex items-center justify-center w-full h-full">
+            <div class="absolute w-24 h-24 rounded-full border border-dashed animate-[spin_20s_linear_infinite] opacity-70" style="border-color:#c9b98a"></div>
+            <img src="assets/logos/subject_astrelune.png" class="w-20 h-20 object-contain relative z-10" alt="Astrelune" />
+          </div>
+        </div>
+        <div class="flex flex-col gap-1">
+          <span class="text-[10px] tracking-wider text-neutral-400 font-bold" style="font-family: 'Inter', sans-serif;">LES CHRONIQUES D'ASTRELUNE :</span>
+          <p class="text-xs text-neutral-500 font-medium leading-relaxed" style="font-family: 'Inter', sans-serif;">Le jeu d'aventure de la classe et le tableau de bord : progression de chaque élève, résultats par matière.</p>
+        </div>
+      </div>
+
       <!-- JEUX -->
       <div class="subject-card cursor-pointer bg-white rounded-[24px] border border-neutral-200 shadow-xs hover:shadow-md transition-all duration-300 p-5 flex flex-col gap-4" onclick="teacherGoToSubject('jeux')">
         <div class="flex items-center justify-between">
@@ -10598,12 +10672,21 @@ function changePassword(){
 
 
 
+// ===== ASTRELUNE (06/11/2026) : tableau de bord de la classe choisie =====
+function ouvrirTableauAstrelune(){
+  const f = document.getElementById('astrelune-tableau');
+  const classes = Object.keys(CLASSES).map(c => c + ':' + CLASSES[c].name).join(',');
+  const src = '../astrelune/tableau.html?cls=' + encodeURIComponent(teacherCls) + '&classes=' + encodeURIComponent(classes);
+  if (f.getAttribute('data-lazy-src') !== src) { f.setAttribute('data-lazy-src', src); f.removeAttribute('src'); }
+  showScreen('screen-teacher-astrelune');
+}
 // ===== TEACHER SUBJECT NAVIGATION =====
 function teacherGoToSubject(subject){
   if(subject==='francais') { renderFrancaisScreen(); showScreen('screen-teacher-francais'); }
   else if(subject==='maths') { renderMathsScreen(); showScreen('screen-teacher-maths'); }
   else if(subject==='eveil') { renderEveilScreen(); showScreen('screen-teacher-eveil'); }
   else if(subject==='ceb') { renderCEBScreen(); showScreen('screen-teacher-ceb'); }
+  else if(subject==='astrelune'){ ouvrirTableauAstrelune(); }
   else if(subject==='jeux'){ showScreen('screen-jeux'); renderJeuxMenu(); }
   else if(subject==='fiches'){ renderFichesScreenTeacher(); showScreen('screen-teacher-fiches'); }
   else if(subject==='gestion'){
@@ -33109,6 +33192,7 @@ function goToSubject(subject){
   if(subject==='maths') { renderMathsScreen(); showScreen('screen-maths'); }
   if(subject==='eveil') { renderEveilScreen(); showScreen('screen-eveil'); }
   if(subject==='ceb') { renderCEBScreen(); showScreen('screen-ceb'); }
+  if(subject==='astrelune'){ showScreen('screen-astrelune'); }
   if(subject==='jeux'){ showScreen('screen-jeux'); renderJeuxMenu(); }
   if(subject==='fiches'){ renderFichesScreen(); showScreen('screen-fiches'); }
   if(subject==='outils'){ showScreen('screen-outils'); }
@@ -51807,7 +51891,7 @@ init();
    son exercice que lorsque son écran (.screen) devient actif. */
 (function(){
   // Exercices avec animation continue : déchargés quand on quitte l'écran (économise CPU/batterie)
-  var UNLOAD_ON_LEAVE = ['polyedres_definitions.html','polyedres_caracteristiques.html','sci_mecanique_engrenages.html','kim_histoire.html'];
+  var UNLOAD_ON_LEAVE = ['astrelune/index.html','polyedres_definitions.html','polyedres_caracteristiques.html','sci_mecanique_engrenages.html','kim_histoire.html'];
   function isLoaded(f){ var c=f.getAttribute('src'); return !!c && c!=='about:blank'; }
   function load(f){ if(!isLoaded(f)) f.setAttribute('src', f.getAttribute('data-lazy-src')); }
   function framesOf(screen){
