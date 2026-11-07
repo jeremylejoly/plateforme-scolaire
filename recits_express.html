@@ -450,13 +450,6 @@
       </div>
       <div class="flex items-center gap-3">
         <h1 class="font-display font-black text-lg md:text-xl text-neutral-900 tracking-tight leading-none">Récits express</h1>
-        <div class="flex items-center gap-1.5 bg-neutral-100 px-2.5 py-1 rounded-xl border-2 border-neutral-900 shadow-neo-sm">
-          <label for="select-class-switcher" class="text-[11px] font-bold text-neutral-700 uppercase tracking-wide">Classe :</label>
-          <select id="select-class-switcher" onchange="switchClass(this.value)" class="text-xs font-bold bg-white text-neutral-900 rounded-lg px-2 py-0.5 border border-neutral-300 shadow-xs cursor-pointer focus:outline-none focus:ring-1 focus:ring-indigo-500">
-            <option value="lejoly">Mr Lejoly</option>
-            <option value="verryken">Mr Verryken</option>
-          </select>
-        </div>
         <button type="button" id="cloud-sync-status" onclick="cloudSyncNow()" class="text-[10px] font-semibold px-2 py-0.5 rounded-full border whitespace-nowrap bg-neutral-50 text-neutral-500 border-neutral-200">☁️ …</button>
       </div>
     </div>
@@ -2401,11 +2394,10 @@
     // REFONTE EN 3 VUES (11/2026) : Vue d'ensemble · Par élève · Par livre
     // Règles de Jérémy :
     //  - 1 seul exemplaire par livre : un livre « en cours » chez un élève est indisponible ;
-    //  - 2 livres « en cours » maximum par élève ;
+    //  - pas de maximum de livres « en cours » par élève (décision du 07/11) ;
     //  - « Lu le » = date du questionnaire (le résultat en ligne fait foi) ;
     //  - seule la note sur 16 est affichée.
     // =====================================================================
-    const RX_MAX_EN_COURS = 2;
     const rx = { view: 'overview', selectedBookId: null, ovCols: 'active', ovShow: 'score', bookFilter: 'all' };
     (function () {
       try {
@@ -2660,11 +2652,6 @@
           alert(`« ${book.title} » n'est pas disponible : il est chez ${borrower.student.name} depuis le ${rxFmtDate(borrower.data.borrowDate)}.\n\nIl redeviendra disponible quand ${borrower.student.name} l'aura lu (questionnaire fait) ou rendu.`);
           return false;
         }
-        const cur = getStudentCurrentReadings(sid).filter(c => String(c.bookId) !== String(bid));
-        if (cur.length >= RX_MAX_EN_COURS) {
-          alert(`${student.name} a déjà ${RX_MAX_EN_COURS} livres en cours :\n• ${cur.map(c => c.book.title).join('\n• ')}\n\nMarquez-en un comme lu ou rendu avant d'en donner un autre.`);
-          return false;
-        }
         if (rec && rec.status === 'completed' && !confirm(`${student.name} a déjà lu « ${book.title} ». Le remettre « en cours » ?`)) return false;
         state.readings[sid][bid] = {
           status: 'reading',
@@ -2851,7 +2838,7 @@
         });
         lus = getStudentFinishedBooks(s.id).length;
         const ec = getStudentCurrentReadings(s.id).length;
-        h += `<td class="rx-tot rx-tot-first">${lus}</td><td class="rx-tot">${rxFmtAvg(rxStudentAverage(s.id))}</td><td class="rx-tot" style="color:${ec ? '#92400e' : '#a3a3a3'}">${ec}/${RX_MAX_EN_COURS}</td></tr>`;
+        h += `<td class="rx-tot rx-tot-first">${lus}</td><td class="rx-tot">${rxFmtAvg(rxStudentAverage(s.id))}</td><td class="rx-tot" style="color:${ec ? '#92400e' : '#a3a3a3'}">${ec}</td></tr>`;
       });
       if (!rows.length) h += `<tr><td colspan="${cols.length + 4}" class="p-6 text-center text-neutral-400 italic">Aucun élève ni livre ne correspond à « ${esc(f)} ».</td></tr>`;
       h += `</tbody><tfoot><tr><th class="rx-col-st text-left text-xs">Lu par</th>`;
@@ -2926,7 +2913,7 @@
           <span class="rx-avatar">${esc((s.name || '?').charAt(0).toUpperCase())}</span>
           <span class="flex-1 font-semibold truncate">${esc(s.name)}</span>
           <span class="text-xs font-bold text-emerald-800">${lus}</span>
-          <span class="rx-pill" style="${ecStyle}">${ec}/${RX_MAX_EN_COURS}</span>
+          <span class="rx-pill" style="${ecStyle}" title="Livres en cours">${ec} 📖</span>
         </button>`;
       }).join('') || `<p class="text-xs text-neutral-400 italic p-3">${state.students.length ? 'Aucun élève ne correspond.' : 'Aucun élève enregistré.'}</p>`;
     }
@@ -2964,15 +2951,15 @@
         <div class="flex gap-2">
           <div class="rx-stat" style="background:#dcfce7;color:#14532d"><b>${finished.length}</b><span>lus</span></div>
           <div class="rx-stat" style="background:#eef2ff;color:#312e81"><b>${rxFmtAvg(avg)}</b><span>moy. /16</span></div>
-          <div class="rx-stat" style="background:#fef3c7;color:#78350f"><b>${cur.length}/${RX_MAX_EN_COURS}</b><span>en cours</span></div>
+          <div class="rx-stat" style="background:#fef3c7;color:#78350f"><b>${cur.length}</b><span>en cours</span></div>
         </div>
       </section>`;
 
       // En cours (2 emplacements)
       h += `<section class="neo-card bg-white p-4 flex flex-col gap-3">
-        <h3 class="rx-h3">En cours de lecture <span class="normal-case font-semibold text-neutral-500 tracking-normal">— ${RX_MAX_EN_COURS} maximum</span></h3>
+        <h3 class="rx-h3">En cours de lecture (${cur.length})</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">`;
-      for (let i = 0; i < RX_MAX_EN_COURS; i++) {
+      for (let i = 0; i <= cur.length; i++) { // tous les livres en cours + un emplacement libre
         const c = cur[i];
         if (c) {
           const days = rxDaysSince(c.data.borrowDate);
@@ -3139,7 +3126,7 @@
         const ec = getStudentCurrentReadings(s.id).length;
         const sid = esc(s.id), bid = esc(b.id);
         h += `<tr>
-          <td><button type="button" class="rx-st-link text-left" onclick="rxSelectStudent('${sid}')">${esc(s.name)}</button>${ec >= RX_MAX_EN_COURS && st !== 'reading' ? ' <span class="rx-pill" style="background:#fde68a;color:#78350f" title="Déjà 2 livres en cours">2/2</span>' : ''}</td>
+          <td><button type="button" class="rx-st-link text-left" onclick="rxSelectStudent('${sid}')">${esc(s.name)}</button>${ec && st !== 'reading' ? ` <span class="rx-pill" style="background:#fde68a;color:#78350f" title="Livres déjà en cours">${ec} 📖</span>` : ''}</td>
           <td><div class="rx-seg" role="group" aria-label="Statut de ${esc(s.name)}">
             <button type="button" class="${st === 'none' ? 'is-on' : ''}" ${q ? 'disabled' : ''} onclick="rxSetStatus('${sid}','${bid}','none')">—</button>
             <button type="button" class="${st === 'reading' ? 'is-on' : ''}" ${(takenByOther && st !== 'reading') || q ? 'disabled' : ''} onclick="rxSetStatus('${sid}','${bid}','reading')" style="${st === 'reading' ? 'background:#f59e0b;color:#fff' : ''}">En cours</button>
