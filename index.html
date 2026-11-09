@@ -34594,17 +34594,9 @@ function onGestionActivitiesSearch(val, ev) {
   gestionActivitiesSearch = val;
   // Pendant la saisie d'un accent (touche morte ^ ¨ sur Mac), on attend la fin (compositionend).
   if (ev && ev.isComposing) return;
-  const old = document.getElementById('gact-search-input');
-  const hadFocus = old && document.activeElement === old;
-  const pos = (old && hadFocus) ? old.selectionStart : null;
+  // Seules la liste et les compteurs sont redessinés : la barre de recherche garde le curseur.
+  if (val === '') { const i = document.getElementById('gact-search-input'); if (i) i.value = ''; }
   renderGestionActivities();
-  // Le rendu remplace la barre de recherche : on y remet le curseur pour pouvoir continuer à taper.
-  const inp = document.getElementById('gact-search-input');
-  if (inp && (hadFocus || val === '')) {
-    inp.focus();
-    const p = (pos === null || pos > inp.value.length) ? inp.value.length : pos;
-    try { inp.setSelectionRange(p, p); } catch (e) {}
-  }
 }
 
 // Recherche, filtre et catégories repliées propres à une classe : remis à zéro
@@ -34872,6 +34864,145 @@ document.addEventListener('click', function(e) {
 window.ptTeacherPreviewItem = ptTeacherPreviewItem;
 window.returnFromTeacherPreview = returnFromTeacherPreview;
 
+// ------------------------------------------------------------
+// Liste des activités — mise en page « liste compacte à interrupteurs » (09/11/2026, aperçu A choisi par Jérémy)
+// L'en-tête et la barre de recherche ne sont construits qu'une fois : taper ou filtrer ne met à jour
+// que les compteurs et la liste (#gact-stats, #gact-filters, #gact-list).
+// ------------------------------------------------------------
+const GACT_THEMES = [
+  ['Français', '#5B4FCF', '#ECEAFB'],
+  ['Mathématiques', '#1A6FA0', '#E3F0F8'],
+  ['Éveil', '#157F5F', '#E2F4EC'],
+  ['CEB', '#A8650F', '#FBF0DE'],
+  ['Jeux', '#9A5E10', '#FBF0DE'],
+  ['Fiches', '#B23A2B', '#FBE7E3']
+];
+function _gactTheme(cat) {
+  const t = GACT_THEMES.find(x => String(cat).indexOf(x[0]) !== -1);
+  return t ? { color: t[1], tint: t[2] } : { color: '#5B4FCF', tint: '#F4F1EA' };
+}
+function _gactNorm(s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+function _gactEsc(s) { return String(s == null ? '' : s).replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c])); }
+let _gactSections = [];
+let _gactItems = [];
+let _gactCats = [];
+function gactFold(ci) { if (_gactCats[ci] != null) toggleGestionActivitiesCategory(_gactCats[ci]); }
+window.gactFold = gactFold;
+
+function gactBulkSub(k, makeActive) {
+  const sec = _gactSections[k];
+  if (sec) bulkToggleSubCategory(sec.ids.slice(), makeActive);
+}
+function gactToggle(i) {
+  const it = _gactItems[i];
+  if (it) toggleActivityVisibility(it.id);
+}
+function gactPreview(i) {
+  const it = _gactItems[i];
+  if (it) teacherPreviewActivity(it.id, it.screen || '', it.fn || '', it.filename || '', it.label || it.id);
+}
+window.gactBulkSub = gactBulkSub;
+window.gactToggle = gactToggle;
+window.gactPreview = gactPreview;
+
+const GACT_CSS = `
+.gact{font-family:'Nunito',sans-serif;color:#1A1A2E;display:flex;flex-direction:column;gap:16px}
+.gact *{box-sizing:border-box}
+.gact-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;background:#fff;border:2.5px solid #1A1A2E;border-radius:18px;box-shadow:4px 4px 0 #1A1A2E;padding:18px 22px}
+.gact-title{margin:0;font-family:'Fredoka',sans-serif;font-size:24px;font-weight:700;color:#1A1A2E}
+.gact-chip{font-size:13px;font-weight:800;padding:3px 10px;border-radius:999px;background:#ECEAFB;color:#3F35A8;border:2px solid #5B4FCF}
+.gact-lead{margin:4px 0 0;font-size:14px;color:#4A4A5E}
+#gact-stats{min-width:230px;display:flex;flex-direction:column;gap:6px}
+.gact-big{font-family:'Fredoka',sans-serif;font-size:18px;font-weight:600}
+.gact-ok{color:#157F5F}
+.gact-bar{height:10px;border-radius:999px;background:#E9E5DA;border:2px solid #1A1A2E;overflow:hidden}
+.gact-bar>i{display:block;height:100%;background:#1A9E75}
+.gact-toolbar{position:sticky;top:0;z-index:20;display:flex;flex-wrap:wrap;gap:12px;align-items:center;background:#FDFBF7;padding:8px 0}
+.gact-search{flex:1 1 340px;display:flex;align-items:center;gap:10px;background:#fff;border:2.5px solid #1A1A2E;border-radius:14px;padding:0 6px 0 14px;height:48px;margin:0}
+.gact-search:focus-within{box-shadow:3px 3px 0 #5B4FCF}
+.gact .gact-search input{flex:1;width:auto;min-width:0;height:auto;border:none;outline:none;box-shadow:none;background:transparent;margin:0;padding:0;font-family:'Nunito',sans-serif;font-size:16px;color:#1A1A2E}
+.gact-clear{width:36px;height:36px;border:none;border-radius:10px;background:transparent;color:#4A4A5E;font-size:16px;cursor:pointer;display:none}
+.gact-clear:hover{background:#F1EEE6}
+.gact-seg{display:flex;background:#fff;border:2.5px solid #1A1A2E;border-radius:14px;padding:4px;gap:4px;height:48px}
+.gact-seg button{border:none;border-radius:10px;padding:0 14px;font-family:'Fredoka',sans-serif;font-size:15px;font-weight:600;cursor:pointer;background:transparent;color:#1A1A2E;white-space:nowrap}
+.gact-seg button:hover{background:#F1EEE6}
+.gact-seg button.on{background:#5B4FCF;color:#fff}
+.gact-cat{display:flex;flex-direction:column;gap:12px}
+.gact-cat-h{display:flex;align-items:center;gap:12px;padding:6px 2px 0}
+.gact-cat-h h2{margin:0;font-family:'Fredoka',sans-serif;font-size:22px;font-weight:700}
+.gact-cat-n{font-size:14px;font-weight:700;color:#4A4A5E}
+.gact-fold{margin-left:auto;height:34px;padding:0 12px;border-radius:10px;border:2px solid #1A1A2E;background:#fff;font-family:'Fredoka',sans-serif;font-size:14px;font-weight:600;color:#1A1A2E;cursor:pointer}
+.gact-fold:hover{background:#F1EEE6}
+.gact-card{background:#fff;border:2.5px solid #1A1A2E;border-radius:16px;box-shadow:4px 4px 0 #1A1A2E;overflow:hidden}
+.gact-card-h{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;border-bottom:2px solid #1A1A2E}
+.gact-card-h h3{margin:0;font-family:'Fredoka',sans-serif;font-size:17px;font-weight:600;color:#1A1A2E}
+.gact-pill{font-size:13px;font-weight:800;padding:2px 9px;border-radius:999px;background:#fff;border:2px solid #1A1A2E}
+.gact-mini{width:90px;height:8px;border-radius:999px;background:#E9E5DA;border:1.5px solid #1A1A2E;overflow:hidden}
+.gact-mini>i{display:block;height:100%;background:#1A9E75}
+.gact-bulk{height:34px;padding:0 12px;border-radius:10px;border:2px solid #1A1A2E;background:#fff;font-family:'Fredoka',sans-serif;font-size:14px;font-weight:600;cursor:pointer}
+.gact-bulk:hover{background:#F1EEE6}
+.gact-bulk.show{color:#157F5F}.gact-bulk.hide{color:#4A4A5E}
+.gact-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,430px),1fr))}
+.gact-row{display:flex;align-items:center;gap:10px;min-height:50px;padding:5px 14px;border-bottom:1px solid #E9E5DA;background:#fff}
+.gact-row:hover{background:#F7F5FF}
+.gact-row.off{background:#FAF8F3}
+.gact-row.off:hover{background:#F3F0E8}
+.gact-ic{width:28px;height:28px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;overflow:hidden}
+.gact-row.off .gact-ic{opacity:.55;filter:grayscale(1)}
+.gact-name{flex:1;min-width:0;font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gact-row.off .gact-name{color:#5E5E70}
+.gact-eye{width:36px;height:34px;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0;border:2px solid transparent;border-radius:10px;background:transparent;cursor:pointer;font-family:'Fredoka',sans-serif;font-size:13px;font-weight:600;color:#4A4A5E}
+.gact-eye:hover{border-color:#1A1A2E;background:#fff;color:#1A1A2E}
+.gact-state{width:58px;flex-shrink:0;text-align:right;font-size:13px;font-weight:800;color:#6B6B80}
+.gact-row:not(.off) .gact-state{color:#157F5F}
+.gact-sw{position:relative;width:52px;height:30px;flex-shrink:0;border-radius:999px;border:2.5px solid #1A1A2E;background:#D9D4C7;padding:0;margin:0;cursor:pointer;transition:background .15s}
+.gact-sw::after{content:'';position:absolute;top:2px;left:2px;width:21px;height:21px;border-radius:50%;background:#fff;border:2px solid #1A1A2E;box-sizing:border-box;transition:left .15s}
+.gact-sw.on{background:#1A9E75}
+.gact-sw.on::after{left:24px}
+.gact-sw:focus-visible,.gact-eye:focus-visible,.gact-bulk:focus-visible,.gact-seg button:focus-visible,.gact-fold:focus-visible{outline:3px solid #5B4FCF;outline-offset:2px}
+.gact-empty{text-align:center;padding:36px;background:#fff;border:2.5px dashed #1A1A2E;border-radius:18px;font-size:16px}
+.gact-site{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;padding:14px 18px;border:2px dashed #1A1A2E;border-radius:14px}
+.gact-site span{font-size:14px;color:#4A4A5E;font-weight:700}
+.gact-site button{height:40px;padding:0 14px;border-radius:10px;border:2.5px solid #1A1A2E;font-family:'Fredoka',sans-serif;font-size:15px;font-weight:600;box-shadow:3px 3px 0 #1A1A2E;cursor:pointer}
+.gact-site .s-on{background:#1A9E75;color:#fff}.gact-site .s-off{background:#fff;color:#B23A2B}
+`;
+
+function _gactShellHTML(classTitle) {
+  return `
+    <style>${GACT_CSS}</style>
+    <div id="gact-shell" class="gact">
+      <div class="gact-head">
+        <div style="min-width:0;">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <h3 class="gact-title">Activités des élèves</h3>
+            <span class="gact-chip">${_gactEsc(classTitle)}</span>
+          </div>
+          <p class="gact-lead">Interrupteur vert = l'activité est visible par les élèves. L'œil permet de la tester.</p>
+        </div>
+        <div id="gact-stats"></div>
+      </div>
+      <div class="gact-toolbar">
+        <label class="gact-search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1A2E" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>
+          <input type="text" id="gact-search-input" autocomplete="off" spellcheck="false" aria-label="Rechercher une activité"
+                 placeholder="Rechercher (ex. fraction, homophone, enquête, décimaux…)"
+                 oninput="onGestionActivitiesSearch(this.value, event)" oncompositionend="onGestionActivitiesSearch(this.value)" />
+          <button type="button" id="gact-search-clear" class="gact-clear" title="Effacer la recherche" aria-label="Effacer la recherche"
+                  onclick="onGestionActivitiesSearch('');document.getElementById('gact-search-input').focus();">✕</button>
+        </label>
+        <div id="gact-filters" class="gact-seg" role="group" aria-label="Filtrer"></div>
+      </div>
+      <div id="gact-list"></div>
+      <div class="gact-site">
+        <span>Actions sur tout le site (une confirmation est demandée)</span>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button type="button" class="s-on" onclick="bulkToggleAllSite(true)">Tout montrer (site)</button>
+          <button type="button" class="s-off" onclick="bulkToggleAllSite(false)">Tout masquer (site)</button>
+        </div>
+      </div>
+    </div>`;
+}
+
 function renderGestionActivities() {
   const container = document.getElementById('gestion-activities-container');
   if (!container) return;
@@ -34881,7 +35012,6 @@ function renderGestionActivities() {
   finally { window.__lockMemo = null; }
 }
 function _renderGestionActivitiesInner(container) {
-
   const currentCls = (typeof teacherCls !== 'undefined' && teacherCls) ? teacherCls : getCurrentClassId();
   const classTitle = currentCls === 'verryken' ? 'Classe de Mr Verryken' : 'Classe de Mr Lejoly';
 
@@ -34890,271 +35020,118 @@ function _renderGestionActivitiesInner(container) {
     gestionActivitiesClsShown = currentCls;
   }
 
+  // En-tête + barre de recherche : construits une seule fois (par classe)
+  let shell = container.querySelector('#gact-shell');
+  if (!shell || shell.getAttribute('data-cls') !== currentCls) {
+    container.innerHTML = _gactShellHTML(classTitle);
+    shell = container.querySelector('#gact-shell');
+    shell.setAttribute('data-cls', currentCls);
+  }
+  const inp = document.getElementById('gact-search-input');
+  if (inp && inp.value !== gestionActivitiesSearch && document.activeElement !== inp) inp.value = gestionActivitiesSearch;
+  const clr = document.getElementById('gact-search-clear');
+  if (clr) clr.style.display = gestionActivitiesSearch ? 'block' : 'none';
+
   const registry = getActivitiesMasterRegistry();
-  const lockedArr = getLockedActivities();
+  const query = _gactNorm(gestionActivitiesSearch).trim();
+  const f = gestionActivitiesFilter;
 
-  // Calcul des totaux globaux
-  let totalItemsCount = 0;
-  let activeItemsCount = 0;
-  let lockedItemsCount = 0;
+  let total = 0, visible = 0;
+  _gactSections = [];
+  _gactItems = [];
+  const cats = [];
 
-  registry.forEach(sec => {
-    sec.items.forEach(it => {
-      totalItemsCount++;
-      if (isActivityLocked(it.id)) {
-        lockedItemsCount++;
-      } else {
-        activeItemsCount++;
-      }
+  registry.forEach(section => {
+    const ids = section.items.map(it => it.id);
+    const states = section.items.map(it => !isActivityLocked(it.id));
+    const subVis = states.filter(Boolean).length;
+    total += ids.length; visible += subVis;
+
+    let cat = cats.find(c => c.name === section.cat);
+    if (!cat) { cat = { name: section.cat, vis: 0, total: 0, subs: [] }; cats.push(cat); }
+    cat.vis += subVis; cat.total += ids.length;
+
+    const catSub = _gactNorm(section.cat + ' ' + section.sub);
+    const rows = [];
+    section.items.forEach((item, j) => {
+      const on = states[j];
+      if (f === 'active' && !on) return;
+      if (f === 'locked' && on) return;
+      if (query && _gactNorm(item.label).indexOf(query) === -1 && _gactNorm(item.id).indexOf(query) === -1 && catSub.indexOf(query) === -1) return;
+      const i = _gactItems.push(item) - 1;
+      const lab = _gactEsc(item.label || item.id);
+      rows.push(`
+        <div class="gact-row${on ? '' : ' off'}">
+          <span class="gact-ic" aria-hidden="true">${item.icon || '📄'}</span>
+          <span class="gact-name" title="${lab} (${_gactEsc(item.id)})">${lab}</span>
+          <button type="button" class="gact-eye" onclick="gactPreview(${i})" title="Aperçu : tester l'activité" aria-label="Aperçu : ${lab}">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          </button>
+          <span class="gact-state">${on ? 'Visible' : 'Masquée'}</span>
+          <button type="button" class="gact-sw${on ? ' on' : ''}" role="switch" aria-checked="${on}" aria-label="Visible pour les élèves : ${lab}"
+                  title="${on ? 'Visible — cliquer pour masquer' : 'Masquée — cliquer pour montrer'}" onclick="gactToggle(${i})"></button>
+        </div>`);
     });
+    if (!rows.length) return;
+    const k = _gactSections.push({ ids }) - 1;
+    cat.subs.push({ name: section.sub, vis: subVis, total: ids.length, k, rows });
   });
 
-  // Groupement par catégorie principale
-  const groupedCats = {};
-  const query = (gestionActivitiesSearch || '').toLowerCase().trim();
+  // Compteurs
+  const pct = total ? Math.round(100 * visible / total) : 0;
+  const statsEl = document.getElementById('gact-stats');
+  if (statsEl) statsEl.innerHTML = `
+    <div class="gact-big"><span class="gact-ok">${visible} visible${visible > 1 ? 's' : ''}</span> sur ${total}</div>
+    <div class="gact-bar" aria-hidden="true"><i style="width:${pct}%"></i></div>`;
 
-  registry.forEach((section, sIdx) => {
-    // Filtrage des items
-    const filteredItems = section.items.filter(item => {
-      const isLocked = isActivityLocked(item.id);
-      
-      // Filtre statut
-      if (gestionActivitiesFilter === 'active' && isLocked) return false;
-      if (gestionActivitiesFilter === 'locked' && !isLocked) return false;
+  // Filtres
+  const filtersEl = document.getElementById('gact-filters');
+  if (filtersEl) {
+    const b = (key, label) => `<button type="button" class="${f === key ? 'on' : ''}" aria-pressed="${f === key}" onclick="setGestionActivitiesFilter('${key}')">${label}</button>`;
+    filtersEl.innerHTML = b('all', `Toutes (${total})`) + b('active', `Visibles (${visible})`) + b('locked', `Masquées (${total - visible})`);
+  }
 
-      // Filtre recherche
-      if (query) {
-        const matchLabel = (item.label || '').toLowerCase().includes(query);
-        const matchId = (item.id || '').toLowerCase().includes(query);
-        const matchCat = (section.cat || '').toLowerCase().includes(query);
-        const matchSub = (section.sub || '').toLowerCase().includes(query);
-        if (!matchLabel && !matchId && !matchCat && !matchSub) return false;
-      }
-
-      return true;
-    });
-
-    if (filteredItems.length > 0 || !query) {
-      if (!groupedCats[section.cat]) groupedCats[section.cat] = [];
-      groupedCats[section.cat].push({
-        ...section,
-        sIdx,
-        allItems: section.items,
-        filteredItems
+  // Liste
+  let html = '';
+  _gactCats = cats.map(c => c.name);
+  cats.forEach((cat, ci) => {
+    if (!cat.subs.length) return;
+    const th = _gactTheme(cat.name);
+    const collapsed = !query && !!gestionActivitiesCollapsed[cat.name];
+    html += `
+      <section class="gact-cat">
+        <div class="gact-cat-h">
+          <h2 style="color:${th.color};">${_gactEsc(cat.name)}</h2>
+          <span class="gact-cat-n">${cat.vis} / ${cat.total} visibles</span>
+          <button type="button" class="gact-fold" aria-expanded="${!collapsed}" onclick="gactFold(${ci})">${collapsed ? '▸ Déplier' : '▾ Replier'}</button>
+        </div>`;
+    if (!collapsed) {
+      cat.subs.forEach(sub => {
+        const sp = sub.total ? Math.round(100 * sub.vis / sub.total) : 0;
+        html += `
+        <div class="gact-card">
+          <div class="gact-card-h" style="background:${th.tint};">
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+              <h3>${_gactEsc(sub.name)}</h3>
+              <span class="gact-pill">${sub.vis} / ${sub.total}</span>
+              <span class="gact-mini" aria-hidden="true"><i style="width:${sp}%"></i></span>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button type="button" class="gact-bulk show" onclick="gactBulkSub(${sub.k}, true)">Tout montrer</button>
+              <button type="button" class="gact-bulk hide" onclick="gactBulkSub(${sub.k}, false)">Tout masquer</button>
+            </div>
+          </div>
+          <div class="gact-grid">${sub.rows.join('')}</div>
+        </div>`;
       });
     }
+    html += `</section>`;
   });
-
-  // Construction du HTML
-  let html = `
-    <!-- CARTE D'EN-TÊTE & STATISTIQUES -->
-    <div class="card" style="padding:1.25rem;margin-bottom:1.25rem;background:linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);border:1.5px solid #e2e8f0;border-radius:18px;box-shadow:0 4px 20px rgba(0,0,0,0.04);">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px;margin-bottom:1rem;">
-        <div>
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap;">
-            <h3 style="font-size:19px;font-weight:800;color:#1e293b;margin:0;font-family:'Fredoka',sans-serif;">🎯 Liste de toutes les activités</h3>
-            <span style="font-size:12px;padding:3px 10px;background:#e0e7ff;color:#4338ca;border-radius:9999px;font-weight:700;font-family:'Inter',sans-serif;">${classTitle}</span>
-          </div>
-          <p style="font-size:13px;color:#64748b;margin:0;font-family:'Inter',sans-serif;">
-            Gérez en un clic ce que vos élèves peuvent voir ou faire sur le site.
-          </p>
-        </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <button onclick="bulkToggleAllSite(true)" class="btn btn-sm" style="background:#10b981;color:white;border:none;border-radius:10px;font-weight:700;font-size:12px;padding:7px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s;box-shadow:0 2px 6px rgba(16,185,129,0.25);" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'">
-            ✅ Tout activer (Site)
-          </button>
-          <button onclick="bulkToggleAllSite(false)" class="btn btn-sm btn-danger" style="border-radius:10px;font-weight:700;font-size:12px;padding:7px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s;">
-            🔒 Tout masquer (Site)
-          </button>
-        </div>
-      </div>
-
-      <!-- Compteurs en direct -->
-      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding:10px 14px;background:#f1f5f9;border-radius:12px;font-size:13px;font-weight:700;font-family:'Inter',sans-serif;">
-        <span style="color:#0f172a;display:inline-flex;align-items:center;gap:5px;">📊 Total : <strong>${totalItemsCount}</strong> activités</span>
-        <span style="color:#cbd5e1;">•</span>
-        <span style="color:#059669;display:inline-flex;align-items:center;gap:5px;">🟢 <strong>${activeItemsCount}</strong> actives</span>
-        <span style="color:#cbd5e1;">•</span>
-        <span style="color:#dc2626;display:inline-flex;align-items:center;gap:5px;">🔴 <strong>${lockedItemsCount}</strong> masquées</span>
-      </div>
-    </div>
-
-    <!-- BARRE D'OUTILS : RECHERCHE & FILTRES -->
-    <div style="display:flex;gap:12px;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center;justify-content:space-between;">
-      <!-- Champ de recherche -->
-      <div style="position:relative;flex:1;min-width:260px;">
-        <input type="text" id="gact-search-input" value="${escapeHTML(gestionActivitiesSearch)}" 
-               placeholder="🔍 Rechercher un exercice, un jeu, un mot-clé (ex: fraction, verbe, tétraèdre)..." 
-               oninput="onGestionActivitiesSearch(this.value, event)" oncompositionend="onGestionActivitiesSearch(this.value)" 
-               style="width:100%;padding:10px 38px 10px 14px;border:1.5px solid #cbd5e1;border-radius:12px;font-size:14px;background:#ffffff;outline:none;font-family:'Inter',sans-serif;margin-bottom:0;transition:border-color .15s;" 
-               onfocus="this.style.borderColor='var(--purple)'" onblur="this.style.borderColor='#cbd5e1'" />
-        ${gestionActivitiesSearch ? `
-          <button onclick="onGestionActivitiesSearch('')" title="Effacer la recherche" 
-                  style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:#94a3b8;font-size:16px;cursor:pointer;padding:4px 6px;line-height:1;">
-            ✕
-          </button>` : ''}
-      </div>
-
-      <!-- Filtres d'état -->
-      <div style="display:flex;gap:6px;flex-wrap:wrap;">
-        <button onclick="setGestionActivitiesFilter('all')" class="panel-tab ${gestionActivitiesFilter==='all'?'active':''}" style="font-size:13px;padding:7px 14px;border-radius:9999px;font-family:'Fredoka',sans-serif;">
-          Tous (${totalItemsCount})
-        </button>
-        <button onclick="setGestionActivitiesFilter('active')" class="panel-tab ${gestionActivitiesFilter==='active'?'active':''}" style="font-size:13px;padding:7px 14px;border-radius:9999px;font-family:'Fredoka',sans-serif;">
-          🟢 Actifs (${activeCount = activeItemsCount})
-        </button>
-        <button onclick="setGestionActivitiesFilter('locked')" class="panel-tab ${gestionActivitiesFilter==='locked'?'active':''}" style="font-size:13px;padding:7px 14px;border-radius:9999px;font-family:'Fredoka',sans-serif;">
-          🔴 Masqués (${lockedCount = lockedItemsCount})
-        </button>
-      </div>
-    </div>
-  `;
-
-  // Thèmes et couleurs des catégories principales
-  const catThemes = {
-    '📖 Français': { color: '#4f46e5', bg: '#eef2ff', border: '#c7d2fe' },
-    '📐 Mathématiques': { color: '#0284c7', bg: '#f0f9ff', border: '#bae6fd' },
-    '🌍 Éveil': { color: '#059669', bg: '#ecfdf5', border: '#a7f3d0' },
-    '🎮 Jeux & Réflexion': { color: '#d97706', bg: '#fffbeb', border: '#fde68a' },
-    '📄 Fiches pédagogiques': { color: '#e11d48', bg: '#fff1f2', border: '#fecdd3' }
-  };
-
-  let renderedCategoriesCount = 0;
-
-  Object.entries(groupedCats).forEach(([catName, sections]) => {
-    // Calculer stats de la catégorie
-    let catTotal = 0;
-    let catActive = 0;
-    let catLocked = 0;
-    let hasMatchingItems = false;
-
-    sections.forEach(sec => {
-      catTotal += sec.allItems.length;
-      sec.allItems.forEach(it => {
-        if (isActivityLocked(it.id)) catLocked++;
-        else catActive++;
-      });
-      if (sec.filteredItems.length > 0) hasMatchingItems = true;
-    });
-
-    if (!hasMatchingItems && query) return;
-
-    renderedCategoriesCount++;
-    const theme = catThemes[catName] || { color: '#6366f1', bg: '#f8fafc', border: '#e2e8f0' };
-    const isCollapsed = !!gestionActivitiesCollapsed[catName];
-
-    html += `
-      <div class="card" style="margin-bottom:1.5rem;padding:0;overflow:hidden;border:1.5px solid ${theme.border};border-radius:18px;box-shadow:0 4px 14px rgba(0,0,0,0.03);">
-        <!-- EN-TÊTE CATÉGORIE MAJEURE -->
-        <div onclick="toggleGestionActivitiesCategory('${catName.replace(/'/g, "\\'")}')" 
-             style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:${theme.bg};cursor:pointer;user-select:none;border-bottom:${isCollapsed ? 'none' : '1px solid ' + theme.border};">
-          <div style="display:flex;align-items:center;gap:10px;">
-            <span style="font-size:18px;font-weight:800;color:${theme.color};font-family:'Fredoka',sans-serif;">${catName}</span>
-            <span style="font-size:12px;font-weight:700;padding:2px 8px;border-radius:12px;background:#ffffff;color:${theme.color};border:1px solid ${theme.border};font-family:'Inter',sans-serif;">
-              ${catActive} / ${catTotal} actifs
-            </span>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;">
-            <span style="font-size:13px;font-weight:700;color:${theme.color};">${isCollapsed ? '▶ Afficher' : '▼ Masquer'}</span>
-          </div>
-        </div>
-
-        ${!isCollapsed ? `
-        <div style="padding:14px 16px;display:flex;flex-direction:column;gap:14px;background:#ffffff;">
-          ${sections.map(section => {
-            if (section.filteredItems.length === 0 && query) return '';
-
-            const subItemIds = section.allItems.map(it => it.id);
-            const subActiveCount = section.allItems.filter(it => !isActivityLocked(it.id)).length;
-            const subTotalCount = section.allItems.length;
-
-            return `
-              <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:12px 14px;margin-bottom:12px;">
-                <!-- Sous-en-tête de section -->
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
-                  <div style="display:flex;align-items:center;gap:8px;">
-                    <span style="font-weight:800;font-size:14px;color:#1e293b;font-family:'Fredoka',sans-serif;">${section.sub}</span>
-                    <span style="font-size:11px;font-weight:700;padding:2px 6px;border-radius:8px;background:${subActiveCount === subTotalCount ? '#dcfce7' : subActiveCount === 0 ? '#fee2e2' : '#fef3c7'};color:${subActiveCount === subTotalCount ? '#15803d' : subActiveCount === 0 ? '#b91c1c' : '#b45309'};">
-                      ${subActiveCount} / ${subTotalCount} actifs
-                    </span>
-                  </div>
-                  <div style="display:flex;gap:6px;">
-                    <button onclick="bulkToggleSubCategory(${JSON.stringify(subItemIds).replace(/"/g, '&quot;')}, true)" 
-                            class="btn-xs" style="background:#ffffff;border:1px solid #10b981;color:#059669;padding:3px 8px;border-radius:6px;font-weight:700;font-size:11px;cursor:pointer;transition:all .15s;" 
-                            onmouseover="this.style.background='#dcfce7'" onmouseout="this.style.background='#ffffff'">
-                      Tout activer
-                    </button>
-                    <button onclick="bulkToggleSubCategory(${JSON.stringify(subItemIds).replace(/"/g, '&quot;')}, false)" 
-                            class="btn-xs" style="background:#ffffff;border:1px solid #ef4444;color:#dc2626;padding:3px 8px;border-radius:6px;font-weight:700;font-size:11px;cursor:pointer;transition:all .15s;" 
-                            onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='#ffffff'">
-                      Tout masquer
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Lignes d'activités -->
-                <div style="display:flex;flex-direction:column;gap:6px;">
-                  ${section.filteredItems.map(item => {
-                    const isLocked = isActivityLocked(item.id);
-                    const btnClass = isLocked ? 'locked' : 'active';
-                    const btnLabel = isLocked ? '🔒 Masqué — Activer' : '✅ Actif — Masquer';
-                    const itemIcon = item.icon || '📄';
-
-                    return `
-                      <div class="manage-item" style="background:#ffffff;border:1px solid ${isLocked ? '#fed7aa' : '#e2e8f0'};border-radius:10px;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;opacity:${isLocked ? '0.85' : '1'};flex-wrap:wrap;">
-                        <!-- Icône & Titre -->
-                        <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0;">
-                          <div style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;overflow:hidden;">
-                            ${itemIcon}
-                          </div>
-                          <div style="flex:1;min-width:0;">
-                            <div class="item-name" style="font-size:13.5px;font-weight:700;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Fredoka',sans-serif;">
-                              ${item.label}
-                            </div>
-                            <div style="display:flex;gap:6px;align-items:center;margin-top:2px;">
-                              <span style="font-size:10px;font-family:monospace;color:#64748b;background:#f1f5f9;padding:1px 5px;border-radius:4px;">${item.id}</span>
-                              <span style="font-size:10px;font-weight:700;color:${isLocked ? '#dc2626' : '#16a34a'};">${isLocked ? '🔴 Masqué aux élèves' : '🟢 Visible aux élèves'}</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <!-- Boutons Aperçu & Bascule -->
-                        <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
-                          <button class="btn-preview" onclick="teacherPreviewActivity('${item.id}', '${item.screen || ''}', '${(item.fn || '').replace(/'/g, "\\'")}', '${item.filename || ''}', '${item.label.replace(/'/g, "\\'")}')" 
-                                  title="Tester / voir l'activité immédiatement">
-                            👁️ Aperçu
-                          </button>
-                          <button class="toggle-activity-btn ${btnClass}" onclick="toggleActivityVisibility('${item.id}')">
-                            ${btnLabel}
-                          </button>
-                        </div>
-                      </div>
-                    `;
-                  }).join('')}
-                </div>
-              </div>
-            `;
-          }).join('')}
-        </div>` : ''}
-      </div>
-    `;
-  });
-
-  if (renderedCategoriesCount === 0) {
-    html += `
-      <div class="card text-center" style="padding:2.5rem;text-align:center;color:#64748b;">
-        <div style="font-size:32px;margin-bottom:8px;">🔍</div>
-        <div style="font-size:16px;font-weight:700;color:#1e293b;margin-bottom:4px;">Aucune activité ne correspond à vos critères</div>
-        <p style="font-size:13px;margin:0;">Essayez un autre mot-clé ou modifiez les filtres d'état.</p>
-      </div>
-    `;
+  if (!html) {
+    html = `<div class="gact-empty">Aucune activité ne correspond. Essaie un autre mot ou change le filtre.</div>`;
   }
-
-  container.innerHTML = html;
-
-  if (typeof window.replaceEmojisOnPage === 'function') {
-    setTimeout(() => { window.replaceEmojisOnPage(container); }, 30);
-  }
+  const listEl = document.getElementById('gact-list');
+  if (listEl) listEl.innerHTML = html;
 }
 
 
