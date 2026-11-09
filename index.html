@@ -8728,7 +8728,21 @@ function getAllStudents() {
   return all;
 }
 
+// PERF (09/11/2026) : loadBooks() était appelé des milliers de fois (isActivityLocked) et retriait
+// chaque fois tous les livres avec localeCompare → plusieurs secondes de blocage. Le résultat trié est
+// gardé tant que livres.js et la copie locale (lq_books) ne changent pas.
+var _loadBooksCache = { key: null, list: null };
+const _booksCollator = new Intl.Collator('fr', { sensitivity: 'base', numeric: true });
 function loadBooks() {
+  let raw = null;
+  try { raw = localStorage.getItem('lq_books'); } catch (e) {}
+  const key = ((window.LIVRES && window.LIVRES.length) || 0) + '|' + (raw || '');
+  if (_loadBooksCache.key === key && _loadBooksCache.list) return _loadBooksCache.list.slice();
+  const list = _loadBooksUncached();
+  _loadBooksCache = { key, list };
+  return list.slice();
+}
+function _loadBooksUncached() {
   // livres.js est la référence : une ancienne copie locale (lq_books) ne doit jamais masquer
   // les questionnaires ajoutés depuis. On n'en garde que les livres créés à la main (id absent de livres.js).
   if(window.LIVRES && window.LIVRES.length > 0) {
@@ -8738,7 +8752,7 @@ function loadBooks() {
       const known = new Set(window.LIVRES.map(b => b.id));
       if (Array.isArray(saved)) custom = saved.filter(b => b && b.id && !known.has(b.id));
     } catch(e) {}
-    return window.LIVRES.slice().concat(custom).sort((a, b) => (a.title || '').localeCompare(b.title || '', 'fr', { sensitivity: 'base', numeric: true }));
+    return window.LIVRES.slice().concat(custom).sort((a, b) => _booksCollator.compare(a.title || '', b.title || ''));
   }
   const saved = localStorage.getItem('lq_books');
   if(saved) return JSON.parse(saved).sort((a, b) => (a.title || '').localeCompare(b.title || '', 'fr', { sensitivity: 'base', numeric: true }));
@@ -11301,6 +11315,16 @@ function getDefaultLockedActivities(cls) {
 
 function getLockedActivities(targetCls){
   const cls = targetCls || getCurrentClassId();
+  // PERF : pendant le rendu de la liste des activités, la liste n'est lue qu'une fois (lecture seule)
+  const memo = window.__lockMemo;
+  if (memo) {
+    const k = '\u0000locked:' + cls;
+    if (!memo.has(k)) memo.set(k, _getLockedActivitiesImpl(cls));
+    return memo.get(k);
+  }
+  return _getLockedActivitiesImpl(cls);
+}
+function _getLockedActivitiesImpl(cls){
   const s = localStorage.getItem('lq_locked_activities_' + cls) || (cls === 'lejoly' ? localStorage.getItem('lq_locked_activities') : null);
   let arr = s ? JSON.parse(s) : getDefaultLockedActivities(cls);
   if (!localStorage.getItem('lq_locked_init_nonogram_' + cls)) {
@@ -11730,7 +11754,17 @@ function isProposedInPlan(id) {
   return false;
 }
 
+// PERF (09/11/2026) : pendant le rendu de la liste des activités (gestion), le statut de chaque
+// activité est calculé une seule fois (window.__lockMemo, ouvert puis refermé par le rendu).
 function isActivityLocked(id){
+  const memo = window.__lockMemo;
+  if (!memo) return _isActivityLockedImpl(id);
+  if (memo.has(id)) return memo.get(id);
+  const v = _isActivityLockedImpl(id);
+  memo.set(id, v);
+  return v;
+}
+function _isActivityLockedImpl(id){
   if (typeof state !== 'undefined' && state.role === 'student' && isProposedInPlan(id)) {
     return false;
   }
@@ -34841,6 +34875,12 @@ window.returnFromTeacherPreview = returnFromTeacherPreview;
 function renderGestionActivities() {
   const container = document.getElementById('gestion-activities-container');
   if (!container) return;
+  // PERF : statut de chaque activité calculé une seule fois pendant ce rendu
+  window.__lockMemo = new Map();
+  try { _renderGestionActivitiesInner(container); }
+  finally { window.__lockMemo = null; }
+}
+function _renderGestionActivitiesInner(container) {
 
   const currentCls = (typeof teacherCls !== 'undefined' && teacherCls) ? teacherCls : getCurrentClassId();
   const classTitle = currentCls === 'verryken' ? 'Classe de Mr Verryken' : 'Classe de Mr Lejoly';
