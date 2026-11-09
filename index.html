@@ -33445,79 +33445,185 @@ function doRenderGestionResults(){
   if (tb) tb.innerHTML = html;
 }
 
+// ------------------------------------------------------------
+// Gestion › Élèves — « cartes + panneau » (09/11/2026, aperçu B choisi par Jérémy)
+// Cartes des élèves (+ carte « Ajouter un élève »), panneau à droite : ajout (prénom + code)
+// ou modification du code d'un élève ; suppression dans une « zone sensible » avec confirmation.
+// Le prénom ne se modifie pas (décision de Jérémy : jamais en cours d'année ; tout est rangé sous le prénom).
+// ------------------------------------------------------------
+let gstSel = '';          // '' = ajout ; sinon prénom de l'élève choisi
+let gstConfirm = false;
+let gstMsg = null;        // { text, ok }
+let _gstList = [];
+let gstDraft = null;      // ce qui a été tapé, gardé si l'enregistrement est refusé
+function _gstEsc(s) { return String(s == null ? '' : s).replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c])); }
+function _gstRandomPin(students, except) {
+  const used = new Set(students.filter(s => s.name !== except).map(s => String(s.code)));
+  let p, n = 0;
+  do { p = String(1000 + Math.floor(Math.random() * 9000)); } while (used.has(p) && ++n < 200);
+  return p;
+}
+function gstPick(i) { const s = _gstList[i]; if (!s) return; gstSel = s.name; gstConfirm = false; gstMsg = null; gstDraft = null; renderStudentsManageNew(); }
+function gstStartAdd() { gstSel = ''; gstConfirm = false; gstMsg = null; gstDraft = null; renderStudentsManageNew(); setTimeout(() => { const i = document.getElementById('gst-name'); if (i) i.focus(); }, 0); }
+function gstRandom() {
+  const pin = document.getElementById('gst-pin');
+  if (pin) { pin.value = _gstRandomPin(getClassStudents(teacherCls), gstSel); pin.focus(); }
+}
+function gstSave() {
+  const students = getClassStudents(teacherCls);
+  const pinEl = document.getElementById('gst-pin');
+  const pin = (pinEl ? pinEl.value : '').replace(/\D/g, '');
+  const nameEl0 = document.getElementById('gst-name');
+  gstDraft = { name: nameEl0 ? nameEl0.value : '', pin: pinEl ? pinEl.value : '' };
+  const say = (text, ok) => { gstMsg = { text, ok }; renderStudentsManageNew(); };
+  if (!/^\d{4}$/.test(pin)) return say('Le code doit avoir exactement 4 chiffres (ou clique sur « Au hasard »).', false);
+  if (gstSel) {
+    const i = students.findIndex(s => s.name === gstSel);
+    if (i === -1) { gstSel = ''; return say('Cet élève n\'existe plus.', false); }
+    if (students.some(s => s.name !== gstSel && String(s.code) === pin)) return say('Ce code est déjà utilisé par un autre élève.', false);
+    if (String(students[i].code) === pin) return say('Rien n\'a changé.', true);
+    students[i].code = pin;
+    saveClassStudents(teacherCls, students);
+    gstDraft = null;
+    return say('Nouveau code enregistré pour ' + gstSel + '.', true);
+  }
+  const nameEl = document.getElementById('gst-name');
+  const name = (nameEl ? nameEl.value : '').trim().replace(/\s+/g, ' ');
+  if (!name) return say('Écris le prénom de l\'élève.', false);
+  if (students.some(s => s.name.toLowerCase() === name.toLowerCase())) return say('Il y a déjà un élève qui s\'appelle ' + name + '.', false);
+  if (students.some(s => String(s.code) === pin)) return say('Ce code est déjà utilisé par un autre élève.', false);
+  students.push({ name, code: pin });
+  saveClassStudents(teacherCls, students);
+  gstDraft = null;
+  gstSel = name;
+  gstMsg = { text: name + ' a été ajouté·e. Son code : ' + pin + '.', ok: true };
+  renderStudentsManageNew();
+  if (typeof doRenderGestionResults === 'function') { try { doRenderGestionResults(); } catch (e) {} }
+}
+function gstAskDelete(v) { gstConfirm = !!v; gstMsg = null; renderStudentsManageNew(); }
+function gstDelete() {
+  const students = getClassStudents(teacherCls);
+  const i = students.findIndex(s => s.name === gstSel);
+  if (i !== -1) {
+    students.splice(i, 1);
+    saveClassStudents(teacherCls, students);
+  }
+  const gone = gstSel;
+  gstSel = ''; gstConfirm = false; gstDraft = null;
+  gstMsg = { text: gone + ' a été retiré·e de la classe.', ok: true };
+  renderStudentsManageNew();
+  if (typeof doRenderGestionResults === 'function') { try { doRenderGestionResults(); } catch (e) {} }
+}
+function gstKey(ev) { if (ev && ev.key === 'Enter') { ev.preventDefault(); gstSave(); } }
+window.gstPick = gstPick; window.gstStartAdd = gstStartAdd; window.gstRandom = gstRandom; window.gstSave = gstSave;
+window.gstAskDelete = gstAskDelete; window.gstDelete = gstDelete; window.gstKey = gstKey;
+
+const GST_CSS = `
+.gst{font-family:'Nunito',sans-serif;color:#1A1A2E;display:flex;flex-direction:column;gap:16px}
+.gst *{box-sizing:border-box}
+.gst-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.gst-title{margin:0;font-family:'Fredoka',sans-serif;font-size:24px;font-weight:700;color:#1A1A2E}
+.gst-chip{font-size:13px;font-weight:800;padding:3px 10px;border-radius:999px;background:#ECEAFB;color:#3F35A8;border:2px solid #5B4FCF}
+.gst-count{font-size:15px;font-weight:700;color:#4A4A5E}
+.gst-body{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start}
+.gst-grid{flex:999 1 520px;min-width:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+.gst-card{min-height:62px;display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:14px;border:2.5px solid #1A1A2E;background:#fff;box-shadow:3px 3px 0 #1A1A2E;cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;color:#1A1A2E;margin:0;transition:transform .08s}
+.gst-card:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 #1A1A2E}
+.gst-card.on{background:#ECEAFB;box-shadow:4px 4px 0 #5B4FCF}
+.gst-av{width:38px;height:38px;flex-shrink:0;border-radius:50%;border:2px solid #1A1A2E;background:#ECEAFB;color:#3F35A8;display:flex;align-items:center;justify-content:center;font-family:'Fredoka',sans-serif;font-weight:700}
+.gst-card.on .gst-av{background:#fff}
+.gst-nm{font-family:'Fredoka',sans-serif;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gst-add{min-height:62px;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:14px;border:2.5px dashed #5B4FCF;background:#fff;color:#3F35A8;font-family:'Fredoka',sans-serif;font-size:16px;font-weight:600;cursor:pointer;margin:0}
+.gst-add.on,.gst-add:hover{background:#ECEAFB}
+.gst-panel{flex:1 1 320px;max-width:100%;background:#fff;border:2.5px solid #1A1A2E;border-radius:18px;box-shadow:4px 4px 0 #1A1A2E;padding:18px;display:flex;flex-direction:column;gap:14px;position:sticky;top:12px}
+.gst-panel h4{margin:0;font-family:'Fredoka',sans-serif;font-size:20px;font-weight:700;color:#1A1A2E}
+.gst-lbl{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:800;color:#4A4A5E;margin:0}
+.gst .gst-in{height:46px;width:100%;padding:0 12px;border:2px solid #1A1A2E;border-radius:10px;font-family:'Fredoka',sans-serif;font-size:17px;color:#1A1A2E;background:#fff;margin:0;box-shadow:none}
+.gst .gst-in:focus{outline:none;border-color:#5B4FCF;box-shadow:3px 3px 0 #5B4FCF}
+.gst .gst-pin{font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;letter-spacing:.3em}
+.gst-row{display:flex;gap:8px}
+.gst-btn{height:46px;padding:0 12px;border-radius:10px;border:2px solid #1A1A2E;background:#fff;font-family:'Fredoka',sans-serif;font-size:14px;font-weight:600;color:#3F35A8;cursor:pointer;white-space:nowrap}
+.gst-btn:hover{background:#F1EEE6}
+.gst-main{height:48px;border-radius:12px;border:2.5px solid #1A1A2E;background:#5B4FCF;color:#fff;font-family:'Fredoka',sans-serif;font-size:16px;font-weight:600;box-shadow:3px 3px 0 #1A1A2E;cursor:pointer}
+.gst-main:hover{background:#4A3FBD}
+.gst-fixed{font-family:'Fredoka',sans-serif;font-size:18px;font-weight:600;padding:8px 0 0}
+.gst-msg{font-size:14px;font-weight:700}
+.gst-danger{border-top:2px dashed #E9E5DA;padding-top:12px;display:flex;flex-direction:column;gap:8px}
+.gst-danger .t{font-size:13px;font-weight:800;color:#4A4A5E}
+.gst-del{height:42px;border-radius:10px;border:2px solid #B23A2B;background:#fff;color:#B23A2B;font-family:'Fredoka',sans-serif;font-size:15px;font-weight:600;cursor:pointer}
+.gst-del:hover{background:#FBE7E3}
+.gst-confirm{background:#FBE7E3;border:2px solid #B23A2B;border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px}
+.gst-confirm span{font-size:14px;font-weight:700;color:#8E2B1F}
+.gst-confirm .b{display:flex;gap:8px}
+.gst-confirm button{flex:1;height:40px;border-radius:10px;border:2px solid #1A1A2E;font-family:'Fredoka',sans-serif;font-size:14px;font-weight:600;cursor:pointer}
+.gst-card:focus-visible,.gst-add:focus-visible,.gst-btn:focus-visible,.gst-main:focus-visible,.gst-del:focus-visible,.gst-confirm button:focus-visible{outline:3px solid #5B4FCF;outline-offset:2px}
+`;
+
 function renderStudentsManageNew(){
-  const students=getClassStudents(teacherCls).slice().sort((a,b)=>a.name.localeCompare(b.name,'fr'));
-  let html=`<div class="card">
-    <div class="card-title">👤 Élèves — ${CLASSES[teacherCls].name}</div>
-    <div class="student-manage-grid">`;
-  
-  if(students.length === 0){
-    html += `<p style="grid-column:1/-1;color:var(--muted);font-size:14px;padding:1rem 0;">Aucun élève enregistré pour le moment dans cette classe. Utilise le formulaire ci-dessous pour ajouter tes premiers élèves.</p>`;
-  } else {
-    students.forEach((s,i)=>{
-      html+=`<div class="student-manage-card">
-        <div class="student-avatar">${s.name[0]}</div>
-        <div class="student-manage-info">
-          <div class="student-name">${s.name}</div>
-          <div class="student-pin-display">PIN : <strong>${s.code}</strong></div>
-        </div>
-        <div class="student-manage-actions">
-          <button class="btn btn-sm" onclick="changeStudentPin(${i})" title="Modifier le PIN">✏️</button>
-          <button class="btn btn-sm btn-delete" onclick="deleteStudentNew(${i})" title="Supprimer l'élève">🗑️</button>
-        </div>
+  const box = document.getElementById('students-manage-new');
+  if (!box) return;
+  const cls = teacherCls || 'lejoly';
+  const clsName = (typeof CLASSES !== 'undefined' && CLASSES[cls] && CLASSES[cls].name) ? CLASSES[cls].name : cls;
+  const students = getClassStudents(teacherCls).slice().sort((a, b) => a.name.localeCompare(b.name, 'fr'));
+  _gstList = students;
+  if (gstSel && !students.some(s => s.name === gstSel)) { gstSel = ''; gstConfirm = false; }
+  const cur = students.find(s => s.name === gstSel);
+
+  let cards = `<button type="button" class="gst-add${cur ? '' : ' on'}" onclick="gstStartAdd()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3F35A8" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Ajouter un élève</button>`;
+  students.forEach((s, i) => {
+    const on = cur && s.name === cur.name;
+    cards += `<button type="button" class="gst-card${on ? ' on' : ''}" aria-pressed="${on ? 'true' : 'false'}" onclick="gstPick(${i})">
+      <span class="gst-av" aria-hidden="true">${_gstEsc(s.name.charAt(0))}</span><span class="gst-nm">${_gstEsc(s.name)}</span></button>`;
+  });
+
+  const msg = gstMsg ? `<div class="gst-msg" role="status" style="color:${gstMsg.ok ? '#157F5F' : '#B23A2B'}">${_gstEsc(gstMsg.text)}</div>` : '';
+  let panel;
+  if (cur) {
+    panel = `<h4>${_gstEsc(cur.name)}</h4>
+      <label class="gst-lbl">Code de connexion (4 chiffres)
+        <span class="gst-row">
+          <input id="gst-pin" class="gst-in gst-pin" type="text" inputmode="numeric" maxlength="4" autocomplete="off" value="${_gstEsc(gstDraft ? gstDraft.pin : cur.code)}" onkeydown="gstKey(event)" oninput="this.value=this.value.replace(/\\D/g,'').slice(0,4)" />
+          <button type="button" class="gst-btn" onclick="gstRandom()">Au hasard</button>
+        </span>
+      </label>
+      ${msg}
+      <button type="button" class="gst-main" onclick="gstSave()">Enregistrer le code</button>
+      <div class="gst-danger">
+        <div class="t">Zone sensible</div>
+        ${gstConfirm ? `<div class="gst-confirm">
+            <span>Retirer ${_gstEsc(cur.name)} de la classe ? Il ou elle ne pourra plus se connecter et n'apparaitra plus dans les résultats. Ses résultats déjà enregistrés ne sont pas effacés.</span>
+            <div class="b"><button type="button" style="background:#fff;color:#1A1A2E" onclick="gstAskDelete(false)">Non, garder</button>
+            <button type="button" style="background:#D94F3D;color:#fff" onclick="gstDelete()">Oui, retirer</button></div>
+          </div>` : `<button type="button" class="gst-del" onclick="gstAskDelete(true)">Retirer cet élève de la classe</button>`}
       </div>`;
-    });
+  } else {
+    panel = `<h4>Nouvel élève</h4>
+      <label class="gst-lbl">Prénom
+        <input id="gst-name" class="gst-in" type="text" autocomplete="off" spellcheck="false" placeholder="ex. Lina" value="${_gstEsc(gstDraft ? gstDraft.name : '')}" onkeydown="gstKey(event)" />
+      </label>
+      <label class="gst-lbl">Code de connexion (4 chiffres)
+        <span class="gst-row">
+          <input id="gst-pin" class="gst-in gst-pin" type="text" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="0000" value="${_gstEsc(gstDraft ? gstDraft.pin : '')}" onkeydown="gstKey(event)" oninput="this.value=this.value.replace(/\\D/g,'').slice(0,4)" />
+          <button type="button" class="gst-btn" onclick="gstRandom()">Au hasard</button>
+        </span>
+      </label>
+      ${msg}
+      <button type="button" class="gst-main" onclick="gstSave()">Ajouter l'élève</button>`;
   }
-  
-  html+=`</div>
-    <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px dashed var(--border);display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-      <div style="font-weight:700;font-size:14px;color:var(--text);margin-right:8px;">➕ Ajouter un élève :</div>
-      <input type="text" id="new-st-name" placeholder="Prénom" style="flex:1;min-width:140px;padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--rsm);font-size:14px;font-family:'Fredoka',sans-serif;"/>
-      <input type="text" id="new-st-pin" placeholder="PIN (4 chiffres)" maxlength="4" style="width:140px;padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--rsm);font-size:14px;font-family:'Inter',sans-serif;"/>
-      <button class="btn btn-primary" onclick="addStudentNew()" style="font-family:'Fredoka',sans-serif;font-weight:700;padding:8px 16px;">+ Ajouter</button>
-    </div>
-  </div>`;
-  document.getElementById('students-manage-new').innerHTML=html;
-}
 
-function addStudentNew(){
-  const name=document.getElementById('new-st-name').value.trim();
-  const pin=document.getElementById('new-st-pin').value.trim();
-  if(!name||pin.length!==4||isNaN(pin)){alert('Prénom et PIN à 4 chiffres requis.');return;}
-  const students=getClassStudents(teacherCls);
-  students.push({name,code:pin});
-  saveClassStudents(teacherCls,students);
-  renderStudentsManageNew();
-  doRenderGestionResults();
-}
-
-function deleteStudentNew(i){
-  if(!confirm('Supprimer cet élève ?'))return;
-  const studentsSorted=getClassStudents(teacherCls).slice().sort((a,b)=>a.name.localeCompare(b.name,'fr'));
-  const targetStudent = studentsSorted[i];
-  const studentsRaw=getClassStudents(teacherCls);
-  const rawIndex = studentsRaw.findIndex(s => s.name === targetStudent.name);
-  if(rawIndex !== -1) {
-    studentsRaw.splice(rawIndex, 1);
-    saveClassStudents(teacherCls,studentsRaw);
-  }
-  renderStudentsManageNew();
-  doRenderGestionResults();
-}
-
-function changeStudentPin(i){
-  const studentsSorted=getClassStudents(teacherCls).slice().sort((a,b)=>a.name.localeCompare(b.name,'fr'));
-  const targetStudent = studentsSorted[i];
-  const newPin=prompt('Nouveau PIN pour '+targetStudent.name+' (4 chiffres) :');
-  if(!newPin||newPin.length!==4||isNaN(newPin)){alert('PIN invalide.');return;}
-  const studentsRaw=getClassStudents(teacherCls);
-  const rawIndex = studentsRaw.findIndex(s => s.name === targetStudent.name);
-  if(rawIndex !== -1) {
-    studentsRaw[rawIndex].code=newPin;
-    saveClassStudents(teacherCls,studentsRaw);
-  }
-  renderStudentsManageNew();
-  doRenderGestionResults();
+  box.innerHTML = `<style>${GST_CSS}</style>
+    <div class="gst">
+      <div class="gst-head">
+        <h3 class="gst-title">Élèves</h3>
+        <span class="gst-chip">${_gstEsc(clsName)}</span>
+        <span class="gst-count">${students.length} élève${students.length > 1 ? 's' : ''} · clique sur un élève pour changer son code</span>
+      </div>
+      <div class="gst-body">
+        <div class="gst-grid">${cards}</div>
+        <aside class="gst-panel" aria-label="Fiche de l'élève">${panel}</aside>
+      </div>
+    </div>`;
 }
 
 function saveClassStudents(cls,arr){
