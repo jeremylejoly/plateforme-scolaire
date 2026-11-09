@@ -387,6 +387,7 @@
     .rx-ov-table tbody tr:hover td, .rx-ov-table tbody tr:hover th { background: #fafaff; }
     .rx-cell { font-family: inherit; width: 42px; height: 28px; border-radius: 6px; border: 0; font-weight: 800; font-size: 12px; cursor: pointer; background: #fff; color: #d4d4d4; }
     .rx-cell.empty:hover { background: #eef2ff; color: #6366f1; }
+    .rx-toreturn { outline: 3px solid #dc2626; outline-offset: -3px; }
     .rx-cell.rx-c-good { background: #bbf7d0; color: #14532d; }
     .rx-cell.rx-c-mid { background: #fed7aa; color: #7c2d12; }
     .rx-cell.rx-c-low { background: #fecaca; color: #7f1d1d; }
@@ -521,6 +522,7 @@
         <span class="rx-leg"><i class="rx-sw rx-c-low"></i>0 à 8</span>
         <span class="rx-leg"><i class="rx-sw rx-c-noquiz"></i>lu, questionnaire pas fait</span>
         <span class="rx-leg"><i class="rx-sw rx-c-reading"></i>en cours</span>
+        <span class="rx-leg"><i class="rx-sw rx-c-good rx-toreturn"></i>lu, livre pas encore rendu</span>
         <span class="ml-auto text-neutral-500">Touchez une case pour changer le statut · un nom ou un numéro pour ouvrir sa fiche</span>
       </div>
       <div id="rx-ov-scroll" class="flex-1 min-h-0 overflow-auto">
@@ -2301,6 +2303,11 @@
           return { student: s, data: stReadings[bookId] };
         }
       }
+      // Lu (questionnaire fait) mais livre pas encore rendu : l'exemplaire est toujours chez l'élève
+      for (const s of state.students) {
+        const r = getStudentReadings(s.id)[bookId];
+        if (r && r.status === 'completed' && r.notReturned) return { student: s, data: r, toReturn: true };
+      }
       return null;
     }
 
@@ -2609,6 +2616,7 @@
             timestamp: (rec && rec.timestamp) || q.ts,
             note: (rec && rec.note) || ''
           };
+          if (wasDone && rec.notReturned) state.readings[sid][bid].notReturned = true;
           changed = true;
         });
       });
@@ -2649,7 +2657,9 @@
         if (q) { alert(`${student.name} a déjà fait le questionnaire de « ${book.title} » (${rxScore16(q)}/16 le ${rxFmtDate(q.iso)}).\n\nPour qu'il le refasse, utilisez « Autoriser à refaire » dans Gestion › Résultats.`); return false; }
         const borrower = getBookBorrower(bid);
         if (borrower && borrower.student.id !== sid) {
-          alert(`« ${book.title} » n'est pas disponible : il est chez ${borrower.student.name} depuis le ${rxFmtDate(borrower.data.borrowDate)}.\n\nIl redeviendra disponible quand ${borrower.student.name} l'aura lu (questionnaire fait) ou rendu.`);
+          alert(borrower.toReturn
+            ? `« ${book.title} » n'est pas disponible : ${borrower.student.name} l'a lu (le ${rxFmtDate(borrower.data.finishDate)}) mais ne l'a pas encore rendu.\n\nQuand il le rapporte, cliquez « 📥 Livre rendu » sur sa fiche.`
+            : `« ${book.title} » n'est pas disponible : il est chez ${borrower.student.name} depuis le ${rxFmtDate(borrower.data.borrowDate)}.\n\nIl redeviendra disponible quand ${borrower.student.name} l'aura lu (questionnaire fait) ou rendu.`);
           return false;
         }
         if (rec && rec.status === 'completed' && !confirm(`${student.name} a déjà lu « ${book.title} ». Le remettre « en cours » ?`)) return false;
@@ -2669,6 +2679,7 @@
           timestamp: (rec && rec.timestamp) || Date.now(),
           note: (rec && rec.note) || ''
         };
+        if (rec && rec.status === 'completed' && rec.notReturned) state.readings[sid][bid].notReturned = true;
       } else {
         if (!rec) return true;
         if (q) { alert(`${student.name} a fait le questionnaire de « ${book.title} » : ce livre reste dans ses lectures.\n\nPour l'annuler, supprimez ou annulez la tentative dans Gestion › Résultats.`); return false; }
@@ -2684,6 +2695,29 @@
       renderAll();
       return true;
     }
+    // Livre lu mais gardé par l'élève : « pas encore rendu » (exception signalée par l'enseignant)
+    function rxToReturn(sid) {
+      return getStudentFinishedBooks(sid).filter(f => f.data.notReturned);
+    }
+    function rxSetReturned(sid, bid, returned) {
+      const rec = (state.readings[sid] || {})[bid];
+      const book = state.books.find(b => b.id == bid);
+      if (!rec || rec.status !== 'completed' || !book) return false;
+      if (!returned) {
+        const other = getBookBorrower(bid);
+        if (other && other.student.id !== sid) {
+          alert(`« ${book.title} » est déjà noté chez ${other.student.name}.\nRetirez-le d'abord de chez ${other.student.name}.`);
+          return false;
+        }
+        rec.notReturned = true;
+      } else {
+        delete rec.notReturned;
+      }
+      saveData();
+      renderAll();
+      return true;
+    }
+
     // Compatibilité : anciennes fonctions encore appelées ailleurs
     function deleteReadingRecord(studentId, bookId) { rxSetStatus(studentId, bookId, 'none'); }
 
@@ -2756,7 +2790,7 @@
         const r = getStudentReadings(s.id);
         for (const b in r) {
           if (r[b].status === 'reading') { circ.add(String(b)); active.add(String(b)); }
-          else if (r[b].status === 'completed') { read.add(String(b)); active.add(String(b)); }
+          else if (r[b].status === 'completed') { read.add(String(b)); active.add(String(b)); if (r[b].notReturned) circ.add(String(b)); }
         }
       });
       return { active, circ, read };
@@ -2781,7 +2815,7 @@
       else label = q ? rxScore16(q) : '✓';
       const tip = `${head} : ${order ? rxOrdinal(order) + ' livre lu, ' : ''}lu le ${rxFmtDate(rec.finishDate)}` +
         (q ? ` — questionnaire ${rxScore16(q)}/16` : ' — questionnaire pas encore fait');
-      return { cls: q ? rxScoreCls(q) : 'rx-c-noquiz', label, tip };
+      return { cls: (q ? rxScoreCls(q) : 'rx-c-noquiz') + (rec.notReturned ? ' rx-toreturn' : ''), label, tip: tip + (rec.notReturned ? ' — 📕 livre pas encore rendu' : '') };
     }
     function rxRenderOverview() {
       const table = document.getElementById('rx-ov-table');
@@ -2838,7 +2872,8 @@
         });
         lus = getStudentFinishedBooks(s.id).length;
         const ec = getStudentCurrentReadings(s.id).length;
-        h += `<td class="rx-tot rx-tot-first">${lus}</td><td class="rx-tot">${rxFmtAvg(rxStudentAverage(s.id))}</td><td class="rx-tot" style="color:${ec ? '#92400e' : '#a3a3a3'}">${ec}</td></tr>`;
+        const tr = rxToReturn(s.id).length;
+        h += `<td class="rx-tot rx-tot-first">${lus}</td><td class="rx-tot">${rxFmtAvg(rxStudentAverage(s.id))}</td><td class="rx-tot" style="color:${ec ? '#92400e' : '#a3a3a3'}">${ec}${tr ? ` <span style="color:#b91c1c" title="Livre(s) lu(s) mais pas encore rendu(s)">+📕${tr}</span>` : ''}</td></tr>`;
       });
       if (!rows.length) h += `<tr><td colspan="${cols.length + 4}" class="p-6 text-center text-neutral-400 italic">Aucun élève ni livre ne correspond à « ${esc(f)} ».</td></tr>`;
       h += `</tbody><tfoot><tr><th class="rx-col-st text-left text-xs">Lu par</th>`;
@@ -2907,13 +2942,14 @@
       box.innerHTML = list.map(s => {
         const lus = getStudentFinishedBooks(s.id).length;
         const ec = getStudentCurrentReadings(s.id).length;
+        const tr = rxToReturn(s.id).length;
         const sel = s.id === state.selectedStudentId;
         const ecStyle = ec ? 'background:#fde68a;color:#78350f' : 'background:#f3f4f6;color:#6b7280';
         return `<button type="button" class="rx-st-row${sel ? ' is-sel' : ''}" onclick="rxSelectStudent(this.dataset.sid)" data-sid="${esc(s.id)}">
           <span class="rx-avatar">${esc((s.name || '?').charAt(0).toUpperCase())}</span>
           <span class="flex-1 font-semibold truncate">${esc(s.name)}</span>
           <span class="text-xs font-bold text-emerald-800">${lus}</span>
-          <span class="rx-pill" style="${ecStyle}" title="Livres en cours">${ec} 📖</span>
+          <span class="rx-pill" style="${ecStyle}" title="Livres en cours">${ec} 📖</span>${tr ? `<span class="rx-pill" style="background:#fee2e2;color:#991b1b" title="Livres à rendre">${tr} 📕</span>` : ''}
         </button>`;
       }).join('') || `<p class="text-xs text-neutral-400 italic p-3">${state.students.length ? 'Aucun élève ne correspond.' : 'Aucun élève enregistré.'}</p>`;
     }
@@ -2955,7 +2991,27 @@
         </div>
       </section>`;
 
-      // En cours (2 emplacements)
+      // Livres lus mais pas encore rendus
+      const toRet = rxToReturn(s.id);
+      if (toRet.length) {
+        h += `<section class="neo-card bg-white p-4 flex flex-col gap-3" style="border-color:#dc2626;box-shadow:3px 3px 0 #dc2626">
+          <h3 class="rx-h3" style="color:#991b1b">📕 Livres lus mais pas encore rendus (${toRet.length})</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">`;
+        toRet.forEach(t => {
+          const q = rxQuizOf(s.id, t.bookId);
+          h += `<div class="rx-slot" style="border:2px solid #dc2626;background:#fef2f2">
+            ${rxCoverImg(t.book, 54, 72)}
+            <div class="flex-1 min-w-0 flex flex-col gap-1.5">
+              <strong class="text-sm leading-tight"><span class="font-mono text-xs text-neutral-500 mr-1">${esc(t.book.num)}</span>${esc(t.book.title)}</strong>
+              <span class="text-xs text-red-800">Lu le ${rxFmtDate(t.data.finishDate)}${q ? ` · ${rxScore16(q)}/16` : ''} — livre pas encore rendu</span>
+              <div><button type="button" class="rx-mini-btn ok" onclick="rxSetReturned('${esc(s.id)}','${esc(t.bookId)}', true)">📥 Livre rendu</button></div>
+            </div>
+          </div>`;
+        });
+        h += `</div></section>`;
+      }
+
+      // En cours
       h += `<section class="neo-card bg-white p-4 flex flex-col gap-3">
         <h3 class="rx-h3">En cours de lecture (${cur.length})</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">`;
@@ -3004,10 +3060,13 @@
           const q = rxQuizOf(s.id, f.bookId);
           h += `<tr>
             <td class="font-bold text-emerald-800 whitespace-nowrap">${order ? rxOrdinal(order) : '—'}</td>
-            <td><div class="flex items-center gap-2">${rxCoverImg(f.book, 28, 37)}<span><span class="font-mono text-xs text-neutral-500 mr-1">${esc(f.book.num)}</span><strong>${esc(f.book.title)}</strong></span></div></td>
+            <td><div class="flex items-center gap-2">${rxCoverImg(f.book, 28, 37)}<span><span class="font-mono text-xs text-neutral-500 mr-1">${esc(f.book.num)}</span><strong>${esc(f.book.title)}</strong>${f.data.notReturned ? ' <span class="rx-pill" style="background:#fee2e2;color:#991b1b">📕 à rendre</span>' : ''}</span></div></td>
             <td class="whitespace-nowrap text-neutral-700">${rxFmtDate(f.data.finishDate)}${q ? ` <span class="text-neutral-400 text-xs">· ${esc(q.time)}</span>` : ' <span class="text-neutral-400 text-xs">(date saisie)</span>'}</td>
             <td>${rxScoreHtml(q)}</td>
             <td class="text-right whitespace-nowrap">
+              ${f.data.notReturned
+                ? `<button type="button" class="rx-mini-btn ok" onclick="rxSetReturned('${esc(s.id)}','${esc(f.bookId)}', true)">📥 Rendu</button>`
+                : `<button type="button" class="rx-mini-btn ghost" onclick="rxSetReturned('${esc(s.id)}','${esc(f.bookId)}', false)" title="L'élève a gardé le livre">📕 Pas encore rendu</button>`}
               <button type="button" class="rx-mini-btn ghost" onclick="openCellActionModal('${esc(s.id)}','${esc(f.bookId)}')" aria-label="Modifier">✏️</button>
               ${q ? '' : `<button type="button" class="rx-mini-btn ghost" onclick="rxSetStatus('${esc(s.id)}','${esc(f.bookId)}','none')" aria-label="Retirer des livres lus">🗑️</button>`}
             </td>
@@ -3075,7 +3134,9 @@
         const borrower = getBookBorrower(b.id);
         const n = getBookCompletedCount(b.id);
         const st = borrower
-          ? `<span class="st" style="color:#92400e">📖 chez ${esc(borrower.student.name)}</span>`
+          ? (borrower.toReturn
+            ? `<span class="st" style="color:#b91c1c">📕 à rendre (${esc(borrower.student.name)})</span>`
+            : `<span class="st" style="color:#92400e">📖 chez ${esc(borrower.student.name)}</span>`)
           : `<span class="st" style="color:#047857">Disponible${n ? ` · ${n} lu${n > 1 ? 's' : ''}` : ''}</span>`;
         return `<button type="button" class="rx-tile${String(b.id) === String(rx.selectedBookId) ? ' is-sel' : ''}" onclick="rx.selectedBookId=this.dataset.bid;rxRenderBookView()" data-bid="${esc(b.id)}">
           ${rxCoverImg(b, 0, 0).replace(/width:0px;height:0px;/, '')}
@@ -3108,7 +3169,12 @@
         </div>
         <button type="button" class="rx-mini-btn" onclick="openBookDetailsModal('${esc(b.id)}')">✏️ Modifier le livre</button>
       </div>`;
-      if (borrower) {
+      if (borrower && borrower.toReturn) {
+        h += `<div class="flex flex-wrap items-center gap-2 p-3 rounded-xl" style="background:#fef2f2;border:2px solid #dc2626">
+          <span class="flex-1 text-sm font-semibold text-red-900">📕 Indisponible : <button type="button" class="rx-st-link underline" onclick="rxSelectStudent('${esc(borrower.student.id)}')">${esc(borrower.student.name)}</button> l'a lu (le ${rxFmtDate(borrower.data.finishDate)}) mais ne l'a pas encore rendu</span>
+          <button type="button" class="rx-mini-btn ok" onclick="rxSetReturned('${esc(borrower.student.id)}','${esc(b.id)}', true)">📥 Livre rendu</button>
+        </div>`;
+      } else if (borrower) {
         h += `<div class="flex flex-wrap items-center gap-2 p-3 rounded-xl" style="background:#fffbeb;border:2px solid #f59e0b">
           <span class="flex-1 text-sm font-semibold text-amber-900">📖 Indisponible : chez <button type="button" class="rx-st-link underline" onclick="rxSelectStudent('${esc(borrower.student.id)}')">${esc(borrower.student.name)}</button> depuis le ${rxFmtDate(borrower.data.borrowDate)}</span>
           <button type="button" class="rx-mini-btn ok" onclick="rxSetStatus('${esc(borrower.student.id)}','${esc(b.id)}','completed')">✅ Lu</button>
@@ -3132,7 +3198,7 @@
             <button type="button" class="${st === 'reading' ? 'is-on' : ''}" ${(takenByOther && st !== 'reading') || q ? 'disabled' : ''} onclick="rxSetStatus('${sid}','${bid}','reading')" style="${st === 'reading' ? 'background:#f59e0b;color:#fff' : ''}">En cours</button>
             <button type="button" class="${st === 'completed' ? 'is-on' : ''}" onclick="rxSetStatus('${sid}','${bid}','completed')" style="${st === 'completed' ? 'background:#059669;color:#fff' : ''}">Lu</button>
           </div></td>
-          <td class="whitespace-nowrap text-neutral-700">${st === 'completed' ? rxFmtDate(rec.finishDate) + (q ? '' : ' <span class="text-neutral-400 text-xs">(date saisie)</span>') : (st === 'reading' ? `<span class="text-amber-800 text-xs">depuis le ${rxFmtDate(rec.borrowDate)}</span>` : '—')}</td>
+          <td class="whitespace-nowrap text-neutral-700">${st === 'completed' ? rxFmtDate(rec.finishDate) + (q ? '' : ' <span class="text-neutral-400 text-xs">(date saisie)</span>') + (rec.notReturned ? ' <span class="rx-pill" style="background:#fee2e2;color:#991b1b">📕 à rendre</span>' : '') : (st === 'reading' ? `<span class="text-amber-800 text-xs">depuis le ${rxFmtDate(rec.borrowDate)}</span>` : '—')}</td>
           <td>${st === 'completed' || q ? rxScoreHtml(q) : ''}</td>
         </tr>`;
       });
