@@ -33151,38 +33151,298 @@ function renderGestionResults(){
   }
 }
 
+// ------------------------------------------------------------
+// Gestion › Résultats — « tableau de classe » (09/11/2026, aperçu A choisi par Jérémy)
+// Une ligne par élève : activités, moyenne, moyenne par matière, dernière activité, « à surveiller ».
+// Tri par colonne, période (7 j / 30 j / depuis septembre), recherche, détail dépliable.
+// L'en-tête et la barre de recherche ne sont construits qu'une fois : taper ne redessine que le tableau.
+// ------------------------------------------------------------
+let gresPeriod = 30;          // 7 | 30 | 0 (= tout)
+let gresSort = 'name';        // name | n | avg | fr | ma | ev | rx | last
+let gresDir = 1;
+let gresOpen = '';
+let gresQuery = '';
+let gresWatchOnly = false;
+let _gresRows = [];
+const GRES_MATS = [
+  { key: 'fr', label: 'Français', color: '#5B4FCF' },
+  { key: 'ma', label: 'Maths', color: '#1A6FA0' },
+  { key: 'ev', label: 'Éveil', color: '#157F5F' },
+  { key: 'rx', label: 'Récits', color: '#9A5E10' }
+];
+function _gresEsc(s) { return String(s == null ? '' : s).replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c])); }
+function _gresTone(p) {
+  if (p == null) return { bg: '#F1EEE6', fg: '#6B6B80', bar: '#D9D4C7' };
+  return p >= 70 ? { bg: '#D8F2E8', fg: '#157F5F', bar: '#1A9E75' }
+       : p >= 50 ? { bg: '#FBEBD0', fg: '#8A520C', bar: '#C97B1A' }
+       :           { bg: '#F9DDD8', fg: '#B23A2B', bar: '#D94F3D' };
+}
+function _gresAvg(L) { return L.length ? Math.round(L.reduce((s, r) => s + (Number(r.pct) || 0), 0) / L.length) : null; }
+function _gresAgoLabel(days) { return days === 0 ? "aujourd'hui" : days === 1 ? 'hier' : 'il y a ' + days + ' j'; }
+
+// Matière d'un résultat : livre → Récits ; sinon catalogue des activités, alias, puis parents.
+function _gresMatiereResolver() {
+  const byId = {};
+  try {
+    getActivitiesMasterRegistry().forEach(sec => {
+      const c = sec.cat || '', s = sec.sub || '';
+      const m = /Récits Express/i.test(s) ? 'rx' : /Français/.test(c) ? 'fr' : /Mathématiques/.test(c) ? 'ma' : /(Éveil|CEB)/.test(c) ? 'ev' : '';
+      if (m) sec.items.forEach(it => { if (!byId[it.id]) byId[it.id] = m; });
+    });
+  } catch (e) {}
+  const bookIds = new Set((typeof loadBooks === 'function' ? loadBooks() : []).map(b => b.id));
+  const fromParent = id => {
+    let cur = id, guard = 0;
+    while (cur && guard++ < 10) {
+      if (byId[cur]) return byId[cur];
+      const p = (typeof ACTIVITY_PARENTS !== 'undefined') ? ACTIVITY_PARENTS[cur] : null;
+      if (!p) break;
+      if (/^francais|^contes|^poemes/.test(p)) return 'fr';
+      if (/^maths/.test(p)) return 'ma';
+      if (/^eveil/.test(p)) return 'ev';
+      cur = p;
+    }
+    return '';
+  };
+  const cache = {};
+  return r => {
+    const id = r.book || r.activity || '';
+    if (id in cache) return cache[id];
+    let m = '';
+    if (r.book && bookIds.has(r.book)) m = 'rx';
+    else if (bookIds.has(id)) m = 'rx';
+    else {
+      m = byId[id] || '';
+      if (!m && typeof PLAN_RESULT_ALIASES !== 'undefined' && PLAN_RESULT_ALIASES[id]) m = byId[PLAN_RESULT_ALIASES[id]] || fromParent(PLAN_RESULT_ALIASES[id]);
+      if (!m) m = fromParent(id);
+      if (!m && typeof id === 'string' && id.indexOf('dictee_') === 0) m = 'fr';
+      // Rattrapage d'après le début de l'identifiant (anciennes fiches)
+      if (!m && typeof id === 'string') {
+        if (/^(geo|hist|sci|ceb|eco|fiche_(planisphere|relief|regions|cycle))/.test(id)) m = 'ev';
+        else if (/^(num|op_|grandeur|solide|geometrie|angles|disque|td_|calcul|frac)/.test(id)) m = 'ma';
+        else if (/^(homo|conj|gram|ortho|vocab|lecture|lr_|desc_|arg_|dial_|conte|poeme|expr)/.test(id)) m = 'fr';
+      }
+    }
+    cache[id] = m;
+    return m;
+  };
+}
+
+function gresSetPeriod(p) { gresPeriod = p; doRenderGestionResults(); }
+function gresSetSort(k) {
+  if (gresSort === k) gresDir = -gresDir;
+  else { gresSort = k; gresDir = (k === 'name' || k === 'last') ? 1 : -1; }
+  doRenderGestionResults();
+}
+function gresToggleRow(i) { const r = _gresRows[i]; if (!r) return; gresOpen = (gresOpen === r.name) ? '' : r.name; doRenderGestionResults(); }
+function gresOpenStudent(i) { const r = _gresRows[i]; if (r) renderStudentDetail(r.name); }
+function gresOnSearch(v, ev) { gresQuery = v; if (ev && ev.isComposing) return; doRenderGestionResults(); }
+function gresToggleWatch() { gresWatchOnly = !gresWatchOnly; doRenderGestionResults(); }
+window.gresSetPeriod = gresSetPeriod; window.gresSetSort = gresSetSort; window.gresToggleRow = gresToggleRow;
+window.gresOpenStudent = gresOpenStudent; window.gresOnSearch = gresOnSearch; window.gresToggleWatch = gresToggleWatch;
+
+const GRES_CSS = `
+.gres{font-family:'Nunito',sans-serif;color:#1A1A2E;display:flex;flex-direction:column;gap:16px}
+.gres *{box-sizing:border-box}
+.gres-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px}
+.gres-title{margin:0;font-family:'Fredoka',sans-serif;font-size:24px;font-weight:700;color:#1A1A2E}
+.gres-chip{font-size:13px;font-weight:800;padding:3px 10px;border-radius:999px;background:#ECEAFB;color:#3F35A8;border:2px solid #5B4FCF}
+.gres-seg{display:flex;background:#fff;border:2.5px solid #1A1A2E;border-radius:14px;padding:4px;gap:4px;height:48px}
+.gres-seg button{border:none;border-radius:10px;padding:0 14px;font-family:'Fredoka',sans-serif;font-size:15px;font-weight:600;cursor:pointer;background:transparent;color:#1A1A2E;white-space:nowrap}
+.gres-seg button:hover{background:#F1EEE6}
+.gres-seg button.on{background:#5B4FCF;color:#fff}
+#gres-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.gres-kpi{background:#fff;border:2.5px solid #1A1A2E;border-radius:16px;box-shadow:4px 4px 0 #1A1A2E;padding:12px 18px;display:flex;flex-direction:column;gap:2px}
+.gres-kpi .l{font-size:12.5px;font-weight:800;color:#4A4A5E;text-transform:uppercase;letter-spacing:.04em}
+.gres-kpi .v{font-family:'Fredoka',sans-serif;font-size:28px;font-weight:700}
+.gres-kpi .s{font-size:13px;color:#4A4A5E}
+.gres-tools{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.gres-search{flex:1 1 280px;display:flex;align-items:center;gap:10px;background:#fff;border:2.5px solid #1A1A2E;border-radius:14px;padding:0 14px;height:46px;margin:0}
+.gres-search:focus-within{box-shadow:3px 3px 0 #5B4FCF}
+.gres .gres-search input{flex:1;width:auto;min-width:0;height:auto;border:none;outline:none;box-shadow:none;background:transparent;margin:0;padding:0;font-family:'Nunito',sans-serif;font-size:16px;color:#1A1A2E}
+.gres-watch{height:46px;padding:0 16px;border-radius:14px;border:2.5px solid #1A1A2E;background:#fff;color:#1A1A2E;font-family:'Fredoka',sans-serif;font-size:15px;font-weight:600;cursor:pointer}
+.gres-watch.on{background:#F9DDD8;color:#B23A2B}
+.gres-hint{font-size:13px;color:#4A4A5E}
+.gres-table{background:#fff;border:2.5px solid #1A1A2E;border-radius:16px;box-shadow:4px 4px 0 #1A1A2E;overflow-x:auto}
+.gres-inner{min-width:840px}
+.gres-cols,.gres-row{display:grid;grid-template-columns:minmax(150px,1.6fr) .65fr minmax(130px,1.3fr) .7fr .7fr .7fr .7fr minmax(96px,.95fr);align-items:center;gap:6px;padding:8px 12px}
+.gres-cols{background:#F4F1EA;border-bottom:2.5px solid #1A1A2E;padding-top:10px;padding-bottom:10px}
+.gres-cols button{border:none;background:transparent;padding:6px 2px;font-family:'Fredoka',sans-serif;font-size:13.5px;font-weight:600;color:#1A1A2E;cursor:pointer;text-align:left;border-radius:8px}
+.gres-cols button.c{text-align:center}
+.gres-cols button:hover{background:#ECE8DD}
+.gres-item{border-bottom:1px solid #E9E5DA}
+.gres-row{width:100%;min-height:52px;border:none;background:#fff;cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;color:#1A1A2E;margin:0;border-radius:0}
+.gres-row:hover{background:#F7F5FF}
+.gres-row.open{background:#F7F5FF}
+.gres-name{display:flex;align-items:center;gap:10px;min-width:0}
+.gres-av{width:34px;height:34px;flex-shrink:0;border-radius:50%;border:2px solid #1A1A2E;background:#ECEAFB;color:#3F35A8;display:flex;align-items:center;justify-content:center;font-family:'Fredoka',sans-serif;font-weight:700}
+.gres-nm{font-family:'Fredoka',sans-serif;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gres-flag{font-size:11px;font-weight:800;padding:2px 7px;border-radius:999px;background:#F9DDD8;color:#B23A2B;border:1.5px solid #B23A2B;white-space:nowrap}
+.gres-n{text-align:center;font-weight:800}
+.gres-avg{display:flex;align-items:center;gap:10px}
+.gres-bar{flex:1;height:10px;border-radius:999px;background:#E9E5DA;overflow:hidden}
+.gres-bar>i{display:block;height:100%}
+.gres-avgv{width:44px;text-align:right;font-weight:800}
+.gres-cell{justify-self:center;min-width:48px;text-align:center;font-size:14px;font-weight:800;padding:4px 8px;border-radius:10px}
+.gres-last{font-size:14px;color:#4A4A5E}
+.gres-detail{padding:6px 12px 16px 56px;background:#FAF8F3;display:flex;flex-direction:column;gap:6px}
+.gres-detail h4{margin:6px 0 0;font-size:13px;font-weight:800;color:#4A4A5E}
+.gres-res{display:grid;grid-template-columns:88px 70px minmax(0,1fr) 60px 58px;gap:10px;align-items:center;font-size:14px;background:#fff;border:1.5px solid #E9E5DA;border-radius:10px;padding:6px 10px}
+.gres-res .d{color:#4A4A5E}
+.gres-res .a{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gres-res .sc{text-align:right;font-weight:800}
+.gres-res .p{text-align:center;font-weight:800;padding:2px 6px;border-radius:8px}
+.gres-open{align-self:flex-start;height:38px;padding:0 14px;border-radius:10px;border:2px solid #1A1A2E;background:#fff;font-family:'Fredoka',sans-serif;font-size:14px;font-weight:600;color:#3F35A8;cursor:pointer;margin-top:4px}
+.gres-open:hover{background:#F1EEE6}
+.gres-empty{padding:28px;text-align:center;font-size:15px;color:#4A4A5E}
+.gres-seg button:focus-visible,.gres-cols button:focus-visible,.gres-row:focus-visible,.gres-open:focus-visible,.gres-watch:focus-visible{outline:3px solid #5B4FCF;outline-offset:2px}
+`;
+
 function doRenderGestionResults(){
-  const results = loadResults(teacherCls);
-  const students = getClassStudents(teacherCls);
   const summary = document.getElementById('gestion-summary');
   const list = document.getElementById('gestion-students-list');
-  if(!summary||!list) return;
-  const total = results.length;
-  const avg = total>0?Math.round(results.reduce((s,r)=>s+(r.pct||0),0)/total):0;
-  summary.innerHTML=`
-    <div class="gestion-stat"><div class="gestion-stat-val">${students.length}</div><div class="gestion-stat-lbl">Élèves</div></div>
-    <div class="gestion-stat"><div class="gestion-stat-val">${total}</div><div class="gestion-stat-lbl">Tentatives</div></div>
-    <div class="gestion-stat"><div class="gestion-stat-val">${avg}%</div><div class="gestion-stat-lbl">Moyenne</div></div>`;
-  
-  if(students.length === 0){
+  if (!summary || !list) return;
+  summary.innerHTML = '';
+  const cls = teacherCls || 'lejoly';
+  const students = getClassStudents(teacherCls);
+  if (students.length === 0) {
     list.innerHTML = '<div class="alert alert-info" style="margin-top:1rem;">Aucun élève enregistré pour le moment dans cette classe. Rendez-vous dans l\'onglet "Élèves" pour en ajouter.</div>';
     return;
   }
 
-  let html='<div class="student-results-grid">';
-  students.slice().sort((a,b)=>a.name.localeCompare(b.name,'fr')).forEach(st=>{
-    const stR=results.filter(r=>r.student===st.name);
-    html+=`<div class="student-result-card" onclick="renderStudentDetail('${st.name}')">
-      <div class="student-avatar">${st.name[0]}</div>
-      <div class="student-info">
-        <div class="student-name">${st.name}</div>
-        <div class="student-meta">${stR.length} tentative(s) · ${stR.length>0?Math.round(stR.reduce((s,r)=>s+(r.pct||0),0)/stR.length)+'% moyenne':'Aucune activité'}</div>
-      </div>
-      <span style="color:var(--muted);font-size:20px;">›</span>
-    </div>`;
+  // En-tête + outils : construits une seule fois (par classe)
+  let shell = list.querySelector('#gres-shell');
+  if (!shell || shell.getAttribute('data-cls') !== cls) {
+    const clsName = (typeof CLASSES !== 'undefined' && CLASSES[cls] && CLASSES[cls].name) ? CLASSES[cls].name : (cls === 'verryken' ? 'Classe de Mr Verryken' : 'Classe de Mr Lejoly');
+    list.innerHTML = `
+      <style>${GRES_CSS}</style>
+      <div id="gres-shell" class="gres">
+        <div class="gres-head">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <h3 class="gres-title">Résultats</h3>
+            <span class="gres-chip">${_gresEsc(clsName)}</span>
+          </div>
+          <div id="gres-periods" class="gres-seg" role="group" aria-label="Période"></div>
+        </div>
+        <div id="gres-kpis"></div>
+        <div class="gres-tools">
+          <label class="gres-search">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1A2E" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>
+            <input type="text" id="gres-search" autocomplete="off" spellcheck="false" aria-label="Chercher un élève" placeholder="Chercher un élève…"
+                   oninput="gresOnSearch(this.value, event)" oncompositionend="gresOnSearch(this.value)" />
+          </label>
+          <button type="button" id="gres-watch" class="gres-watch" onclick="gresToggleWatch()">Seulement « à surveiller »</button>
+          <span class="gres-hint">Clique sur un titre de colonne pour trier, sur un élève pour voir ses dernières activités.</span>
+        </div>
+        <div id="gres-table" class="gres-table"></div>
+      </div>`;
+    shell = list.querySelector('#gres-shell');
+    shell.setAttribute('data-cls', cls);
+  }
+  const inp = document.getElementById('gres-search');
+  if (inp && inp.value !== gresQuery && document.activeElement !== inp) inp.value = gresQuery;
+  const wb = document.getElementById('gres-watch');
+  if (wb) { wb.classList.toggle('on', gresWatchOnly); wb.setAttribute('aria-pressed', String(gresWatchOnly)); }
+
+  // Données
+  const matOf = _gresMatiereResolver();
+  const today0 = new Date(); today0.setHours(0, 0, 0, 0);
+  const daysAgo = ts => ts ? Math.max(0, Math.floor((today0.getTime() - new Date(ts).setHours(0, 0, 0, 0)) / 864e5)) : 9999;
+  const all = loadResults(teacherCls).map(r => {
+    const ts = resultTimestamp(r);
+    return { r, ts, ago: daysAgo(ts), m: matOf(r), pct: Number(r.pct) || 0 };
   });
-  html+='</div>';
-  list.innerHTML=html;
+  const inPeriod = x => !gresPeriod || x.ago < gresPeriod;
+
+  let rows = students.map(st => {
+    const mine = all.filter(x => x.r.student === st.name).sort((a, b) => b.ts - a.ts);
+    const L = mine.filter(inPeriod);
+    const a = _gresAvg(L);
+    const last3 = mine.slice(0, 3);
+    const lastAgo = mine.length ? mine[0].ago : 9999;
+    const watch = mine.length === 0 || (a != null && a < 55) || (last3.length === 3 && last3.every(x => x.pct < 50)) || lastAgo >= 7;
+    const mats = {};
+    GRES_MATS.forEach(m => { mats[m.key] = _gresAvg(L.filter(x => x.m === m.key)); });
+    return { name: st.name, n: L.length, avg: a, mats, lastAgo, mine, watch };
+  });
+  const allP = all.filter(inPeriod);
+  const classAvg = _gresAvg(allP);
+  const active = rows.filter(r => r.n > 0).length;
+  const nWatch = rows.filter(r => r.watch).length;
+
+  if (gresQuery) {
+    const q = String(gresQuery).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();
+    rows = rows.filter(r => r.name.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').indexOf(q) !== -1);
+  }
+  if (gresWatchOnly) rows = rows.filter(r => r.watch);
+  const val = r => gresSort === 'name' ? r.name.toLowerCase() : gresSort === 'n' ? r.n : gresSort === 'avg' ? (r.avg == null ? -1 : r.avg)
+    : gresSort === 'last' ? r.lastAgo : (r.mats[gresSort] == null ? -1 : r.mats[gresSort]);
+  rows.sort((a, b) => {
+    const x = val(a), y = val(b);
+    if (typeof x === 'string') return x.localeCompare(y, 'fr') * gresDir;
+    return ((x < y) ? -1 : (x > y) ? 1 : a.name.localeCompare(b.name, 'fr')) * gresDir;
+  });
+  _gresRows = rows;
+
+  // Période
+  const per = document.getElementById('gres-periods');
+  if (per) {
+    const b = (p, label) => `<button type="button" class="${gresPeriod === p ? 'on' : ''}" aria-pressed="${gresPeriod === p}" onclick="gresSetPeriod(${p})">${label}</button>`;
+    per.innerHTML = b(7, '7 jours') + b(30, '30 jours') + b(0, 'Depuis le début');
+  }
+
+  // Chiffres clés
+  const ct = _gresTone(classAvg);
+  const kp = document.getElementById('gres-kpis');
+  if (kp) kp.innerHTML = `
+    <div class="gres-kpi"><span class="l">Activités faites</span><span class="v">${allP.length}</span><span class="s">sur la période</span></div>
+    <div class="gres-kpi"><span class="l">Moyenne de la classe</span><span class="v" style="color:${ct.fg}">${classAvg == null ? '—' : classAvg + '%'}</span><span class="s">toutes matières</span></div>
+    <div class="gres-kpi"><span class="l">Élèves actifs</span><span class="v">${active} / ${students.length}</span><span class="s">au moins une activité sur la période</span></div>
+    <div class="gres-kpi"><span class="l">À surveiller</span><span class="v" style="color:${nWatch ? '#B23A2B' : '#157F5F'}">${nWatch}</span><span class="s">moyenne &lt; 55 %, 3 échecs de suite ou 7 jours sans activité</span></div>`;
+
+  // Tableau
+  const arrow = k => gresSort === k ? (gresDir === 1 ? ' ▲' : ' ▼') : '';
+  const colBtn = (k, label, center) => `<button type="button" class="${center ? 'c' : ''}" onclick="gresSetSort('${k}')" aria-label="Trier par ${label}">${label}${arrow(k)}</button>`;
+  let html = `<div class="gres-inner"><div class="gres-cols">
+    ${colBtn('name', 'Élève')}${colBtn('n', 'Activités', 1)}${colBtn('avg', 'Moyenne')}
+    ${GRES_MATS.map(m => colBtn(m.key, m.label, 1)).join('')}${colBtn('last', 'Dernière activité')}
+  </div>`;
+  if (!rows.length) html += `<div class="gres-empty">Aucun élève ne correspond.</div>`;
+  rows.forEach((r, i) => {
+    const t = _gresTone(r.avg);
+    const open = gresOpen === r.name;
+    const nm = _gresEsc(r.name);
+    html += `<div class="gres-item">
+      <button type="button" class="gres-row${open ? ' open' : ''}" aria-expanded="${open}" onclick="gresToggleRow(${i})">
+        <span class="gres-name"><span class="gres-av" aria-hidden="true">${_gresEsc(r.name.charAt(0))}</span><span class="gres-nm">${nm}</span>${r.watch ? '<span class="gres-flag">à surveiller</span>' : ''}</span>
+        <span class="gres-n">${r.n}</span>
+        <span class="gres-avg"><span class="gres-bar"><i style="width:${r.avg || 0}%;background:${t.bar}"></i></span><span class="gres-avgv" style="color:${t.fg}">${r.avg == null ? '—' : r.avg + '%'}</span></span>
+        ${GRES_MATS.map(m => { const v = r.mats[m.key], tt = _gresTone(v); return `<span class="gres-cell" style="background:${tt.bg};color:${tt.fg}" title="${m.label}">${v == null ? '—' : v + '%'}</span>`; }).join('')}
+        <span class="gres-last">${r.mine.length ? _gresAgoLabel(r.lastAgo) : 'jamais'}</span>
+      </button>`;
+    if (open) {
+      html += `<div class="gres-detail"><h4>Dernières activités de ${nm}</h4>`;
+      if (!r.mine.length) html += `<div class="gres-res" style="display:block">Aucune activité réalisée.</div>`;
+      r.mine.slice(0, 8).forEach(x => {
+        const rr = x.r, tt = _gresTone(x.pct);
+        let act = rr.bookTitle || rr.activityLabel || rr.activity || rr.book || 'Exercice';
+        if (String(act).includes('undefined')) act = rr.activityLabel || rr.activity || 'Exercice';
+        const mm = GRES_MATS.find(m => m.key === x.m);
+        html += `<div class="gres-res">
+          <span class="d">${_gresEsc(rr.date || '')}</span>
+          <span style="font-weight:800;color:${mm ? mm.color : '#4A4A5E'}">${mm ? mm.label : 'Autre'}</span>
+          <span class="a" title="${_gresEsc(act)}">${_gresEsc(act)}</span>
+          <span class="sc">${rr.total != null ? _gresEsc(rr.score) + '/' + _gresEsc(rr.total) : ''}</span>
+          <span class="p" style="background:${tt.bg};color:${tt.fg}">${x.pct}%</span>
+        </div>`;
+      });
+      html += `<button type="button" class="gres-open" onclick="gresOpenStudent(${i})">Ouvrir la fiche complète (toutes les activités, refaire, supprimer)</button></div>`;
+    }
+    html += `</div>`;
+  });
+  html += `</div>`;
+  const tb = document.getElementById('gres-table');
+  if (tb) tb.innerHTML = html;
 }
 
 function renderStudentsManageNew(){
