@@ -33027,108 +33027,192 @@ function renderGestionJournal(){
   }
 }
 
+// ------------------------------------------------------------
+// Gestion › Journal des résultats — « fil par jour » (09/11/2026, aperçu A choisi par Jérémy)
+// Résultats groupés par jour (plus récents en haut), filtres élève / matière / « sous 50 % »,
+// 30 résultats affichés puis « Afficher les 30 résultats précédents ».
+// La barre de filtres n'est construite qu'une fois : changer un filtre ne redessine que la liste.
+// ------------------------------------------------------------
+let gjWho = '';
+let gjMat = '';
+let gjLow = false;
+let gjLimit = 30;
+const GJ_MATS = [
+  { key: '', label: 'Toutes' },
+  { key: 'fr', label: 'Français', color: '#5B4FCF' },
+  { key: 'ma', label: 'Maths', color: '#1A6FA0' },
+  { key: 'ev', label: 'Éveil', color: '#157F5F' },
+  { key: 'rx', label: 'Récits', color: '#9A5E10' }
+];
+const GJ_JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+const GJ_MOIS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+function _gjEsc(s) { return String(s == null ? '' : s).replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c])); }
+function _gjTone(p) {
+  return p >= 70 ? { bg: '#D8F2E8', fg: '#157F5F' } : p >= 50 ? { bg: '#FBEBD0', fg: '#8A520C' } : { bg: '#F9DDD8', fg: '#B23A2B' };
+}
+function _gjDayLabel(d) {
+  const now = new Date();
+  const t0 = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const d0 = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+  const diff = Math.round((t0 - d0) / 864e5);
+  let s = GJ_JOURS[d.getDay()] + ' ' + d.getDate() + ' ' + GJ_MOIS[d.getMonth()];
+  if (d.getFullYear() !== now.getFullYear()) s += ' ' + d.getFullYear();
+  s = s.charAt(0).toUpperCase() + s.slice(1);
+  if (diff === 0) s = "Aujourd'hui — " + s;
+  else if (diff === 1) s = 'Hier — ' + s;
+  return s;
+}
+function gjSetWho(v) { gjWho = v; gjLimit = 30; doRenderGestionJournal(); }
+function gjSetMat(k) { gjMat = k; gjLimit = 30; doRenderGestionJournal(); }
+function gjToggleLow() { gjLow = !gjLow; gjLimit = 30; doRenderGestionJournal(); }
+function gjMore() { gjLimit += 30; doRenderGestionJournal(); }
+window.gjSetWho = gjSetWho; window.gjSetMat = gjSetMat; window.gjToggleLow = gjToggleLow; window.gjMore = gjMore;
+
+const GJ_CSS = `
+.gj{font-family:'Nunito',sans-serif;color:#1A1A2E;display:flex;flex-direction:column;gap:14px}
+.gj *{box-sizing:border-box}
+.gj-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.gj-title{margin:0;font-family:'Fredoka',sans-serif;font-size:24px;font-weight:700;color:#1A1A2E}
+.gj-chip{font-size:13px;font-weight:800;padding:3px 10px;border-radius:999px;background:#ECEAFB;color:#3F35A8;border:2px solid #5B4FCF}
+.gj-sub{font-size:14px;color:#4A4A5E}
+.gj-bar{position:sticky;top:0;z-index:20;background:#FDFBF7;padding:6px 0;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.gj-who{display:flex;align-items:center;gap:8px;height:44px;padding:0 8px 0 14px;background:#fff;border:2.5px solid #1A1A2E;border-radius:12px;font-family:'Fredoka',sans-serif;font-size:14px;font-weight:600;margin:0}
+.gj .gj-who select{height:34px;width:auto;border:none;background:transparent;font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;color:#1A1A2E;margin:0;padding:0 4px;box-shadow:none;cursor:pointer}
+.gj-seg{display:flex;gap:4px;padding:4px;background:#fff;border:2.5px solid #1A1A2E;border-radius:12px;height:44px}
+.gj-seg button{border:none;border-radius:9px;padding:0 12px;font-family:'Fredoka',sans-serif;font-size:14px;font-weight:600;cursor:pointer;background:transparent;color:#1A1A2E}
+.gj-seg button:hover{background:#F1EEE6}
+.gj-seg button.on{background:#5B4FCF;color:#fff}
+.gj-low{height:44px;padding:0 14px;border-radius:12px;border:2.5px solid #1A1A2E;background:#fff;color:#1A1A2E;font-family:'Fredoka',sans-serif;font-size:14px;font-weight:600;cursor:pointer}
+.gj-low.on{background:#F9DDD8;color:#B23A2B}
+.gj-count{font-size:14px;font-weight:700;color:#4A4A5E;margin-left:auto}
+.gj-day{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.gj-dayh{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding:6px 4px 0}
+.gj-dayh h4{margin:0;font-family:'Fredoka',sans-serif;font-size:19px;font-weight:700;color:#1A1A2E}
+.gj-dayh span{font-size:14px;font-weight:700;color:#4A4A5E}
+.gj-card{background:#fff;border:2.5px solid #1A1A2E;border-radius:16px;box-shadow:4px 4px 0 #1A1A2E;overflow:hidden}
+.gj-row{display:grid;grid-template-columns:52px minmax(110px,.9fr) 92px minmax(0,2.6fr) 138px;gap:10px;align-items:center;padding:7px 16px;min-height:50px;border-bottom:1px solid #E9E5DA}
+.gj-row:last-child{border-bottom:none}
+.gj-row.low{background:#FFF8F6}
+.gj-time{font-size:14px;font-weight:700;color:#4A4A5E}
+.gj-who2{display:flex;align-items:center;gap:8px;min-width:0}
+.gj-av{width:30px;height:30px;flex-shrink:0;border-radius:50%;border:2px solid #1A1A2E;background:#ECEAFB;color:#3F35A8;display:flex;align-items:center;justify-content:center;font-family:'Fredoka',sans-serif;font-size:13px;font-weight:700}
+.gj-nm{font-family:'Fredoka',sans-serif;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gj-mat{justify-self:start;font-size:12px;font-weight:800;padding:3px 8px;border-radius:999px;border:1.5px solid;white-space:nowrap}
+.gj-ex{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gj-ex small{font-size:12px;font-weight:700;color:#4A4A5E;margin-left:6px}
+.gj-sc{justify-self:end;display:flex;align-items:baseline;gap:6px;padding:4px 10px;border-radius:10px;white-space:nowrap}
+.gj-sc b{font-family:'Fredoka',sans-serif;font-size:16px;font-weight:700}
+.gj-sc i{font-style:normal;font-size:12px;font-weight:800}
+.gj-more{align-self:center;height:46px;padding:0 20px;border-radius:12px;border:2.5px solid #1A1A2E;background:#fff;font-family:'Fredoka',sans-serif;font-size:15px;font-weight:600;color:#3F35A8;box-shadow:3px 3px 0 #1A1A2E;cursor:pointer;margin-top:6px}
+.gj-more:hover{background:#F1EEE6}
+.gj-empty{text-align:center;padding:32px;background:#fff;border:2.5px dashed #1A1A2E;border-radius:16px;font-size:16px}
+.gj-seg button:focus-visible,.gj-low:focus-visible,.gj-more:focus-visible{outline:3px solid #5B4FCF;outline-offset:2px}
+`;
+
 function doRenderGestionJournal(){
+  const box = document.getElementById('gestion-journal-list');
+  if (!box) return;
+  const cls = teacherCls || 'lejoly';
   const results = loadResults(teacherCls);
-  const journalList = document.getElementById('gestion-journal-list');
-  if(!journalList) return;
 
-  if(results.length === 0){
-    journalList.innerHTML = '<div class="alert alert-info">Aucun résultat enregistré pour le moment.</div>';
-    return;
+  // Barre de filtres : construite une fois par classe (la liste des élèves est mise à jour à chaque fois)
+  let shell = box.querySelector('#gj-shell');
+  if (!shell || shell.getAttribute('data-cls') !== cls) {
+    const clsName = (typeof CLASSES !== 'undefined' && CLASSES[cls] && CLASSES[cls].name) ? CLASSES[cls].name : cls;
+    box.innerHTML = `<style>${GJ_CSS}</style>
+      <div id="gj-shell" class="gj">
+        <div class="gj-head">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <h3 class="gj-title">Journal des résultats</h3>
+            <span class="gj-chip">${_gjEsc(clsName)}</span>
+          </div>
+          <span class="gj-sub">Les plus récents en haut</span>
+        </div>
+        <div class="gj-bar">
+          <label class="gj-who">Élève <select id="gj-who" onchange="gjSetWho(this.value)"></select></label>
+          <div id="gj-mats" class="gj-seg" role="group" aria-label="Matière"></div>
+          <button type="button" id="gj-low" class="gj-low" onclick="gjToggleLow()">Seulement sous 50 %</button>
+          <span id="gj-count" class="gj-count"></span>
+        </div>
+        <div id="gj-list" style="display:flex;flex-direction:column;gap:12px;"></div>
+      </div>`;
+    shell = box.querySelector('#gj-shell');
+    shell.setAttribute('data-cls', cls);
   }
 
-  function parseResultDateTime(r) {
-    if (!r.date) return new Date(0);
-    const dateParts = r.date.split('/');
-    if (dateParts.length !== 3) return new Date(0);
-    const day = parseInt(dateParts[0], 10);
-    const month = parseInt(dateParts[1], 10) - 1;
-    const year = parseInt(dateParts[2], 10);
-    let hour = 0, minute = 0;
-    if (r.time) {
-      const timeParts = r.time.split(':');
-      if (timeParts.length >= 2) {
-        hour = parseInt(timeParts[0], 10);
-        minute = parseInt(timeParts[1], 10);
-      }
-    }
-    return new Date(year, month, day, hour, minute);
-  }
+  // Élèves : ceux de la classe + ceux présents dans les résultats
+  const names = Array.from(new Set(getClassStudents(teacherCls).map(s => s.name).concat(results.map(r => r.student).filter(Boolean))))
+    .sort((a, b) => a.localeCompare(b, 'fr'));
+  if (gjWho && !names.includes(gjWho)) gjWho = '';
+  const sel = document.getElementById('gj-who');
+  if (sel) sel.innerHTML = `<option value="">Tous</option>` + names.map(n => `<option value="${_gjEsc(n)}"${n === gjWho ? ' selected' : ''}>${_gjEsc(n)}</option>`).join('');
+  const mats = document.getElementById('gj-mats');
+  if (mats) mats.innerHTML = GJ_MATS.map(m => `<button type="button" class="${gjMat === m.key ? 'on' : ''}" aria-pressed="${gjMat === m.key}" onclick="gjSetMat('${m.key}')">${m.label}</button>`).join('');
+  const lowBtn = document.getElementById('gj-low');
+  if (lowBtn) { lowBtn.classList.toggle('on', gjLow); lowBtn.setAttribute('aria-pressed', String(gjLow)); }
 
-  function getActivityFriendlyName(r) {
-    // bookTitle contient déjà le libellé complet de l'activité (pas seulement les livres)
-    // On l'utilise directement comme dans doRenderStudentDetail
-    let activity = r.bookTitle || r.activityLabel || r.activity || 'Exercice';
-    if (activity && activity.includes('undefined')) {
-      activity = r.activityLabel || r.activity || 'Exercice';
-    }
-    // Si c'est une clé technique (sans espaces, avec underscores), on cherche dans le catalogue
-    if (activity && !activity.includes(' ')) {
-      const cat = (typeof getActivitiesMasterRegistry === 'function') ? getActivitiesMasterRegistry() : (typeof PLAN_CATALOGUE !== 'undefined' ? PLAN_CATALOGUE : []);
-      for (let s of cat) {
-        for (let item of s.items) {
-          if (item.id === activity) {
-            return item.label;
-          }
-        }
-      }
-    }
-    return activity;
-  }
+  // Libellés d'activités (catalogue lu une seule fois)
+  const labels = {};
+  try { getActivitiesMasterRegistry().forEach(s => s.items.forEach(it => { if (!labels[it.id]) labels[it.id] = it.label; })); } catch (e) {}
+  const nameOf = r => {
+    let a = r.bookTitle || r.activityLabel || r.activity || r.book || 'Exercice';
+    if (String(a).includes('undefined')) a = r.activityLabel || r.activity || 'Exercice';
+    if (a && !String(a).includes(' ') && labels[a]) a = labels[a];
+    return a;
+  };
+  const matOf = (typeof _gresMatiereResolver === 'function') ? _gresMatiereResolver() : (() => '');
 
-  // Trier par ordre chronologique (plus récent en premier)
-  const sorted = results.slice().sort((a, b) => parseResultDateTime(b) - parseResultDateTime(a));
-  
-  // Limiter aux 30 derniers
-  const latestResults = sorted.slice(0, 30);
+  const list = results.map(r => ({ r, ts: resultTimestamp(r) || 0, pct: Number(r.pct) || 0, m: matOf(r) }))
+    .filter(x => (!gjWho || x.r.student === gjWho) && (!gjMat || x.m === gjMat) && (!gjLow || x.pct < 50))
+    .sort((a, b) => b.ts - a.ts);
+  const shown = list.slice(0, gjLimit);
 
-  let html = `
-    <div class="card" style="padding: 1.25rem;">
-      <div class="card-title" style="margin-bottom: 1.25rem; font-family: 'Fredoka', sans-serif;">📋 Journal des 30 derniers résultats</div>
-      <div style="overflow-x: auto;">
-        <table class="gestion-journal-table">
-          <thead>
-            <tr style="border-bottom: 2px solid #e5e7eb; color: var(--muted); font-weight: 700;">
-              <th style="padding: 10px 12px;">Élève</th>
-              <th style="padding: 10px 12px;">Exercice</th>
-              <th style="padding: 10px 12px; text-align: center;">Résultat</th>
-              <th style="padding: 10px 12px; text-align: right;">Date & Heure</th>
-            </tr>
-          </thead>
-          <tbody>
-  `;
+  const cnt = document.getElementById('gj-count');
+  if (cnt) cnt.textContent = list.length ? (shown.length + ' résultat' + (shown.length > 1 ? 's' : '') + ' affiché' + (shown.length > 1 ? 's' : '') + ' sur ' + list.length) : '';
 
-  latestResults.forEach(r => {
-    const c = r.pct >= 70 ? 'var(--green)' : r.pct >= 50 ? 'var(--amber)' : 'var(--red)';
-    let activityName = getActivityFriendlyName(r);
-    if (activityName && activityName.includes('undefined')) {
-      activityName = r.activityLabel || r.activity || 'Exercice';
-    }
-    const scoreText = r.score !== undefined && r.total !== undefined ? `${r.score} / ${r.total}` : `${r.pct}%`;
-    const timeSecText = r.time_sec ? `<span style="margin-left:6px;background:var(--purple-light);color:var(--purple);border-radius:10px;padding:1px 6px;font-size:10px;font-weight:700;">⏱️ ${r.time_sec}s</span>` : '';
-    
-    html += `
-      <tr style="border-bottom: 1px solid #f3f4f6;">
-        <td style="padding: 12px 12px; font-weight: 700; color: #1f2937;">${r.student}</td>
-        <td style="padding: 12px 12px; color: #1f2937; font-weight: 600;">${activityName}${timeSecText}</td>
-        <td style="padding: 12px 12px; text-align: center; font-weight: 800; color: ${c}; font-size: 15px;">
-          ${scoreText} <span style="font-size: 11px; font-weight: 600; color: var(--muted); font-family: 'Inter', sans-serif;">(${r.pct}%)</span>
-        </td>
-        <td style="padding: 12px 12px; text-align: right; color: var(--muted); font-size: 12px; font-family: 'Inter', sans-serif;">
-          ${r.date} <span style="font-weight: 600; color: #1f2937; margin-left: 4px;">${r.time || ''}</span>
-        </td>
-      </tr>
-    `;
+  const out = document.getElementById('gj-list');
+  if (!out) return;
+  if (!results.length) { out.innerHTML = `<div class="gj-empty">Aucun résultat enregistré pour le moment.</div>`; return; }
+  if (!list.length) { out.innerHTML = `<div class="gj-empty">Aucun résultat avec ces filtres.</div>`; return; }
+
+  // Groupement par jour
+  const days = [];
+  shown.forEach(x => {
+    const d = x.ts ? new Date(x.ts) : null;
+    const key = d ? d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate() : 'sans-date';
+    let g = days.find(y => y.key === key);
+    if (!g) { g = { key, label: d ? _gjDayLabel(d) : 'Date inconnue', rows: [] }; days.push(g); }
+    g.rows.push(x);
   });
 
-  html += `
-          </tbody>
-        </table>
-      </div>
-    </div>
-  `;
-
-  journalList.innerHTML = html;
+  let html = '';
+  days.forEach(g => {
+    const avg = Math.round(g.rows.reduce((s, x) => s + x.pct, 0) / g.rows.length);
+    const t = _gjTone(avg);
+    html += `<section class="gj-day">
+      <div class="gj-dayh"><h4>${_gjEsc(g.label)}</h4><span>${g.rows.length} résultat${g.rows.length > 1 ? 's' : ''} · moyenne <span style="color:${t.fg}">${avg}%</span></span></div>
+      <div class="gj-card">`;
+    g.rows.forEach(x => {
+      const r = x.r, tt = _gjTone(x.pct);
+      const mm = GJ_MATS.find(m => m.key === x.m && m.key);
+      const score = (r.score !== undefined && r.total !== undefined) ? (String(r.score).replace('.', ',') + ' / ' + r.total) : (x.pct + '%');
+      const hour = r.time ? String(r.time).slice(0, 5) : (x.ts ? new Date(x.ts).toTimeString().slice(0, 5) : '');
+      const ex = nameOf(r);
+      html += `<div class="gj-row${x.pct < 50 ? ' low' : ''}">
+        <span class="gj-time">${_gjEsc(hour)}</span>
+        <span class="gj-who2"><span class="gj-av" aria-hidden="true">${_gjEsc(String(r.student || '?').charAt(0))}</span><span class="gj-nm">${_gjEsc(r.student)}</span></span>
+        ${mm ? `<span class="gj-mat" style="color:${mm.color};border-color:${mm.color}">${mm.label}</span>` : `<span></span>`}
+        <span class="gj-ex" title="${_gjEsc(ex)}">${_gjEsc(ex)}${r.time_sec ? `<small>${_gjEsc(r.time_sec)} s</small>` : ''}</span>
+        <span class="gj-sc" style="background:${tt.bg};color:${tt.fg}"><b>${_gjEsc(score)}</b><i>${x.pct}%</i></span>
+      </div>`;
+    });
+    html += `</div></section>`;
+  });
+  if (list.length > shown.length) {
+    const n = Math.min(30, list.length - shown.length);
+    html += `<button type="button" class="gj-more" onclick="gjMore()">Afficher les ${n} résultats précédents</button>`;
+  }
+  out.innerHTML = html;
 }
 
 function renderGestionResults(){
