@@ -9712,6 +9712,23 @@ function resultTimestamp(r){
   const t = /^(\d{1,2})[:h](\d{2})/.exec((r && r.time) || '') || [0, 0, 0];
   return new Date(+m[3], +m[2] - 1, +m[1], +t[1], +t[2]).getTime();
 }
+// Date et heure d'un résultat, toujours à l'heure de Bruxelles (certaines tablettes ont un mauvais fuseau horaire).
+const _RES_TZ = 'Europe/Brussels';
+function resultClock(r){
+  const ts = r && r.ts;
+  if (ts) {
+    const d = new Date(ts);
+    try {
+      return {
+        date: d.toLocaleDateString('fr-BE', { timeZone: _RES_TZ }),
+        time: d.toLocaleTimeString('fr-BE', { timeZone: _RES_TZ, hour: '2-digit', minute: '2-digit' })
+      };
+    } catch (e) {}
+  }
+  return { date: (r && r.date) || '', time: (r && r.time) || '' };
+}
+function resultDate(r){ return resultClock(r).date; }
+function resultTime(r){ return resultClock(r).time; }
 function withTimeout(p, ms, fallback){
   return Promise.race([Promise.resolve(p).catch(() => fallback), new Promise(r => setTimeout(() => r(fallback), ms))]);
 }
@@ -9742,7 +9759,7 @@ function showBookAlreadyDone(r, book){
     <div class="card" style="text-align:center;padding:2rem 1.25rem;">
       <div style="font-size:44px;margin-bottom:.5rem;">📖✅</div>
       <div style="font-family:Nunito;font-size:18px;font-weight:800;margin-bottom:.5rem;">Tu as déjà fait ce questionnaire</div>
-      <p style="color:var(--muted);font-size:14px;margin-bottom:1rem;">« ${title} » — le ${r.date || ''} à ${r.time || ''}</p>
+      <p style="color:var(--muted);font-size:14px;margin-bottom:1rem;">« ${title} » — le ${resultDate(r)} à ${resultTime(r)}</p>
       <div style="font-family:Nunito;font-size:26px;font-weight:800;margin-bottom:1rem;">${r.score}/${r.total}</div>
       <p style="font-size:14px;">Il n'y a qu'une seule tentative. Si tu dois le refaire, demande à ton enseignant.</p>
     </div>`;
@@ -10378,7 +10395,7 @@ function doRenderStudentDetail(studentName, _retakesLoaded){
       html+=`<div class="student-detail-row" style="align-items:center;">
         <div style="flex:1">
           <div style="font-weight:600;font-size:14px">${activity}${tempsHtml}</div>
-          <div style="font-size:12px;color:var(--muted)">${r.date} ${r.time||''}</div>
+          <div style="font-size:12px;color:var(--muted)">${resultDate(r)} ${resultTime(r)}</div>
         </div>
         <div style="text-align:right;flex-shrink:0">
           <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:16px;color:${c}">${r.score}/${r.total}</div>
@@ -10913,7 +10930,7 @@ function showStudentDetail(studentName, _retakesLoaded){
         <div style="flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;">
           <div style="width:${r.pct}%;height:100%;background:${color};border-radius:3px;"></div>
         </div>
-        <span class="attempt-date">${r.date} ${r.time}${(isRecit && resultTimestamp(r) <= retakeTs) ? ' · <em style="color:var(--muted)">annulée</em>' : ''}</span>
+        <span class="attempt-date">${resultDate(r)} ${resultTime(r)}${(isRecit && resultTimestamp(r) <= retakeTs) ? ' · <em style="color:var(--muted)">annulée</em>' : ''}</span>
       </div>`;
     });
 
@@ -16159,7 +16176,7 @@ function dicteeShowResult(i){
   box.innerHTML = `<div class="card" style="max-width:760px;width:100%;margin:0;position:relative;">
     <button class="btn btn-sm" style="position:absolute;top:12px;right:12px;" onclick="document.getElementById('dictee-result-modal').remove()">✕ Fermer</button>
     <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:20px;padding-right:90px;">${dEsc(r.bookTitle || 'Dictée')}</div>
-    <div style="font-size:13px;color:var(--muted);margin:2px 0 10px;">${dEsc(r.student)} · ${dEsc(r.date)} ${dEsc(r.time || '')}</div>
+    <div style="font-size:13px;color:var(--muted);margin:2px 0 10px;">${dEsc(r.student)} · ${dEsc(resultDate(r))} ${dEsc(resultTime(r))}</div>
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
       <span style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:28px;background:#FFE27A;border:3px solid var(--border);border-radius:12px;padding:2px 10px;">${dFmtNote(r.score)} <span style="font-size:16px;">/ ${r.total}</span></span>
       ${D.noteDepart !== undefined
@@ -33207,7 +33224,7 @@ function doRenderGestionJournal(){
       const r = x.r, tt = _gjTone(x.pct);
       const mm = GJ_MATS.find(m => m.key === x.m && m.key);
       const score = (r.score !== undefined && r.total !== undefined) ? (String(r.score).replace('.', ',') + ' / ' + r.total) : (x.pct + '%');
-      const hour = r.time ? String(r.time).slice(0, 5) : (x.ts ? new Date(x.ts).toTimeString().slice(0, 5) : '');
+      const hour = String(resultTime(r)).slice(0, 5);
       const ex = nameOf(r);
       html += `<div class="gj-row${x.pct < 50 ? ' low' : ''}">
         <span class="gj-time">${_gjEsc(hour)}</span>
@@ -37108,7 +37125,7 @@ function ptResumeRowHtml(name, row, cIdx) {
         <span class="attempt-num">Tentative ${s.attempts.length - i}</span>
         <span class="attempt-score" style="color:${color}">${r.score}/${r.total} (${pct}%)</span>
         <div style="flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;"><div style="width:${pct}%;height:100%;background:${color};border-radius:3px;"></div></div>
-        <span class="attempt-date">${ptEsc(r.date || '')} ${ptEsc(r.time || '')}</span>
+        <span class="attempt-date">${ptEsc(resultDate(r))} ${ptEsc(resultTime(r))}</span>
       </div>`;
     }).join('');
     attempts = `<details class="pt-res-attempts"><summary>${s.attempts.length} tentative${s.attempts.length > 1 ? 's' : ''}</summary>${rows}</details>`;
