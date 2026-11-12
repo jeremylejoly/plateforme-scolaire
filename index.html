@@ -4940,7 +4940,16 @@ input[type=text].calc-input.incorrect {
       <button class="btn" onclick="showScreen('screen-astrelune')">🧭 Ouvrir le jeu</button>
       <button class="btn" id="astrelune-bascule" onclick="toggleActivity('jeu_astrelune');majCarteAstrelune();"></button>
     </div>
-    <iframe id="astrelune-tableau" data-lazy-src="../astrelune/tableau.html" style="width:100%;height:calc(100vh - 70px);height:calc(100dvh - 70px);border:none;border-radius:12px;background:#f6f4ef;"></iframe>
+    <!-- (12/11/2026) fermer un monde pour ralentir les plus rapides : Balthor refuse la première traversée -->
+    <div id="astrelune-mondes" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:6px;font-family:'Inter',sans-serif;font-size:13px">
+      <span style="font-weight:700;color:#475569">Mondes :</span>
+      <button class="btn" data-monde="1" onclick="basculerMondeAstrelune(1)"></button>
+      <button class="btn" data-monde="2" onclick="basculerMondeAstrelune(2)"></button>
+      <button class="btn" data-monde="3" onclick="basculerMondeAstrelune(3)"></button>
+      <button class="btn" data-monde="4" onclick="basculerMondeAstrelune(4)"></button>
+      <span style="color:#94a3b8">Monde fermé : Balthor refuse d'y emmener ceux qui n'y sont pas encore allés.</span>
+    </div>
+    <iframe id="astrelune-tableau" data-lazy-src="../astrelune/tableau.html" style="width:100%;height:calc(100vh - 116px);height:calc(100dvh - 116px);border:none;border-radius:12px;background:#f6f4ef;"></iframe>
   </div>
 
   <!-- SCREEN: Flux Connecté (9ème jeu) -->
@@ -10751,6 +10760,17 @@ function majCarteAstrelune(){
   if (c) { c.style.display = ''; c.style.cursor = verrou ? 'default' : ''; c.title = verrou ? 'Bientôt disponible' : ''; const e = c.querySelector('.astrelune-etat'); if (e) e.textContent = '🔒 Bientôt'; }
   document.querySelectorAll('.astrelune-etat').forEach(e => { e.style.display = verrou ? '' : 'none'; });
   const b = document.getElementById('astrelune-bascule'); if (b) b.textContent = verrou ? '🔓 Rendre visible aux élèves' : '🔒 Masquer aux élèves';
+  majMondesAstrelune();
+}
+// ===== ASTRELUNE (12/11/2026) : ouvrir ou fermer chaque monde (activités astrelune_monde_1 … 4 ; ouvertes par défaut) =====
+const ASTRELUNE_MONDES = ['', '🌊 Rivebelle', '🌻 Rondecolline', '🪷 Lacmousse', '🏔️ Cimeclaire'];
+function basculerMondeAstrelune(k){ toggleActivity('astrelune_monde_' + k); majMondesAstrelune(); }
+function majMondesAstrelune(){
+  document.querySelectorAll('#astrelune-mondes [data-monde]').forEach(b => {
+    const k = +b.dataset.monde; let ferme = false; try { ferme = isActivityLocked('astrelune_monde_' + k); } catch(e) {}
+    b.textContent = ASTRELUNE_MONDES[k] + (ferme ? ' : 🔒 fermé' : ' : ✅ ouvert');
+    b.style.opacity = ferme ? '.75' : '1'; b.title = ferme ? 'Cliquer pour ouvrir ce monde' : 'Cliquer pour fermer ce monde';
+  });
 }
 // ===== ASTRELUNE (06/11/2026) : tableau de bord de la classe choisie =====
 function ouvrirTableauAstrelune(){
