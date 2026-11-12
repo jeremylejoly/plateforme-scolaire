@@ -15967,6 +15967,11 @@ function dicteeFormHTML(){
     <textarea id="df-texte" style="${inp}height:120px;line-height:1.5;resize:vertical;" spellcheck="true" oninput="dicteeCompteMots()">${dEsc(d.texte || '')}</textarea>
     <div id="df-mots" style="font-size:12px;color:var(--muted);margin-top:3px;"></div>
     <label style="${lab}" for="df-audio">Enregistrement ${dicteeEditId ? '<span style="font-weight:500;color:var(--muted)">(laisse vide pour garder l\'enregistrement actuel)</span>' : ''}</label>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <button class="btn" type="button" id="df-rec-btn" onclick="dicteeRecToggle()">🎙️ Enregistrer avec le micro</button>
+      <span id="df-rec-etat" style="font-size:13px;"></span>
+    </div>
+    <div style="font-size:13px;color:var(--muted);margin:10px 0 4px;">ou choisis un fichier :</div>
     <input type="file" id="df-audio" accept="audio/*,.m4a,.mp3,.wav,.aac,.ogg" onchange="dicteeAudioChoisi()">
     <div style="font-size:12px;color:var(--muted);margin-top:3px;">Formats : .m4a (iPhone), .mp3, .aac, .wav — ${Math.round(DICTEE_MAX_SEC / 60)} minutes et ${Math.round(DICTEE_MAX_OCTETS / 1048576)} Mo au maximum.</div>
     <div id="df-audio-info" style="margin-top:8px;">${dicteeEditId && d.duree ? `<span style="font-size:13px;">🎧 Enregistrement actuel : ${dFmtDuree(d.duree)}</span> <button class="btn btn-sm" type="button" onclick="dicteeEcouterActuel()">▶ Écouter</button>` : ''}</div>
@@ -15987,6 +15992,7 @@ function dicteeFormHTML(){
   </div>`;
 }
 function dicteeEdit(id){
+  if (dicteeRec) { dicteeRec.annule = true; dicteeRecArreter(); }
   dicteeEditId = id;
   dicteeAudioPret = null;
   renderDicteesMenuSync();
@@ -16015,9 +16021,16 @@ function dicteeMime(file){
 }
 let dicteeAudioPret = null;   // { dataURL, duree, taille }
 function dicteeAudioChoisi(){
-  const inp = document.getElementById('df-audio'), info = document.getElementById('df-audio-info');
+  const inp = document.getElementById('df-audio');
+  if (dicteeRec) { dicteeRec.annule = true; dicteeRecArreter(); dicteeRecEtat(''); }
   dicteeAudioPret = null;
   const file = inp && inp.files && inp.files[0];
+  if (file) dicteePreparerFichier(file);
+}
+// Vérifie un fichier audio (lisible, durée, poids) et le prépare pour l'enregistrement de la dictée
+function dicteePreparerFichier(file, titreOk){
+  const info = document.getElementById('df-audio-info');
+  dicteeAudioPret = null;
   if (!file || !info) return;
   if (file.size > DICTEE_MAX_OCTETS) {
     info.innerHTML = `<span style="color:var(--red);font-weight:700;font-size:13px;">⚠️ Fichier trop lourd (${(file.size / 1048576).toFixed(1).replace('.', ',')} Mo, maximum ${Math.round(DICTEE_MAX_OCTETS / 1048576)} Mo).</span>`;
@@ -16045,7 +16058,7 @@ function dicteeAudioChoisi(){
       const fr = new FileReader();
       fr.onload = () => {
         dicteeAudioPret = { dataURL: String(fr.result).replace(/^data:[^;]*;/, 'data:' + dicteeMime(file) + ';'), duree, taille: file.size };
-        info.innerHTML = `<div style="font-size:13px;font-weight:600;color:var(--green);margin-bottom:4px;">✅ Enregistrement prêt : ${dFmtDuree(duree)} · ${(file.size / 1048576).toFixed(1).replace('.', ',')} Mo</div>
+        info.innerHTML = `<div style="font-size:13px;font-weight:600;color:var(--green);margin-bottom:4px;">✅ ${titreOk || 'Enregistrement prêt'} : ${dFmtDuree(duree)} · ${(file.size / 1048576).toFixed(1).replace('.', ',')} Mo</div>
           <audio controls src="${url}" style="width:100%;max-width:420px;"></audio>`;
       };
       fr.onerror = echec;
@@ -16060,6 +16073,113 @@ function dicteeAudioChoisi(){
   a.preload = 'metadata';
   a.src = url;
 }
+/* ---------- Enregistreur (micro de l'ordinateur ou de la tablette) ----------
+   Le navigateur enregistre dans son format (Chrome : .webm, Safari : .mp4), puis on convertit en MP3
+   (lame.min.js, chargé seulement ici) : le MP3 se lit sur tous les appareils des élèves, iPad compris. */
+let dicteeRec = null;   // { stream, recorder, chunks, ctx, analyser, debut, timer, raf }
+function dicteeRecEtat(html){ const e = document.getElementById('df-rec-etat'); if (e) e.innerHTML = html; }
+function dicteeRecBouton(txt, enCours){
+  const b = document.getElementById('df-rec-btn'); if (!b) return;
+  b.textContent = txt;
+  b.style.background = enCours ? 'var(--red)' : '';
+  b.style.color = enCours ? '#fff' : '';
+}
+function dicteeChargerLame(){
+  if (window.lamejs) return Promise.resolve();
+  return new Promise((ok, ko) => {
+    const s = document.createElement('script');
+    s.src = 'lame.min.js'; s.onload = () => window.lamejs ? ok() : ko(new Error('lamejs'));
+    s.onerror = () => ko(new Error('lamejs'));
+    document.head.appendChild(s);
+  });
+}
+async function dicteeRecToggle(){
+  if (dicteeRec) { dicteeRecArreter(); return; }
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || typeof MediaRecorder === 'undefined') {
+    dicteeRecEtat('<span style="color:var(--red);font-weight:700;">⚠️ Ce navigateur ne permet pas d\'enregistrer. Utilise Chrome ou Safari à jour, ou choisis un fichier.</span>');
+    return;
+  }
+  let stream;
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } });
+  } catch(e) {
+    dicteeRecEtat('<span style="color:var(--red);font-weight:700;">⚠️ Le micro n\'est pas accessible. Autorise le micro pour ce site (icône 🔒 ou 🎙️ dans la barre d\'adresse), puis réessaie.</span>');
+    return;
+  }
+  const types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus'];
+  const type = types.find(t => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) || '';
+  const recorder = type ? new MediaRecorder(stream, {mimeType: type}) : new MediaRecorder(stream);
+  const chunks = [];
+  const rec = { stream, recorder, chunks, debut: Date.now(), annule: false };
+  recorder.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+  recorder.onstop = () => { if (!rec.annule) dicteeRecTraiter(new Blob(chunks, {type: recorder.mimeType || type || 'audio/webm'})); };
+  // Petit vumètre : pour voir que le micro capte bien la voix
+  let ctx = null, analyser = null;
+  try {
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = ctx.createAnalyser(); analyser.fftSize = 512;
+    ctx.createMediaStreamSource(stream).connect(analyser);
+  } catch(e) {}
+  rec.ctx = ctx; rec.debut = Date.now();
+  dicteeRec = rec;
+  // Un nouvel enregistrement remplace un fichier choisi
+  const inp = document.getElementById('df-audio'); if (inp) inp.value = '';
+  dicteeAudioPret = null;
+  const info = document.getElementById('df-audio-info'); if (info) info.innerHTML = '';
+  recorder.start(1000);
+  dicteeRecBouton('⏹ Arrêter l\'enregistrement', true);
+  const buf = analyser ? new Uint8Array(analyser.fftSize) : null;
+  const tick = () => {
+    if (!dicteeRec) return;
+    const sec = (Date.now() - dicteeRec.debut) / 1000;
+    let niveau = 0;
+    if (analyser) { analyser.getByteTimeDomainData(buf); let m = 0; for (let i = 0; i < buf.length; i++) m = Math.max(m, Math.abs(buf[i] - 128)); niveau = Math.min(100, Math.round(m / 128 * 160)); }
+    dicteeRecEtat(`<span style="color:var(--red);font-weight:700;">● Enregistrement…</span> <b style="font-variant-numeric:tabular-nums;">${dFmtDuree(sec)}</b> / ${dFmtDuree(DICTEE_MAX_SEC)}
+      <span style="display:inline-block;vertical-align:middle;width:120px;height:10px;border:2px solid var(--border);border-radius:6px;margin-left:8px;overflow:hidden;background:#fff;"><span style="display:block;height:100%;width:${niveau}%;background:${niveau > 90 ? 'var(--red)' : 'var(--green)'};"></span></span>`);
+    if (sec >= DICTEE_MAX_SEC) { dicteeRecArreter(); return; }
+    dicteeRec.raf = setTimeout(tick, 200);
+  };
+  tick();
+}
+function dicteeRecArreter(){
+  const r = dicteeRec; if (!r) return;
+  dicteeRec = null;
+  clearTimeout(r.raf);
+  try { if (r.recorder.state !== 'inactive') r.recorder.stop(); } catch(e) {}
+  r.stream.getTracks().forEach(t => t.stop());
+  try { if (r.ctx) r.ctx.close(); } catch(e) {}
+  dicteeRecBouton('🎙️ Enregistrer avec le micro', false);
+  dicteeMsg('');
+  dicteeRecEtat('<span style="color:var(--muted);">⏳ Préparation de l\'enregistrement…</span>');
+}
+async function dicteeRecTraiter(blob){
+  try {
+    if (!blob.size) throw new Error('vide');
+    await dicteeChargerLame();
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const audio = await new Promise((ok, ko) => blob.arrayBuffer().then(ab => ctx.decodeAudioData(ab, ok, ko)).catch(ko));
+    try { ctx.close(); } catch(e) {}
+    // Mono, 22 050 Hz (largement assez pour une voix), puis MP3 à 64 kb/s
+    const RATE = 22050;
+    const off = new (window.OfflineAudioContext || window.webkitOfflineAudioContext)(1, Math.max(1, Math.ceil(audio.duration * RATE)), RATE);
+    const src = off.createBufferSource(); src.buffer = audio; src.connect(off.destination); src.start();
+    const rendu = await off.startRendering();
+    const f32 = rendu.getChannelData(0);
+    const pcm = new Int16Array(f32.length);
+    for (let i = 0; i < f32.length; i++) { const v = Math.max(-1, Math.min(1, f32[i])); pcm[i] = v < 0 ? v * 0x8000 : v * 0x7FFF; }
+    const enc = new lamejs.Mp3Encoder(1, RATE, 64);
+    const parts = [];
+    for (let i = 0; i < pcm.length; i += 1152) { const b = enc.encodeBuffer(pcm.subarray(i, i + 1152)); if (b.length) parts.push(new Uint8Array(b)); }
+    const fin = enc.flush(); if (fin.length) parts.push(new Uint8Array(fin));
+    const mp3 = new File(parts, 'enregistrement-micro.mp3', {type: 'audio/mpeg'});
+    dicteeRecEtat('');
+    dicteePreparerFichier(mp3, '🎙️ Enregistrement prêt (tu peux le réécouter avant d\'enregistrer la dictée)');
+  } catch(e) {
+    console.error('Enregistrement micro', e);
+    dicteeRecEtat('<span style="color:var(--red);font-weight:700;">⚠️ L\'enregistrement n\'a pas pu être préparé. Réessaie, ou choisis un fichier.</span>');
+  }
+}
+
 async function dicteeEcouterActuel(){
   const info = document.getElementById('df-audio-info');
   try {
@@ -16083,6 +16203,7 @@ async function dicteeSave(){
   const isNew = !dicteeEditId;
   if (!titre) return dicteeMsg('⚠️ Donne un titre à la dictée.', false);
   if (!texte) return dicteeMsg('⚠️ Écris le texte de la dictée.', false);
+  if (dicteeRec) return dicteeMsg('⚠️ Arrête d\'abord l\'enregistrement (bouton ⏹).', false);
   if (fileChosen && !dicteeAudioPret) return dicteeMsg('⚠️ L\'enregistrement choisi n\'est pas valide (voir le message au-dessus).', false);
   if (isNew && !dicteeAudioPret) return dicteeMsg('⚠️ Ajoute ton enregistrement.', false);
   if (!window.FB_isTeacher) return dicteeMsg('⚠️ Tu dois être connecté avec ton compte enseignant pour enregistrer une dictée.', false);
