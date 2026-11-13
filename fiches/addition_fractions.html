@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Addition de fractions</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Inter:wght@300..800&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  /* Habillage identique aux exercices du site (index.html : .page-title, .back-btn, .btn, .sub-subject-card, .calc-question, .calc-input) */
+  :root {
+    --purple:#5B4FCF; --purple-light:#EEF0FF; --purple-mid:#C7C2F5;
+    --green:#1A9E75; --green-light:#E2F5EE;
+    --red:#D94F3D; --red-light:#FDECEA;
+    --amber:#C97B1A; --amber-light:#FEF3E2;
+    --blue:#1A6FA0; --blue-light:#E2F0FA;
+    --bg:#FDFBF7; --surface:#FFFFFF;
+    --text:#1A1A2E; --muted:#6B7080; --border:#1A1A2E;
+    --r:14px; --rsm:8px;
+    --accent-add:#2ec27e;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { background:var(--bg); }
+  body { font-family:'Inter', sans-serif; color:var(--text); padding:16px; -webkit-font-smoothing:antialiased; }
+  button { font-family:inherit; touch-action:manipulation; }
+  .container { max-width:900px; margin:0 auto; }
+  .ecran { display:none; }
+  .ecran.actif { display:block; }
+
+  /* Titres et boutons du site */
+  .page-title { font-family:'Nunito', sans-serif; font-size:20px; font-weight:900; color:var(--text); margin-bottom:1rem; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .page-title .sous { font-size:14px; font-weight:700; color:var(--muted); }
+  .back-btn { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border:1.5px solid var(--border); border-radius:var(--rsm); background:var(--surface); font-family:'Nunito', sans-serif; font-size:13px; font-weight:700; cursor:pointer; color:var(--muted); transition:all .15s; }
+  .back-btn:hover { background:var(--bg); color:var(--text); }
+  .btn { padding:10px 20px; border:2px solid var(--border); border-radius:var(--rsm); background:var(--surface); font-family:'Fredoka', sans-serif; font-size:14px; font-weight:700; cursor:pointer; color:var(--text); transition:all .2s; box-shadow:2px 2px 0 var(--border); }
+  .btn:hover { background:var(--bg); transform:translate(-1px,-1px); box-shadow:3px 3px 0 var(--border); }
+  .btn:active { transform:translate(1px,1px); box-shadow:1px 1px 0 var(--border); }
+  .btn-primary { background:var(--purple); color:#fff; border-color:var(--purple); }
+  .btn-primary:hover { background:#4a3fb8; }
+  .btn-large { width:100%; font-size:16px; padding:14px; }
+  .btn[hidden] { display:none; }
+
+  /* ----- Choix du niveau : cartes comme les menus du site ----- */
+  .niveaux { display:grid; grid-template-columns:1fr; gap:16px; }
+  @media (min-width:640px) { .niveaux { grid-template-columns:repeat(3, minmax(0,1fr)); } }
+  .carte-niveau {
+    background:#fff; border-radius:24px; border:1px solid #e5e7eb; box-shadow:0 1px 3px rgba(0,0,0,.02);
+    padding:1.5rem 1.25rem; cursor:pointer; transition:all .3s cubic-bezier(.4,0,.2,1); text-align:center;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:160px; width:100%; font-family:'Inter', sans-serif;
+  }
+  .carte-niveau:hover { transform:translateY(-3px); box-shadow:0 10px 20px -5px rgba(0,0,0,.06), 0 4px 6px -2px rgba(0,0,0,.03); }
+  .badge-niv { width:56px; height:56px; border-radius:16px; display:inline-flex; align-items:center; justify-content:center; margin-bottom:12px; font-family:'Fredoka', sans-serif; font-size:26px; font-weight:700; }
+  .carte-niveau .sub-title { font-family:'Fredoka', sans-serif; font-size:17px; font-weight:700; color:#1f2937; margin-bottom:4px; }
+  .carte-niveau .sub-desc { font-size:12px; color:#6b7280; line-height:1.4; margin-top:4px; }
+  .exemple { margin-top:10px; display:flex; align-items:center; gap:6px; font-family:'Nunito', sans-serif; font-weight:900; font-size:15px; color:var(--text); }
+  .exemple .op { color:var(--purple); }
+  .record { display:inline-block; font-size:12px; font-weight:700; color:var(--green); background:var(--green-light); border-radius:99px; padding:2px 10px; margin-top:10px; }
+
+  /* ----- Barre du haut pendant les calculs ----- */
+  .barre-haut { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:1rem; }
+  .barre-haut .gauche, .barre-haut .droite { display:flex; align-items:center; gap:10px; }
+  .compteur { font-family:'Nunito', sans-serif; font-size:15px; font-weight:900; color:var(--muted); }
+  .dots { display:flex; gap:6px; }
+  .dot { width:12px; height:12px; border-radius:50%; background:#e5e7eb; border:1px solid #d1d5db; transition:all .3s; }
+  .dot.current { background:var(--purple); border-color:var(--purple); transform:scale(1.2); }
+  .dot.correct { background:var(--accent-add); border-color:var(--accent-add); }
+  .dot.corrige { background:#ff885c; border-color:#ff885c; }
+  .dot.incorrect { background:var(--red); border-color:var(--red); }
+  .btn-aide { padding:6px 12px; font-size:13px; }
+  .btn-aide.ouverte { background:var(--amber-light); }
+
+  /* ----- Le calcul : comme .calc-question ----- */
+  .calc-card {
+    background:var(--surface); border:1px solid var(--border); border-left:6px solid var(--accent-add); border-radius:16px;
+    padding:14px 18px 16px; box-shadow:0 4px 10px rgba(0,0,0,.04); text-align:center; transition:all .2s ease;
+  }
+  .calc-card.correct { border-color:var(--green); border-left-color:var(--accent-add); background:#F0FFF8; }
+  .consigne { font-size:14px; font-weight:600; color:var(--muted); margin-bottom:12px; }
+  .ligne { display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; font-family:'Nunito', sans-serif; }
+  .signe { font-size:1.6rem; font-weight:900; color:var(--muted); margin:0 2px; }
+  .signe.op { color:var(--purple); }
+  .frac { display:inline-flex; flex-direction:column; align-items:center; font-family:'Nunito', sans-serif; font-size:1.6rem; font-weight:900; line-height:1.15; color:var(--text); }
+  .frac > span { padding:0 4px; min-width:1.2em; text-align:center; }
+  .frac > span:first-child { border-bottom:3px solid var(--text); padding-bottom:2px; }
+  .frac > span:last-child { padding-top:2px; }
+  .frac.saisie input {
+    font-family:'Nunito', sans-serif; font-weight:900; font-size:1.3rem; color:var(--text);
+    width:64px; text-align:center; background:#f0f7f4; border:2px solid #cdeede; border-radius:12px; padding:6px 4px;
+    outline:none; transition:border-color .15s, background-color .15s;
+  }
+  .frac.saisie input::placeholder { color:#9aa3ad; }
+  .frac.saisie input:focus { border-color:var(--purple); background:#fff; }
+  .frac.saisie .barre { width:74px; height:3px; background:var(--text); margin:5px 0; border-radius:2px; }
+  .frac.saisie input.ok { border-color:var(--green); background:#e7faf0; color:#16895a; }
+  .frac.saisie input.ko { border-color:var(--red); background:#fdeaec; color:#c43a4c; }
+  .bloc { display:inline-flex; flex-direction:column; align-items:center; }
+  .etape { font-family:'Fredoka', sans-serif; font-size:12px; font-weight:600; color:var(--muted); margin-top:4px; min-height:15px; }
+
+  /* ----- Messages ----- */
+  .message { margin-top:1rem; padding:10px 14px; border-radius:10px; font-size:14px; font-weight:600; line-height:1.45; display:none; text-align:left; }
+  .message.visible { display:block; }
+  .message.indice { background:#fff7ed; color:#9a3412; }
+  .message.bravo { background:#e7faf0; color:#16895a; text-align:center; }
+  .message.correction { background:var(--blue-light); color:var(--text); }
+  .message small { font-weight:500; }
+  .message .sol { font-family:'Nunito', sans-serif; font-weight:900; font-size:1.15rem; color:#1f5fbf; display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:6px; }
+  .message .sol .frac { font-size:1.15rem; color:#1f5fbf; }
+  .message .sol .frac > span:first-child { border-bottom:2px solid #1f5fbf; }
+
+  /* ----- Dessin d'aide ----- */
+  .dessin { margin-top:1rem; display:none; }
+  .dessin.visible { display:block; }
+  .dessin svg { width:100%; max-width:460px; height:auto; display:block; margin:0 auto; }
+  .dessin .note { font-size:12px; color:var(--muted); margin-top:2px; }
+
+  .actions { margin-top:1rem; }
+
+  /* ----- Score : comme .exercise-score + correction ----- */
+  .exercise-score { background:var(--surface); border:2px solid var(--border); border-radius:var(--r); padding:.6rem 1.25rem; text-align:center; margin-bottom:1rem; }
+  .score-emoji { font-size:26px; line-height:1.1; }
+  .exercise-score-val { font-family:'Nunito', sans-serif; font-size:36px; font-weight:900; }
+  .exercise-score-lbl { font-size:13px; color:var(--muted); }
+  .score-title { font-family:'Fredoka', sans-serif; font-size:19px; font-weight:700; margin-top:2px; }
+  .score-list { display:grid; gap:8px; margin-bottom:1rem; }
+  @media (min-width:640px) { .score-list { grid-template-columns:1fr 1fr; } }
+  .score-row { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:5px 14px; display:flex; align-items:center; justify-content:space-between; gap:8px; box-shadow:0 4px 10px rgba(0,0,0,.04); }
+  .score-row.correct { border-color:var(--green); background:#F0FFF8; }
+  .score-row.corrige { border-color:#ff885c; background:#FFF7F2; }
+  .score-row.incorrect { border-color:var(--red); background:#FFF0F0; }
+  .score-row .sol { font-family:'Nunito', sans-serif; font-weight:900; display:flex; align-items:center; gap:5px; flex-wrap:wrap; }
+  .score-row .num { font-family:'Fredoka', sans-serif; font-size:12px; font-weight:700; color:var(--muted); min-width:20px; }
+  .score-row .frac { font-size:15px; }
+  .score-row .frac > span:first-child { border-bottom-width:2px; }
+  .tag { white-space:nowrap; font-size:13px; font-weight:700; }
+  .score-actions { display:grid; gap:10px; }
+  .confetti { position:fixed; top:-12px; border-radius:2px; animation:tombe linear forwards; z-index:50; pointer-events:none; }
+  @keyframes tombe { to { transform:translateY(105vh) rotate(540deg); } }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ===== Écran 1 : choix du niveau ===== -->
+  <div id="ecran-niveaux" class="ecran actif">
+    <div class="page-title">➕ Addition de fractions</div>
+    <div class="niveaux" id="liste-niveaux"></div>
+  </div>
+
+  <!-- ===== Écran 2 : calculs ===== -->
+  <div id="ecran-jeu" class="ecran">
+    <div class="barre-haut">
+      <div class="gauche">
+        <button class="back-btn" onclick="afficherNiveaux()">← Niveaux</button>
+      </div>
+      <div class="dots" id="dots"></div>
+      <div class="droite">
+        <button class="btn btn-aide" id="btn-dessin" onclick="basculerDessin()">💡 Dessin</button>
+        <span class="compteur" id="compteur">1 / 8</span>
+      </div>
+    </div>
+    <div class="page-title" id="titre-niveau">Niveau 1</div>
+
+    <div class="calc-card" id="calc-card">
+      <div class="consigne" id="consigne"></div>
+      <div class="ligne" id="ligne"></div>
+      <div class="dessin" id="dessin"></div>
+    </div>
+    <div class="message" id="message"></div>
+    <div class="actions">
+      <button class="btn btn-primary btn-large" id="btn-valider" onclick="valider()">✓ Valider</button>
+      <button class="btn btn-primary btn-large" id="btn-suivant" onclick="suivant()" hidden>Suivant →</button>
+    </div>
+  </div>
+
+  <!-- ===== Écran 3 : score ===== -->
+  <div id="ecran-score" class="ecran">
+    <div class="page-title" id="titre-score">➕ Addition de fractions</div>
+    <div class="exercise-score">
+      <div class="score-emoji" id="final-emoji">🏆</div>
+      <div class="exercise-score-val" id="final-score">8 / 8</div>
+      <div class="exercise-score-lbl">résultat</div>
+      <div class="score-title" id="final-title">Bravo !</div>
+      <div class="exercise-score-lbl" id="final-msg"></div>
+    </div>
+    <div class="score-list" id="final-details"></div>
+    <div class="score-actions">
+      <button class="btn btn-primary btn-large" onclick="demarrer(niveau)">🔄 Nouveaux calculs</button>
+      <button class="btn btn-large" onclick="afficherNiveaux()">← Choisir un autre niveau</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   Addition de fractions — 3 niveaux, 8 calculs par niveau
+   Niveau 1 : même dénominateur           3/8 + 2/8
+   Niveau 2 : on change UNE fraction      1/2 + 1/4  → 2/4 + 1/4
+   Niveau 3 : on change LES DEUX          2/5 + 2/3  → 6/15 + 10/15
+   1 point si juste du premier coup. Après une erreur : cases fausses
+   en rouge + indice de méthode (jamais la réponse) et 2e essai.
+   Après la 2e erreur : la correction s'affiche.
+   ========================================================= */
+const ID_ACTIVITE = 'num_fractions_addition';
+const NB_CALCULS = 8;
+const NIVEAUX = {
+  1: { titre: 'Même dénominateur', couleur: '#e7faf0', texte: '#16895a', desc: 'Les fractions ont déjà le même dénominateur : additionne-les directement.', ex: [[3,8],[2,8]] },
+  2: { titre: 'Je change une fraction', couleur: '#FEF3E2', texte: '#C97B1A', desc: 'Un dénominateur est un multiple de l\'autre : transforme une seule fraction.', ex: [[1,2],[1,4]] },
+  3: { titre: 'Je change les deux fractions', couleur: '#FDECEA', texte: '#D94F3D', desc: 'Trouve un dénominateur commun et transforme les deux fractions.', ex: [[2,5],[2,3]] },
+};
+
+let niveau = 1, questions = [], index = 0, score = 0, essais = 0, resultats = [], sauve = false, dessinOuvert = false;
+
+/* ---------- Outils ---------- */
+const pgcd = (a, b) => { while (b) { [a, b] = [b, a % b]; } return a; };
+const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const melange = arr => { const t = arr.slice(); for (let i = t.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [t[i], t[j]] = [t[j], t[i]]; } return t; };
+const numIrreductible = d => { const c = []; for (let n = 1; n < d; n++) if (pgcd(n, d) === 1) c.push(n); return c[rnd(0, c.length - 1)]; };
+const fracHTML = (n, d) => `<span class="frac"><span>${n}</span><span>${d}</span></span>`;
+const plus = '<span class="signe op">+</span>', egal = '<span class="signe">=</span>';
+function lireEntier(id) {
+  const el = document.getElementById(id);
+  const v = (el.value || '').trim();
+  if (!/^\d+$/.test(v)) return null;
+  return parseInt(v, 10);
+}
+
+/* ---------- Mémoire du meilleur score (sur l'appareil) ---------- */
+function lireRecord(n) { try { const v = localStorage.getItem('lcml_add_frac_record_' + n); return v === null ? null : parseInt(v, 10); } catch (e) { return null; } }
+function ecrireRecord(n, s) { try { const r = lireRecord(n); if (r === null || s > r) localStorage.setItem('lcml_add_frac_record_' + n, String(s)); } catch (e) {} }
+
+/* ---------- Génération des calculs ---------- */
+function genererNiveau1() {
+  const out = [], vus = new Set();
+  let garde = 0;
+  while (out.length < NB_CALCULS && garde++ < 500) {
+    const grand = out.length >= 5;            // les 3 derniers dépassent 1
+    const d = rnd(3, 12);
+    let a, b;
+    if (!grand) { a = rnd(1, d - 2); b = rnd(1, d - 1 - a); }
+    else { a = rnd(2, d - 1); b = rnd(d - a + 1, d - 1); if (b < 1 || b >= d) continue; }
+    const cle = d + ':' + Math.min(a, b) + ':' + Math.max(a, b);
+    if (vus.has(cle)) continue;
+    vus.add(cle);
+    out.push({ f1: [a, d], f2: [b, d] });
+  }
+  return out;
+}
+function genererNiveau2() {
+  const paires = [[2,4],[2,6],[2,8],[2,10],[3,6],[3,9],[3,12],[4,8],[4,12],[5,10],[6,12],[2,12],[4,16],[5,15]];
+  return melange(paires).slice(0, NB_CALCULS).map(([petit, grand]) => {
+    const fp = [numIrreductible(petit), petit], fg = [numIrreductible(grand), grand];
+    const petitDabord = Math.random() < 0.6;
+    return { f1: petitDabord ? fp : fg, f2: petitDabord ? fg : fp };
+  });
+}
+function genererNiveau3() {
+  const premiers = [[2,3],[2,5],[3,4],[3,5],[4,5],[2,7],[3,7],[5,6],[3,8],[2,9],[4,7]];
+  const communs = [[4,6],[6,8],[6,9],[4,10],[6,10],[8,12]];   // un dénominateur commun plus petit que le produit existe
+  const choix = melange(premiers).slice(0, 5).concat(melange(communs).slice(0, 3));
+  return choix.map(([x, y]) => {
+    if (Math.random() < 0.5) [x, y] = [y, x];
+    return { f1: [numIrreductible(x), x], f2: [numIrreductible(y), y] };
+  });
+}
+
+/* ---------- Écrans ---------- */
+function ecran(id) { document.querySelectorAll('.ecran').forEach(e => e.classList.toggle('actif', e.id === id)); window.scrollTo(0, 0); }
+
+function afficherNiveaux() {
+  const liste = document.getElementById('liste-niveaux');
+  liste.innerHTML = '';
+  [1, 2, 3].forEach(n => {
+    const N = NIVEAUX[n], r = lireRecord(n);
+    const b = document.createElement('button');
+    b.className = 'carte-niveau';
+    b.onclick = () => demarrer(n);
+    b.innerHTML = `<div class="badge-niv" style="background:${N.couleur};color:${N.texte}">${n}</div>
+      <div class="sub-title">Niveau ${n} : ${N.titre}</div>
+      <div class="sub-desc">${N.desc}</div>
+      <div class="exemple">${fracHTML(...N.ex[0])}<span class="op">+</span>${fracHTML(...N.ex[1])}</div>
+      ${r !== null ? `<span class="record">⭐ Meilleur score : ${r} / ${NB_CALCULS}</span>` : ''}`;
+    liste.appendChild(b);
+  });
+  ecran('ecran-niveaux');
+}
+
+function demarrer(n) {
+  niveau = n; index = 0; score = 0; resultats = []; sauve = false;
+  questions = n === 1 ? genererNiveau1() : n === 2 ? genererNiveau2() : genererNiveau3();
+  document.getElementById('titre-niveau').innerHTML = `➕ Niveau ${n} <span class="sous">· ${NIVEAUX[n].titre}</span>`;
+  document.getElementById('titre-score').innerHTML = `➕ Addition de fractions <span class="sous">· Niveau ${n}</span>`;
+  ecran('ecran-jeu');
+  afficherQuestion();
+}
+
+function majDots() {
+  const box = document.getElementById('dots');
+  box.innerHTML = '';
+  questions.forEach((q, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === index ? ' current' : '') + (resultats[i] ? ' ' + resultats[i].etat : '');
+    box.appendChild(d);
+  });
+  document.getElementById('compteur').textContent = (Math.min(index + 1, questions.length)) + ' / ' + questions.length;
+}
+
+function caseSaisie(idN, idD) {
+  return `<span class="frac saisie">
+    <input id="${idN}" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="numérateur" placeholder="?">
+    <span class="barre"></span>
+    <input id="${idD}" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="dénominateur" placeholder="?">
+  </span>`;
+}
+const bloc = (contenu, etiquette) => `<span class="bloc">${contenu}<span class="etape">${etiquette || ''}</span></span>`;
+
+function afficherQuestion() {
+  const q = questions[index];
+  essais = 0;
+  const [a, d1] = q.f1, [b, d2] = q.f2;
+  let html = bloc(fracHTML(a, d1)) + plus + bloc(fracHTML(b, d2)) + egal, consigne;
+  if (niveau === 1) {
+    consigne = 'Calcule.';
+    html += bloc(caseSaisie('rn', 'rd'), 'résultat');
+  } else if (niveau === 2) {
+    // la fraction au plus petit dénominateur est transformée, l'autre reste
+    const petitEnPremier = d1 < d2;
+    consigne = 'Transforme une fraction pour avoir le même dénominateur, puis calcule.';
+    html += petitEnPremier
+      ? bloc(caseSaisie('cn', 'cd'), 'transformée') + plus + bloc(fracHTML(b, d2), 'ne change pas')
+      : bloc(fracHTML(a, d1), 'ne change pas') + plus + bloc(caseSaisie('cn', 'cd'), 'transformée');
+    html += egal + bloc(caseSaisie('rn', 'rd'), 'résultat');
+  } else {
+    consigne = 'Transforme les deux fractions pour avoir le même dénominateur, puis calcule.';
+    html += bloc(caseSaisie('c1n', 'c1d'), 'transformée') + plus + bloc(caseSaisie('c2n', 'c2d'), 'transformée') + egal + bloc(caseSaisie('rn', 'rd'), 'résultat');
+  }
+  document.getElementById('consigne').textContent = consigne;
+  document.getElementById('ligne').innerHTML = html;
+  const msg = document.getElementById('message');
+  msg.className = 'message'; msg.innerHTML = '';
+  document.getElementById('calc-card').classList.remove('correct');
+  document.getElementById('btn-valider').hidden = false;
+  document.getElementById('btn-suivant').hidden = true;
+  dessiner();
+  majDots();
+  const champs = [...document.querySelectorAll('#ligne input')];
+  champs.forEach((c, i) => {
+    c.addEventListener('input', () => { c.value = c.value.replace(/\D/g, ''); c.classList.remove('ko'); });
+    c.addEventListener('keydown', e => {
+      if (e.key !== 'Enter') return;
+      e.preventDefault();
+      const prochain = champs.slice(i + 1).find(x => !x.readOnly && x.value === '') || champs.find(x => !x.readOnly && x.value === '');
+      if (prochain) prochain.focus(); else valider();
+    });
+  });
+  champs[0].focus({ preventScroll: true });
+}
+
+/* ---------- Correction ---------- */
+function equivalent(n, d, a, b) { return d > 0 && n * b === a * d; }   // n/d = a/b ?
+
+function verifier() {
+  const q = questions[index];
+  const [a, d1] = q.f1, [b, d2] = q.f2;
+  const sommeN = a * d2 + b * d1, sommeD = d1 * d2;       // valeur exacte de la somme
+  const etat = {}; let indice = '';
+  const rn = lireEntier('rn'), rd = lireEntier('rd');
+  const resultatOK = rn !== null && rd !== null && equivalent(rn, rd, sommeN, sommeD);
+
+  if (niveau === 1) {
+    etat.rn = etat.rd = resultatOK;
+    if (!resultatOK) {
+      if (rd === d1 + d2 || rd === 2 * d1) indice = `Attention : on <strong>n'additionne pas les dénominateurs</strong> ! Les parts restent les mêmes : le dénominateur ne change pas. On additionne seulement les numérateurs.`;
+      else if (rd !== d1 && rd !== null && !resultatOK) indice = `Les deux fractions ont le même dénominateur (<strong>${d1}</strong>) : on <strong>garde ce dénominateur</strong> et on additionne les numérateurs.`;
+      else indice = `Le dénominateur est bon. Recompte l'addition des numérateurs.`;
+      if (rd === d1) { etat.rd = true; }
+    }
+    return { ok: resultatOK, etat, indice };
+  }
+
+  if (niveau === 2) {
+    const petit = d1 < d2 ? q.f1 : q.f2, grand = d1 < d2 ? q.f2 : q.f1;
+    const cn = lireEntier('cn'), cd = lireEntier('cd');
+    const cdOK = cd === grand[1];
+    const cnOK = cdOK && cn !== null && equivalent(cn, cd, petit[0], petit[1]);
+    etat.cd = cdOK; etat.cn = cnOK;
+    etat.rn = etat.rd = resultatOK;
+    if (!cdOK) indice = `Pour additionner, il faut le <strong>même dénominateur</strong> que l'autre fraction (${fracHTML(grand[0], grand[1])}). Quel doit être le dénominateur de la fraction transformée ?`;
+    else if (!cnOK) indice = `Par combien as-tu multiplié le dénominateur ${petit[1]} pour obtenir ${grand[1]} ? Multiplie le <strong>numérateur par le même nombre</strong>.`;
+    else if (!resultatOK) indice = `Tes deux fractions ont maintenant le même dénominateur : <strong>garde-le</strong> et additionne les numérateurs.`;
+    if (!resultatOK && rd !== null && cdOK && rd === cd) etat.rd = true;
+    return { ok: cdOK && cnOK && resultatOK, etat, indice };
+  }
+
+  // Niveau 3 : n'importe quel dénominateur commun est accepté (produit ou plus petit multiple commun)
+  const c1n = lireEntier('c1n'), c1d = lireEntier('c1d'), c2n = lireEntier('c2n'), c2d = lireEntier('c2d');
+  const multCommun = x => x !== null && x > 0 && x % d1 === 0 && x % d2 === 0;
+  const dCommun = multCommun(c1d) && c1d === c2d;
+  etat.c1d = multCommun(c1d) && (c1d === c2d || !multCommun(c2d));
+  etat.c2d = multCommun(c2d) && (c1d === c2d || !multCommun(c1d));
+  etat.c1n = etat.c1d && c1n !== null && equivalent(c1n, c1d, a, d1);
+  etat.c2n = etat.c2d && c2n !== null && equivalent(c2n, c2d, b, d2);
+  etat.rn = etat.rd = resultatOK;
+  const transfOK = dCommun && etat.c1n && etat.c2n;
+  if (!dCommun) {
+    if (c1d !== null && c1d === c2d) indice = `Le nouveau dénominateur doit être <strong>à la fois</strong> dans la table de ${d1} et dans la table de ${d2}.`;
+    else indice = `Les deux fractions transformées doivent avoir le <strong>même dénominateur</strong> : cherche un nombre qui est à la fois dans la table de ${d1} et dans la table de ${d2}.`;
+  }
+  else if (!etat.c1n || !etat.c2n) indice = `Le dénominateur commun est bon. Pour chaque fraction : par combien as-tu multiplié le dénominateur ? Multiplie le <strong>numérateur par le même nombre</strong>.`;
+  else if (!resultatOK) indice = `Tes deux fractions ont maintenant le même dénominateur : <strong>garde-le</strong> et additionne les numérateurs.`;
+  if (!resultatOK && rd !== null && dCommun && rd === c1d) etat.rd = true;
+  return { ok: transfOK && resultatOK, etat, indice };
+}
+
+function solutionHTML(q) {
+  const [a, d1] = q.f1, [b, d2] = q.f2;
+  if (niveau === 1) return `${fracHTML(a, d1)} + ${fracHTML(b, d2)} = ${fracHTML(a + b, d1)}`;
+  const D = d1 * d2 / pgcd(d1, d2);           // plus petit dénominateur commun
+  const n1 = a * D / d1, n2 = b * D / d2;
+  const t1 = d1 === D ? fracHTML(a, d1) : fracHTML(n1, D), t2 = d2 === D ? fracHTML(b, d2) : fracHTML(n2, D);
+  return `${fracHTML(a, d1)} + ${fracHTML(b, d2)} = ${t1} + ${t2} = ${fracHTML(n1 + n2, D)}`;
+}
+function explicationHTML(q) {
+  const [a, d1] = q.f1, [b, d2] = q.f2;
+  if (niveau === 1) return `Même dénominateur : on le garde et on additionne les numérateurs (${a} + ${b} = ${a + b}).`;
+  const D = d1 * d2 / pgcd(d1, d2);
+  const parts = [];
+  if (d1 !== D) parts.push(`${fracHTML(a, d1)} : × ${D / d1} en haut et en bas`);
+  if (d2 !== D) parts.push(`${fracHTML(b, d2)} : × ${D / d2} en haut et en bas`);
+  return `Dénominateur commun : <strong>${D}</strong>. ` + parts.join(' ; ') + '.';
+}
+
+function valider() {
+  const champs = [...document.querySelectorAll('#ligne input')];
+  const msg = document.getElementById('message');
+  if (champs.some(c => c.value.trim() === '')) {
+    msg.className = 'message indice visible';
+    msg.innerHTML = '✏️ Complète toutes les cases avant de valider.';
+    const vide = champs.find(c => c.value.trim() === ''); if (vide) vide.focus();
+    return;
+  }
+  const r = verifier();
+  champs.forEach(c => {
+    const bon = !!r.etat[c.id];
+    c.classList.toggle('ok', bon); c.classList.toggle('ko', !bon);
+    if (bon) c.readOnly = true;
+  });
+  const q = questions[index];
+  if (r.ok) {
+    if (essais === 0) score++;
+    resultats[index] = { etat: essais === 0 ? 'correct' : 'corrige', q };
+    document.getElementById('calc-card').classList.add('correct');
+    msg.className = 'message bravo visible';
+    msg.innerHTML = essais === 0 ? '🎉 Bravo, c\'est juste !' : '👍 C\'est juste maintenant ! (pas de point, mais tu as trouvé ton erreur)';
+    finQuestion();
+    return;
+  }
+  essais++;
+  if (essais === 1) {
+    msg.className = 'message indice visible';
+    msg.innerHTML = '🤔 ' + r.indice + '<br><small>Corrige les cases rouges et valide à nouveau.</small>';
+    const faux = champs.find(c => !r.etat[c.id]); if (faux) { faux.focus(); faux.select(); }
+  } else {
+    resultats[index] = { etat: 'incorrect', q };
+    champs.forEach(c => { c.readOnly = true; });
+    msg.className = 'message correction visible';
+    msg.innerHTML = `❌ Voici la correction :<div class="sol">${solutionHTML(q)}</div><div style="margin-top:4px;font-size:14px">${explicationHTML(q)}</div>`;
+    finQuestion();
+  }
+}
+
+function finQuestion() {
+  document.getElementById('btn-valider').hidden = true;
+  const s = document.getElementById('btn-suivant');
+  s.hidden = false;
+  s.textContent = index === questions.length - 1 ? 'Voir mon score →' : 'Suivant →';
+  majDots();
+  s.focus({ preventScroll: true });
+}
+
+function suivant() {
+  index++;
+  if (index >= questions.length) afficherScore(); else afficherQuestion();
+}
+
+/* ---------- Dessin d'aide : bandes de même longueur ---------- */
+function basculerDessin() { dessinOuvert = !dessinOuvert; dessiner(); }
+function dessiner() {
+  const box = document.getElementById('dessin'), btn = document.getElementById('btn-dessin');
+  btn.classList.toggle('ouverte', dessinOuvert);
+  box.classList.toggle('visible', dessinOuvert);
+  if (!dessinOuvert || !questions[index]) { box.innerHTML = ''; return; }
+  const q = questions[index], L = 360, H = 30, X = 70;
+  const couleurs = ['#5B4FCF', '#2ec27e'];
+  let svg = `<svg viewBox="0 0 ${X + L + 10} ${2 * H + 30}" xmlns="http://www.w3.org/2000/svg" font-family="Nunito, sans-serif">`;
+  [q.f1, q.f2].forEach(([n, d], k) => {
+    const y = 8 + k * (H + 14), w = L / d;
+    svg += `<text x="${X - 14}" y="${y + H / 2 + 6}" text-anchor="end" font-size="17" font-weight="900" fill="#1A1A2E">${n}/${d}</text>`;
+    for (let i = 0; i < d; i++) {
+      svg += `<rect x="${X + i * w}" y="${y}" width="${w}" height="${H}" fill="${i < n ? couleurs[k] : '#fff'}" fill-opacity="${i < n ? 0.85 : 1}" stroke="#1A1A2E" stroke-width="1.5"/>`;
+    }
+  });
+  svg += `</svg>`;
+  box.innerHTML = svg + `<div class="note">Les deux bandes représentent la même unité.</div>`;
+}
+
+/* ---------- Score final ---------- */
+function afficherScore() {
+  ecran('ecran-score');
+  const total = questions.length, pct = Math.round(score / total * 100);
+  ecrireRecord(niveau, score);
+  document.getElementById('final-score').textContent = `${score} / ${total}`;
+  const em = document.getElementById('final-emoji'), ti = document.getElementById('final-title'), msg = document.getElementById('final-msg');
+  if (score === total) { em.textContent = '🏆'; ti.textContent = 'Sans faute !'; msg.innerHTML = `Niveau ${niveau} réussi parfaitement.${niveau < 3 ? ' Essaie le niveau suivant !' : ''}`; confettis(); }
+  else if (pct >= 75) { em.textContent = '⭐'; ti.textContent = 'Très bien !'; msg.textContent = `${pct} % de réussite. Regarde bien tes erreurs ci-dessous.`; }
+  else if (pct >= 50) { em.textContent = '👍'; ti.textContent = 'Pas mal !'; msg.textContent = `${pct} % de réussite. Recommence pour t'améliorer.`; }
+  else { em.textContent = '💪'; ti.textContent = 'Il faut encore t\'entrainer'; msg.textContent = `${pct} % de réussite. Rappel : on additionne des parts de même taille, donc avec le même dénominateur.`; }
+
+  if (!sauve && window.parent && window.parent !== window && typeof window.parent.saveResult === 'function') {
+    sauve = true;
+    try {
+      window.parent.saveResult({
+        activity: ID_ACTIVITE,
+        bookTitle: `Addition de fractions — Niveau ${niveau}`,
+        score, total, pct,
+        date: new Date().toLocaleDateString('fr-BE'),
+        time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+      });
+    } catch (e) { console.warn('Erreur sauvegarde', e); }
+  }
+  const det = document.getElementById('final-details');
+  det.innerHTML = '';
+  resultats.forEach((r, i) => {
+    const row = document.createElement('div');
+    row.className = 'score-row ' + r.etat;
+    const tag = r.etat === 'correct' ? '✅' : r.etat === 'corrige' ? '🟠 2e essai' : '❌';
+    row.innerHTML = `<span class="sol"><span class="num">${i + 1}.</span>${solutionHTML(r.q)}</span><span class="tag">${tag}</span>`;
+    det.appendChild(row);
+  });
+}
+
+function confettis() {
+  const cols = ['#5B4FCF', '#1A9E75', '#D94F3D', '#C97B1A', '#1A6FA0', '#C7C2F5'];
+  for (let i = 0; i < 70; i++) {
+    const c = document.createElement('div'); c.className = 'confetti';
+    const t = 6 + Math.random() * 7;
+    Object.assign(c.style, { left: Math.random() * 100 + 'vw', width: t + 'px', height: t + 'px', background: cols[i % cols.length], animationDelay: Math.random() * 1.2 + 's', animationDuration: 1.6 + Math.random() * 1.8 + 's' });
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 4500);
+  }
+}
+
+// Quitter l'écran dans le site = retour au choix du niveau
+window.lcmlOnLeave = function () { afficherNiveaux(); };
+afficherNiveaux();
+</script>
+</body>
+</html>

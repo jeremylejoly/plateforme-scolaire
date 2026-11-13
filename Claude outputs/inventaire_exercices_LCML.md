@@ -2583,7 +2583,7 @@ Spécifique :
 | ✅ 05/10 | Fractions complexes | `num_fractions_complexes` | index › renderFractionsExercice |  |
 | ✅ 05/10 | La balance des fractions | `num_balance_fractions` | fiches/balance_fractions.html |  |
 | ✅ 05/10 | Colorie les fractions | `num_fractions_colorie` | fiches/colorie_les_fractions.html |  |
-| ✅ 05/10 | Opérations de fractions | `num_fractions_operations` | fiches/calculs_fractions.html |  |
+| 🗑️ 13/11 | ~~Opérations de fractions~~ (supprimé) | `num_fractions_operations` | — | Remplacé par Addition de fractions (Opérations › Opérer sur des fractions) ; anciens plans migrés vers `num_fractions_addition` |
 | ✅ 05/10 | La fraction d'une quantité | `num_fraction_quantite` | fiches/fraction_quantite.html |  |
 | ✅ 05/10 | Les nombres mixtes | `num_nombres_mixtes` | fiches/numeration_nombres_mixtes.html |  |
 | 🗑️ 06/10 supprimé | Les pourcentages| `num_pourcentages` | index › (?) | (code à localiser) |
@@ -2633,6 +2633,8 @@ Spécifique :
 | ✅ 06/10 (menu) | L'ordre des opérations| `op_ordre` | index › (?) | (code à localiser) |
 | ✅ 05/10 | L'ordre des opérations — Mission PEMDAS | `op_ordre_pemdas` | fiches/mission_pemdas.html |  |
 | ✅ 05/10 | L'ordre des opérations — Défi PEMDAS | `op_ordre_defi` | fiches/defi_pemdas.html |  |
+| ✅ 13/11 (menu) | Opérer sur des fractions | `op_fractions` | index › screen-op-fractions | Carte « Multiplication de fractions » 🚧 Bientôt |
+| ✅ 13/11 (nouveau) | Opérer sur des fractions — Addition de fractions | `num_fractions_addition` | fiches/addition_fractions.html | 3 niveaux × 8 calculs au hasard |
 
 ### 🔢 Mathématiques — 📐 Grandeurs — Mesures de base
 
