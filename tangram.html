@@ -835,6 +835,17 @@
       body.mode-jeu .btn-ctrl { justify-content: center; padding: 12px 10px; font-size: 14px; }
       body.mode-jeu .btn-rotate { font-size: 17px; padding: 16px 10px; }
     }
+
+    /* Message d'aide dans le plateau (parallélogramme à l'envers…) */
+    .tg-msg {
+      position: absolute; left: 50%; top: 10px; transform: translateX(-50%);
+      max-width: 92%; text-align: center;
+      background: #FFF8E7; color: #8C5303; border: 2px solid var(--amber-dark);
+      border-radius: 12px; box-shadow: 2px 2px 0 var(--amber-dark);
+      padding: 7px 12px; font: 800 14px 'Fredoka', sans-serif; z-index: 5; pointer-events: none;
+    }
+    .btn-flip.attention { animation: flipPulse 0.9s ease-in-out 3; }
+    @keyframes flipPulse { 50% { transform: scale(1.08); box-shadow: 0 0 0 5px rgba(91,79,207,0.35); } }
   </style>
 </head>
 <body>
@@ -941,14 +952,15 @@
       <div class="play-area">
       <div id="board-wrap">
         <svg id="board-svg" viewBox="0 0 400 485"></svg>
+        <div id="tg-msg" class="tg-msg hidden"></div>
       </div>
 
       <div class="controls-row">
         <button class="btn-ctrl btn-rotate" id="rotate-btn" disabled title="Pivoter de 45° (R ou Espace)">
           ↻ Tourner (R)
         </button>
-        <button class="btn-ctrl btn-flip" id="flip-btn" disabled title="Retourner le parallélogramme (F)">
-          ⇋ Retourner (F)
+        <button class="btn-ctrl btn-flip" id="flip-btn" title="Retourner le parallélogramme vert (F)">
+          ⇋ Retourner le parallélogramme
         </button>
         <button class="btn-ctrl btn-hint" id="hint-btn" title="Afficher ou masquer les contours intérieurs">
           💡 Indice
@@ -1487,6 +1499,7 @@
        6. INITIALISATION D'UN PUZZLE
        ========================================================================== */
     function setupPuzzle(levelKey, puzzleIndex) {
+      hideTgMsg();
       state.levelKey = levelKey;
       state.puzzleIndex = puzzleIndex;
       state.selected = null;
@@ -1844,7 +1857,21 @@
         });
       });
 
+      if (!closestSlot && p.type === "parallelogram") {
+        // Bien placé mais à l'envers ? (la bonne place existe seulement en le retournant)
+        const mirrored = consistentSolutions(id).some(sol => sol.some(slot =>
+          slot.type === p.type && !others.some(q => pieceFitsSlot(q, slot)) &&
+          Math.hypot(p.x - slot.svgX, p.y - slot.svgY) < SNAP_DIST_THRESHOLD * 1.6 &&
+          Boolean(p.flip) !== Boolean(slot.svgFlip)));
+        if (mirrored) {
+          showTgMsg("Le parallélogramme est à l'envers : appuie sur ⇋ Retourner le parallélogramme !");
+          const fb = document.getElementById("flip-btn");
+          if (fb) { fb.classList.remove("attention"); void fb.offsetWidth; fb.classList.add("attention"); }
+        }
+      }
+
       if (closestSlot) {
+        hideTgMsg();
         // Aimantation réussie !
         p.x = closestSlot.svgX;
         p.y = closestSlot.svgY;
@@ -1862,6 +1889,21 @@
       return false;
     }
 
+    let tgMsgTimer = null;
+    function showTgMsg(text) {
+      const m = document.getElementById("tg-msg");
+      if (!m) return;
+      m.textContent = text;
+      m.classList.remove("hidden");
+      clearTimeout(tgMsgTimer);
+      tgMsgTimer = setTimeout(hideTgMsg, 5000);
+    }
+    function hideTgMsg() {
+      const m = document.getElementById("tg-msg");
+      if (m) m.classList.add("hidden");
+      clearTimeout(tgMsgTimer);
+    }
+
     function selectPiece(id) {
       state.selected = (state.selected === id) ? null : id;
       PIECES_LIST.forEach(p => renderPiece(p.id));
@@ -1874,12 +1916,12 @@
 
       if (state.selected && !state.solved) {
         rotateBtn.disabled = false;
-        const pDef = PIECES_LIST.find(p => p.id === state.selected);
-        flipBtn.disabled = !pDef.canFlip;
       } else {
         rotateBtn.disabled = true;
-        flipBtn.disabled = true;
       }
+      // Le bouton « Retourner » reste toujours actif : il agit sur le parallélogramme
+      // même s'il n'est pas sélectionné (avant, il restait grisé et passait inaperçu).
+      flipBtn.disabled = !!state.solved;
     }
 
     /* ==========================================================================
@@ -1904,10 +1946,19 @@
     }
 
     function flipSelected() {
-      if (!state.selected || state.solved) return;
+      if (state.solved) return;
+      // Retourner agit toujours sur le parallélogramme (seule pièce qu'il faut parfois retourner) :
+      // s'il n'est pas sélectionné, on le sélectionne d'abord.
+      const flipDef = PIECES_LIST.find(d => d.canFlip);
+      if (!flipDef) return;
+      if (state.selected !== flipDef.id) {
+        state.selected = flipDef.id;
+        bringToFront(flipDef.id);
+        PIECES_LIST.forEach(d => renderPiece(d.id));
+        updateSelectionUI();
+      }
+      hideTgMsg();
       const p = state.pieces[state.selected];
-      const pDef = PIECES_LIST.find(p => p.id === state.selected);
-      if (!pDef.canFlip) return;
 
       p.flip = !p.flip;
 
