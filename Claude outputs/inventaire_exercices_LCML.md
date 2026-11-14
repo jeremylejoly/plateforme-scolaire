@@ -2586,6 +2586,7 @@ Spécifique :
 | 🗑️ 13/11 | ~~Opérations de fractions~~ (supprimé) | `num_fractions_operations` | — | Remplacé par Addition de fractions (Opérations › Opérer sur des fractions) ; anciens plans migrés vers `num_fractions_addition` |
 | ✅ 05/10 | La fraction d'une quantité | `num_fraction_quantite` | fiches/fraction_quantite.html |  |
 | ✅ 05/10 | Les nombres mixtes | `num_nombres_mixtes` | fiches/numeration_nombres_mixtes.html |  |
+| ✅ 14/11 (nouveau) | Les fractions irréductibles | `num_fractions_irreductibles` | fiches/fractions_irreductibles.html | 10 fractions au hasard, 1-2 déjà irréductibles ; série suivante sans les fractions de la précédente |
 | 🗑️ 06/10 supprimé | Les pourcentages| `num_pourcentages` | index › (?) | (code à localiser) |
 | ✅ 05/10 | Arrondir les décimaux | `num_decimaux_arrondir` | index › renderDecimauxArrondir |  |
 | ✅ 05/10 | Diviseurs & Nombres premiers | `num_diviseurs_premiers` | fiches/nombres_diviseurs.html |  |

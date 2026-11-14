@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Les fractions irréductibles</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  /* Charte LCML : fond crème, contours #1A1A2E, ombres décalées, Fredoka + Nunito */
+  :root {
+    --purple: #5B4FCF; --purple-light: #EEF0FF; --purple-mid: #C7C2F5;
+    --green: #1A9E75; --green-light: #E2F5EE;
+    --red: #D94F3D; --red-light: #FDECEA;
+    --amber: #C97B1A; --amber-light: #FEF3E2;
+    --blue: #1A6FA0; --blue-light: #E2F0FA;
+    --correction: #1f5fbf;
+    --bg: #FDFBF7; --surface: #FFFFFF;
+    --text: #1A1A2E; --muted: #6B7080; --border: #1A1A2E;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); }
+  body { font-family: 'Nunito', sans-serif; color: var(--text); padding: 12px 16px 16px; -webkit-font-smoothing: antialiased; }
+  button { font-family: inherit; touch-action: manipulation; color: var(--text); }
+  .container { max-width: 760px; margin: 0 auto; }
+  .ecran { display: none; }
+  .ecran.actif { display: block; }
+
+  /* ----- Barre d'info ----- */
+  .info-card {
+    background: var(--purple-light); border: 3px solid var(--border); border-radius: 16px; padding: 6px 10px; margin-bottom: 12px;
+    display: flex; justify-content: space-between; align-items: center; gap: 8px; box-shadow: 4px 4px 0 var(--border); flex-wrap: wrap;
+  }
+  .info-card p { font-family: 'Fredoka', sans-serif; font-size: 16px; color: var(--purple); font-weight: 700; white-space: nowrap; }
+  .btn-mini {
+    border: 2px solid var(--border); background: var(--surface); border-radius: 8px; padding: 5px 10px; font-size: 13px; font-weight: 800;
+    cursor: pointer; white-space: nowrap; box-shadow: 2px 2px 0 var(--border);
+  }
+  .btn-mini:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--border); }
+  .btn-mini.aide { background: var(--amber-light); }
+  .btn-mini.aide.ouverte { background: var(--amber); color: #fff; }
+  .dots { display: flex; gap: 6px; }
+  .dot { width: 13px; height: 13px; border-radius: 50%; background: #D1D5DB; border: 1.5px solid var(--border); transition: all .3s; }
+  .dot.current { background: var(--purple); transform: scale(1.2); }
+  .dot.correct { background: var(--green); }
+  .dot.corrige { background: var(--amber); }
+  .dot.incorrect { background: var(--red); }
+  .gauche, .droite { display: flex; align-items: center; gap: 8px; }
+
+  /* ----- Rappel de la méthode ----- */
+  .rappel { display: none; background: var(--amber-light); border: 2.5px solid var(--border); border-radius: 14px; padding: 8px 12px; margin-bottom: 12px; font-size: 14px; font-weight: 700; line-height: 1.45; box-shadow: 3px 3px 0 var(--border); }
+  .rappel.visible { display: block; }
+  .rappel b { color: var(--amber); }
+
+  /* ----- Carte de la question ----- */
+  .calc-card {
+    background: var(--surface); border: 3px solid var(--border); border-radius: 18px; padding: 14px 12px 16px;
+    box-shadow: 4px 4px 0 var(--border); text-align: center;
+  }
+  .consigne { font-size: 15px; font-weight: 800; color: var(--muted); margin-bottom: 12px; }
+  .ligne { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; font-family: 'Fredoka', sans-serif; }
+  .signe { font-size: 36px; font-weight: 600; color: var(--text); }
+  .frac { display: inline-flex; flex-direction: column; align-items: center; font-family: 'Fredoka', sans-serif; font-size: 30px; font-weight: 600; line-height: 1.1; }
+  .frac > span { padding: 0 4px; min-width: 1.2em; text-align: center; }
+  .frac > span:first-child { border-bottom: 3px solid var(--text); padding-bottom: 2px; }
+  .frac > span:last-child { padding-top: 2px; }
+  .ligne > .frac { font-size: 42px; }
+  .ligne > .frac > span:first-child { border-bottom-width: 4px; }
+  .frac.saisie { gap: 0; }
+  .frac.saisie input {
+    width: 72px; height: 54px; font-family: 'Fredoka', sans-serif; font-size: 32px; font-weight: 600; text-align: center;
+    border: 2.5px solid var(--border); border-radius: 10px; background: var(--purple-light); color: var(--text); outline: none;
+  }
+  .frac.saisie input:focus { border-color: var(--purple); box-shadow: 0 0 0 3px var(--purple-mid); background: #fff; }
+  .frac.saisie .barre { width: 86px; height: 4px; background: var(--text); margin: 6px 0; border-radius: 2px; }
+  .frac.saisie input.ok { background: var(--green-light); border-color: var(--green); color: var(--green); }
+  .frac.saisie input.ko { background: var(--red-light); border-color: var(--red); color: var(--red); }
+  .frac.saisie input.mi { background: var(--amber-light); border-color: var(--amber); color: var(--amber); }
+
+  /* ----- Messages ----- */
+  .message { margin-top: 14px; border: 2.5px solid var(--border); border-radius: 12px; padding: 8px 12px; font-size: 15px; font-weight: 700; line-height: 1.45; display: none; text-align: left; }
+  .message.visible { display: block; }
+  .message.indice { background: var(--amber-light); }
+  .message.bravo { background: var(--green-light); }
+  .message.correction { background: var(--blue-light); color: var(--text); }
+  .message .frac { font-size: 17px; vertical-align: middle; margin: 0 1px; }
+  .message .frac > span:first-child { border-bottom-width: 2px; }
+
+  /* Chaîne de divisions successives */
+  .chaine { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px; margin: 8px 0 6px; font-family: 'Fredoka', sans-serif; color: var(--correction); }
+  .chaine .frac { font-size: 24px; }
+  .chaine .frac > span:first-child { border-bottom: 2.5px solid var(--correction); }
+  .chaine .finale { background: #fff; border: 2.5px solid var(--correction); border-radius: 10px; padding: 3px 8px; }
+  .fleche { display: inline-flex; flex-direction: column; align-items: center; font-size: 13px; font-weight: 700; line-height: 1; color: var(--correction); }
+  .fleche .op { background: #fff; border: 2px solid var(--correction); border-radius: 99px; padding: 2px 7px; margin-bottom: 2px; white-space: nowrap; }
+  .fleche .tr { font-size: 20px; }
+  .explic { font-size: 14px; margin-top: 4px; }
+
+  .actions { display: flex; justify-content: center; gap: 12px; margin-top: 16px; }
+  .btn {
+    border: 3px solid var(--border); border-radius: 12px; padding: 9px 22px; font-family: 'Fredoka', sans-serif; font-size: 17px; font-weight: 700;
+    cursor: pointer; box-shadow: 4px 4px 0 var(--border); background: var(--purple); color: #fff;
+  }
+  .btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--border); }
+  .btn.vert { background: var(--green); }
+  .btn.blanc { background: var(--surface); color: var(--text); }
+  .btn[hidden] { display: none; }
+
+  /* ----- Score ----- */
+  .score-card { background: var(--surface); border: 3px solid var(--border); border-radius: 18px; padding: 14px; box-shadow: 4px 4px 0 var(--border); text-align: center; max-width: 620px; margin: 0 auto; }
+  .score-emoji { font-size: 40px; }
+  .score-title { font-family: 'Fredoka', sans-serif; font-size: 22px; font-weight: 700; }
+  .score-val { font-family: 'Fredoka', sans-serif; font-size: 30px; font-weight: 700; color: var(--purple); }
+  .score-msg { font-size: 14px; font-weight: 700; color: var(--muted); margin: 4px 0 6px; }
+  .record { display: inline-block; font-size: 12px; font-weight: 800; color: var(--green); background: var(--green-light); border: 1.5px solid var(--green); border-radius: 99px; padding: 1px 9px; margin-bottom: 10px; }
+  .score-list { text-align: left; display: grid; gap: 5px; max-height: 300px; overflow-y: auto; }
+  .score-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; border: 2px solid var(--border); border-radius: 10px; padding: 4px 10px; font-size: 14px; font-weight: 700; }
+  .score-row .sol { font-family: 'Fredoka', sans-serif; display: flex; align-items: center; gap: 6px; }
+  .score-row .frac { font-size: 15px; }
+  .score-row .frac > span:first-child { border-bottom-width: 2px; }
+  .tag { white-space: nowrap; font-size: 13px; }
+  .confetti { position: fixed; top: -12px; border-radius: 2px; animation: tombe linear forwards; z-index: 50; pointer-events: none; }
+  @keyframes tombe { to { transform: translateY(105vh) rotate(540deg); } }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ===== Écran 1 : exercice ===== -->
+  <div id="ecran-jeu" class="ecran actif">
+    <div class="info-card">
+      <div class="gauche"><p>✂️ Fractions irréductibles</p></div>
+      <div class="dots" id="dots"></div>
+      <div class="droite">
+        <button class="btn-mini aide" id="btn-rappel" onclick="basculerRappel()">💡 Rappel</button>
+        <p id="compteur">1 / 10</p>
+      </div>
+    </div>
+
+    <div class="rappel" id="rappel">
+      Une fraction est <b>irréductible</b> quand on ne peut plus la simplifier : aucun nombre (sauf 1) ne divise à la fois le numérateur et le dénominateur.<br>
+      Pour simplifier, on <b>divise le numérateur et le dénominateur par le même nombre</b>. Essaie 2, 3, 5… et recommence jusqu'à ce que ce ne soit plus possible.
+    </div>
+
+    <div class="calc-card">
+      <div class="consigne">Écris la fraction irréductible.</div>
+      <div class="ligne" id="ligne"></div>
+      <div class="message" id="message"></div>
+      <div class="actions">
+        <button class="btn" id="btn-valider" onclick="valider()">Valider</button>
+        <button class="btn vert" id="btn-suivant" onclick="suivant()" hidden>Suivant →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Écran 2 : score ===== -->
+  <div id="ecran-score" class="ecran">
+    <div class="score-card">
+      <div class="score-emoji" id="final-emoji">🏆</div>
+      <div class="score-title" id="final-title">Bravo !</div>
+      <div class="score-val" id="final-score">10 / 10</div>
+      <div class="score-msg" id="final-msg"></div>
+      <div id="final-record"></div>
+      <div class="score-list" id="final-details"></div>
+      <div class="actions">
+        <button class="btn" onclick="demarrer()">Nouvelle série</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   Fractions irréductibles — 10 fractions par série, difficulté progressive
+   - Facile (début)  : une seule division suffit (÷2, ÷3, ÷5), ex. 6/8
+   - Moyen           : il faut 2 divisions ou diviser par 4, 6, 9, 10…, ex. 24/36
+   - Difficile (fin) : grands nombres, ex. 36/48, 45/60
+   - 1 ou 2 fractions déjà irréductibles glissées dans la série (ex. 8/9)
+   1 point si juste au 1er essai. Simplification incomplète (ex. 12/18 pour 24/36) :
+   message d'encouragement, pas de pénalité. 1re erreur : indice + 2e essai.
+   2e erreur : correction avec les divisions successives.
+   ========================================================= */
+const ID_ACTIVITE = 'num_fractions_irreductibles';
+const NB_QUESTIONS = 10;
+const CLE_RECORD = 'lcml_frac_irreductibles_record';
+
+let questions = [], index = 0, score = 0, essais = 0, resultats = [], sauve = false, rappelOuvert = false;
+
+/* ---------- Outils ---------- */
+const pgcd = (a, b) => { while (b) { [a, b] = [b, a % b]; } return a; };
+const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const choisir = arr => arr[rnd(0, arr.length - 1)];
+const melange = arr => { const t = arr.slice(); for (let i = t.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [t[i], t[j]] = [t[j], t[i]]; } return t; };
+const fracHTML = (n, d) => `<span class="frac"><span>${n}</span><span>${d}</span></span>`;
+function lireEntier(id) {
+  const v = (document.getElementById(id).value || '').trim();
+  return /^\d+$/.test(v) ? parseInt(v, 10) : null;
+}
+// Plus petit nombre premier qui divise à la fois a et b (null s'il n'y en a pas)
+function petitDiviseurCommun(a, b) {
+  const g = pgcd(a, b);
+  if (g === 1) return null;
+  for (let p = 2; p <= g; p++) if (g % p === 0) return p;
+  return g;
+}
+// Étapes de simplification : on divise à chaque fois par le plus petit diviseur commun
+function etapes(n, d) {
+  const out = [[n, d, null]];
+  let p;
+  while ((p = petitDiviseurCommun(n, d)) !== null) { n /= p; d /= p; out.push([n, d, p]); }
+  return out;
+}
+
+/* ---------- Mémoire du meilleur score (sur l'appareil) ---------- */
+function lireRecord() { try { const v = localStorage.getItem(CLE_RECORD); return v === null ? null : parseInt(v, 10); } catch (e) { return null; } }
+function ecrireRecord(s) { try { const r = lireRecord(); if (r === null || s > r) localStorage.setItem(CLE_RECORD, String(s)); } catch (e) {} }
+
+/* ---------- Génération de la série ---------- */
+// Une fraction simplifiable = fraction irréductible de base × un facteur k
+const PALIERS = {
+  facile:    { bases: [2, 3, 4, 5, 6, 7],    facteurs: [2, 3, 5],                 maxD: 30 },
+  moyen:     { bases: [2, 3, 4, 5, 6, 7, 8, 9], facteurs: [4, 6, 8, 9, 10],      maxD: 60 },
+  difficile: { bases: [3, 4, 5, 6, 7, 8, 9], facteurs: [12, 14, 15, 16, 18, 20, 24], maxD: 100 },
+};
+// Fractions déjà irréductibles (choisies pour « tenter » l'élève : pas de nombres premiers évidents partout)
+const PIEGES = [[8, 9], [4, 9], [9, 14], [7, 12], [8, 15], [9, 16], [10, 21], [14, 15], [5, 12], [15, 28], [9, 10], [16, 21]];
+
+function fractionSimplifiable(palier, vus) {
+  const P = PALIERS[palier];
+  for (let essai = 0; essai < 300; essai++) {
+    const b = choisir(P.bases), k = choisir(P.facteurs);
+    if (b * k > P.maxD) continue;
+    const candidats = []; for (let a = 1; a < b; a++) if (pgcd(a, b) === 1) candidats.push(a);
+    const a = choisir(candidats);
+    const cle = a * k + '/' + b * k;
+    if (vus.has(cle) || (essai < 200 && precedente.has(cle))) continue;
+    vus.add(cle);
+    return { n: a * k, d: b * k };
+  }
+  return null;
+}
+
+// Fractions de la série précédente : on évite de les reproposer tout de suite
+let precedente = new Set();
+try { precedente = new Set(JSON.parse(localStorage.getItem('lcml_frac_irreductibles_derniere') || '[]')); } catch (e) {}
+
+function genererSerie() {
+  const nbPieges = rnd(1, 2), nbSimplif = NB_QUESTIONS - nbPieges;
+  const vus = new Set();
+  // Répartition progressive : 3 faciles, puis moyens, puis difficiles
+  const paliers = [];
+  for (let i = 0; i < nbSimplif; i++) paliers.push(i < 3 ? 'facile' : i < nbSimplif - 3 ? 'moyen' : 'difficile');
+  const serie = paliers.map(p => fractionSimplifiable(p, vus)).filter(Boolean);
+  // Les pièges sont glissés au hasard, jamais en 1re position
+  melange(PIEGES.filter(([n, d]) => !precedente.has(n + '/' + d))).slice(0, nbPieges).forEach(([n, d]) => {
+    serie.splice(rnd(2, serie.length), 0, { n, d });
+  });
+  precedente = new Set(serie.map(q => q.n + '/' + q.d));
+  try { localStorage.setItem('lcml_frac_irreductibles_derniere', JSON.stringify([...precedente])); } catch (e) {}
+  return serie.map(q => { const g = pgcd(q.n, q.d); return { ...q, rn: q.n / g, rd: q.d / g, deja: g === 1 }; });
+}
+
+/* ---------- Écrans ---------- */
+function ecran(id) { document.querySelectorAll('.ecran').forEach(e => e.classList.toggle('actif', e.id === id)); window.scrollTo(0, 0); }
+function basculerRappel() {
+  rappelOuvert = !rappelOuvert;
+  document.getElementById('rappel').classList.toggle('visible', rappelOuvert);
+  document.getElementById('btn-rappel').classList.toggle('ouverte', rappelOuvert);
+}
+
+function demarrer() {
+  questions = genererSerie(); index = 0; score = 0; resultats = []; sauve = false;
+  ecran('ecran-jeu');
+  afficherQuestion();
+}
+
+function majDots() {
+  const box = document.getElementById('dots');
+  box.innerHTML = '';
+  questions.forEach((q, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === index ? ' current' : '') + (resultats[i] ? ' ' + resultats[i].etat : '');
+    box.appendChild(d);
+  });
+  document.getElementById('compteur').textContent = Math.min(index + 1, questions.length) + ' / ' + questions.length;
+}
+
+function afficherQuestion() {
+  const q = questions[index];
+  essais = 0;
+  document.getElementById('ligne').innerHTML = fracHTML(q.n, q.d) + '<span class="signe">=</span>' +
+    `<span class="frac saisie">
+      <input id="rn" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="numérateur">
+      <span class="barre"></span>
+      <input id="rd" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="dénominateur">
+    </span>`;
+  const msg = document.getElementById('message');
+  msg.className = 'message'; msg.innerHTML = '';
+  document.getElementById('btn-valider').hidden = false;
+  document.getElementById('btn-suivant').hidden = true;
+  majDots();
+  const champs = [...document.querySelectorAll('#ligne input')];
+  champs.forEach((c, i) => {
+    c.addEventListener('input', () => { c.value = c.value.replace(/\D/g, ''); c.classList.remove('ko', 'mi'); });
+    c.addEventListener('keydown', e => {
+      if (e.key !== 'Enter') return;
+      e.preventDefault();
+      if (i === 0 && champs[1].value === '') champs[1].focus(); else valider();
+    });
+  });
+  champs[0].focus({ preventScroll: true });
+}
+
+/* ---------- Correction ---------- */
+function chaineHTML(q) {
+  const et = etapes(q.n, q.d);
+  return '<div class="chaine">' + et.map(([n, d, p], i) => {
+    const f = i === et.length - 1 && i > 0 ? `<span class="finale">${fracHTML(n, d)}</span>` : fracHTML(n, d);
+    return (p ? `<span class="fleche"><span class="op">÷ ${p}</span><span class="tr">→</span></span>` : '') + f;
+  }).join('') + '</div>';
+}
+function explicationHTML(q) {
+  if (q.deja) {
+    return `<div class="explic">Aucun nombre (sauf 1) ne divise à la fois <strong>${q.n}</strong> et <strong>${q.d}</strong> : la fraction ${fracHTML(q.n, q.d)} est <strong>déjà irréductible</strong>. Il fallait simplement la recopier.</div>`;
+  }
+  const et = etapes(q.n, q.d);
+  const lignes = et.slice(1).map(([n, d, p], i) => {
+    const [n0, d0] = et[i];
+    return `${n0} et ${d0} sont dans la table de <strong>${p}</strong> : ${n0} ÷ ${p} = ${n} et ${d0} ÷ ${p} = ${d}.`;
+  });
+  return `<div class="explic">On divise le numérateur et le dénominateur <strong>par le même nombre</strong>, une étape à la fois :<br>` +
+    lignes.join('<br>') +
+    `<br>${q.rn} et ${q.rd} n'ont plus de diviseur commun (sauf 1) : ${fracHTML(q.rn, q.rd)} est irréductible.</div>`;
+}
+function indiceHTML(q, n, d) {
+  if (q.deja) {
+    return `Cherche un nombre qui divise à la fois ${q.n} et ${q.d}… En trouves-tu un ? Si aucun nombre (sauf 1) ne marche, la fraction ne peut pas être simplifiée.`;
+  }
+  if (n === q.n && d === q.d) {
+    const p = petitDiviseurCommun(q.n, q.d);
+    return `Tu as recopié la fraction, mais elle peut être simplifiée ! Indice : ${q.n} et ${q.d} sont tous les deux dans la table de <strong>${p}</strong>.`;
+  }
+  const p = petitDiviseurCommun(q.n, q.d);
+  return `Ta fraction n'est pas égale à ${fracHTML(q.n, q.d)}. Attention : il faut diviser le numérateur et le dénominateur <strong>par le même nombre</strong>. Indice : ${q.n} et ${q.d} sont tous les deux dans la table de <strong>${p}</strong>.`;
+}
+
+function valider() {
+  const champs = [...document.querySelectorAll('#ligne input')];
+  const msg = document.getElementById('message');
+  const n = lireEntier('rn'), d = lireEntier('rd');
+  if (n === null || d === null) {
+    msg.className = 'message indice visible';
+    msg.innerHTML = '✏️ Complète le numérateur et le dénominateur avant de valider.';
+    (n === null ? champs[0] : champs[1]).focus();
+    return;
+  }
+  const q = questions[index];
+  const egale = d > 0 && n * q.d === q.n * d;
+  const juste = egale && pgcd(n, d) === 1;
+
+  if (juste) {
+    champs.forEach(c => { c.classList.remove('ko', 'mi'); c.classList.add('ok'); c.readOnly = true; });
+    if (essais === 0) score++;
+    resultats[index] = { etat: essais === 0 ? 'correct' : 'corrige', q };
+    msg.className = 'message bravo visible';
+    msg.innerHTML = essais === 0
+      ? (q.deja ? '🎉 Bravo ! Cette fraction était déjà irréductible, tu l\'as bien vu.' : '🎉 Bravo, c\'est la fraction irréductible !')
+      : '👍 C\'est juste maintenant ! (pas de point, mais tu as trouvé ton erreur)';
+    finQuestion();
+    return;
+  }
+
+  // Simplification commencée mais pas terminée : pas de pénalité
+  if (egale && !(n === q.n && d === q.d)) {
+    champs.forEach(c => { c.classList.remove('ko', 'ok'); c.classList.add('mi'); });
+    msg.className = 'message indice visible';
+    msg.innerHTML = `👍 Bien, ${fracHTML(n, d)} est égale à ${fracHTML(q.n, q.d)}… mais <strong>on peut encore simplifier !</strong> Continue à partir de ta fraction.`;
+    champs[0].focus(); champs[0].select();
+    return;
+  }
+
+  essais++;
+  if (essais === 1) {
+    champs.forEach(c => { c.classList.remove('ok', 'mi'); c.classList.add('ko'); });
+    msg.className = 'message indice visible';
+    msg.innerHTML = '🤔 ' + indiceHTML(q, n, d) + '<br><small>Corrige ta réponse et valide à nouveau. Il te reste un essai.</small>';
+    champs[0].focus(); champs[0].select();
+  } else {
+    champs.forEach(c => { c.classList.remove('ok', 'mi'); c.classList.add('ko'); c.readOnly = true; });
+    resultats[index] = { etat: 'incorrect', q };
+    msg.className = 'message correction visible';
+    msg.innerHTML = `❌ Ce n'est pas encore ça. Voici la bonne réponse :` + chaineHTML(q) + explicationHTML(q);
+    finQuestion();
+  }
+}
+
+function finQuestion() {
+  document.getElementById('btn-valider').hidden = true;
+  const s = document.getElementById('btn-suivant');
+  s.hidden = false;
+  s.textContent = index === questions.length - 1 ? 'Voir mon score →' : 'Suivant →';
+  majDots();
+  s.focus({ preventScroll: true });
+}
+
+function suivant() {
+  index++;
+  if (index >= questions.length) afficherScore(); else afficherQuestion();
+}
+
+/* ---------- Score final ---------- */
+function afficherScore() {
+  ecran('ecran-score');
+  const total = questions.length, pct = Math.round(score / total * 100);
+  const ancien = lireRecord();
+  ecrireRecord(score);
+  document.getElementById('final-score').textContent = `${score} / ${total}`;
+  const em = document.getElementById('final-emoji'), ti = document.getElementById('final-title'), msg = document.getElementById('final-msg');
+  if (score === total) { em.textContent = '🏆'; ti.textContent = 'Sans faute !'; msg.textContent = 'Tu sais simplifier les fractions jusqu\'au bout.'; confettis(); }
+  else if (pct >= 70) { em.textContent = '⭐'; ti.textContent = 'Très bien !'; msg.textContent = `${pct} % de réussite. Regarde bien tes erreurs ci-dessous.`; }
+  else if (pct >= 50) { em.textContent = '👍'; ti.textContent = 'Pas mal !'; msg.textContent = `${pct} % de réussite. Lance une nouvelle série pour t'améliorer.`; }
+  else { em.textContent = '💪'; ti.textContent = 'Il faut encore t\'entrainer'; msg.textContent = `${pct} % de réussite. Rappel : divise le numérateur et le dénominateur par le même nombre, jusqu'à ce que ce ne soit plus possible.`; }
+  const rec = Math.max(score, ancien ?? 0);
+  document.getElementById('final-record').innerHTML = `<span class="record">⭐ Meilleur score : ${rec} / ${total}${ancien !== null && score > ancien ? ' — nouveau record !' : ''}</span>`;
+
+  if (!sauve && window.parent && window.parent !== window && typeof window.parent.saveResult === 'function') {
+    sauve = true;
+    try {
+      window.parent.saveResult({
+        activity: ID_ACTIVITE,
+        bookTitle: 'Les fractions irréductibles',
+        score, total, pct,
+        date: new Date().toLocaleDateString('fr-BE'),
+        time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+      });
+    } catch (e) { console.warn('Erreur sauvegarde', e); }
+  }
+  const det = document.getElementById('final-details');
+  det.innerHTML = '';
+  resultats.forEach((r, i) => {
+    const row = document.createElement('div');
+    row.className = 'score-row';
+    const tag = r.etat === 'correct' ? '✅' : r.etat === 'corrige' ? '🟠 2e essai' : '❌';
+    row.innerHTML = `<span class="sol">${i + 1}. ${fracHTML(r.q.n, r.q.d)} = ${fracHTML(r.q.rn, r.q.rd)}${r.q.deja ? ' <small style="font-family:Nunito;color:var(--muted)">(déjà irréductible)</small>' : ''}</span><span class="tag">${tag}</span>`;
+    det.appendChild(row);
+  });
+}
+
+function confettis() {
+  const cols = ['#5B4FCF', '#1A9E75', '#D94F3D', '#C97B1A', '#1A6FA0', '#C7C2F5'];
+  for (let i = 0; i < 70; i++) {
+    const c = document.createElement('div'); c.className = 'confetti';
+    const t = 6 + Math.random() * 7;
+    Object.assign(c.style, { left: Math.random() * 100 + 'vw', width: t + 'px', height: t + 'px', background: cols[i % cols.length], animationDelay: Math.random() * 1.2 + 's', animationDuration: 1.6 + Math.random() * 1.8 + 's' });
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 4500);
+  }
+}
+
+demarrer();
+</script>
+</body>
+</html>
