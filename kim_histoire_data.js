@@ -21,10 +21,10 @@ window.KIM_HISTOIRE_DATA = {
           "id": "prehistoire_paleo",
           "title": "Le campement nomade au Paléolithique",
           "subtitle": "Homo sapiens sous l'abri-sous-roche",
-          "filename": "prehistoire_paleolithique.jpg",
+          "filename": "prehistoire_paleolithique.webp",
           "altFilenames": [
             "prehistoire_paleolithique.webp",
-            "prehistoire_paleolithique.jpg"
+            "prehistoire_paleolithique.webp"
           ],
           "themeColor": "#B5732E",
           "intro": "Scrutez attentivement le campement nomade : les outils, les tentes, le feu, les activités des membres du clan et la steppe au loin.",
@@ -152,10 +152,10 @@ window.KIM_HISTOIRE_DATA = {
           "id": "prehistoire_neo",
           "title": "Le premier village au Néolithique",
           "subtitle": "La naissance de l'agriculture et de l'élevage",
-          "filename": "prehistoire_neolithique.jpg",
+          "filename": "prehistoire_neolithique.webp",
           "altFilenames": [
             "prehistoire_neolithique.webp",
-            "prehistoire_neolithique.jpg"
+            "prehistoire_neolithique.webp"
           ],
           "themeColor": "#B5732E",
           "intro": "Observez la vie du village sédentaire : les maisons, les champs, l'enclos, le lac et les nouvelles inventions du Néolithique.",
@@ -296,10 +296,10 @@ window.KIM_HISTOIRE_DATA = {
           "id": "antiquite_forum",
           "title": "Le marché du forum gallo-romain",
           "subtitle": "Au cœur de la cité romaine",
-          "filename": "antiquite_forum_marche.jpg",
+          "filename": "antiquite_forum_marche.webp",
           "altFilenames": [
             "antiquite_forum_marche.webp",
-            "antiquite_forum_marche.jpg"
+            "antiquite_forum_marche.webp"
           ],
           "themeColor": "#D9A521",
           "intro": "Parcourez le forum de la cité gallo-romaine : légionnaires, étals, marchands, amphores, temple et fontaine publique.",
@@ -427,10 +427,10 @@ window.KIM_HISTOIRE_DATA = {
           "id": "antiquite_villa",
           "title": "La villa gallo-romaine et ses thermes",
           "subtitle": "Le confort et le raffinement gallo-romain",
-          "filename": "antiquite_villa_thermes.jpg",
+          "filename": "antiquite_villa_thermes.webp",
           "altFilenames": [
             "antiquite_villa_thermes.webp",
-            "antiquite_villa_thermes.jpg"
+            "antiquite_villa_thermes.webp"
           ],
           "themeColor": "#D9A521",
           "intro": "Pénétrez dans la luxueuse demeure d'un grand propriétaire gallo-romain : péristyle, mosaïques, thermes et aqueduc.",
@@ -571,10 +571,10 @@ window.KIM_HISTOIRE_DATA = {
           "id": "moyen_age_tournoi",
           "title": "Le tournoi au pied du château fort",
           "subtitle": "La fête chevaleresque et la cour seigneuriale",
-          "filename": "moyen_age_tournoi_chateau.jpg",
+          "filename": "moyen_age_tournoi_chateau.webp",
           "altFilenames": [
             "moyen_age_tournoi_chateau.webp",
-            "moyen_age_tournoi_chateau.jpg"
+            "moyen_age_tournoi_chateau.webp"
           ],
           "themeColor": "#9C2F3A",
           "intro": "Admirez le tournoi de chevalerie : les lices, les armures, les armoiries, la tribune d'honneur et la forge.",
@@ -702,10 +702,10 @@ window.KIM_HISTOIRE_DATA = {
           "id": "moyen_age_scriptorium",
           "title": "Le scriptorium et les bâtisseurs",
           "subtitle": "L'art du livre et la construction des cathédrales",
-          "filename": "moyen_age_scriptorium_artisans.jpg",
+          "filename": "moyen_age_scriptorium_artisans.webp",
           "altFilenames": [
             "moyen_age_scriptorium_artisans.webp",
-            "moyen_age_scriptorium_artisans.jpg"
+            "moyen_age_scriptorium_artisans.webp"
           ],
           "themeColor": "#9C2F3A",
           "intro": "Pénétrez dans le calme du scriptorium d'un monastère donnant sur le grand chantier de la cathédrale.",
@@ -846,10 +846,10 @@ window.KIM_HISTOIRE_DATA = {
           "id": "temps_modernes_port",
           "title": "Le port des Grandes Découvertes",
           "subtitle": "Vers le Nouveau Monde et les routes des Indes",
-          "filename": "temps_modernes_port_caravelle.jpg",
+          "filename": "temps_modernes_port_caravelle.webp",
           "altFilenames": [
             "temps_modernes_port_caravelle.webp",
-            "temps_modernes_port_caravelle.jpg"
+            "temps_modernes_port_caravelle.webp"
           ],
           "themeColor": "#2F6E8F",
           "intro": "Scrutez le quai animé du port du XVIᵉ siècle : la caravelle, les instruments de navigation, les épices et les trésors exotiques.",
@@ -977,10 +977,10 @@ window.KIM_HISTOIRE_DATA = {
           "id": "temps_modernes_imprimerie",
           "title": "L'atelier de l'imprimeur et du savant",
           "subtitle": "La diffusion des savoirs et la révolution scientifique",
-          "filename": "temps_modernes_imprimerie_sciences.jpg",
+          "filename": "temps_modernes_imprimerie_sciences.webp",
           "altFilenames": [
             "temps_modernes_imprimerie_sciences.webp",
-            "temps_modernes_imprimerie_sciences.jpg"
+            "temps_modernes_imprimerie_sciences.webp"
           ],
           "themeColor": "#2F6E8F",
           "intro": "Explorez cet atelier de la Renaissance : la presse de Gutenberg, les caractères en plomb, la lunette astronomique et le globe.",
@@ -1121,10 +1121,10 @@ window.KIM_HISTOIRE_DATA = {
           "id": "contemporaine_gare",
           "title": "La gare et l'usine au XIXᵉ siècle",
           "subtitle": "La Révolution industrielle et l'essor de la vapeur",
-          "filename": "contemporaine_revolution_industrielle.jpg",
+          "filename": "contemporaine_revolution_industrielle.webp",
           "altFilenames": [
             "contemporaine_revolution_industrielle.webp",
-            "contemporaine_revolution_industrielle.jpg"
+            "contemporaine_revolution_industrielle.webp"
           ],
           "themeColor": "#3F8C5C",
           "intro": "Plongez dans le tumulte de la gare du XIXᵉ siècle : la locomotive à vapeur, les voyageurs en tenue d'époque, l'horloge et les cheminées.",
@@ -1252,10 +1252,10 @@ window.KIM_HISTOIRE_DATA = {
           "id": "contemporaine_espace",
           "title": "La salle de contrôle spatiale (1969)",
           "subtitle": "La mission Apollo 11 et les premiers pas sur la Lune",
-          "filename": "contemporaine_conquete_spatiale.jpg",
+          "filename": "contemporaine_conquete_spatiale.webp",
           "altFilenames": [
             "contemporaine_conquete_spatiale.webp",
-            "contemporaine_conquete_spatiale.jpg"
+            "contemporaine_conquete_spatiale.webp"
           ],
           "themeColor": "#3F8C5C",
           "intro": "Observez la salle de contrôle de mission : les consoles, les bandes magnétiques, l'écran géant, les ordinateurs et les ingénieurs.",

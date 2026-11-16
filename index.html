@@ -3489,7 +3489,7 @@ input[type=text].calc-input.incorrect {
     root.querySelectorAll('.page-title, .card-title, .panel-tab').forEach(el => {
       let html = el.innerHTML;
       let changed = false;
-      Object.keys(window.EMOJI_SVG_MAP).sort((a, b) => b.length - a.length).forEach(emoji => {
+      (window._emojiKeysSorted || (window._emojiKeysSorted = Object.keys(window.EMOJI_SVG_MAP).sort((a, b) => b.length - a.length))).forEach(emoji => {
         if (html.includes(emoji)) {
           const svg = window.EMOJI_SVG_MAP[emoji];
           const replacement = `<span class="inline-flex items-center justify-center text-current w-7 h-7 mr-2 align-middle" style="vertical-align: middle; margin-top: -3px;">${svg}</span>`;
@@ -3500,6 +3500,35 @@ input[type=text].calc-input.incorrect {
       if (changed) el.innerHTML = html;
     });
   };
+
+  // Logos : toute tuile ajoutée ou redessinée (ex. après « Masquer / Réactiver ») reçoit son logo
+  // tout de suite, avant l'affichage, au lieu de montrer l'ancien emoji.
+  (function () {
+    const SEL = '.sub-icon, .activity-icon, .sub-icon-large, .page-title, .card-title, .panel-tab';
+    let enCours = false;
+    const obs = new MutationObserver((mutations) => {
+      if (enCours || !window.EMOJI_SVG_MAP) return;
+      const racines = new Set();
+      for (const m of mutations) {
+        const t = m.target;
+        if (!m.addedNodes.length || !t || t.nodeType !== 1) continue;
+        const cible = t.matches(SEL) && t.parentElement ? t.parentElement : t;
+        for (const n of m.addedNodes) {
+          if (n.nodeType === 3) { if (t.matches(SEL)) racines.add(cible); }      // texte écrit dans une icône ou un titre
+          else if (n.nodeType === 1) {
+            if (n.matches(SEL)) racines.add(cible);                               // l'icône elle-même est ajoutée
+            else if (n.firstElementChild) racines.add(n);                         // un bloc entier (tuile, grille, écran)
+          }
+        }
+      }
+      if (!racines.size) return;
+      enCours = true;
+      try { racines.forEach((r) => { if (r.isConnected) window.replaceEmojisOnPage(r); }); }
+      catch (e) { console.warn('logos', e); }
+      finally { obs.takeRecords(); enCours = false; }
+    });
+    if (document.body) obs.observe(document.body, { childList: true, subtree: true });
+  })();
 
   // ===== SYNC ÉLÈVES =====
   window.FB_saveStudents = async function(cls, students) {
@@ -4486,25 +4515,25 @@ input[type=text].calc-input.incorrect {
     <div class="activities-grid">
       <div class="activity-card" onclick="goToActivity('lecture')">
         <span class="activity-badge badge-active">Disponible</span>
-        <div class="activity-icon"><img src="assets/logos/home_lecture.png" class="w-12 h-12 object-contain" alt="Lecture" /></div>
+        <div class="activity-icon"><img src="assets/logos/home_lecture.webp" class="w-12 h-12 object-contain" alt="Lecture" /></div>
         <div class="activity-title">Lecture</div>
         <div class="activity-desc">Questionnaires sur les livres lus en classe</div>
       </div>
       <div class="activity-card disabled" onclick="comingSoon()">
         <span class="activity-badge badge-soon">Bientôt</span>
-        <div class="activity-icon"><img src="assets/logos/home_calcul_mental.png" class="w-12 h-12 object-contain" alt="Calcul mental" /></div>
+        <div class="activity-icon"><img src="assets/logos/home_calcul_mental.webp" class="w-12 h-12 object-contain" alt="Calcul mental" /></div>
         <div class="activity-title">Calcul mental</div>
         <div class="activity-desc">Tables, additions, soustractions…</div>
       </div>
       <div class="activity-card disabled" onclick="comingSoon()">
         <span class="activity-badge badge-soon">Bientôt</span>
-        <div class="activity-icon"><img src="assets/logos/home_geometrie.png" class="w-12 h-12 object-contain" alt="Géométrie" /></div>
+        <div class="activity-icon"><img src="assets/logos/home_geometrie.webp" class="w-12 h-12 object-contain" alt="Géométrie" /></div>
         <div class="activity-title">Géométrie</div>
         <div class="activity-desc">Formes, angles, périmètres…</div>
       </div>
       <div class="activity-card disabled" onclick="comingSoon()">
         <span class="activity-badge badge-soon">Bientôt</span>
-        <div class="activity-icon"><img src="assets/logos/home_logique.png" class="w-12 h-12 object-contain" alt="Logique" /></div>
+        <div class="activity-icon"><img src="assets/logos/home_logique.webp" class="w-12 h-12 object-contain" alt="Logique" /></div>
         <div class="activity-title">Logique</div>
         <div class="activity-desc">Jeux et puzzles interactifs</div>
       </div>
@@ -4512,7 +4541,7 @@ input[type=text].calc-input.incorrect {
     <div style="margin-top:1rem;">
       <div class="activity-card" onclick="showPlanTravailStudent()" id="home-plan-card" style="display:none;">
         <span class="activity-badge badge-active">Actif</span>
-        <div class="activity-icon"><img src="assets/logos/home_plan_travail.png" class="w-12 h-12 object-contain" alt="Mon plan de travail" /></div>
+        <div class="activity-icon"><img src="assets/logos/home_plan_travail.webp" class="w-12 h-12 object-contain" alt="Mon plan de travail" /></div>
         <div class="activity-title">Mon plan de travail</div>
         <div class="activity-desc" id="home-plan-desc">Les exercices assignés par Mr Lejoly</div>
       </div>
@@ -4626,7 +4655,7 @@ input[type=text].calc-input.incorrect {
           <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#4f46e5_1px,transparent_1px)] [background-size:16px_16px]"></div>
           <div class="relative flex items-center justify-center w-full h-full">
             <div class="absolute w-24 h-24 rounded-full border border-dashed border-indigo-200 animate-[spin_20s_linear_infinite] opacity-70"></div>
-            <img src="assets/logos/subject_francais.png" class="w-20 h-20 object-contain relative z-10" alt="Français" />
+            <img src="assets/logos/subject_francais.webp" class="w-20 h-20 object-contain relative z-10" alt="Français" />
           </div>
         </div>
         <div class="flex flex-col gap-1">
@@ -4648,7 +4677,7 @@ input[type=text].calc-input.incorrect {
           <div class="absolute inset-0 opacity-12 bg-[radial-gradient(#0284c7_1px,transparent_1px)] [background-size:12px_12px]"></div>
           <div class="relative flex items-center justify-center w-full h-full">
             <div class="absolute w-24 h-24 rounded-full border border-dashed border-sky-200 animate-[spin_20s_linear_infinite] opacity-70"></div>
-            <img src="assets/logos/subject_mathematiques.png" class="w-20 h-20 object-contain relative z-10" alt="Mathématiques" />
+            <img src="assets/logos/subject_mathematiques.webp" class="w-20 h-20 object-contain relative z-10" alt="Mathématiques" />
           </div>
         </div>
         <div class="flex flex-col gap-1">
@@ -4670,7 +4699,7 @@ input[type=text].calc-input.incorrect {
           <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#059669_1px,transparent_1px)] [background-size:14px_14px]"></div>
           <div class="relative flex items-center justify-center w-full h-full">
             <div class="absolute w-24 h-24 rounded-full border border-dashed border-emerald-200 animate-[spin_20s_linear_infinite] opacity-70"></div>
-            <img src="assets/logos/subject_eveil.png" class="w-20 h-20 object-contain relative z-10" alt="Éveil" />
+            <img src="assets/logos/subject_eveil.webp" class="w-20 h-20 object-contain relative z-10" alt="Éveil" />
           </div>
         </div>
         <div class="flex flex-col gap-1">
@@ -4692,7 +4721,7 @@ input[type=text].calc-input.incorrect {
           <div class="absolute inset-0 opacity-12 bg-[radial-gradient(#d97706_1px,transparent_1px)] [background-size:15px_15px]"></div>
           <div class="relative flex items-center justify-center w-full h-full">
             <div class="absolute w-24 h-24 rounded-full border border-dashed border-amber-200 animate-[spin_20s_linear_infinite] opacity-70"></div>
-            <img src="assets/logos/subject_ceb.png" class="w-20 h-20 object-contain relative z-10" alt="CEB" />
+            <img src="assets/logos/subject_ceb.webp" class="w-20 h-20 object-contain relative z-10" alt="CEB" />
           </div>
         </div>
         <div class="flex flex-col gap-1">
@@ -4715,7 +4744,7 @@ input[type=text].calc-input.incorrect {
           <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#3b4a8c_1px,transparent_1px)] [background-size:15px_15px]"></div>
           <div class="relative flex items-center justify-center w-full h-full">
             <div class="absolute w-24 h-24 rounded-full border border-dashed animate-[spin_20s_linear_infinite] opacity-70" style="border-color:#c9b98a"></div>
-            <img src="assets/logos/subject_astrelune.png?v=2" class="w-20 h-20 object-contain relative z-10 drop-shadow-md" alt="Astrelune" />
+            <img src="assets/logos/subject_astrelune.webp?v=2" class="w-20 h-20 object-contain relative z-10 drop-shadow-md" alt="Astrelune" />
           </div>
         </div>
         <div class="flex flex-col gap-1">
@@ -4737,7 +4766,7 @@ input[type=text].calc-input.incorrect {
           <div class="absolute inset-0 opacity-12 bg-[radial-gradient(#d97706_1px,transparent_1px)] [background-size:15px_15px]"></div>
           <div class="relative flex items-center justify-center w-full h-full">
             <div class="absolute w-24 h-24 rounded-full border border-dashed border-amber-200 animate-[spin_20s_linear_infinite] opacity-70"></div>
-            <img src="assets/logos/subject_jeux.png" class="w-20 h-20 object-contain relative z-10" alt="Jeux" />
+            <img src="assets/logos/subject_jeux.webp" class="w-20 h-20 object-contain relative z-10" alt="Jeux" />
           </div>
         </div>
         <div class="flex flex-col gap-1">
@@ -4759,7 +4788,7 @@ input[type=text].calc-input.incorrect {
           <div class="absolute inset-0 opacity-12 bg-[radial-gradient(#e11d48_1px,transparent_1px)] [background-size:15px_15px]"></div>
           <div class="relative flex items-center justify-center w-full h-full">
             <div class="absolute w-24 h-24 rounded-full border border-dashed border-rose-200 animate-[spin_20s_linear_infinite] opacity-70"></div>
-            <img src="assets/logos/subject_fiches.png" class="w-20 h-20 object-contain relative z-10" alt="Fiches" />
+            <img src="assets/logos/subject_fiches.webp" class="w-20 h-20 object-contain relative z-10" alt="Fiches" />
           </div>
         </div>
         <div class="flex flex-col gap-1">
@@ -4780,7 +4809,7 @@ input[type=text].calc-input.incorrect {
         <div class="bg-violet-50/60 overflow-hidden relative w-full h-36 rounded-2xl flex items-center justify-center transition-all duration-300">
           <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#8b5cf6_1px,transparent_1px)] [background-size:16px_16px]"></div>
           <div class="relative flex items-center justify-center w-full h-full">
-            <img src="assets/logos/subject_outils.png" class="w-20 h-20 object-contain relative z-10" alt="Mes outils" />
+            <img src="assets/logos/subject_outils.webp" class="w-20 h-20 object-contain relative z-10" alt="Mes outils" />
           </div>
         </div>
         <div class="flex flex-col gap-1">
@@ -4794,7 +4823,7 @@ input[type=text].calc-input.incorrect {
     <div id="subjects-plan-card" style="display:none;margin-bottom:1.5rem;">
       <div onclick="showPlanTravailStudent()" class="card cursor-pointer flex flex-row items-center gap-4 p-5 rounded-3xl border-3 border-[#1A1A2E] bg-white transition-all duration-300 shadow-[4px_4px_0px_#1A1A2E] hover:shadow-[6px_6px_0px_#1A1A2E] hover:-translate-x-0.5 hover:-translate-y-0.5">
         <div class="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center border-2 border-neutral-900 shadow-[2px_2px_0px_#1A1A2E] shrink-0">
-          <img src="assets/logos/home_plan_travail.png" class="w-8 h-8 object-contain" alt="Plan de travail" />
+          <img src="assets/logos/home_plan_travail.webp" class="w-8 h-8 object-contain" alt="Plan de travail" />
         </div>
         <div class="flex-1">
           <div class="text-xl font-black text-neutral-800" style="font-family: 'Fredoka', sans-serif;">Mon plan de travail</div>
@@ -8009,7 +8038,7 @@ input[type=text].calc-input.incorrect {
           <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#4f46e5_1px,transparent_1px)] [background-size:16px_16px]"></div>
           <div class="relative flex items-center justify-center w-full h-full">
             <div class="absolute w-24 h-24 rounded-full border border-dashed border-indigo-200 animate-[spin_20s_linear_infinite] opacity-70"></div>
-            <img src="assets/logos/subject_francais.png" class="w-20 h-20 object-contain relative z-10" alt="Français" />
+            <img src="assets/logos/subject_francais.webp" class="w-20 h-20 object-contain relative z-10" alt="Français" />
           </div>
         </div>
         <div class="flex flex-col gap-1">
@@ -8031,7 +8060,7 @@ input[type=text].calc-input.incorrect {
           <div class="absolute inset-0 opacity-12 bg-[radial-gradient(#0284c7_1px,transparent_1px)] [background-size:12px_12px]"></div>
           <div class="relative flex items-center justify-center w-full h-full">
             <div class="absolute w-24 h-24 rounded-full border border-dashed border-sky-200 animate-[spin_20s_linear_infinite] opacity-70"></div>
-            <img src="assets/logos/subject_mathematiques.png" class="w-20 h-20 object-contain relative z-10" alt="Mathématiques" />
+            <img src="assets/logos/subject_mathematiques.webp" class="w-20 h-20 object-contain relative z-10" alt="Mathématiques" />
           </div>
         </div>
         <div class="flex flex-col gap-1">
@@ -8053,7 +8082,7 @@ input[type=text].calc-input.incorrect {
           <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#059669_1px,transparent_1px)] [background-size:14px_14px]"></div>
           <div class="relative flex items-center justify-center w-full h-full">
             <div class="absolute w-24 h-24 rounded-full border border-dashed border-emerald-200 animate-[spin_20s_linear_infinite] opacity-70"></div>
-            <img src="assets/logos/subject_eveil.png" class="w-20 h-20 object-contain relative z-10" alt="Éveil" />
+            <img src="assets/logos/subject_eveil.webp" class="w-20 h-20 object-contain relative z-10" alt="Éveil" />
           </div>
         </div>
         <div class="flex flex-col gap-1">
@@ -8075,7 +8104,7 @@ input[type=text].calc-input.incorrect {
           <div class="absolute inset-0 opacity-12 bg-[radial-gradient(#d97706_1px,transparent_1px)] [background-size:15px_15px]"></div>
           <div class="relative flex items-center justify-center w-full h-full">
             <div class="absolute w-24 h-24 rounded-full border border-dashed border-amber-200 animate-[spin_20s_linear_infinite] opacity-70"></div>
-            <img src="assets/logos/subject_ceb.png" class="w-20 h-20 object-contain relative z-10" alt="CEB" />
+            <img src="assets/logos/subject_ceb.webp" class="w-20 h-20 object-contain relative z-10" alt="CEB" />
           </div>
         </div>
         <div class="flex flex-col gap-1">
@@ -8098,7 +8127,7 @@ input[type=text].calc-input.incorrect {
           <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#3b4a8c_1px,transparent_1px)] [background-size:15px_15px]"></div>
           <div class="relative flex items-center justify-center w-full h-full">
             <div class="absolute w-24 h-24 rounded-full border border-dashed animate-[spin_20s_linear_infinite] opacity-70" style="border-color:#c9b98a"></div>
-            <img src="assets/logos/subject_astrelune.png?v=2" class="w-20 h-20 object-contain relative z-10 drop-shadow-md" alt="Astrelune" />
+            <img src="assets/logos/subject_astrelune.webp?v=2" class="w-20 h-20 object-contain relative z-10 drop-shadow-md" alt="Astrelune" />
           </div>
         </div>
         <div class="flex flex-col gap-1">
@@ -8120,7 +8149,7 @@ input[type=text].calc-input.incorrect {
           <div class="absolute inset-0 opacity-12 bg-[radial-gradient(#d97706_1px,transparent_1px)] [background-size:15px_15px]"></div>
           <div class="relative flex items-center justify-center w-full h-full">
             <div class="absolute w-24 h-24 rounded-full border border-dashed border-amber-200 animate-[spin_20s_linear_infinite] opacity-70"></div>
-            <img src="assets/logos/subject_jeux.png" class="w-20 h-20 object-contain relative z-10" alt="Jeux" />
+            <img src="assets/logos/subject_jeux.webp" class="w-20 h-20 object-contain relative z-10" alt="Jeux" />
           </div>
         </div>
         <div class="flex flex-col gap-1">
@@ -8142,7 +8171,7 @@ input[type=text].calc-input.incorrect {
           <div class="absolute inset-0 opacity-12 bg-[radial-gradient(#e11d48_1px,transparent_1px)] [background-size:15px_15px]"></div>
           <div class="relative flex items-center justify-center w-full h-full">
             <div class="absolute w-24 h-24 rounded-full border border-dashed border-rose-200 animate-[spin_20s_linear_infinite] opacity-70"></div>
-            <img src="assets/logos/subject_fiches.png" class="w-20 h-20 object-contain relative z-10" alt="Fiches" />
+            <img src="assets/logos/subject_fiches.webp" class="w-20 h-20 object-contain relative z-10" alt="Fiches" />
           </div>
         </div>
         <div class="flex flex-col gap-1">
@@ -8164,7 +8193,7 @@ input[type=text].calc-input.incorrect {
           <div class="absolute inset-0 opacity-12 bg-[radial-gradient(#475569_1px,transparent_1px)] [background-size:14px_14px]"></div>
           <div class="relative flex items-center justify-center w-full h-full">
             <div class="absolute w-24 h-24 rounded-full border border-dashed border-slate-200 animate-[spin_20s_linear_infinite] opacity-70"></div>
-            <img src="assets/logos/subject_gestion.png" class="w-20 h-20 object-contain relative z-10" alt="Gestion" />
+            <img src="assets/logos/subject_gestion.webp" class="w-20 h-20 object-contain relative z-10" alt="Gestion" />
           </div>
         </div>
         <div class="flex flex-col gap-1">
@@ -8186,7 +8215,7 @@ input[type=text].calc-input.incorrect {
           <div class="absolute inset-0 opacity-12 bg-[radial-gradient(#f43f5e_1px,transparent_1px)] [background-size:14px_14px]"></div>
           <div class="relative flex items-center justify-center w-full h-full">
             <div class="absolute w-24 h-24 rounded-full border border-dashed border-rose-200 animate-[spin_20s_linear_infinite] opacity-70"></div>
-            <img src="assets/logos/subject_endirect.png" class="w-20 h-20 object-contain relative z-10" alt="En direct" />
+            <img src="assets/logos/subject_endirect.webp" class="w-20 h-20 object-contain relative z-10" alt="En direct" />
           </div>
         </div>
         <div class="flex flex-col gap-1">
@@ -8207,7 +8236,7 @@ input[type=text].calc-input.incorrect {
         <div class="bg-violet-50/60 overflow-hidden relative w-full h-36 rounded-2xl flex items-center justify-center transition-all duration-300">
           <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#8b5cf6_1px,transparent_1px)] [background-size:16px_16px]"></div>
           <div class="relative flex items-center justify-center w-full h-full">
-            <img src="assets/logos/subject_outils.png" class="w-20 h-20 object-contain relative z-10" alt="Mes outils" />
+            <img src="assets/logos/subject_outils.webp" class="w-20 h-20 object-contain relative z-10" alt="Mes outils" />
           </div>
         </div>
         <div class="flex flex-col gap-1">
@@ -8221,7 +8250,7 @@ input[type=text].calc-input.incorrect {
     <!-- Carte Plan de travail — pleine largeur -->
     <div onclick="showPlanTravailTeacherScreen()" class="card cursor-pointer flex flex-row items-center gap-4 p-5 rounded-3xl border-3 border-[#1A1A2E] bg-white transition-all duration-300 shadow-[4px_4px_0px_#1A1A2E] hover:shadow-[6px_6px_0px_#1A1A2E] hover:-translate-x-0.5 hover:-translate-y-0.5 mb-6">
       <div class="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center border-2 border-neutral-900 shadow-[2px_2px_0px_#1A1A2E] shrink-0">
-        <img src="assets/logos/home_plan_travail.png" class="w-8 h-8 object-contain" alt="Plan de travail" />
+        <img src="assets/logos/home_plan_travail.webp" class="w-8 h-8 object-contain" alt="Plan de travail" />
       </div>
       <div class="flex-1">
         <div class="text-xl font-black text-neutral-800" style="font-family: 'Fredoka', sans-serif;">Plan de travail</div>
@@ -12188,12 +12217,12 @@ function refreshAllToggles(){
 
 const FRANCAIS_ITEMS = [
   {id:'francais-lecture', action:"goToFrancaisSection('lecture')", teacherAction:"teacherGoToFrancaisSection('lecture')", label:'Lecture', icon:'📖', desc:'Questionnaires et compréhension'},
-  {id:'francais-vocabulaire', action:"showScreen('screen-vocabulaire');renderVocabulaireMenu();", teacherAction:"showScreen('screen-vocabulaire');renderVocabulaireMenu();", label:'Vocabulaire', icon:"<img src='assets/logos/subject_vocabulaire.png' class='w-full h-full object-contain' />", desc:'Sens propre/figuré, proverbes et expressions'},
+  {id:'francais-vocabulaire', action:"showScreen('screen-vocabulaire');renderVocabulaireMenu();", teacherAction:"showScreen('screen-vocabulaire');renderVocabulaireMenu();", label:'Vocabulaire', icon:"<img src='assets/logos/subject_vocabulaire.webp' class='w-full h-full object-contain' />", desc:'Sens propre/figuré, proverbes et expressions'},
   {id:'francais-conjugaison', action:"goToFrancaisSection('conjugaison')", teacherAction:"teacherGoToFrancaisSection('conjugaison')", label:'Conjugaison', icon:'⏰', desc:{student:'Bientôt disponible', teacher:'Présent, imparfait, futur…'}},
   {id:'francais-grammaire', action:"goToFrancaisSection('grammaire')", teacherAction:"teacherGoToFrancaisSection('grammaire')", label:'Grammaire', icon:'📝', desc:'Classes de mots, fonctions, phrases…'},
-  {id:'francais-orthographe', action:"showScreen('screen-orthographe');renderOrthographeMenu();", label:'Orthographe', icon:'<img src="assets/logos/subject_orthographe.png" class="w-full h-full object-contain" />', desc:'Homophones, accords, dictée…'},
-  {id:'francais-expression_ecrite', action:"showScreen('screen-expression-ecrite');renderExpressionEcriteMenu();", label:'Expression écrite', icon:'<img src="assets/logos/expression_ecrite.png" class="w-full h-full object-contain" />', desc:'Connecteurs, vocabulaire, structure…', teacherOnly:true},
-  {id:'francais-savoir_ecouter', action:"showScreen('screen-savoir-ecouter-menu');renderSavoirEcouterMenu();", label:'Savoir écouter', icon:'<img src="assets/logos/subject_savoir_ecouter.png" class="w-full h-full object-contain" />', desc:'Écoute attentive et compréhension'},
+  {id:'francais-orthographe', action:"showScreen('screen-orthographe');renderOrthographeMenu();", label:'Orthographe', icon:'<img src="assets/logos/subject_orthographe.webp" class="w-full h-full object-contain" />', desc:'Homophones, accords, dictée…'},
+  {id:'francais-expression_ecrite', action:"showScreen('screen-expression-ecrite');renderExpressionEcriteMenu();", label:'Expression écrite', icon:'<img src="assets/logos/expression_ecrite.webp" class="w-full h-full object-contain" />', desc:'Connecteurs, vocabulaire, structure…', teacherOnly:true},
+  {id:'francais-savoir_ecouter', action:"showScreen('screen-savoir-ecouter-menu');renderSavoirEcouterMenu();", label:'Savoir écouter', icon:'<img src="assets/logos/subject_savoir_ecouter.webp" class="w-full h-full object-contain" />', desc:'Écoute attentive et compréhension'},
 ];
 
 const MATHS_ITEMS = [
@@ -12201,13 +12230,13 @@ const MATHS_ITEMS = [
   {id:'maths-operations', action:"goToMathsSection('operations')", teacherAction:"teacherGoToMathsSection('operations')", label:'Opérations', icon:'➕', desc:'Addition, multiplication, division…'},
   {id:'maths-grandeurs', action:"goToMathsSection('grandeurs')", teacherAction:"teacherGoToMathsSection('grandeurs')", label:'Grandeurs', icon:'⚖️', desc:'Masses, longueurs, durées…'},
   {id:'maths-solides', action:"goToMathsSection('solides')", teacherAction:"teacherGoToMathsSection('solides')", label:'Solides et figures', icon:'📐', desc:'Polygones, triangles, polyèdres…'},
-  {id:'maths-traitement', action:"showScreen('screen-traitement-donnees');renderTraitementDonneesMenu();", label:'Traitement de données', icon:'<img src="assets/logos/maths_traitement.png" class="w-full h-full object-contain" />', desc:'Tableaux, graphiques, moyenne…'},
+  {id:'maths-traitement', action:"showScreen('screen-traitement-donnees');renderTraitementDonneesMenu();", label:'Traitement de données', icon:'<img src="assets/logos/maths_traitement.webp" class="w-full h-full object-contain" />', desc:'Tableaux, graphiques, moyenne…'},
 ];
 
 const EVEIL_ITEMS = [
   {id:'eveil-histoire', action:"goToEveilSection('histoire')", teacherAction:"teacherGoToEveilSection('histoire')", label:'Histoire', icon:'🏛️', desc:'Préhistoire, Antiquité, Moyen Âge…'},
   {id:'eveil-geographie', action:"goToEveilSection('geographie')", teacherAction:"teacherGoToEveilSection('geographie')", label:'Géographie', icon:'🌍', desc:'Océans, Europe, Belgique…'},
-  {id:'eveil-sciences', action:"goToEveilSection('sciences')", teacherAction:"teacherGoToEveilSection('sciences')", label:'Sciences', icon:'<img src="assets/logos/subject_sciences.png" class="w-full h-full object-contain" />', desc:'Corps humain, électricité, engrenages…'},
+  {id:'eveil-sciences', action:"goToEveilSection('sciences')", teacherAction:"teacherGoToEveilSection('sciences')", label:'Sciences', icon:'<img src="assets/logos/subject_sciences.webp" class="w-full h-full object-contain" />', desc:'Corps humain, électricité, engrenages…'},
   {id:'eveil-economie', action:"openFiche('formation-economique-sociale.html', 'La formation économique et sociale', 'screen-eveil')", teacherAction:"openFiche('formation-economique-sociale.html', 'La formation économique et sociale', 'screen-teacher-eveil')", label:'Économie', icon:'💶', desc:"La formation économique et sociale : le voyage de ton salaire"},
 ];
 
@@ -12400,8 +12429,8 @@ function renderConjugaisonScreen(){
     {id:'un_peu_de_tout', label:'Un peu de tout', icon:'🔀'},
     {id:'present', label:'Indicatif présent', icon:'✏️'},
     {id:'imparfait', label:'Indicatif imparfait', icon:'📖'},
-    {id:'futur', label:'Indicatif futur simple', icon:'<img src="assets/logos/conj_futur.png" class="w-full h-full object-contain" />'},
-    {id:'passe_compose', label:'Indicatif passé composé', icon:'<img src="assets/logos/conj_passe_compose.png" class="w-full h-full object-contain" />'},
+    {id:'futur', label:'Indicatif futur simple', icon:'<img src="assets/logos/conj_futur.webp" class="w-full h-full object-contain" />'},
+    {id:'passe_compose', label:'Indicatif passé composé', icon:'<img src="assets/logos/conj_passe_compose.webp" class="w-full h-full object-contain" />'},
     {id:'conj_cond_pqpf', label:'Conditionnel & Plus-que-parfait', icon:'✨'},
     {id:'conj_subj_imp', label:'Subjonctif & Impératif', icon:'💫'},
     {id:'conj_passe_simple', label:'Le passé simple (Lecture)', icon:'📖'},
@@ -12456,26 +12485,26 @@ const GRAMMAIRE_ITEMS = [
 ];
 
 const GRAM_CLASSES_ITEMS = [
-  {id:'gram_nom', screen:'screen-gram-nom', label:'Le nom', icon:'<img src="assets/logos/gram_nom.png" class="w-full h-full object-contain" />', fn:'renderNomMenu'},
-  {id:'gram_determinant', screen:'screen-gram-determinant', label:'Le déterminant', icon:'<img src="assets/logos/gram_determinant.png" class="w-full h-full object-contain" />', fn:'renderDeterminantMenu'},
-  {id:'gram_adjectif', screen:'screen-gram-adjectif', label:"L'adjectif", icon:'<img src="assets/logos/gram_adjectif.png" class="w-full h-full object-contain" />', fn:'renderAdjectifMenu'},
-  {id:'gram_verbe', screen:'screen-gram-verbe', label:'Le verbe', icon:'<img src="assets/logos/gram_verbe.png" class="w-full h-full object-contain" />', fn:'renderVerbeClassMenu'},
-  {id:'gram_pronom', screen:'screen-gram-pronom', label:'Le pronom', icon:'<img src="assets/logos/gram_pronom.png" class="w-full h-full object-contain" />', fn:'renderPronomMenu'},
-  {id:'gram_adverbe', screen:'screen-gram-adverbe', label:"L'adverbe", icon:'<img src="assets/logos/gram_adverbe.png" class="w-full h-full object-contain" />', fn:'renderAdverbeMenu'},
-  {id:'gram_complement_nom', screen:'screen-gram-complement-nom', label:'Le complément du nom', icon:'<img src="assets/logos/gram_complement_nom.png" class="w-full h-full object-contain" />'},
-  {id:'gram_tri_mots', screen:'screen-gram-tri-mots', label:'Le tri des mots', icon:'<img src="assets/logos/gram_tri_mots.png" class="w-full h-full object-contain" />'},
+  {id:'gram_nom', screen:'screen-gram-nom', label:'Le nom', icon:'<img src="assets/logos/gram_nom.webp" class="w-full h-full object-contain" />', fn:'renderNomMenu'},
+  {id:'gram_determinant', screen:'screen-gram-determinant', label:'Le déterminant', icon:'<img src="assets/logos/gram_determinant.webp" class="w-full h-full object-contain" />', fn:'renderDeterminantMenu'},
+  {id:'gram_adjectif', screen:'screen-gram-adjectif', label:"L'adjectif", icon:'<img src="assets/logos/gram_adjectif.webp" class="w-full h-full object-contain" />', fn:'renderAdjectifMenu'},
+  {id:'gram_verbe', screen:'screen-gram-verbe', label:'Le verbe', icon:'<img src="assets/logos/gram_verbe.webp" class="w-full h-full object-contain" />', fn:'renderVerbeClassMenu'},
+  {id:'gram_pronom', screen:'screen-gram-pronom', label:'Le pronom', icon:'<img src="assets/logos/gram_pronom.webp" class="w-full h-full object-contain" />', fn:'renderPronomMenu'},
+  {id:'gram_adverbe', screen:'screen-gram-adverbe', label:"L'adverbe", icon:'<img src="assets/logos/gram_adverbe.webp" class="w-full h-full object-contain" />', fn:'renderAdverbeMenu'},
+  {id:'gram_complement_nom', screen:'screen-gram-complement-nom', label:'Le complément du nom', icon:'<img src="assets/logos/gram_complement_nom.webp" class="w-full h-full object-contain" />'},
+  {id:'gram_tri_mots', screen:'screen-gram-tri-mots', label:'Le tri des mots', icon:'<img src="assets/logos/gram_tri_mots.webp" class="w-full h-full object-contain" />'},
   {id:'gram_mots_liaison', screen:'screen-gram-mots-liaison', label:'Les mots de liaison', icon:'🔗'},
 ];
 
 const GRAM_FONCTIONS_ITEMS = [
-  {id:'gram_sujet', screen:'screen-gram-sujet', label:'Le sujet', icon:'<img src="assets/logos/gram_sujet.png" class="w-full h-full object-contain" />', fn:'renderSujetMenu'},
-  {id:'gram_verbe_fonc', screen:'screen-gram-verbe-fonc', label:'Le verbe', icon:'<img src="assets/logos/gram_verbe_fonc.png" class="w-full h-full object-contain" />', fn:'renderVerbeMenu'},
-  {id:'gram_predicat', screen:'screen-gram-predicat', label:'Le prédicat', icon:'<img src="assets/logos/gram_predicat.png" class="w-full h-full object-contain" />', fn:'renderPredicatMenu'},
-  {id:'gram_cdv_civ', screen:'screen-gram-cdv-civ', label:'Le CDV et le CIV', icon:'<img src="assets/logos/gram_cdv_civ.png" class="w-full h-full object-contain" />', fn:'renderCdvCivMenu'},
-  {id:'gram_cc', screen:'screen-gram-cc', label:'Le complément circonstanciel', icon:'<img src="assets/logos/gram_cc.png" class="w-full h-full object-contain" />', fn:'renderCcMenu'},
-  {id:'gram_attribut', screen:'screen-gram-attribut', label:"L'attribut du sujet", icon:'<img src="assets/logos/gram_attribut.png" class="w-full h-full object-contain" />', fn:''},
-  {id:'gram_agent', screen:'screen-gram-agent', label:"Le complément d'agent", icon:'<img src="assets/logos/gram_agent.png" class="w-full h-full object-contain" />', fn:''},
-  {id:'gram_analyse_phrase', screen:'screen-gram-analyse-phrase', label:'Analyse de phrases', icon:'<img src="assets/logos/gram_analyse_phrase.png" class="w-full h-full object-contain" />', fn:'startAnalyseGlobale'},
+  {id:'gram_sujet', screen:'screen-gram-sujet', label:'Le sujet', icon:'<img src="assets/logos/gram_sujet.webp" class="w-full h-full object-contain" />', fn:'renderSujetMenu'},
+  {id:'gram_verbe_fonc', screen:'screen-gram-verbe-fonc', label:'Le verbe', icon:'<img src="assets/logos/gram_verbe_fonc.webp" class="w-full h-full object-contain" />', fn:'renderVerbeMenu'},
+  {id:'gram_predicat', screen:'screen-gram-predicat', label:'Le prédicat', icon:'<img src="assets/logos/gram_predicat.webp" class="w-full h-full object-contain" />', fn:'renderPredicatMenu'},
+  {id:'gram_cdv_civ', screen:'screen-gram-cdv-civ', label:'Le CDV et le CIV', icon:'<img src="assets/logos/gram_cdv_civ.webp" class="w-full h-full object-contain" />', fn:'renderCdvCivMenu'},
+  {id:'gram_cc', screen:'screen-gram-cc', label:'Le complément circonstanciel', icon:'<img src="assets/logos/gram_cc.webp" class="w-full h-full object-contain" />', fn:'renderCcMenu'},
+  {id:'gram_attribut', screen:'screen-gram-attribut', label:"L'attribut du sujet", icon:'<img src="assets/logos/gram_attribut.webp" class="w-full h-full object-contain" />', fn:''},
+  {id:'gram_agent', screen:'screen-gram-agent', label:"Le complément d'agent", icon:'<img src="assets/logos/gram_agent.webp" class="w-full h-full object-contain" />', fn:''},
+  {id:'gram_analyse_phrase', screen:'screen-gram-analyse-phrase', label:'Analyse de phrases', icon:'<img src="assets/logos/gram_analyse_phrase.webp" class="w-full h-full object-contain" />', fn:'startAnalyseGlobale'},
 ];
 
 const GRAM_TYPES_ITEMS = [
@@ -14746,7 +14775,7 @@ function renderVitesseHoraireMenu(){
   if(!menu) return;
   const locked = getLockedActivities();
   const items = [
-    {id:'grandeur_vitesse_horaire_qcm', screen:'screen-grandeurs-vitesse-horaire-qcm', label:'QCM', icon:'<img src="assets/logos/grandeur_vitesse_horaire_qcm.png" class="w-full h-full object-contain" />', desc:'Résoudre des situations-problèmes de vitesse moyenne', fn:''},
+    {id:'grandeur_vitesse_horaire_qcm', screen:'screen-grandeurs-vitesse-horaire-qcm', label:'QCM', icon:'<img src="assets/logos/grandeur_vitesse_horaire_qcm.webp" class="w-full h-full object-contain" />', desc:'Résoudre des situations-problèmes de vitesse moyenne', fn:''},
   ];
   let html = '';
   items.forEach(t => {
@@ -14872,8 +14901,8 @@ function renderGeoBelgiqueMenu(){
   const locked = getLockedActivities();
   const items = [
     {id:'geo_belgique_provinces', screen:'screen-geo-belgique-provinces', label:'Les provinces de Belgique', icon:'🗺️', desc:'Provinces et chefs-lieux', fn:'renderGeoBelgiqueScreen'},
-    {id:'geo_belgique_hydro', screen:'screen-geo-belgique-hydro', label:"Les cours d'eau de Belgique", icon:'<img src="assets/logos/geo_belgique_hydro.png" class="w-full h-full object-contain" />', desc:'Fleuves et rivières', fn:'renderGeoHydroScreen'},
-    {id:'geo_belgique_communes', screen:'screen-geo-belgique-communes', label:'Les communes de notre région', icon:'<img src="assets/logos/geo_belgique_communes.png" class="w-full h-full object-contain" />', desc:'Province de Liège', fn:'renderGeoCommunesScreen'},
+    {id:'geo_belgique_hydro', screen:'screen-geo-belgique-hydro', label:"Les cours d'eau de Belgique", icon:'<img src="assets/logos/geo_belgique_hydro.webp" class="w-full h-full object-contain" />', desc:'Fleuves et rivières', fn:'renderGeoHydroScreen'},
+    {id:'geo_belgique_communes', screen:'screen-geo-belgique-communes', label:'Les communes de notre région', icon:'<img src="assets/logos/geo_belgique_communes.webp" class="w-full h-full object-contain" />', desc:'Province de Liège', fn:'renderGeoCommunesScreen'},
     {id:'geo_belgique_regions_communautes', screen:'screen-geo-belgique-regions-communautes', label:'Régions et Communautés', icon:'🗺️', desc:'Les 3 régions et les 3 communautés', fn:'renderGeoBelgiqueRegionsCommunautes'},
     {id:'geo_belgique_qcm', screen:'screen-geo-belgique-qcm', label:'La Belgique — QCM', icon:'❓', desc:'50 questions sur la Belgique', fn:'renderGeoBelgiqueQCM'},
   ];
@@ -14908,7 +14937,7 @@ function renderGeoBelgiqueScreen(){
   // Mélanger les étiquettes (Anvers, Namur et Liège existent 2 fois : province et chef-lieu)
   const allTags = shuffle([...GEO_BELGIQUE_DATA.map(d=>d.province), ...GEO_BELGIQUE_DATA.map(d=>d.chef)]);
 
-  const mapSVG = `<img src="carte_politique_belgique.png" alt="Carte des provinces de Belgique numérotées de 1 à 10" style="width:100%;border-radius:6px;border:2px solid var(--border);background:#fff">`;
+  const mapSVG = `<img src="carte_politique_belgique.webp" alt="Carte des provinces de Belgique numérotées de 1 à 10" style="width:100%;border-radius:6px;border:2px solid var(--border);background:#fff">`;
 
   let tableHtml = `<table class="geo-table">
     <thead><tr>
@@ -15310,7 +15339,7 @@ function renderGeoHydroScreen(){
       <p style="font-size:14px;color:var(--muted);margin-bottom:0.5rem">Place chaque cours d'eau dans la bonne case du tableau : fais glisser l'étiquette, ou touche-la puis touche la case. Touche une case remplie pour la vider.</p>
     </div>
     <div class="geo-map-container">
-      <img src="carte_hydrographie_belgique.jpg" alt="Carte des fleuves et rivières de Belgique, numérotés de 1 à 10" style="width:100%;border-radius:6px;border:2px solid var(--border);background:#fff">
+      <img src="carte_hydrographie_belgique.webp" alt="Carte des fleuves et rivières de Belgique, numérotés de 1 à 10" style="width:100%;border-radius:6px;border:2px solid var(--border);background:#fff">
     </div>
     ${tagsHtml}
     ${tableHtml}
@@ -15720,10 +15749,10 @@ function renderOrthographeMenu(){
   const locked = getLockedActivities();
   const items = [
     {id:'ortho_dictees', screen:'screen-ortho-dictees', label:'Dictées', icon:'🎧', desc:'J\'écoute, j\'écris, je me relis et je me corrige', fn:'renderDicteesMenu'},
-    {id:'ortho_homophones', screen:'screen-homophones', label:'Homophones', icon:'<img src="assets/logos/subject_homophones.png" class="w-full h-full object-contain" />', desc:'a/à/as, ou/où, ce/se...', fn:'renderHomophonesMenu'},
-    {id:'ortho_participe_passe', screen:'screen-participe-passe', label:'Participe passé', icon:'<img src="assets/logos/subject_participe_passe.png" class="w-full h-full object-contain" />', desc:'Accord du participe passé…', fn:'renderParticipePasseMenu'},
-    {id:'ortho_pluriels', screen:'screen-ortho-pluriels', label:'Les Pluriels particuliers', icon:'<img src="assets/logos/subject_pluriels.jpg" class="w-full h-full object-contain" />', desc:'Règles, exceptions, et exercices d\'entrainement', fn:null},
-    {id:'ortho_adjectifs_couleur', screen:'screen-ortho-adjectifs-couleur', label:'L\'accord des adjectifs de couleur', icon:'<img src="assets/logos/gram_adjectif.png" class="w-full h-full object-contain" />', desc:'Règles d\'accord, invariabilité et adjectifs composés', fn:null},
+    {id:'ortho_homophones', screen:'screen-homophones', label:'Homophones', icon:'<img src="assets/logos/subject_homophones.webp" class="w-full h-full object-contain" />', desc:'a/à/as, ou/où, ce/se...', fn:'renderHomophonesMenu'},
+    {id:'ortho_participe_passe', screen:'screen-participe-passe', label:'Participe passé', icon:'<img src="assets/logos/subject_participe_passe.webp" class="w-full h-full object-contain" />', desc:'Accord du participe passé…', fn:'renderParticipePasseMenu'},
+    {id:'ortho_pluriels', screen:'screen-ortho-pluriels', label:'Les Pluriels particuliers', icon:'<img src="assets/logos/subject_pluriels.webp" class="w-full h-full object-contain" />', desc:'Règles, exceptions, et exercices d\'entrainement', fn:null},
+    {id:'ortho_adjectifs_couleur', screen:'screen-ortho-adjectifs-couleur', label:'L\'accord des adjectifs de couleur', icon:'<img src="assets/logos/gram_adjectif.webp" class="w-full h-full object-contain" />', desc:'Règles d\'accord, invariabilité et adjectifs composés', fn:null},
   ];
   let html = '';
   items.forEach(t => {
@@ -15793,7 +15822,7 @@ function renderParticipePasseMenu(){
     {id:'ortho_participe_seul', screen:'screen-ortho-participe-passe-seul', label:"PP employé seul", icon:'👤', desc:'Accorder le participe passé employé comme adjectif', fn:null},
     {id:'ortho_participe_etre', screen:'screen-ortho-participe-passe-etre', label:"PP avec Être", icon:'🧑‍🤝‍🧑', desc:'Accorder le participe passé avec le verbe être', fn:null},
     {id:'ortho_participe_avoir', screen:'screen-ortho-participe-passe-avoir', label:"PP avec Avoir", icon:'🎒', desc:'Accorder le participe passé avec le verbe avoir', fn:null},
-    {id:'ortho_participe_cdv', screen:'screen-ortho-participe-passe-detective', label:"Le Détective du participe passé", icon:'<img src="assets/logos/ortho_participe_detective.png" class="w-full h-full object-contain" alt="Le Détective du participe passé" />', desc:'Être ou avoir ? CDV avant, après ou absent ? Choisis le bon accord (97 phrases)', fn:null},
+    {id:'ortho_participe_cdv', screen:'screen-ortho-participe-passe-detective', label:"Le Détective du participe passé", icon:'<img src="assets/logos/ortho_participe_detective.webp" class="w-full h-full object-contain" alt="Le Détective du participe passé" />', desc:'Être ou avoir ? CDV avant, après ou absent ? Choisis le bon accord (97 phrases)', fn:null},
     {id:'ortho_participe_accord', screen:'screen-ortho-accord-participe', label:"L'Accord parfait", icon:'🤝', desc:'Accorder le participe passé avec avoir : 24 phrases et leurs pièges (en, leur, lui)', fn:null},
 
   ];
@@ -16371,42 +16400,42 @@ function renderVocabulaireMenu(){
       id: 'vocabulaire_proverbes',
       filename: 'expressions-proverbes.html',
       label: 'Expressions & Proverbes',
-      icon: '<img src="assets/logos/sub_proverbes.png" class="w-full h-full object-contain" />',
+      icon: '<img src="assets/logos/sub_proverbes.webp" class="w-full h-full object-contain" />',
       desc: 'Associer des proverbes et expressions à leur signification.'
     },
     {
       id: 'vocabulaire_atelier_mots',
       filename: 'vocabulaire-jeu.html',
       label: "L'Atelier des Mots",
-      icon: '<img src="assets/logos/sub_atelier_mots.png" class="w-full h-full object-contain" />',
+      icon: '<img src="assets/logos/sub_atelier_mots.webp" class="w-full h-full object-contain" />',
       desc: 'Manipuler les lettres et enrichir son vocabulaire.'
     },
     {
       id: 'vocabulaire_registres',
       filename: 'registres-tri.html',
       label: 'Le Défi des Registres',
-      icon: '<img src="assets/logos/sub_registres.png" class="w-full h-full object-contain" />',
+      icon: '<img src="assets/logos/sub_registres.webp" class="w-full h-full object-contain" />',
       desc: 'Classer les mots selon leur niveau de langage.'
     },
     {
       id: 'vocabulaire_verbes_ternes',
       filename: 'verbes-ternes.html',
       label: 'Chasse aux Verbes Ternes',
-      icon: '<img src="assets/logos/sub_verbes_ternes.png" class="w-full h-full object-contain" />',
+      icon: '<img src="assets/logos/sub_verbes_ternes.webp" class="w-full h-full object-contain" />',
       desc: 'Remplacer des verbes ternes par des verbes plus précis.'
     },
     {
       id: 'vocabulaire_chasseur_intrus',
       filename: 'chasseur-intrus.html',
       label: "Le Chasseur d'Intrus",
-      icon: '<img src="assets/logos/sub_chasseur_intrus.png" class="w-full h-full object-contain" />',
+      icon: '<img src="assets/logos/sub_chasseur_intrus.webp" class="w-full h-full object-contain" />',
       desc: 'Trouver le mot intrus dans des listes de synonymes.'
     },
     {
       id: 'vocabulaire_fabrique_mots',
       filename: 'fabrique-mots.html',
       label: 'La Fabrique de Mots',
-      icon: '<img src="assets/logos/sub_fabrique_mots.png" class="w-full h-full object-contain" />',
+      icon: '<img src="assets/logos/sub_fabrique_mots.webp" class="w-full h-full object-contain" />',
       desc: 'Construire des mots en associant des préfixes et suffixes.'
     },
     {
@@ -19810,7 +19839,7 @@ function renderFicheLoup(){
     <div class="fiche-container">
       <button class="fiche-print-btn" onclick="window.print()">🖨️ Imprimer cette fiche</button>
       <div class="fiche-hero" style="background:linear-gradient(135deg,#1a1a1a,#3d3d3d);">
-        <img src="https://jeremylejoly.github.io/plateforme-scolaire/loup.jpg" alt="Loup" onerror="this.style.display='none'" style="width:100%;height:220px;object-fit:cover;opacity:0.75;display:block;">
+        <img src="https://jeremylejoly.github.io/plateforme-scolaire/loup.webp" alt="Loup" onerror="this.style.display='none'" style="width:100%;height:220px;object-fit:cover;opacity:0.75;display:block;">
         <div class="fiche-hero-title">
           <h1>Le loup</h1>
           <div class="fiche-hero-stats">
@@ -20359,17 +20388,17 @@ function renderJeuxMenu(){
     {id:'jeu_mots_croises', screen:'screen-jeu-mots-croises', label:'Mots croisés', icon:'🔠', desc:'20 grilles thématiques pour s\'amuser et enrichir son vocabulaire !', fn:''},
     {id:'jeu_mots_caches', screen:'screen-jeu-mots-caches', label:'Mots cachés', icon:'🔎', desc:'Retrouve les mots cachés dans la grille ! 4 niveaux de difficulté.', fn:''},
     {id:'jeu_sudoku', screen:'screen-jeu-sudoku', label:'Sudoku', icon:'🔢', desc:'Remplis la grille avec logique ! 4 niveaux de difficulté.', fn:''},
-    {id:'jeu_flux', screen:'screen-jeu-flux', label:'Flux Connecté', icon:'<img src="assets/logos/jeu_flux.png" class="w-full h-full object-contain" alt="Flux Connecté" />', desc:'Relie les flux colorés et recouvre 100% de la grille ! 30 niveaux de réflexion.', fn:''},
-    {id:'jeu_code_secret', screen:'screen-jeu-code-secret', label:'Le Code Secret', icon:'<img src="assets/logos/jeu_code_secret.png" class="w-full h-full object-contain" alt="Le Code Secret" />', desc:'Décrypte la combinaison secrète de couleurs par logique et déduction !', fn:''},
-    {id:'jeu_pendu', screen:'screen-jeu-pendu', label:'Le Pendu des Mots', icon:'<img src="assets/logos/jeu_pendu.png" class="w-full h-full object-contain" alt="Le Pendu des Mots" />', desc:'Devine le mot caché avant que les 6 ballons ne s\'envolent ! 10 thèmes de vocabulaire.', fn:''},
-    {id:'jeu_pentomino', screen:'screen-jeu-pentomino', label:'Les Pentominos', icon:'<img src="assets/logos/jeu_pentomino.png" class="w-full h-full object-contain" alt="Les Pentominos" />', desc:'Assemble les 12 formes géométriques pour recouvrir parfaitement le rectangle ! 4 niveaux de défi.', fn:''},
-    {id:'jeu_nonogram', screen:'screen-jeu-nonogram', label:'Le Nonogram', icon:'<img src="assets/logos/jeu_nonogram.png" class="w-full h-full object-contain" alt="Le Nonogram" />', desc:'Révèle les dessins cachés en observant les indices chiffrés !', fn:''},
-    {id:'jeu_2048', screen:'screen-jeu-2048', label:'2048', icon:'<img src="assets/logos/jeu_2048.png" class="w-full h-full object-contain" alt="2048" />', desc:'Fusionne les nombres identiques jusqu\'à atteindre la tuile 2048 !', fn:''},
-    {id:'jeu_motus', screen:'screen-jeu-motus', label:'Motus', icon:'<img src="assets/logos/jeu_motus.png" class="w-full h-full object-contain" alt="Motus" />', desc:'Devine le mot secret lettre par lettre ! 3 niveaux de difficulté.', fn:''},
-    {id:'jeu_tangram', screen:'screen-jeu-tangram', label:'Le Tangram', icon:'<img src="assets/logos/jeu_tangram.png" class="w-full h-full object-contain" alt="Le Tangram" />', desc:'Assemble les 7 tans pour reconstituer les silhouettes géométriques ! 3 niveaux de défi.', fn:''},
-    {id:'jeu_demineur', screen:'screen-jeu-demineur', label:'Le Démineur', icon:'<img src="assets/logos/jeu_demineur.png" class="w-full h-full object-contain" alt="Le Démineur" />', desc:'Trouve toutes les mines grâce à la logique et aux indices chiffrés ! 3 niveaux de difficulté.', fn:''},
-    {id:'jeu_pipopipette', screen:'screen-jeu-pipopipette', label:'La Pipopipette', icon:'<img src="assets/logos/jeu_pipopipette.png" class="w-full h-full object-contain" alt="La Pipopipette" />', desc:'Relie les points, ferme les carrés et gagne un tour bonus ! Solo vs IA ou 2 joueurs.', fn:''},
-    {id:'jeu_echecs', screen:'screen-jeu-echecs', label:'Les Échecs', icon:'<img src="assets/logos/jeu_echecs.png" class="w-full h-full object-contain" alt="Les Échecs" />', desc:'Le grand classique de la stratégie ! Affronte l\'ordinateur (3 niveaux) ou joue à 2.', fn:''},
+    {id:'jeu_flux', screen:'screen-jeu-flux', label:'Flux Connecté', icon:'<img src="assets/logos/jeu_flux.webp" class="w-full h-full object-contain" alt="Flux Connecté" />', desc:'Relie les flux colorés et recouvre 100% de la grille ! 30 niveaux de réflexion.', fn:''},
+    {id:'jeu_code_secret', screen:'screen-jeu-code-secret', label:'Le Code Secret', icon:'<img src="assets/logos/jeu_code_secret.webp" class="w-full h-full object-contain" alt="Le Code Secret" />', desc:'Décrypte la combinaison secrète de couleurs par logique et déduction !', fn:''},
+    {id:'jeu_pendu', screen:'screen-jeu-pendu', label:'Le Pendu des Mots', icon:'<img src="assets/logos/jeu_pendu.webp" class="w-full h-full object-contain" alt="Le Pendu des Mots" />', desc:'Devine le mot caché avant que les 6 ballons ne s\'envolent ! 10 thèmes de vocabulaire.', fn:''},
+    {id:'jeu_pentomino', screen:'screen-jeu-pentomino', label:'Les Pentominos', icon:'<img src="assets/logos/jeu_pentomino.webp" class="w-full h-full object-contain" alt="Les Pentominos" />', desc:'Assemble les 12 formes géométriques pour recouvrir parfaitement le rectangle ! 4 niveaux de défi.', fn:''},
+    {id:'jeu_nonogram', screen:'screen-jeu-nonogram', label:'Le Nonogram', icon:'<img src="assets/logos/jeu_nonogram.webp" class="w-full h-full object-contain" alt="Le Nonogram" />', desc:'Révèle les dessins cachés en observant les indices chiffrés !', fn:''},
+    {id:'jeu_2048', screen:'screen-jeu-2048', label:'2048', icon:'<img src="assets/logos/jeu_2048.webp" class="w-full h-full object-contain" alt="2048" />', desc:'Fusionne les nombres identiques jusqu\'à atteindre la tuile 2048 !', fn:''},
+    {id:'jeu_motus', screen:'screen-jeu-motus', label:'Motus', icon:'<img src="assets/logos/jeu_motus.webp" class="w-full h-full object-contain" alt="Motus" />', desc:'Devine le mot secret lettre par lettre ! 3 niveaux de difficulté.', fn:''},
+    {id:'jeu_tangram', screen:'screen-jeu-tangram', label:'Le Tangram', icon:'<img src="assets/logos/jeu_tangram.webp" class="w-full h-full object-contain" alt="Le Tangram" />', desc:'Assemble les 7 tans pour reconstituer les silhouettes géométriques ! 3 niveaux de défi.', fn:''},
+    {id:'jeu_demineur', screen:'screen-jeu-demineur', label:'Le Démineur', icon:'<img src="assets/logos/jeu_demineur.webp" class="w-full h-full object-contain" alt="Le Démineur" />', desc:'Trouve toutes les mines grâce à la logique et aux indices chiffrés ! 3 niveaux de difficulté.', fn:''},
+    {id:'jeu_pipopipette', screen:'screen-jeu-pipopipette', label:'La Pipopipette', icon:'<img src="assets/logos/jeu_pipopipette.webp" class="w-full h-full object-contain" alt="La Pipopipette" />', desc:'Relie les points, ferme les carrés et gagne un tour bonus ! Solo vs IA ou 2 joueurs.', fn:''},
+    {id:'jeu_echecs', screen:'screen-jeu-echecs', label:'Les Échecs', icon:'<img src="assets/logos/jeu_echecs.webp" class="w-full h-full object-contain" alt="Les Échecs" />', desc:'Le grand classique de la stratégie ! Affronte l\'ordinateur (3 niveaux) ou joue à 2.', fn:''},
     {id:'kim_histoire', screen:'screen-jeu-kim', label:'L\'Œil du Temps (Jeu de Kim)', icon:'<img src="assets/logos/jeu_kim.png" class="w-full h-full object-contain" alt="L\'Œil du Temps" />', desc:'Mémorise les scènes des 5 époques de l\'Histoire et relève les défis d\'observation ! 10 scènes & 90 questions.', fn:''},
   ];
 
@@ -22557,9 +22586,9 @@ function renderPrehistoireMenu(){
   const locked = getLockedActivities();
 
   const items = [
-    {id:'qvgdm_prehistoire', screen:'screen-qvgdm-prehistoire', label:'Qui veut gagner des millions ?', icon:'<img src="assets/logos/qvgdm_prehistoire.png" class="w-full h-full object-contain" />', desc:'15 questions sur la Préhistoire', fn:'renderQVGDMPrehistoire'},
-    {id:'prehistoire_assoc', screen:'screen-prehistoire-assoc', label:'Termes et définitions', icon:'<img src="assets/logos/prehistoire_assoc.png" class="w-full h-full object-contain" />', desc:'Associe chaque terme à sa définition', fn:'renderPrehistoireAssoc'},
-    {id:'prehistoire_doc', screen:'screen-prehistoire-doc', label:'Un campement du Paléolithique', icon:'<img src="assets/logos/prehistoire_doc.png" class="w-full h-full object-contain" />', desc:'Lis le document et réponds aux questions', fn:'renderPrehistoireDoc'},
+    {id:'qvgdm_prehistoire', screen:'screen-qvgdm-prehistoire', label:'Qui veut gagner des millions ?', icon:'<img src="assets/logos/qvgdm_prehistoire.webp" class="w-full h-full object-contain" />', desc:'15 questions sur la Préhistoire', fn:'renderQVGDMPrehistoire'},
+    {id:'prehistoire_assoc', screen:'screen-prehistoire-assoc', label:'Termes et définitions', icon:'<img src="assets/logos/prehistoire_assoc.webp" class="w-full h-full object-contain" />', desc:'Associe chaque terme à sa définition', fn:'renderPrehistoireAssoc'},
+    {id:'prehistoire_doc', screen:'screen-prehistoire-doc', label:'Un campement du Paléolithique', icon:'<img src="assets/logos/prehistoire_doc.webp" class="w-full h-full object-contain" />', desc:'Lis le document et réponds aux questions', fn:'renderPrehistoireDoc'},
   ];
 
   let html = '';
@@ -23002,11 +23031,11 @@ function renderMoyenAgeMenu(){
   const locked = getLockedActivities();
   const isTeacher = state.role === 'teacher';
   const items = [
-    {id:'qvgdm_moyen_age',        screen:'screen-qvgdm-moyen-age',  label:'Qui veut gagner des millions ?', icon:'<img src="assets/logos/qvgdm_moyen_age.png" class="w-full h-full object-contain" />', desc:'15 questions sur le Moyen Âge',      fn:'renderQVGDMMoyenAge'},
-    {id:'moyen_age_assoc',        screen:'screen-moyen-age-assoc',   label:'Termes et définitions',          icon:'<img src="assets/logos/moyen_age_assoc.png" class="w-full h-full object-contain" />', desc:'Associe chaque terme à sa définition', fn:'renderMoyenAgeAssoc'},
-    {id:'moyen_age_doc',          screen:'screen-moyen-age-doc',     label:'La Peste Noire',                 icon:'<img src="assets/logos/moyen_age_doc.png" class="w-full h-full object-contain" />', desc:"Analyse d'un document historique",    fn:'renderMoyenAgeDoc'},
-    {id:'moyen_age_texte_trous',  filename:'moyen_age_texte_trous.html', label:'Texte lacunaire',           icon:'<img src="assets/logos/moyen_age_texte_trous.png" class="w-full h-full object-contain" />', desc:'Complète les textes avec les bons mots'},
-    {id:'moyen_age_vocabulaire',  filename:'moyen_age_vocabulaire.html', label:'Je relie',                   icon:'<img src="assets/logos/moyen_age_vocabulaire.png" class="w-full h-full object-contain" />', desc:'Associe chaque mot à sa définition (3 séries)'},
+    {id:'qvgdm_moyen_age',        screen:'screen-qvgdm-moyen-age',  label:'Qui veut gagner des millions ?', icon:'<img src="assets/logos/qvgdm_moyen_age.webp" class="w-full h-full object-contain" />', desc:'15 questions sur le Moyen Âge',      fn:'renderQVGDMMoyenAge'},
+    {id:'moyen_age_assoc',        screen:'screen-moyen-age-assoc',   label:'Termes et définitions',          icon:'<img src="assets/logos/moyen_age_assoc.webp" class="w-full h-full object-contain" />', desc:'Associe chaque terme à sa définition', fn:'renderMoyenAgeAssoc'},
+    {id:'moyen_age_doc',          screen:'screen-moyen-age-doc',     label:'La Peste Noire',                 icon:'<img src="assets/logos/moyen_age_doc.webp" class="w-full h-full object-contain" />', desc:"Analyse d'un document historique",    fn:'renderMoyenAgeDoc'},
+    {id:'moyen_age_texte_trous',  filename:'moyen_age_texte_trous.html', label:'Texte lacunaire',           icon:'<img src="assets/logos/moyen_age_texte_trous.webp" class="w-full h-full object-contain" />', desc:'Complète les textes avec les bons mots'},
+    {id:'moyen_age_vocabulaire',  filename:'moyen_age_vocabulaire.html', label:'Je relie',                   icon:'<img src="assets/logos/moyen_age_vocabulaire.webp" class="w-full h-full object-contain" />', desc:'Associe chaque mot à sa définition (3 séries)'},
   ];
   let html = '';
   items.forEach(t => {
@@ -23751,9 +23780,9 @@ function renderAntiquiteMenu(){
   const locked = getLockedActivities();
   const isTeacher = state.role === 'teacher';
   const items = [
-    {id:'qvgdm_antiquite', screen:'screen-qvgdm-antiquite', label:'Qui veut gagner des millions ?', icon:'<img src="assets/logos/qvgdm_antiquite.png" class="w-full h-full object-contain" />', desc:'15 questions sur l\'Antiquité — Les Gaulois et les Romains', fn:'renderQVGDMAntiquite'},
-    {id:'antiquite_assoc', screen:'screen-antiquite-assoc', label:'Termes et définitions', icon:'<img src="assets/logos/antiquite_assoc.png" class="w-full h-full object-contain" />', desc:'Associe chaque terme à sa définition', fn:'renderAntiquiteAssoc'},
-    {id:'antiquite_doc', screen:'screen-antiquite-doc', label:'Document historique', icon:'<img src="assets/logos/antiquite_doc.png" class="w-full h-full object-contain" />', desc:'Lis le document et réponds aux questions', fn:'renderAntiquiteDoc'},
+    {id:'qvgdm_antiquite', screen:'screen-qvgdm-antiquite', label:'Qui veut gagner des millions ?', icon:'<img src="assets/logos/qvgdm_antiquite.webp" class="w-full h-full object-contain" />', desc:'15 questions sur l\'Antiquité — Les Gaulois et les Romains', fn:'renderQVGDMAntiquite'},
+    {id:'antiquite_assoc', screen:'screen-antiquite-assoc', label:'Termes et définitions', icon:'<img src="assets/logos/antiquite_assoc.webp" class="w-full h-full object-contain" />', desc:'Associe chaque terme à sa définition', fn:'renderAntiquiteAssoc'},
+    {id:'antiquite_doc', screen:'screen-antiquite-doc', label:'Document historique', icon:'<img src="assets/logos/antiquite_doc.webp" class="w-full h-full object-contain" />', desc:'Lis le document et réponds aux questions', fn:'renderAntiquiteDoc'},
   ];
   let html = '';
   items.forEach(t => {
@@ -24556,9 +24585,9 @@ function renderExpressionEcriteMenu(){
   const locked = getLockedActivities();
 
   const items = [
-    {id:'connecteurs', screen:'screen-connecteurs', label:'Connecteurs logiques', icon:'<img src="assets/logos/subject_connecteurs.png" class="w-full h-full object-contain" />', desc:'Choisis le bon connecteur parmi 3-4 propositions — 10 phrases tirées aléatoirement', fn:'renderConnecteurs'},
-    {id:'synonymes', screen:'screen-synonymes', label:'Synonymes', icon:'<img src="assets/logos/subject_synonymes.png" class="w-full h-full object-contain" />', desc:'Trouve le mot qui a le même sens — 10 phrases tirées aléatoirement', fn:'renderSynonymes'},
-    {id:'antonymes', screen:'screen-antonymes', label:'Antonymes', icon:'<img src="assets/logos/subject_antonymes.png" class="w-full h-full object-contain" />', desc:'Trouve le mot qui a le sens contraire — 10 phrases tirées aléatoirement', fn:'renderAntonymes'},
+    {id:'connecteurs', screen:'screen-connecteurs', label:'Connecteurs logiques', icon:'<img src="assets/logos/subject_connecteurs.webp" class="w-full h-full object-contain" />', desc:'Choisis le bon connecteur parmi 3-4 propositions — 10 phrases tirées aléatoirement', fn:'renderConnecteurs'},
+    {id:'synonymes', screen:'screen-synonymes', label:'Synonymes', icon:'<img src="assets/logos/subject_synonymes.webp" class="w-full h-full object-contain" />', desc:'Trouve le mot qui a le même sens — 10 phrases tirées aléatoirement', fn:'renderSynonymes'},
+    {id:'antonymes', screen:'screen-antonymes', label:'Antonymes', icon:'<img src="assets/logos/subject_antonymes.webp" class="w-full h-full object-contain" />', desc:'Trouve le mot qui a le sens contraire — 10 phrases tirées aléatoirement', fn:'renderAntonymes'},
     {
       id: 'lecture_substituts',
       screen: 'screen-lecture-substituts',
@@ -24892,8 +24921,8 @@ function renderTraitementDonneesMenu(){
   const locked = getLockedActivities();
   const items = [
     {id:'td_tableau', screen:'screen-td-tableau', label:'Lire un tableau', icon:'📋', desc:'Tableaux simples et à double entrée — questions de lecture et de calcul', fn:'renderTDTableau'},
-    {id:'td_graphique', screen:'screen-td-graphique', label:'Lire un graphique', icon:'<img src="assets/logos/td_graphique.png" class="w-full h-full object-contain" />', desc:'Diagrammes à barres et graphiques linéaires — lire, comparer, interpréter', fn:'renderTDGraphique'},
-    {id:'td_la_moyenne_menu', screen:'screen-td-la-moyenne-menu', label:'La moyenne', icon:'<img src="assets/logos/td_la_moyenne.png" class="w-full h-full object-contain" />', desc:'Calculer, estimer, interpréter la moyenne et résoudre des QCM interactifs', fn:'renderLaMoyenneMenu'},
+    {id:'td_graphique', screen:'screen-td-graphique', label:'Lire un graphique', icon:'<img src="assets/logos/td_graphique.webp" class="w-full h-full object-contain" />', desc:'Diagrammes à barres et graphiques linéaires — lire, comparer, interpréter', fn:'renderTDGraphique'},
+    {id:'td_la_moyenne_menu', screen:'screen-td-la-moyenne-menu', label:'La moyenne', icon:'<img src="assets/logos/td_la_moyenne.webp" class="w-full h-full object-contain" />', desc:'Calculer, estimer, interpréter la moyenne et résoudre des QCM interactifs', fn:'renderLaMoyenneMenu'},
     {id:'td_arbre_dichotomique', screen:'screen-qcm-arbre-feuilles', label:"L'arbre dichotomique", icon:'🌳', desc:"Classer et identifier des feuilles à l'aide d'un arbre dichotomique", fn:'renderArbreDichotomique'},
     {id:'td_quelle_question', screen:'screen-quelle-question', label:'Choisir la bonne question', icon:'❓', desc:'Sélectionner la question mathématique pertinente pour un énoncé de problème', fn:'renderQuelleQuestion'},
     {id:'td_donnees_circulaires', screen:'screen-td-donnees-circulaires', label:'Le décodeur de camemberts', icon:'🍕', desc:'Associer des tableaux et des diagrammes circulaires', fn:'renderDonneesCirculaires'},
@@ -25300,7 +25329,7 @@ function renderLaMoyenneMenu(){
   if(!menu) return;
   const isTeacher = state.role === 'teacher';
   const items = [
-    {id:'td_moyenne_qcm', screen:'screen-td-moyenne-qcm', label:'QCM', icon:'<img src="assets/logos/td_moyenne_qcm.png" class="w-full h-full object-contain" />', desc:'Répondre à des QCM interactifs avec graphiques et rétroactions', fn:'renderTDMoyenneQCM'},
+    {id:'td_moyenne_qcm', screen:'screen-td-moyenne-qcm', label:'QCM', icon:'<img src="assets/logos/td_moyenne_qcm.webp" class="w-full h-full object-contain" />', desc:'Répondre à des QCM interactifs avec graphiques et rétroactions', fn:'renderTDMoyenneQCM'},
     {id:'td_moyenne', screen:'screen-td-moyenne', label:'Moyenne et étendue', icon:'🔢', desc:'Calculer la moyenne et l\'étendue d\'une série de données (exercice classique)', fn:'renderTDMoyenne'},
   ];
   let html = '';
@@ -26079,9 +26108,9 @@ function renderGrandsNombresMenu(){
   const isTeacher = state.role === 'teacher';
   const locked = getLockedActivities();
   const items = [
-    {id:'num_lire', screen:'screen-num-lire', label:'Lire un nombre', icon:'<img src="assets/logos/num_lire.png" class="w-full h-full object-contain" />', desc:'10 questions — Choisir la bonne lecture d\'un nombre en chiffres', fn:'renderNumLire'},
-    {id:'num_ecrire', screen:'screen-num-ecrire', label:'Écrire un nombre', icon:'<img src="assets/logos/num_ecrire.png" class="w-full h-full object-contain" />', desc:'10 questions — Choisir la bonne écriture en chiffres d\'un nombre en lettres', fn:'renderNumEcrire'},
-    {id:'num_decomposer', screen:'screen-num-decomposer', label:'Décomposer un nombre', icon:'<img src="assets/logos/num_decomposer.png" class="w-full h-full object-contain" />', desc:'10 questions — Choisir la bonne décomposition d\'un nombre', fn:'renderNumDecomposer'},
+    {id:'num_lire', screen:'screen-num-lire', label:'Lire un nombre', icon:'<img src="assets/logos/num_lire.webp" class="w-full h-full object-contain" />', desc:'10 questions — Choisir la bonne lecture d\'un nombre en chiffres', fn:'renderNumLire'},
+    {id:'num_ecrire', screen:'screen-num-ecrire', label:'Écrire un nombre', icon:'<img src="assets/logos/num_ecrire.webp" class="w-full h-full object-contain" />', desc:'10 questions — Choisir la bonne écriture en chiffres d\'un nombre en lettres', fn:'renderNumEcrire'},
+    {id:'num_decomposer', screen:'screen-num-decomposer', label:'Décomposer un nombre', icon:'<img src="assets/logos/num_decomposer.webp" class="w-full h-full object-contain" />', desc:'10 questions — Choisir la bonne décomposition d\'un nombre', fn:'renderNumDecomposer'},
     {id:'num_classer', screen:'screen-num-classer', label:'Classer des nombres', icon:'<img src="assets/logos/num_classer.png" class="w-full h-full object-contain" />', desc:'2 questions — Glisse les nombres dans le bon ordre (croissant et décroissant)', fn:'renderNumClasser'},
   ];
   let html = '<div class="sub-subjects-grid">';
@@ -26821,14 +26850,14 @@ function renderNumDecimauxMenu(){
   const isTeacher = state.role === 'teacher';
   const locked = getLockedActivities();
   const items = [
-    {id:'num_decimaux_abaque', screen:'screen-num-abaque-decimaux', label:'L\'abaque des décimaux', icon:'<img src="assets/logos/num_decimaux_abaque.png" class="w-full h-full object-contain" />', desc:'5 questions — Place chaque chiffre dans la bonne colonne de l\'abaque.', fn:'renderAbaqueDecimaux'},
-    {id:'num_decimaux_devinettes', screen:'screen-num-devinettes-decimaux', label:'Devinettes décimales', icon:'<img src="assets/logos/num_decimaux_devinettes.png" class="w-full h-full object-contain" />', desc:'5 questions — Retrouve le bon nombre décimal à partir d\'indices.', fn:'renderDevinettesDecimaux'},
-    {id:'num_decimaux_relier', screen:'screen-num-relier-decimaux', label:'Valeur d\'un chiffre', icon:'<img src="assets/logos/num_decimaux_relier.png" class="w-full h-full object-contain" />', desc:'5 questions — Associe chaque phrase au bon nombre décimal.', fn:'renderRelierDecimaux'},
-    {id:'num_decimaux_ecriture', screen:'screen-num-decimaux-ecriture', label:'Écrire en chiffres', icon:'<img src="assets/logos/num_decimaux_ecriture.png" class="w-full h-full object-contain" />', desc:'5 questions — Écris en chiffres les nombres dictés en toutes lettres.', fn:'renderDecimauxEcriture'},
+    {id:'num_decimaux_abaque', screen:'screen-num-abaque-decimaux', label:'L\'abaque des décimaux', icon:'<img src="assets/logos/num_decimaux_abaque.webp" class="w-full h-full object-contain" />', desc:'5 questions — Place chaque chiffre dans la bonne colonne de l\'abaque.', fn:'renderAbaqueDecimaux'},
+    {id:'num_decimaux_devinettes', screen:'screen-num-devinettes-decimaux', label:'Devinettes décimales', icon:'<img src="assets/logos/num_decimaux_devinettes.webp" class="w-full h-full object-contain" />', desc:'5 questions — Retrouve le bon nombre décimal à partir d\'indices.', fn:'renderDevinettesDecimaux'},
+    {id:'num_decimaux_relier', screen:'screen-num-relier-decimaux', label:'Valeur d\'un chiffre', icon:'<img src="assets/logos/num_decimaux_relier.webp" class="w-full h-full object-contain" />', desc:'5 questions — Associe chaque phrase au bon nombre décimal.', fn:'renderRelierDecimaux'},
+    {id:'num_decimaux_ecriture', screen:'screen-num-decimaux-ecriture', label:'Écrire en chiffres', icon:'<img src="assets/logos/num_decimaux_ecriture.webp" class="w-full h-full object-contain" />', desc:'5 questions — Écris en chiffres les nombres dictés en toutes lettres.', fn:'renderDecimauxEcriture'},
     {id:'num_decimaux_droite', screen:'screen-num-decimaux-droite', label:'Droites numériques', icon:'📏', desc:'5 questions — Complète les graduations manquantes sur la droite.', fn:'renderDecimauxDroite'},
-    {id:'num_decimaux_le_bon_nombre', screen:'screen-num-decimaux-le-bon-nombre', label:'Le bon nombre', icon:'<img src="assets/logos/num_decimaux_le_bon_nombre.png" class="w-full h-full object-contain" />', desc:'Défis — Forme le nombre demandé sous contraintes de position.', fn:'renderDecimauxLeBonNombre'},
-    {id:'num_decimaux_entre', screen:'screen-num-decimaux-entre', label:'Entre deux nombres', icon:'<img src="assets/logos/num_decimaux_entre.png" class="w-full h-full object-contain" />', desc:'5 questions — Indique si le nombre peut se placer dans l\'intervalle.', fn:'renderDecimauxEntre'},
-    {id:'num_decimaux_op_devinettes', screen:'screen-num-decimaux-op-devinettes', label:'Opérations devinettes', icon:'<img src="assets/logos/num_decimaux_op_devinettes.png" class="w-full h-full object-contain" />', desc:'5 questions — Ajoute ou retire des dixièmes, centièmes, millièmes.', fn:'renderDecimauxOpDevinettes'},
+    {id:'num_decimaux_le_bon_nombre', screen:'screen-num-decimaux-le-bon-nombre', label:'Le bon nombre', icon:'<img src="assets/logos/num_decimaux_le_bon_nombre.webp" class="w-full h-full object-contain" />', desc:'Défis — Forme le nombre demandé sous contraintes de position.', fn:'renderDecimauxLeBonNombre'},
+    {id:'num_decimaux_entre', screen:'screen-num-decimaux-entre', label:'Entre deux nombres', icon:'<img src="assets/logos/num_decimaux_entre.webp" class="w-full h-full object-contain" />', desc:'5 questions — Indique si le nombre peut se placer dans l\'intervalle.', fn:'renderDecimauxEntre'},
+    {id:'num_decimaux_op_devinettes', screen:'screen-num-decimaux-op-devinettes', label:'Opérations devinettes', icon:'<img src="assets/logos/num_decimaux_op_devinettes.webp" class="w-full h-full object-contain" />', desc:'5 questions — Ajoute ou retire des dixièmes, centièmes, millièmes.', fn:'renderDecimauxOpDevinettes'},
     {id:'num_decimaux_arrondir', screen:'screen-num-decimaux-arrondir', label:'Arrondir les nombres', icon:'<img src="assets/logos/num_decimaux_arrondir.png" class="w-full h-full object-contain" />', desc:'10 questions — Estimer et arrondir des nombres décimaux à l\'aide d\'une droite graduée interactive.', fn:'renderDecimauxArrondir'},
   ];
   let html = '<div class="sub-subjects-grid">';
@@ -28922,9 +28951,9 @@ function renderGrandeurDurees(){
   if(!menu) return;
   const isTeacher = state.role === 'teacher';
   const items = [
-    {id:'grandeur_durees_conversions', type:'action', action:'conversions', label:'Conversions', icon:'<img src="assets/logos/sub_durees_conversions.png" class="w-full h-full object-contain" alt="Conversions" />', desc:'10 conversions aléatoires · Recommençable'},
-    {id:'grandeur_durees_entre', type:'action', action:'duree_entre', label:'Durée entre 2 heures', icon:'<img src="assets/logos/sub_durees_duree.png" class="w-full h-full object-contain" alt="Durée entre 2 heures" />', desc:'5 calculs · 2 tentatives max · Recommençable'},
-    {id:'grandeur_durees_heure_secondes', type:'screen', screen:'screen-grandeurs-durees-heure-secondes', label:'Quelle heure est-il ? (avec secondes)', icon:'<img src="assets/logos/sub_durees_heure.png" class="w-full h-full object-contain" alt="Quelle heure est-il ?" />', desc:"Lis l'heure exacte à l'arrêt du train en gare · 3 vies · Recommençable", fn:''},
+    {id:'grandeur_durees_conversions', type:'action', action:'conversions', label:'Conversions', icon:'<img src="assets/logos/sub_durees_conversions.webp" class="w-full h-full object-contain" alt="Conversions" />', desc:'10 conversions aléatoires · Recommençable'},
+    {id:'grandeur_durees_entre', type:'action', action:'duree_entre', label:'Durée entre 2 heures', icon:'<img src="assets/logos/sub_durees_duree.webp" class="w-full h-full object-contain" alt="Durée entre 2 heures" />', desc:'5 calculs · 2 tentatives max · Recommençable'},
+    {id:'grandeur_durees_heure_secondes', type:'screen', screen:'screen-grandeurs-durees-heure-secondes', label:'Quelle heure est-il ? (avec secondes)', icon:'<img src="assets/logos/sub_durees_heure.webp" class="w-full h-full object-contain" alt="Quelle heure est-il ?" />', desc:"Lis l'heure exacte à l'arrêt du train en gare · 3 vies · Recommençable", fn:''},
     {id:'grandeur_durees_situations', type:'screen', screen:'screen-grandeur-durees-situations', label:'Le Labo des Durées', icon:'⏱️', desc:'10 situations-problèmes concrètes de calcul de durées et d\'horaires.', fn:''}
   ];
   let html = '<div class="sub-subjects-grid">';
@@ -29780,10 +29809,10 @@ function renderSciCirculatoireMenu(){
   const locked = getLockedActivities();
   const items = [
     {id:'sci_coeur', screen:'screen-sci-coeur', label:'Le schéma du cœur', icon:'❤️', desc:'Légender le schéma du cœur', fn:'renderSciCoeurScreen'},
-    {id:'sci_trajet_sang', screen:'screen-sci-trajet-sang', label:'Le trajet du sang', icon:'<img src="assets/logos/sci_trajet_sang.png" class="w-full h-full object-contain" />', desc:'Texte lacunaire — glisse les mots au bon endroit', fn:'renderSciTrajetSangScreen'},
+    {id:'sci_trajet_sang', screen:'screen-sci-trajet-sang', label:'Le trajet du sang', icon:'<img src="assets/logos/sci_trajet_sang.webp" class="w-full h-full object-contain" />', desc:'Texte lacunaire — glisse les mots au bon endroit', fn:'renderSciTrajetSangScreen'},
     {id:'sci_circulatoire_qcm', screen:'screen-sci-circulatoire-qcm', label:'QCM — L\'appareil circulatoire', icon:'❓', desc:'10 questions aléatoires parmi 30', fn:'renderSciCirculatoireQCM'},
-    {id:'sci_circulatoire_assoc', screen:'screen-sci-circulatoire-assoc', label:'Termes et définitions', icon:'<img src="assets/logos/sci_circulatoire_assoc.png" class="w-full h-full object-contain" />', desc:'Associe chaque terme à sa définition', fn:'renderSciCirculatoireAssoc'},
-    {id:'sci_circ_ordre', screen:'screen-sci-circ-ordre', label:"Remettre de l'ordre", icon:'<img src="assets/logos/sci_circ_ordre.png" class="w-full h-full object-contain" />', desc:"Remets les trajets du sang dans le bon ordre", fn:'renderSciCircOrdre'},
+    {id:'sci_circulatoire_assoc', screen:'screen-sci-circulatoire-assoc', label:'Termes et définitions', icon:'<img src="assets/logos/sci_circulatoire_assoc.webp" class="w-full h-full object-contain" />', desc:'Associe chaque terme à sa définition', fn:'renderSciCirculatoireAssoc'},
+    {id:'sci_circ_ordre', screen:'screen-sci-circ-ordre', label:"Remettre de l'ordre", icon:'<img src="assets/logos/sci_circ_ordre.webp" class="w-full h-full object-contain" />', desc:"Remets les trajets du sang dans le bon ordre", fn:'renderSciCircOrdre'},
   ];
   let html = '';
   items.forEach(t => {
@@ -29879,7 +29908,7 @@ function renderSciCoeurScreen(){
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;align-items:start;">
       <div>
-        <img src="schema_vierge_coeur.png" alt="Schéma du cœur" style="width:100%;max-width:520px;display:block;margin:0 auto;border-radius:6px;border:2px solid var(--border);">
+        <img src="schema_vierge_coeur.webp" alt="Schéma du cœur" style="width:100%;max-width:520px;display:block;margin:0 auto;border-radius:6px;border:2px solid var(--border);">
         ${tagsHtml}
       </div>
       <div>
@@ -31649,11 +31678,11 @@ function renderFractionsMenu(){
   const locked = getLockedActivities();
   const isTeacher = state.role === 'teacher';
   const items = [
-    {id:'num_fractions_simples', screen:'screen-fractions-simples', label:'Les fractions simples', icon:'<img src="assets/logos/num_fractions_simples.png" class="w-full h-full object-contain" />', desc:'10 figures — identifie la fraction exacte', fn:'renderFractionsSimples'},
-    {id:'num_fractions_complexes', screen:'screen-fractions-figures', label:'Les fractions complexes', icon:'<img src="assets/logos/num_fractions_complexes.png" class="w-full h-full object-contain" />', desc:'10 figures — coche toutes les fractions représentées', fn:'renderFractionsExercice'},
-    {id:'num_balance_fractions', screen:'screen-balance-fractions', label:'La balance des fractions', icon:'<img src="assets/logos/num_fractions_balance.png" class="w-full h-full object-contain" />', desc:'Équilibre la balance en comparant des fractions', fn:''},
-    {id:'num_fractions_colorie', screen:'screen-num-fractions-colorie', label:'Colorie les fractions', icon:'<img src="assets/logos/num_fractions_colorie.png" class="w-full h-full object-contain" />', desc:'Colorie la partie demandée de chaque fraction', fn:''},
-    {id:'num_fraction_quantite', screen:'screen-num-fraction-quantite', label:"La fraction d'une quantité", icon:'<img src="assets/logos/num_fractions.png" class="w-full h-full object-contain" />', desc:'Calcule la fraction d\'une quantité avec aide visuelle', fn:''},
+    {id:'num_fractions_simples', screen:'screen-fractions-simples', label:'Les fractions simples', icon:'<img src="assets/logos/num_fractions_simples.webp" class="w-full h-full object-contain" />', desc:'10 figures — identifie la fraction exacte', fn:'renderFractionsSimples'},
+    {id:'num_fractions_complexes', screen:'screen-fractions-figures', label:'Les fractions complexes', icon:'<img src="assets/logos/num_fractions_complexes.webp" class="w-full h-full object-contain" />', desc:'10 figures — coche toutes les fractions représentées', fn:'renderFractionsExercice'},
+    {id:'num_balance_fractions', screen:'screen-balance-fractions', label:'La balance des fractions', icon:'<img src="assets/logos/num_fractions_balance.webp" class="w-full h-full object-contain" />', desc:'Équilibre la balance en comparant des fractions', fn:''},
+    {id:'num_fractions_colorie', screen:'screen-num-fractions-colorie', label:'Colorie les fractions', icon:'<img src="assets/logos/num_fractions_colorie.webp" class="w-full h-full object-contain" />', desc:'Colorie la partie demandée de chaque fraction', fn:''},
+    {id:'num_fraction_quantite', screen:'screen-num-fraction-quantite', label:"La fraction d'une quantité", icon:'<img src="assets/logos/num_fractions.webp" class="w-full h-full object-contain" />', desc:'Calcule la fraction d\'une quantité avec aide visuelle', fn:''},
     {id:'num_nombres_mixtes', screen:'screen-num-nombres-mixtes', label:'Les nombres mixtes', icon:'🥞', desc:'Passer d\'une fraction impropre à un nombre mixte et inversement', fn:''},
     {id:'num_fractions_irreductibles', screen:'screen-num-fractions-irreductibles', label:'Les fractions irréductibles', icon:'✂️', desc:'Simplifie chaque fraction jusqu\'au bout', fn:''},
   ];
@@ -31685,8 +31714,8 @@ function renderNumEntiersDecimauxMenu(){
   const locked = getLockedActivities();
   const isTeacher = state.role === 'teacher';
   const items = [
-    {id:'num_entiers_decimaux_abaque', screen:'screen-num-entiers-decimaux-abaque', label:'Sélectionne le bon chiffre', icon:'<img src="assets/logos/num_entiers_decimaux_select.png" class="w-full h-full object-contain" />', desc:'Identifie le rang occupé par chaque chiffre', fn:''},
-    {id:'num_entiers_decimaux_comparaison', screen:'screen-num-entiers-decimaux-comparaison', label:'Comparaison de nombres', icon:'<img src="assets/logos/num_entiers_decimaux_comparaison.png" class="w-full h-full object-contain" />', desc:'Compare deux nombres entiers ou décimaux', fn:''},
+    {id:'num_entiers_decimaux_abaque', screen:'screen-num-entiers-decimaux-abaque', label:'Sélectionne le bon chiffre', icon:'<img src="assets/logos/num_entiers_decimaux_select.webp" class="w-full h-full object-contain" />', desc:'Identifie le rang occupé par chaque chiffre', fn:''},
+    {id:'num_entiers_decimaux_comparaison', screen:'screen-num-entiers-decimaux-comparaison', label:'Comparaison de nombres', icon:'<img src="assets/logos/num_entiers_decimaux_comparaison.webp" class="w-full h-full object-contain" />', desc:'Compare deux nombres entiers ou décimaux', fn:''},
   ];
   let html = '';
   items.forEach(t => {
@@ -31905,8 +31934,8 @@ function renderAireMenu(){
     {id:'grandeur_aire_quadrillage', screen:'screen-grandeur-aire-quadrillage', label:"Le Géomètre des Carreaux (Quadrillage)", icon:'🟩', desc:"Compte les carreaux pour trouver l'aire de figures sur quadrillage.", fn:''},
     {id:'grandeur_aire_conversions', screen:'screen-grandeur-aire-conversions', label:"L'Arpenteur Impérial (Conversions d'Aire)", icon:'⚖️', desc:"Convertis les unités métriques et agraires : km², hm²/ha, dam²/a, m²/ca, dm², cm², mm².", fn:''},
     {id:'grandeur_aire_agraire', screen:'screen-grandeur-aire-agraire', label:"Mesures Agraires & Superficies", icon:'🌾', desc:"Maîtrise les unités agraires (hectare, are, centiare) : abaque interactif, conversions et situations-problèmes.", fn:''},
-    {id:'grandeur_aire_rectangle', screen:'screen-grandeur-aire-rectangle', label:"Le Maître Carreleur (Aire du carré et du rectangle)", icon:'<img src="assets/logos/grandeur_aire_rectangle.png" class="w-full h-full object-contain" />', desc:"Calcule l'aire des carrés et des rectangles, puis de figures à découper en rectangles. 4 niveaux et une calculatrice.", fn:''},
-    {id:'grandeur_aire_formules', screen:'screen-grandeur-aire-formules', label:"L'Arpenteur du Château (Formules)", icon:'<img src="assets/logos/sub_aire_formules.png" class="w-full h-full object-contain" />', desc:"Entraine-toi à calculer l'aire des carrés, rectangles, triangles, parallélogrammes et trapèzes.", fn:''},
+    {id:'grandeur_aire_rectangle', screen:'screen-grandeur-aire-rectangle', label:"Le Maître Carreleur (Aire du carré et du rectangle)", icon:'<img src="assets/logos/grandeur_aire_rectangle.webp" class="w-full h-full object-contain" />', desc:"Calcule l'aire des carrés et des rectangles, puis de figures à découper en rectangles. 4 niveaux et une calculatrice.", fn:''},
+    {id:'grandeur_aire_formules', screen:'screen-grandeur-aire-formules', label:"L'Arpenteur du Château (Formules)", icon:'<img src="assets/logos/sub_aire_formules.webp" class="w-full h-full object-contain" />', desc:"Entraine-toi à calculer l'aire des carrés, rectangles, triangles, parallélogrammes et trapèzes.", fn:''},
     {id:'grandeur_aire_composee', screen:'screen-grandeur-aire-composee', label:"Le Calcul d'Aires Composées", icon:'📐', desc:"Calcule l'aire de figures complexes par addition ou soustraction de formes.", fn:''},
   ];
   let html = '';
@@ -32610,11 +32639,11 @@ function validerGeoBelgiqueQCM(){
 
 // ===== GÉOGRAPHIE NAVIGATION =====
 const GEOGRAPHIE_ITEMS = [
-  {id:'geo_oceans', screen:'screen-geo-oceans', label:'Les océans et continents', icon:'<img src="assets/logos/geo_oceans.png" class="w-full h-full object-contain" />'},
-  {id:'geo_europe', screen:'screen-geo-europe', label:"L'Europe", icon:'<img src="assets/logos/geo_europe.png" class="w-full h-full object-contain" />'},
-  {id:'geo_belgique', screen:'screen-geo-belgique', label:'La Belgique', icon:'<img src="assets/logos/geo_belgique.png" class="w-full h-full object-contain" />'},
-  {id:'geo_paysages', screen:'screen-geo-paysages-menu', label:'Les paysages', icon:'<img src="assets/logos/geo_paysages.png" class="w-full h-full object-contain" />'},
-  {id:'geo_hydro', screen:'screen-geo-hydro', label:'Le vocabulaire hydrographique', icon:'<img src="assets/logos/geo_hydro.png" class="w-full h-full object-contain" />'},
+  {id:'geo_oceans', screen:'screen-geo-oceans', label:'Les océans et continents', icon:'<img src="assets/logos/geo_oceans.webp" class="w-full h-full object-contain" />'},
+  {id:'geo_europe', screen:'screen-geo-europe', label:"L'Europe", icon:'<img src="assets/logos/geo_europe.webp" class="w-full h-full object-contain" />'},
+  {id:'geo_belgique', screen:'screen-geo-belgique', label:'La Belgique', icon:'<img src="assets/logos/geo_belgique.webp" class="w-full h-full object-contain" />'},
+  {id:'geo_paysages', screen:'screen-geo-paysages-menu', label:'Les paysages', icon:'<img src="assets/logos/geo_paysages.webp" class="w-full h-full object-contain" />'},
+  {id:'geo_hydro', screen:'screen-geo-hydro', label:'Le vocabulaire hydrographique', icon:'<img src="assets/logos/geo_hydro.webp" class="w-full h-full object-contain" />'},
   {id:'geo_cartes', screen:'screen-geo-cartes', label:'Les cartes et les plans', icon:'🗺️'},
 ];
 
@@ -32662,17 +32691,17 @@ const SCIENCES_ITEMS = [
   {id:'sci_respiratoire', screen:'screen-sci-respiratoire', label:"L'appareil respiratoire", icon:'🫁', desc:"5 exercices sur l'appareil respiratoire"},
   {id:'sci_digestif', screen:'screen-sci-digestif', label:"L'appareil digestif", icon:'🫃', desc:"5 exercices sur l'appareil digestif"},
   {id:'sci_circulatoire', screen:'screen-sci-circulatoire', label:"L'appareil circulatoire", icon:'❤️', desc:"5 exercices sur le système circulatoire"},
-  {id:'sci_squelette', screen:'screen-sci-squelette', label:'Le squelette', icon:'<img src="assets/logos/sci_squelette.png" class="w-full h-full object-contain" />', desc:"Exercice sur les os du corps humain"},
+  {id:'sci_squelette', screen:'screen-sci-squelette', label:'Le squelette', icon:'<img src="assets/logos/sci_squelette.webp" class="w-full h-full object-contain" />', desc:"Exercice sur les os du corps humain"},
   {id:'sci_plantes', screen:'screen-sci-plantes', label:'Le monde végétal', icon:'🌱', desc:"2 exercices sur les plantes (fleur, germination)"},
   {id:'sci_matiere', screen:'screen-sci-matiere', label:'La matière', icon:'🧊', desc:"États de la matière et changements d'état"},
   {id:'sci_melanges', screen:'screen-sci-melanges', label:'Les mélanges', icon:'🧪', desc:"Mélanges homogènes/hétérogènes et techniques de séparation"},
   {id:'sci_reseaux_trophiques', screen:'screen-sci-reseaux-trophiques', label:'Les réseaux trophiques', icon:'🕸️', desc:"Chaînes alimentaires et relations proies-prédateurs"},
   {id:'sci_cycle_eau_cat', screen:'screen-sci-cycle-eau', label:"Le cycle de l'eau", icon:'💧', desc:"Le voyage de l'eau et schéma à compléter"},
   {id:'sci_energie', screen:'screen-sci-energie', label:"Les énergies", icon:'🔌', desc:"Sources d'énergie, transferts et conversions"},
-  {id:'sci_engrenages', screen:'screen-sci-engrenages', label:'Les engrenages', icon:'<img src="assets/logos/sci_engrenages.png" class="w-full h-full object-contain" />'},
+  {id:'sci_engrenages', screen:'screen-sci-engrenages', label:'Les engrenages', icon:'<img src="assets/logos/sci_engrenages.webp" class="w-full h-full object-contain" />'},
   {id:'sci_mecanique_leviers', screen:'screen-sci-mecanique-leviers', label:'Leviers et balances', icon:'⚖️', desc:"Expérimente l'équilibre et le fonctionnement des leviers"},
   {id:'sci_electricite', screen:'screen-sci-electricite', label:"L'électricité", icon:'⚡'},
-  {id:'sci_systeme_solaire', screen:'screen-sci-systeme-solaire', label:'Le système solaire', icon:'<img src="assets/logos/sci_systeme_solaire.png" class="w-full h-full object-contain" />'},
+  {id:'sci_systeme_solaire', screen:'screen-sci-systeme-solaire', label:'Le système solaire', icon:'<img src="assets/logos/sci_systeme_solaire.webp" class="w-full h-full object-contain" />'},
   {id:'sci_lumiere_ombres', screen:'screen-sci-lumiere-ombres', label:'Ombres & Lumière', icon:'💡', desc:"Expérimente avec la propagation de la lumière et la formation des ombres"},
   {id:'sci_eclipses', screen:'screen-sci-eclipses', label:'Les éclipses', icon:'🌑', desc:"Comprends les éclipses de Soleil et de Lune et teste tes connaissances"},
 ];
@@ -32724,12 +32753,12 @@ function renderSciencesScreen(){
 
 // ===== HISTOIRE NAVIGATION =====
 const HISTOIRE_ITEMS = [
-  {id:'hist_prehistoire', screen:'screen-hist-prehistoire', label:'La Préhistoire', icon:'<img src="assets/logos/hist_prehistoire.png" class="w-full h-full object-contain" />', fn:'renderPrehistoireMenu', desc:'Exercices sur la Préhistoire'},
-  {id:'hist_antiquite', screen:'screen-hist-antiquite', label:"L'Antiquité", icon:'<img src="assets/logos/hist_antiquite.png" class="w-full h-full object-contain" />', fn:'renderAntiquiteMenu', desc:'Les Gaulois et les Romains'},
-  {id:'hist_moyen_age', screen:'screen-hist-moyen-age', label:'Le Moyen Âge', icon:'<img src="assets/logos/hist_moyen_age.png" class="w-full h-full object-contain" />', fn:'renderMoyenAgeMenu', desc:'Seigneurs, châteaux et chevaliers'},
-  {id:'hist_temps_modernes', screen:'screen-hist-temps-modernes', label:'Les Temps Modernes', icon:'<img src="assets/logos/hist_temps_modernes.png" class="w-full h-full object-contain" />'},
-  {id:'hist_contemporaine', screen:'screen-hist-contemporaine', label:"L'Époque Contemporaine", icon:'<img src="assets/logos/hist_contemporaine.png" class="w-full h-full object-contain" />'},
-  {id:'hist_grandes_periodes', screen:'screen-hist-grandes-periodes', label:'Les grandes périodes', icon:'<img src="assets/logos/hist_grandes_periodes.png" class="w-full h-full object-contain" />'},
+  {id:'hist_prehistoire', screen:'screen-hist-prehistoire', label:'La Préhistoire', icon:'<img src="assets/logos/hist_prehistoire.webp" class="w-full h-full object-contain" />', fn:'renderPrehistoireMenu', desc:'Exercices sur la Préhistoire'},
+  {id:'hist_antiquite', screen:'screen-hist-antiquite', label:"L'Antiquité", icon:'<img src="assets/logos/hist_antiquite.webp" class="w-full h-full object-contain" />', fn:'renderAntiquiteMenu', desc:'Les Gaulois et les Romains'},
+  {id:'hist_moyen_age', screen:'screen-hist-moyen-age', label:'Le Moyen Âge', icon:'<img src="assets/logos/hist_moyen_age.webp" class="w-full h-full object-contain" />', fn:'renderMoyenAgeMenu', desc:'Seigneurs, châteaux et chevaliers'},
+  {id:'hist_temps_modernes', screen:'screen-hist-temps-modernes', label:'Les Temps Modernes', icon:'<img src="assets/logos/hist_temps_modernes.webp" class="w-full h-full object-contain" />'},
+  {id:'hist_contemporaine', screen:'screen-hist-contemporaine', label:"L'Époque Contemporaine", icon:'<img src="assets/logos/hist_contemporaine.webp" class="w-full h-full object-contain" />'},
+  {id:'hist_grandes_periodes', screen:'screen-hist-grandes-periodes', label:'Les grandes périodes', icon:'<img src="assets/logos/hist_grandes_periodes.webp" class="w-full h-full object-contain" />'},
   {id:'hist_grand_voyage_temps', file:'lecon_frise_historique.html', label:'Le grand voyage du Temps', icon:'🏛️', desc:"Carnet d'investigation : les 5 périodes, quiz et jeu d'association"},
   {id:'hist_ligne_du_temps', file:'ligne-du-temps_5.html', label:'La ligne du temps', icon:'⏳', desc:'Séquence P5–P6 : repères, ruptures et défis de chronologie'},
 ];
@@ -32784,16 +32813,16 @@ function teacherGoToEveilSection(section){
 // ===== OPÉRATIONS NAVIGATION =====
 const OPERATIONS_ITEMS = [
   {id:'op_vocabulaire', screen:'screen-op-vocabulaire', label:'Le vocabulaire des opérations', icon:'📖', desc:'Termes, résultats et propriétés des opérations'},
-  {id:'op_add_sous', screen:'screen-op-add-sous', teacherScreen:'screen-teacher-op-add-sous', label:'Additions et soustractions', icon:'<img src="assets/logos/op_add_sous.png" class="w-full h-full object-contain" />', desc:'Calculs et techniques opératoires', fn:'renderAddSousScreen'},
+  {id:'op_add_sous', screen:'screen-op-add-sous', teacherScreen:'screen-teacher-op-add-sous', label:'Additions et soustractions', icon:'<img src="assets/logos/op_add_sous.webp" class="w-full h-full object-contain" />', desc:'Calculs et techniques opératoires', fn:'renderAddSousScreen'},
   {id:'op_mult_div', screen:'screen-op-mult-div', teacherScreen:'screen-teacher-op-mult-div', label:'Multiplications et divisions', icon:'✖️', desc:'Calculs et techniques opératoires', fn:'renderMultDivScreen'},
   {id:'op_4_operations', screen:'screen-op-4-operations', teacherScreen:'screen-teacher-op-4-operations', label:'Les 4 opérations', icon:'🔢', desc:'Mélange des 4 opérations', fn:'render4OperationsScreen'},
   {id:'op_calcul_ecrit', screen:'screen-op-calcul-ecrit', label:'Calcul écrit', icon:'✏️', desc:'Techniques opératoires posées'},
-  {id:'op_ordre', screen:'screen-op-ordre', label:"L'ordre des opérations", icon:'<img src="assets/logos/op_ordre.png" class="w-full h-full object-contain" />', desc:'Priorités des opérations (PEMDAS)'},
-  {id:'op_fractions', screen:'screen-op-fractions', label:'Opérer sur des fractions', icon:'<img src="assets/logos/op_fractions.png" class="w-full h-full object-contain" />', desc:'Addition de fractions · Multiplication bientôt'},
+  {id:'op_ordre', screen:'screen-op-ordre', label:"L'ordre des opérations", icon:'<img src="assets/logos/op_ordre.webp" class="w-full h-full object-contain" />', desc:'Priorités des opérations (PEMDAS)'},
+  {id:'op_fractions', screen:'screen-op-fractions', label:'Opérer sur des fractions', icon:'<img src="assets/logos/op_fractions.webp" class="w-full h-full object-contain" />', desc:'Addition de fractions · Multiplication bientôt'},
 ];
 
 const OP_ADD_SOUS_ITEMS = [
-  {id:'op_add_sous_100', label:'Jusque 100', icon:'<img src="assets/logos/op_add_sous_100.png" class="w-full h-full object-contain" />', desc:'Passages à la dizaine · Recommençable', fn: () => startCalcExercise('add_sous_100')},
+  {id:'op_add_sous_100', label:'Jusque 100', icon:'<img src="assets/logos/op_add_sous_100.webp" class="w-full h-full object-contain" />', desc:'Passages à la dizaine · Recommençable', fn: () => startCalcExercise('add_sous_100')},
   {id:'op_add_sous_1000', label:'Jusque 1 000', icon:'🔢', desc:'Passages à la centaine · Recommençable', fn: () => startCalcExercise('add_sous_1000')},
   {id:'op_add_sous_10000', label:'Jusque 10 000', icon:'🔢', desc:'Passages au millier · Recommençable', fn: () => startCalcExercise('add_sous_10000')},
   {id:'op_add_sous_100000', label:'Jusque 100 000', icon:'🔢', desc:'Passages à la dizaine de mille · Recommençable', fn: () => startCalcExercise('add_sous_100000')},
@@ -32803,17 +32832,17 @@ const OP_ADD_SOUS_ITEMS = [
 ];
 
 const OP_MULT_DIV_ITEMS = [
-  {id:'op_mult_div_tables', label:'Tables de multiplication', icon:'<img src="assets/logos/op_mult_div_tables.png" class="w-full h-full object-contain" />', desc:'5 multiplications + 5 divisions · Tables de 1 à 10 · Recommençable', fn: () => startMultDivExercise()},
-  {id:'op_tables', label:'Les tables étendues', icon:'<img src="assets/logos/op_tables_etendues.png" class="w-full h-full object-contain" />', desc:'10 calculs aléatoires parmi 100 · Recommençable', fn: () => startOpTablesExercise()},
-  {id:'op_x10', label:'× et ÷ par 0,1 — 10 — 100 — 1000', icon:'<img src="assets/logos/op_x10.png" class="w-full h-full object-contain" />', desc:'10 calculs aléatoires parmi 100 · Recommençable', fn: () => startOpX10Exercise()},
-  {id:'op_x5', label:'× et ÷ par 0,5 — 5 — 50 — 500', icon:'<img src="assets/logos/op_x5.png" class="w-full h-full object-contain" />', desc:'10 calculs aléatoires parmi 100 · Recommençable', fn: () => startOpX5Exercise()},
-  {id:'op_x9', label:'× par 9 — 90 — 99 — 9,9', icon:'<img src="assets/logos/op_x9.png" class="w-full h-full object-contain" />', desc:'10 calculs aléatoires parmi 100 · Recommençable', fn: () => startOpX9Exercise()},
+  {id:'op_mult_div_tables', label:'Tables de multiplication', icon:'<img src="assets/logos/op_mult_div_tables.webp" class="w-full h-full object-contain" />', desc:'5 multiplications + 5 divisions · Tables de 1 à 10 · Recommençable', fn: () => startMultDivExercise()},
+  {id:'op_tables', label:'Les tables étendues', icon:'<img src="assets/logos/op_tables_etendues.webp" class="w-full h-full object-contain" />', desc:'10 calculs aléatoires parmi 100 · Recommençable', fn: () => startOpTablesExercise()},
+  {id:'op_x10', label:'× et ÷ par 0,1 — 10 — 100 — 1000', icon:'<img src="assets/logos/op_x10.webp" class="w-full h-full object-contain" />', desc:'10 calculs aléatoires parmi 100 · Recommençable', fn: () => startOpX10Exercise()},
+  {id:'op_x5', label:'× et ÷ par 0,5 — 5 — 50 — 500', icon:'<img src="assets/logos/op_x5.webp" class="w-full h-full object-contain" />', desc:'10 calculs aléatoires parmi 100 · Recommençable', fn: () => startOpX5Exercise()},
+  {id:'op_x9', label:'× par 9 — 90 — 99 — 9,9', icon:'<img src="assets/logos/op_x9.webp" class="w-full h-full object-contain" />', desc:'10 calculs aléatoires parmi 100 · Recommençable', fn: () => startOpX9Exercise()},
   {id:'op_x11', label:'× par 11 — 101 — 110 — 1,1', icon:'🔢', desc:'10 calculs aléatoires parmi 100 · Recommençable', fn: () => startOpX11Exercise()}, // avant : écran « Les exercices arrivent bientôt » alors que l'exercice existait
-  {id:'op_divisibilite', label:'Les caractères de divisibilité', icon:'<img src="assets/logos/op_divisibilite.png" class="w-full h-full object-contain" />', desc:'Règles de divisibilité par 2, 3, 5, 9, 10…', screen:'screen-op-divisibilite'},
+  {id:'op_divisibilite', label:'Les caractères de divisibilité', icon:'<img src="assets/logos/op_divisibilite.webp" class="w-full h-full object-contain" />', desc:'Règles de divisibilité par 2, 3, 5, 9, 10…', screen:'screen-op-divisibilite'},
 ];
 
 const OP_4_OPERATIONS_ITEMS = [
-  {id:'op_add_sous_compte_est_bon', label:'Le compte est bon', icon:'<img src="assets/logos/op_compte_est_bon.png" class="w-full h-full object-contain" />', desc:'Atteins le nombre cible en combinant tes plaques · Recommençable', screen:'screen-op-add-sous-compte-est-bon'},
+  {id:'op_add_sous_compte_est_bon', label:'Le compte est bon', icon:'<img src="assets/logos/op_compte_est_bon.webp" class="w-full h-full object-contain" />', desc:'Atteins le nombre cible en combinant tes plaques · Recommençable', screen:'screen-op-add-sous-compte-est-bon'},
   {id:'op_4_operations_melangees', label:'Les 4 opérations mélangées', icon:'🔢', desc:'10 calculs mélangés · + − × ÷ · Recommençable', fn: () => start4OpExercise()},
   {id:'op_4_operations_calculs', label:"Fiche d'entrainement", icon:'✏️', desc:"Génère des fiches de 20 calculs mélangés avec ou sans chronomètre · Imprimable", screen:'screen-op-4-operations-calculs'},
   {id:'op_4_operations_lacunaires', label:'Calculs lacunaires', icon:'✏️', desc:'Complète les équations à trou · + − × ÷ · Recommençable', screen:'screen-op-4-operations-lacunaires'}
@@ -32904,10 +32933,10 @@ function renderOperationsScreen(){
 
 // ===== NUMÉRATION NAVIGATION =====
 const NUMERATION_ITEMS = [
-  {id:'num_grands_nombres', screen:'screen-num-grands-nombres', label:'Les grands nombres', icon:'<img src="assets/logos/num_grands_nombres.png" class="w-full h-full object-contain" />', desc:'Lecture, écriture et comparaison de grands nombres', fn:'renderGrandsNombresMenu'},
-  {id:'num_decimaux', screen:'screen-num-decimaux', label:'Les nombres décimaux', icon:'<img src="assets/logos/num_decimaux.png" class="w-full h-full object-contain" />', desc:'Introduction, comparaison et opérations devinettes', fn:'renderNumDecimauxMenu'},
-  {id:'num_entiers_decimaux', screen:'screen-num-entiers-decimaux', label:'Les nombres entiers et décimaux', icon:'<img src="assets/logos/num_entiers_decimaux.png" class="w-full h-full object-contain" />', desc:'Abaque et valeur de position des chiffres', fn:'renderNumEntiersDecimauxMenu'},
-  {id:'num_fractions', screen:'screen-num-fractions', label:'Les fractions', icon:'<img src="assets/logos/num_fractions.png" class="w-full h-full object-contain" />', desc:'Identifier, colorier et comparer des fractions', fn:'renderFractionsMenu'},
+  {id:'num_grands_nombres', screen:'screen-num-grands-nombres', label:'Les grands nombres', icon:'<img src="assets/logos/num_grands_nombres.webp" class="w-full h-full object-contain" />', desc:'Lecture, écriture et comparaison de grands nombres', fn:'renderGrandsNombresMenu'},
+  {id:'num_decimaux', screen:'screen-num-decimaux', label:'Les nombres décimaux', icon:'<img src="assets/logos/num_decimaux.webp" class="w-full h-full object-contain" />', desc:'Introduction, comparaison et opérations devinettes', fn:'renderNumDecimauxMenu'},
+  {id:'num_entiers_decimaux', screen:'screen-num-entiers-decimaux', label:'Les nombres entiers et décimaux', icon:'<img src="assets/logos/num_entiers_decimaux.webp" class="w-full h-full object-contain" />', desc:'Abaque et valeur de position des chiffres', fn:'renderNumEntiersDecimauxMenu'},
+  {id:'num_fractions', screen:'screen-num-fractions', label:'Les fractions', icon:'<img src="assets/logos/num_fractions.webp" class="w-full h-full object-contain" />', desc:'Identifier, colorier et comparer des fractions', fn:'renderFractionsMenu'},
   {id:'num_diviseurs_premiers', screen:'screen-num-diviseurs-premiers', label:'Les diviseurs & nombres premiers', icon:'🔢', desc:'Recherche des diviseurs d\'un nombre et repérage des nombres premiers'},
 ];
 
@@ -32944,11 +32973,11 @@ function renderNumerationScreen(){
 // ===== SOLIDES ET FIGURES NAVIGATION =====
 const SOLIDES_ITEMS = [
   {id:'solide_polygones', screen:'screen-solides-polygones', label:'Les polygones', icon:'<img src="assets/logos/solide_polygones.png" class="w-full h-full object-contain" />', desc:'Reconnaître et classer les polygones'},
-  {id:'solide_triangles', screen:'screen-solides-triangles', label:'Les triangles', icon:'<img src="assets/logos/solide_triangles.png" class="w-full h-full object-contain" />', desc:'Scalène, isocèle, équilatéral, rectangle…', fn:'renderTrianglesMenu'},
+  {id:'solide_triangles', screen:'screen-solides-triangles', label:'Les triangles', icon:'<img src="assets/logos/solide_triangles.webp" class="w-full h-full object-contain" />', desc:'Scalène, isocèle, équilatéral, rectangle…', fn:'renderTrianglesMenu'},
   {id:'solide_quadrilateres', screen:'screen-solides-quadrilateres', label:'Les quadrilatères', icon:'<img src="assets/logos/solide_quadrilateres.png" class="w-full h-full object-contain" />', desc:'Carré, rectangle, losange, parallélogramme, trapèze…', fn:'renderQuadrilateresMenu'},
-  {id:'solide_polyedres', screen:'screen-solides-polyedres', label:'Les polyèdres', icon:'<img src="assets/logos/solide_polyedres.png" class="w-full h-full object-contain" />', desc:'Cube, parallélépipède rectangle, prisme, pyramide…'},
+  {id:'solide_polyedres', screen:'screen-solides-polyedres', label:'Les polyèdres', icon:'<img src="assets/logos/solide_polyedres.webp" class="w-full h-full object-contain" />', desc:'Cube, parallélépipède rectangle, prisme, pyramide…'},
   {id:'solide_angles', screen:'screen-solides-angles', label:'Les angles', icon:'📐', desc:'Mesurer, tracer et classifier les angles'},
-  {id:'solide_symetrie', screen:'screen-solides-symetrie', label:'Les axes de symétrie', icon:'<img src="assets/logos/solide_symetrie.png" class="w-full h-full object-contain" />', desc:"Tracer le symétrique d'une figure sur quadrillage ou pointillés"},
+  {id:'solide_symetrie', screen:'screen-solides-symetrie', label:'Les axes de symétrie', icon:'<img src="assets/logos/solide_symetrie.webp" class="w-full h-full object-contain" />', desc:"Tracer le symétrique d'une figure sur quadrillage ou pointillés"},
   {id:'solide_transformations_labo', screen:'screen-solides-transformations', label:'Le labo des transformations', icon:'🔄', desc:"S'entrainer aux translations et rotations de figures sur une grille interactive"},
   {id:'solide_projections_cubes', screen:'screen-solides-projections', label:'Les Vues 3D & Empilements', icon:'🧊', desc:'Associer des solides 3D à leurs vues 2D (Face, Profil, Haut) et dénombrer les cubes'},
   {id:'solide_vocabulaire', screen:'screen-solides-vocabulaire', label:'Le vocabulaire', icon:'📖', desc:'Vocabulaire géométrique : côtés, sommets, angles, faces, arêtes…'},
@@ -33055,15 +33084,15 @@ function renderQuadrilateresMenu(){
 // ===== GRANDEURS NAVIGATION =====
 const GRANDEURS_ITEMS = [
   {id:'grandeur_masses', screen:'screen-grandeurs-masses', label:'Les masses', icon:'⚖️', desc:'Conversions et calculs avec kg, g, mg…', fn:'renderMassesMenu'},
-  {id:'grandeur_capacites', screen:'screen-grandeurs-capacites', label:'Les capacités', icon:'<img src="assets/logos/grandeur_capacites.png" class="w-full h-full object-contain" />', desc:'Conversions et calculs avec l, dl, cl, ml…', fn:'renderCapacitesMenu'},
-  {id:'grandeur_longueurs', screen:'screen-grandeurs-longueurs', label:'Les longueurs', icon:'<img src="assets/logos/grandeur_longueurs.png" class="w-full h-full object-contain" />', desc:'Conversions et calculs avec km, m, cm, mm…', fn:'renderLongueursMenu'},
+  {id:'grandeur_capacites', screen:'screen-grandeurs-capacites', label:'Les capacités', icon:'<img src="assets/logos/grandeur_capacites.webp" class="w-full h-full object-contain" />', desc:'Conversions et calculs avec l, dl, cl, ml…', fn:'renderCapacitesMenu'},
+  {id:'grandeur_longueurs', screen:'screen-grandeurs-longueurs', label:'Les longueurs', icon:'<img src="assets/logos/grandeur_longueurs.webp" class="w-full h-full object-contain" />', desc:'Conversions et calculs avec km, m, cm, mm…', fn:'renderLongueursMenu'},
   {id:'grandeur_perimetre', screen:'screen-grandeurs-perimetre', label:'Le périmètre', icon:'📐', desc:'Calculer le périmètre de figures planes'},
   {id:'grandeur_aire', screen:'screen-grandeurs-aire', label:"L'aire — La superficie", icon:'🟦', desc:'Calculer l\'aire de figures planes', fn:'renderAireMenu'},
-  {id:'grandeur_volume', screen:'screen-grandeurs-volume', label:'Le volume', icon:'<img src="assets/logos/grandeur_volume.png" class="w-full h-full object-contain" />', desc:'Calculer le volume de solides', fn:'renderVolumeMenu'},
-  {id:'grandeur_durees', screen:'screen-grandeurs-durees', label:'Les durées', icon:'<img src="assets/logos/grandeur_durees.png" class="w-full h-full object-contain" />', desc:'Conversions, calculs et lecture de l\'heure', fn:'renderGrandeurDurees'},
-  {id:'grandeur_monnaie', screen:'screen-grandeurs-monnaie', label:'La monnaie', icon:'<img src="assets/logos/grandeur_monnaie.png" class="w-full h-full object-contain" />', desc:'Calculer avec les euros et les centimes', fn:'renderGrandeursMonnaieMenu'},
-  {id:'grandeur_proportionnalite', screen:'screen-grandeurs-proportionnalite', label:'La proportionnalité', icon:'<img src="assets/logos/grandeur_proportionnalite.png" class="w-full h-full object-contain" />', desc:'Résoudre des problèmes de proportionnalité', fn:'renderProportionnaliteMenu'},
-  {id:'grandeur_vitesse_horaire', screen:'screen-grandeurs-vitesse-horaire', label:'La vitesse horaire', icon:'<img src="assets/logos/grandeur_vitesse_horaire.png" class="w-full h-full object-contain" />', desc:'Calculer et convertir des vitesses', fn:'renderVitesseHoraireMenu'},
+  {id:'grandeur_volume', screen:'screen-grandeurs-volume', label:'Le volume', icon:'<img src="assets/logos/grandeur_volume.webp" class="w-full h-full object-contain" />', desc:'Calculer le volume de solides', fn:'renderVolumeMenu'},
+  {id:'grandeur_durees', screen:'screen-grandeurs-durees', label:'Les durées', icon:'<img src="assets/logos/grandeur_durees.webp" class="w-full h-full object-contain" />', desc:'Conversions, calculs et lecture de l\'heure', fn:'renderGrandeurDurees'},
+  {id:'grandeur_monnaie', screen:'screen-grandeurs-monnaie', label:'La monnaie', icon:'<img src="assets/logos/grandeur_monnaie.webp" class="w-full h-full object-contain" />', desc:'Calculer avec les euros et les centimes', fn:'renderGrandeursMonnaieMenu'},
+  {id:'grandeur_proportionnalite', screen:'screen-grandeurs-proportionnalite', label:'La proportionnalité', icon:'<img src="assets/logos/grandeur_proportionnalite.webp" class="w-full h-full object-contain" />', desc:'Résoudre des problèmes de proportionnalité', fn:'renderProportionnaliteMenu'},
+  {id:'grandeur_vitesse_horaire', screen:'screen-grandeurs-vitesse-horaire', label:'La vitesse horaire', icon:'<img src="assets/logos/grandeur_vitesse_horaire.webp" class="w-full h-full object-contain" />', desc:'Calculer et convertir des vitesses', fn:'renderVitesseHoraireMenu'},
   {id:'grandeur_echelle', screen:'screen-grandeurs-echelle', label:"L'échelle", icon:'🗺️', desc:'Calculer avec les échelles sur des cartes et maquettes', fn:''},
 ];
 
@@ -34107,8 +34136,8 @@ function renderAppsManage(){
   const tenses = [
     {id:'present', label:'Indicatif présent', icon:'✏️'},
     {id:'imparfait', label:'Indicatif imparfait', icon:'📖'},
-    {id:'futur', label:'Indicatif futur simple', icon:'<img src="assets/logos/conj_futur.png" class="w-full h-full object-contain" />'},
-    {id:'passe_compose', label:'Indicatif passé composé', icon:'<img src="assets/logos/conj_passe_compose.png" class="w-full h-full object-contain" />'},
+    {id:'futur', label:'Indicatif futur simple', icon:'<img src="assets/logos/conj_futur.webp" class="w-full h-full object-contain" />'},
+    {id:'passe_compose', label:'Indicatif passé composé', icon:'<img src="assets/logos/conj_passe_compose.webp" class="w-full h-full object-contain" />'},
   ];
   const locked = getLockedActivities();
 
@@ -34225,53 +34254,53 @@ const PLAN_CATALOGUE = [
     { id:"lr_niveau_6", label:"Lecture rapide — Niveau 6", icon:"⚡", screen:"screen-lecture-rapide", fn:"() => renderLectureRapideNiveau(6)" },
   ]},
   { cat: '📖 Français', sub: '✏️ Grammaire — Classes de mots', items: [
-    { id:'gram_nom', label:'Le nom', icon:'<img src="assets/logos/gram_nom.png" class="w-full h-full object-contain" />', screen:'screen-gram-nom', fn:'renderNomMenu' },
+    { id:'gram_nom', label:'Le nom', icon:'<img src="assets/logos/gram_nom.webp" class="w-full h-full object-contain" />', screen:'screen-gram-nom', fn:'renderNomMenu' },
     { id:"gram_nom_identifier", label:"Le nom — Identifier les noms", icon:"🔍", screen:"screen-gram-nom", fn:"startNomExercise" },
     { id:"gram_nom_reconnaître", label:"Le nom — Est-ce un nom ?", icon:"❓", screen:"screen-gram-nom", fn:"startNomReconnaîtreExercise" },
-    { id:'gram_determinant', label:'Le déterminant', icon:'<img src="assets/logos/gram_determinant.png" class="w-full h-full object-contain" />', screen:'screen-gram-determinant', fn:'renderDeterminantMenu' },
+    { id:'gram_determinant', label:'Le déterminant', icon:'<img src="assets/logos/gram_determinant.webp" class="w-full h-full object-contain" />', screen:'screen-gram-determinant', fn:'renderDeterminantMenu' },
     { id:"gram_determinant_reconnaitre", label:"Le déterminant — Reconnaitre les déterminants", icon:"🔍", screen:"screen-gram-determinant", fn:"startDeterminantExercise" },
     { id:"gram_determinant_tri", label:"Le déterminant — Le tri des déterminants", icon:"🗂️", screen:"screen-gram-determinant-tri", fn:"startTriExercise" },
     { id:'gram_determinant_ex', label:'Le déterminant (Exercices)', icon:'✏️', screen:'screen-vocabulaire', fn:"() => openFiche('determinant_exercice.html', 'Le déterminant (Exercices)', 'screen-plan-travail-student')" },
-    { id:'gram_adjectif', label:"L'adjectif", icon:'<img src="assets/logos/gram_adjectif.png" class="w-full h-full object-contain" />', screen:'screen-gram-adjectif', fn:'renderAdjectifMenu' },
+    { id:'gram_adjectif', label:"L'adjectif", icon:'<img src="assets/logos/gram_adjectif.webp" class="w-full h-full object-contain" />', screen:'screen-gram-adjectif', fn:'renderAdjectifMenu' },
     { id:"gram_adjectif_identifier", label:"L'adjectif — Identifier les adjectifs", icon:"🔍", screen:"screen-gram-adjectif", fn:"startAdjectifExercise" },
     { id:"gram_adjectif_accord", label:"L'adjectif — Accords de l'adjectif", icon:"✏️", screen:"screen-gram-adjectif", fn:"startAdjectifAccordExercise" },
     { id:"gram_adjectif_fonction", label:"L'adjectif — Épithète ou attribut ?", icon:"🧩", screen:"screen-gram-adjectif", fn:"startAdjectifFonctionExercise" },
     { id:"gram_adjectif_nom", label:"L'adjectif — Retrouver le nom qualifié", icon:"🎯", screen:"screen-gram-adjectif", fn:"startAdjectifNomExercise" },
-    { id:'gram_verbe', label:'Le verbe', icon:'<img src="assets/logos/gram_verbe.png" class="w-full h-full object-contain" />', screen:'screen-gram-verbe', fn:'renderVerbeClassMenu' },
+    { id:'gram_verbe', label:'Le verbe', icon:'<img src="assets/logos/gram_verbe.webp" class="w-full h-full object-contain" />', screen:'screen-gram-verbe', fn:'renderVerbeClassMenu' },
     { id:"gram_verbe_identifier", label:"Le verbe — Identifier les verbes", icon:"🔍", screen:"screen-gram-verbe", fn:"startVerbeClassExercise" },
-    { id:'gram_pronom', label:'Le pronom', icon:'<img src="assets/logos/gram_pronom.png" class="w-full h-full object-contain" />', screen:'screen-gram-pronom', fn:'renderPronomMenu' },
+    { id:'gram_pronom', label:'Le pronom', icon:'<img src="assets/logos/gram_pronom.webp" class="w-full h-full object-contain" />', screen:'screen-gram-pronom', fn:'renderPronomMenu' },
     { id:"gram_pronom_piege", label:"Le pronom — Déterminant ou pronom ?", icon:"❓", screen:"screen-gram-pronom-piege", fn:"startPronomPiegeExercise" },
     { id:"gram_pronom_referents", label:"Le pronom — Le détecteur de référents", icon:"🔍", screen:"screen-gram-detecteur-referents", fn:"" },
     { id:"gram_pronom_remplacant", label:"Le pronom — Le remplaçant", icon:"🔄", screen:"screen-gram-remplacant-pronom", fn:"" },
     { id:"gram_pronom_repetitions", label:"Le pronom — La chasse aux répétitions", icon:"📝", screen:"screen-gram-chasse-repetitions", fn:"" },
-    { id:'gram_adverbe', label:"L'adverbe", icon:'<img src="assets/logos/gram_adverbe.png" class="w-full h-full object-contain" />', screen:'screen-gram-adverbe', fn:'renderAdverbeMenu' },
+    { id:'gram_adverbe', label:"L'adverbe", icon:'<img src="assets/logos/gram_adverbe.webp" class="w-full h-full object-contain" />', screen:'screen-gram-adverbe', fn:'renderAdverbeMenu' },
     { id:"gram_adverbe_reconnaitre", label:"L'adverbe — Reconnaître les adverbes", icon:"🔍", screen:"screen-gram-adverbe-exercice", fn:"" },
     { id:"gram_adverbe_accord", label:"L'adverbe — Adjectif ou adverbe ?", icon:"⚖️", screen:"screen-gram-adverbe-accord-exercice", fn:"" },
-    { id:'gram_complement_nom', label:'Le complément du nom', icon:'<img src="assets/logos/gram_complement_nom.png" class="w-full h-full object-contain" />', screen:'screen-gram-complement-nom', fn:'' },
-    { id:'gram_tri_mots', label:'Le tri des mots', icon:'<img src="assets/logos/gram_tri_mots.png" class="w-full h-full object-contain" />', screen:'screen-gram-tri-mots', fn:'' },
+    { id:'gram_complement_nom', label:'Le complément du nom', icon:'<img src="assets/logos/gram_complement_nom.webp" class="w-full h-full object-contain" />', screen:'screen-gram-complement-nom', fn:'' },
+    { id:'gram_tri_mots', label:'Le tri des mots', icon:'<img src="assets/logos/gram_tri_mots.webp" class="w-full h-full object-contain" />', screen:'screen-gram-tri-mots', fn:'' },
     { id:'gram_mots_liaison', label:'Les mots de liaison', icon:'🔗', screen:'screen-gram-mots-liaison', fn:'' },
   ]},
   { cat: '📖 Français', sub: '✏️ Grammaire — Fonctions des mots', items: [
-    { id:'gram_sujet', label:'Le sujet', icon:'<img src="assets/logos/gram_sujet.png" class="w-full h-full object-contain" />', screen:'screen-gram-sujet', fn:'renderSujetMenu' },
+    { id:'gram_sujet', label:'Le sujet', icon:'<img src="assets/logos/gram_sujet.webp" class="w-full h-full object-contain" />', screen:'screen-gram-sujet', fn:'renderSujetMenu' },
     { id:"sujet_phrase", label:"Le sujet — Repérer le sujet", icon:"🔍", screen:"screen-gram-sujet", fn:"startSujetExercise" },
     { id:"gram_sujet_texte", label:"Le sujet — Reconstituer les textes", icon:"📝", screen:"screen-gram-sujet", fn:"startSujetTextesExercise" },
     { id:"gram_classes_sujet", label:"Le sujet — Les 4 classes du sujet", icon:"🗂️", screen:"screen-gram-sujet", fn:"startSujetClassesExercise" },
-    { id:'gram_verbe_fonc', label:'Le verbe (fonction)', icon:'<img src="assets/logos/gram_verbe_fonc.png" class="w-full h-full object-contain" />', screen:'screen-gram-verbe-fonc', fn:'renderVerbeMenu' },
+    { id:'gram_verbe_fonc', label:'Le verbe (fonction)', icon:'<img src="assets/logos/gram_verbe_fonc.webp" class="w-full h-full object-contain" />', screen:'screen-gram-verbe-fonc', fn:'renderVerbeMenu' },
     { id:"verbe_phrase", label:"Le verbe (fonction) — Repérer le verbe", icon:"🔍", screen:"screen-gram-verbe-fonc", fn:"startVerbeExercise" },
     { id:"gram_verbe_groupe", label:"Le verbe (fonction) — Infinitif et groupe", icon:"🔬", screen:"screen-gram-verbe-fonc", fn:"startVerbeGroupeExercise" },
     { id:"gram_verbe_infinitif", label:"Le verbe (fonction) — Trouver l'infinitif", icon:"✏️", screen:"screen-gram-verbe-fonc", fn:"startVerbeInfinitifExercise" },
     { id:"gram_verbe_texte", label:"Le verbe (fonction) — Reconstituer les textes", icon:"📝", screen:"screen-gram-verbe-fonc", fn:"startVerbeTextesExercise" },
-    { id:'gram_predicat', label:'Le prédicat', icon:'<img src="assets/logos/gram_predicat.png" class="w-full h-full object-contain" />', screen:'screen-gram-predicat', fn:'renderPredicatMenu' },
-    { id:'gram_cdv_civ', label:'Le CDV et le CIV', icon:'<img src="assets/logos/gram_cdv_civ.png" class="w-full h-full object-contain" />', screen:'screen-gram-cdv-civ', fn:'renderCdvCivMenu' },
+    { id:'gram_predicat', label:'Le prédicat', icon:'<img src="assets/logos/gram_predicat.webp" class="w-full h-full object-contain" />', screen:'screen-gram-predicat', fn:'renderPredicatMenu' },
+    { id:'gram_cdv_civ', label:'Le CDV et le CIV', icon:'<img src="assets/logos/gram_cdv_civ.webp" class="w-full h-full object-contain" />', screen:'screen-gram-cdv-civ', fn:'renderCdvCivMenu' },
     { id:"gram_cdv_civ_oui_non", label:"Le CDV et le CIV — CDV ou pas ?", icon:"❓", screen:"screen-gram-cdv-civ", fn:"startCdvOuiNon" },
     { id:"gram_cdv_civ_trouve", label:"Le CDV et le CIV — Trouve le CDV", icon:"🎯", screen:"screen-gram-cdv-civ", fn:"startCdvTrouve" },
     { id:"gram_cdv_civ_pronom", label:"Le CDV et le CIV — Remplacer le CDV par un pronom", icon:"✏️", screen:"screen-gram-cdv-civ", fn:"startCdvPronom" },
     { id:"gram_cdv_civ_phrase", label:"Le CDV et le CIV — Repérer le CDV et le CIV", icon:"🔀", screen:"screen-gram-cdv-civ", fn:"startCdvCivExercise" },
-    { id:'gram_cc', label:'Le complément circonstanciel', icon:'<img src="assets/logos/gram_cc.png" class="w-full h-full object-contain" />', screen:'screen-gram-cc', fn:'renderCcMenu' },
-    { id:'gram_attribut', label:"L'attribut du sujet", icon:'<img src="assets/logos/gram_attribut.png" class="w-full h-full object-contain" />', screen:'screen-gram-attribut', fn:'' },
+    { id:'gram_cc', label:'Le complément circonstanciel', icon:'<img src="assets/logos/gram_cc.webp" class="w-full h-full object-contain" />', screen:'screen-gram-cc', fn:'renderCcMenu' },
+    { id:'gram_attribut', label:"L'attribut du sujet", icon:'<img src="assets/logos/gram_attribut.webp" class="w-full h-full object-contain" />', screen:'screen-gram-attribut', fn:'' },
     { id:'gram_attribut_cdn', label:'Attribut & Complément du nom', icon:'🏷️', screen:'screen-vocabulaire', fn:"() => openFiche('grammaire_attribut_cdn.html', 'Attribut & Complément du nom', 'screen-plan-travail-student')" },
     // { id:'gram_agent', … } retiré du plan de travail le 05/10 : l'écran « Le complément d'agent » ne contient pas encore d'exercice.
-    { id:'gram_analyse_phrase', label:'Analyse de phrases', icon:'<img src="assets/logos/gram_analyse_phrase.png" class="w-full h-full object-contain" />', screen:'screen-gram-analyse-phrase', fn:'startAnalyseGlobale' },
+    { id:'gram_analyse_phrase', label:'Analyse de phrases', icon:'<img src="assets/logos/gram_analyse_phrase.webp" class="w-full h-full object-contain" />', screen:'screen-gram-analyse-phrase', fn:'startAnalyseGlobale' },
   ]},
   { cat: '📖 Français', sub: '✏️ Grammaire — Types et formes de phrases', items: [
     { id:'gram_types_phrases', label:'Les types de phrases', icon:'🔍', screen:'screen-gram-types-phrases', fn:'' },
@@ -34283,8 +34312,8 @@ const PLAN_CATALOGUE = [
   { cat: '📖 Français', sub: '⏰ Conjugaison — Les temps', items: [
     { id:'present', label:'Indicatif présent', icon:'✏️', screen:'screen-conjugaison', fn:'() => goToConjugaison("present")' },
     { id:'imparfait', label:'Indicatif imparfait', icon:'📖', screen:'screen-conjugaison', fn:'() => goToConjugaison("imparfait")' },
-    { id:'futur', label:'Indicatif futur simple', icon:'<img src="assets/logos/conj_futur.png" class="w-full h-full object-contain" />', screen:'screen-conjugaison', fn:'() => goToConjugaison("futur")' },
-    { id:'passe_compose', label:'Indicatif passé composé', icon:'<img src="assets/logos/conj_passe_compose.png" class="w-full h-full object-contain" />', screen:'screen-conjugaison', fn:'() => goToConjugaison("passe_compose")' },
+    { id:'futur', label:'Indicatif futur simple', icon:'<img src="assets/logos/conj_futur.webp" class="w-full h-full object-contain" />', screen:'screen-conjugaison', fn:'() => goToConjugaison("futur")' },
+    { id:'passe_compose', label:'Indicatif passé composé', icon:'<img src="assets/logos/conj_passe_compose.webp" class="w-full h-full object-contain" />', screen:'screen-conjugaison', fn:'() => goToConjugaison("passe_compose")' },
     { id:'conj_passe_simple', label:'Passé simple (Lecture)', icon:'📚', screen:'screen-conj-passe-simple', fn:'' },
     { id:'conj_subj_imp', label:'Subjonctif & Impératif', icon:'✍️', screen:'screen-conj-subj-imp', fn:'' },
     { id:'conj_cond_pqpf', label:'Conditionnel & Plus-que-parfait', icon:'📖', screen:'screen-conj-cond-pqpf', fn:'' },
@@ -34328,16 +34357,16 @@ const PLAN_CATALOGUE = [
     { id:'ortho_participe_seul', label:"PP employé seul", icon:'👤', screen:'screen-ortho-participe-passe-seul', fn:'' },
     { id:'ortho_participe_etre', label:"PP avec Être", icon:'🧑‍🤝‍🧑', screen:'screen-ortho-participe-passe-etre', fn:'' },
     { id:'ortho_participe_avoir', label:"PP avec Avoir", icon:'🎒', screen:'screen-ortho-participe-passe-avoir', fn:'' },
-    { id:'ortho_participe_cdv', label:"Le Détective du participe passé (être / avoir, CDV)", icon:'<img src="assets/logos/ortho_participe_detective.png" class="w-full h-full object-contain" alt="Le Détective du participe passé" />', screen:'screen-ortho-participe-passe-detective', fn:'' },
+    { id:'ortho_participe_cdv', label:"Le Détective du participe passé (être / avoir, CDV)", icon:'<img src="assets/logos/ortho_participe_detective.webp" class="w-full h-full object-contain" alt="Le Détective du participe passé" />', screen:'screen-ortho-participe-passe-detective', fn:'' },
     { id:'ortho_participe_accord', label:"L'Accord parfait (Participe passé)", icon:'🤝', screen:'screen-ortho-accord-participe', fn:'' },
     { id:'ortho_pluriels', label:'Les pluriels particuliers', icon:'👥', screen:'screen-ortho-pluriels', fn:'' },
     { id:'ortho_adjectifs_couleur', label:'Accord des adjectifs de couleur', icon:'🎨', screen:'screen-ortho-adjectifs-couleur', fn:'' },
   ]},
   { cat: '📖 Français', sub: '✍️ Expression écrite', items: [
-    { id:'connecteurs', label:'Connecteurs logiques', icon:'<img src="assets/logos/subject_connecteurs.png" class="w-full h-full object-contain" />', screen:'screen-connecteurs', fn:'renderConnecteurs' },
-    { id:'synonymes', label:'Synonymes', icon:'<img src="assets/logos/subject_synonymes.png" class="w-full h-full object-contain" />', screen:'screen-synonymes', fn:'renderSynonymes' },
-    { id:'antonymes', label:'Antonymes', icon:'<img src="assets/logos/subject_antonymes.png" class="w-full h-full object-contain" />', screen:'screen-antonymes', fn:'renderAntonymes' },
-    { id:'mes_ecrits', label:'Mes écrits — Atelier Plume', icon:'<img src="assets/logos/subject_mes_ecrits.png" class="w-full h-full object-contain" />', screen:'screen-mes-ecrits', fn:'' },
+    { id:'connecteurs', label:'Connecteurs logiques', icon:'<img src="assets/logos/subject_connecteurs.webp" class="w-full h-full object-contain" />', screen:'screen-connecteurs', fn:'renderConnecteurs' },
+    { id:'synonymes', label:'Synonymes', icon:'<img src="assets/logos/subject_synonymes.webp" class="w-full h-full object-contain" />', screen:'screen-synonymes', fn:'renderSynonymes' },
+    { id:'antonymes', label:'Antonymes', icon:'<img src="assets/logos/subject_antonymes.webp" class="w-full h-full object-contain" />', screen:'screen-antonymes', fn:'renderAntonymes' },
+    { id:'mes_ecrits', label:'Mes écrits — Atelier Plume', icon:'<img src="assets/logos/subject_mes_ecrits.webp" class="w-full h-full object-contain" />', screen:'screen-mes-ecrits', fn:'' },
     { id:'lecture_substituts', label:'Les substituts du nom', icon:'🔄', screen:'screen-lecture-substituts', fn:'' },
   ]},
   { cat: '📖 Français', sub: '📚 Vocabulaire', items: [
@@ -34360,12 +34389,12 @@ const PLAN_CATALOGUE = [
     { id: 'savoir_ecouter_8', label: "Savoir écouter - Notice de l'étagère Lyra", icon: '🔧', screen: 'screen-savoir-ecouter', fn: "() => startSavoirEcouter('savoir_ecouter_8')" }
   ]},
   { cat: '🔢 Mathématiques', sub: '🔢 Numération', items: [
-    { id:'num_grands_nombres', label:'Les grands nombres (Menu)', icon:'<img src="assets/logos/num_grands_nombres.png" class="w-full h-full object-contain" />', screen:'screen-num-grands-nombres', fn:'renderGrandsNombresMenu' },
-    { id:'num_lire', label:'Lire un nombre', icon:'<img src="assets/logos/num_lire.png" class="w-full h-full object-contain" />', screen:'screen-num-lire', fn:'renderNumLire' },
-    { id:'num_ecrire', label:'Écrire un nombre', icon:'<img src="assets/logos/num_ecrire.png" class="w-full h-full object-contain" />', screen:'screen-num-ecrire', fn:'renderNumEcrire' },
-    { id:'num_decomposer', label:'Décomposer un nombre', icon:'<img src="assets/logos/num_decomposer.png" class="w-full h-full object-contain" />', screen:'screen-num-decomposer', fn:'renderNumDecomposer' },
+    { id:'num_grands_nombres', label:'Les grands nombres (Menu)', icon:'<img src="assets/logos/num_grands_nombres.webp" class="w-full h-full object-contain" />', screen:'screen-num-grands-nombres', fn:'renderGrandsNombresMenu' },
+    { id:'num_lire', label:'Lire un nombre', icon:'<img src="assets/logos/num_lire.webp" class="w-full h-full object-contain" />', screen:'screen-num-lire', fn:'renderNumLire' },
+    { id:'num_ecrire', label:'Écrire un nombre', icon:'<img src="assets/logos/num_ecrire.webp" class="w-full h-full object-contain" />', screen:'screen-num-ecrire', fn:'renderNumEcrire' },
+    { id:'num_decomposer', label:'Décomposer un nombre', icon:'<img src="assets/logos/num_decomposer.webp" class="w-full h-full object-contain" />', screen:'screen-num-decomposer', fn:'renderNumDecomposer' },
     { id:'num_classer', label:'Classer des nombres', icon:'<img src="assets/logos/num_classer.png" class="w-full h-full object-contain" />', screen:'screen-num-classer', fn:'renderNumClasser' },
-    { id:'num_decimaux', label:'Les nombres décimaux (Menu)', icon:'<img src="assets/logos/num_decimaux.png" class="w-full h-full object-contain" />', screen:'screen-num-decimaux', fn:'renderNumDecimauxMenu' },
+    { id:'num_decimaux', label:'Les nombres décimaux (Menu)', icon:'<img src="assets/logos/num_decimaux.webp" class="w-full h-full object-contain" />', screen:'screen-num-decimaux', fn:'renderNumDecimauxMenu' },
     { id:"num_decimaux_abaque", label:"Décimaux — L'abaque des décimaux", icon:"🧮", screen:"screen-num-abaque-decimaux", fn:"renderAbaqueDecimaux" },
     { id:"num_decimaux_devinettes", label:"Décimaux — Devinettes décimales", icon:"❓", screen:"screen-num-devinettes-decimaux", fn:"renderDevinettesDecimaux" },
     { id:"num_decimaux_relier", label:"Décimaux — Valeur d'un chiffre", icon:"🔗", screen:"screen-num-relier-decimaux", fn:"renderRelierDecimaux" },
@@ -34374,14 +34403,14 @@ const PLAN_CATALOGUE = [
     { id:"num_decimaux_le_bon_nombre", label:"Décimaux — Le bon nombre", icon:"🎯", screen:"screen-num-decimaux-le-bon-nombre", fn:"renderDecimauxLeBonNombre" },
     { id:"num_decimaux_entre", label:"Décimaux — Entre deux nombres", icon:"↔️", screen:"screen-num-decimaux-entre", fn:"renderDecimauxEntre" },
     { id:"num_decimaux_op_devinettes", label:"Décimaux — Opérations devinettes", icon:"➕", screen:"screen-num-decimaux-op-devinettes", fn:"renderDecimauxOpDevinettes" },
-    { id:'num_entiers_decimaux', label:'Entiers et décimaux (Menu)', icon:'<img src="assets/logos/num_entiers_decimaux.png" class="w-full h-full object-contain" />', screen:'screen-num-entiers-decimaux', fn:'renderNumEntiersDecimauxMenu' },
-    { id:'num_entiers_decimaux_abaque', label:'Sélectionne le bon chiffre', icon:'<img src="assets/logos/num_entiers_decimaux_select.png" class="w-full h-full object-contain" />', screen:'screen-num-entiers-decimaux-abaque', fn:'' },
-    { id:'num_entiers_decimaux_comparaison', label:'Comparaison de nombres', icon:'<img src="assets/logos/num_entiers_decimaux_comparaison.png" class="w-full h-full object-contain" />', screen:'screen-num-entiers-decimaux-comparaison', fn:'' },
-    { id:'num_fractions_simples', label:'Fractions simples', icon:'<img src="assets/logos/num_fractions_simples.png" class="w-full h-full object-contain" />', screen:'screen-fractions-simples', fn:'renderFractionsSimples' },
-    { id:'num_fractions_complexes', label:'Fractions complexes', icon:'<img src="assets/logos/num_fractions_complexes.png" class="w-full h-full object-contain" />', screen:'screen-fractions-figures', fn:'renderFractionsExercice' },
-    { id:'num_balance_fractions', label:'La balance des fractions', icon:'<img src="assets/logos/num_fractions_balance.png" class="w-full h-full object-contain" />', screen:'screen-balance-fractions', fn:'' },
-    { id:'num_fractions_colorie', label:'Colorie les fractions', icon:'<img src="assets/logos/num_fractions_colorie.png" class="w-full h-full object-contain" />', screen:'screen-num-fractions-colorie', fn:'' },
-    { id:'num_fraction_quantite', label:"La fraction d'une quantité", icon:'<img src="assets/logos/num_fractions.png" class="w-full h-full object-contain" />', screen:'screen-num-fraction-quantite', fn:'' },
+    { id:'num_entiers_decimaux', label:'Entiers et décimaux (Menu)', icon:'<img src="assets/logos/num_entiers_decimaux.webp" class="w-full h-full object-contain" />', screen:'screen-num-entiers-decimaux', fn:'renderNumEntiersDecimauxMenu' },
+    { id:'num_entiers_decimaux_abaque', label:'Sélectionne le bon chiffre', icon:'<img src="assets/logos/num_entiers_decimaux_select.webp" class="w-full h-full object-contain" />', screen:'screen-num-entiers-decimaux-abaque', fn:'' },
+    { id:'num_entiers_decimaux_comparaison', label:'Comparaison de nombres', icon:'<img src="assets/logos/num_entiers_decimaux_comparaison.webp" class="w-full h-full object-contain" />', screen:'screen-num-entiers-decimaux-comparaison', fn:'' },
+    { id:'num_fractions_simples', label:'Fractions simples', icon:'<img src="assets/logos/num_fractions_simples.webp" class="w-full h-full object-contain" />', screen:'screen-fractions-simples', fn:'renderFractionsSimples' },
+    { id:'num_fractions_complexes', label:'Fractions complexes', icon:'<img src="assets/logos/num_fractions_complexes.webp" class="w-full h-full object-contain" />', screen:'screen-fractions-figures', fn:'renderFractionsExercice' },
+    { id:'num_balance_fractions', label:'La balance des fractions', icon:'<img src="assets/logos/num_fractions_balance.webp" class="w-full h-full object-contain" />', screen:'screen-balance-fractions', fn:'' },
+    { id:'num_fractions_colorie', label:'Colorie les fractions', icon:'<img src="assets/logos/num_fractions_colorie.webp" class="w-full h-full object-contain" />', screen:'screen-num-fractions-colorie', fn:'' },
+    { id:'num_fraction_quantite', label:"La fraction d'une quantité", icon:'<img src="assets/logos/num_fractions.webp" class="w-full h-full object-contain" />', screen:'screen-num-fraction-quantite', fn:'' },
     { id:'num_nombres_mixtes', label:'Les nombres mixtes', icon:'🥞', screen:'screen-num-nombres-mixtes', fn:'' },
     { id:'num_fractions_irreductibles', label:'Les fractions irréductibles', icon:'✂️', screen:'screen-num-fractions-irreductibles', fn:'' },
     { id:'num_decimaux_arrondir', label:'Arrondir les décimaux', icon:'🎯', screen:'screen-num-decimaux-arrondir', fn:'renderDecimauxArrondir' },
@@ -34393,7 +34422,7 @@ const PLAN_CATALOGUE = [
     { id:'op_vocabulaire_prob', label:'Vocabulaire des opérations (Résolution de problèmes)', icon:'🧩', screen:'screen-op-vocabulaire-prob', fn:'' },
   ]},
   { cat: '🔢 Mathématiques', sub: '➕ Opérations — Calculs & Techniques', items: [
-    { id:'op_add_sous', label:'Additions et soustractions', icon:'<img src="assets/logos/op_add_sous.png" class="w-full h-full object-contain" />', screen:'screen-op-add-sous', fn:'' },
+    { id:'op_add_sous', label:'Additions et soustractions', icon:'<img src="assets/logos/op_add_sous.webp" class="w-full h-full object-contain" />', screen:'screen-op-add-sous', fn:'' },
     { id:"op_add_sous_100", label:"Additions et soustractions — Jusque 100", icon:"🔢", screen:"screen-calc-exercise", fn:"() => startCalcExercise('add_sous_100')" },
     { id:"op_add_sous_1000", label:"Additions et soustractions — Jusque 1 000", icon:"🔢", screen:"screen-calc-exercise", fn:"() => startCalcExercise('add_sous_1000')" },
     { id:"op_add_sous_10000", label:"Additions et soustractions — Jusque 10 000", icon:"🔢", screen:"screen-calc-exercise", fn:"() => startCalcExercise('add_sous_10000')" },
@@ -34405,35 +34434,35 @@ const PLAN_CATALOGUE = [
     { id:"op_mult_div_tables", label:"Multiplications et divisions — Tables de multiplication", icon:"✖️", screen:"screen-calc-exercise", fn:"() => startMultDivExercise()" },
     { id:'op_4_operations', label:'Les 4 opérations', icon:'🔢', screen:'screen-op-4-operations', fn:'render4OperationsScreen' },
     { id:"op_4_operations_melangees", label:"Les 4 opérations mélangées", icon:"🔢", screen:"screen-calc-exercise", fn:"() => start4OpExercise()" },
-    { id:'op_add_sous_compte_est_bon', label:'Le compte est bon', icon:'<img src="assets/logos/op_compte_est_bon.png" class="w-full h-full object-contain" />', screen:'screen-op-add-sous-compte-est-bon', fn:'' },
+    { id:'op_add_sous_compte_est_bon', label:'Le compte est bon', icon:'<img src="assets/logos/op_compte_est_bon.webp" class="w-full h-full object-contain" />', screen:'screen-op-add-sous-compte-est-bon', fn:'' },
     { id:'op_4_operations_calculs', label:"Fiche d'entrainement (Calculs)", icon:'✏️', screen:'screen-op-4-operations-calculs', fn:'' },
     { id:'op_4_operations_lacunaires', label:'Calculs lacunaires', icon:'✏️', screen:'screen-op-4-operations-lacunaires', fn:'' },
-    { id:'op_tables', label:'Les tables étendues', icon:'<img src="assets/logos/op_tables_etendues.png" class="w-full h-full object-contain" />', screen:'screen-calc-exercise', fn:'() => startOpTablesExercise()' },
-    { id:'op_x10', label:'× et ÷ par 0,1 — 10 — 100 — 1000', icon:'<img src="assets/logos/op_x10.png" class="w-full h-full object-contain" />', screen:'screen-calc-exercise', fn:'() => startOpX10Exercise()' },
-    { id:'op_x5', label:'× et ÷ par 0,5 — 5 — 50 — 500', icon:'<img src="assets/logos/op_x5.png" class="w-full h-full object-contain" />', screen:'screen-calc-exercise', fn:'() => startOpX5Exercise()' },
-    { id:'op_x9', label:'× par 9 — 90 — 99 — 9,9', icon:'<img src="assets/logos/op_x9.png" class="w-full h-full object-contain" />', screen:'screen-calc-exercise', fn:'() => startOpX9Exercise()' },
+    { id:'op_tables', label:'Les tables étendues', icon:'<img src="assets/logos/op_tables_etendues.webp" class="w-full h-full object-contain" />', screen:'screen-calc-exercise', fn:'() => startOpTablesExercise()' },
+    { id:'op_x10', label:'× et ÷ par 0,1 — 10 — 100 — 1000', icon:'<img src="assets/logos/op_x10.webp" class="w-full h-full object-contain" />', screen:'screen-calc-exercise', fn:'() => startOpX10Exercise()' },
+    { id:'op_x5', label:'× et ÷ par 0,5 — 5 — 50 — 500', icon:'<img src="assets/logos/op_x5.webp" class="w-full h-full object-contain" />', screen:'screen-calc-exercise', fn:'() => startOpX5Exercise()' },
+    { id:'op_x9', label:'× par 9 — 90 — 99 — 9,9', icon:'<img src="assets/logos/op_x9.webp" class="w-full h-full object-contain" />', screen:'screen-calc-exercise', fn:'() => startOpX9Exercise()' },
     { id:'op_x11', label:'× par 11 — 101 — 110 — 1,1', icon:'🔢', screen:'screen-calc-exercise', fn:'() => startOpX11Exercise()' },
-    { id:'op_divisibilite', label:'Caractères de divisibilité', icon:'<img src="assets/logos/op_divisibilite.png" class="w-full h-full object-contain" />', screen:'screen-op-divisibilite', fn:'' },
+    { id:'op_divisibilite', label:'Caractères de divisibilité', icon:'<img src="assets/logos/op_divisibilite.webp" class="w-full h-full object-contain" />', screen:'screen-op-divisibilite', fn:'' },
     { id:'op_calcul_ecrit', label:'Calcul écrit', icon:'✏️', screen:'screen-op-calcul-ecrit', fn:'' },
     { id:"op_calcul_ecrit_addition", label:"Calcul écrit — Additions écrites", icon:"➕", screen:"screen-op-calcul-ecrit-addition", fn:"" },
     { id:"op_calcul_ecrit_soustraction", label:"Calcul écrit — Soustractions écrites", icon:"➖", screen:"screen-op-calcul-ecrit-soustraction", fn:"" },
     { id:"op_calcul_ecrit_multiplication", label:"Calcul écrit — Multiplications écrites", icon:"✖️", screen:"screen-op-calcul-ecrit-multiplication", fn:"" },
     { id:"op_calcul_ecrit_division", label:"Calcul écrit — Divisions écrites", icon:"➗", screen:"screen-op-calcul-ecrit-division", fn:"" },
-    { id:'op_ordre', label:"L'ordre des opérations", icon:'<img src="assets/logos/op_ordre.png" class="w-full h-full object-contain" />', screen:'screen-op-ordre', fn:'' },
+    { id:'op_ordre', label:"L'ordre des opérations", icon:'<img src="assets/logos/op_ordre.webp" class="w-full h-full object-contain" />', screen:'screen-op-ordre', fn:'' },
     { id:"op_ordre_pemdas", label:"L'ordre des opérations — Mission PEMDAS", icon:"🔢", screen:"screen-op-ordre-pemdas", fn:"" },
     { id:"op_ordre_defi", label:"L'ordre des opérations — Défi PEMDAS", icon:"🏆", screen:"screen-op-ordre-defi", fn:"" },
-    { id:'op_fractions', label:'Opérer sur des fractions', icon:'<img src="assets/logos/op_fractions.png" class="w-full h-full object-contain" />', screen:'screen-op-fractions', fn:'' },
+    { id:'op_fractions', label:'Opérer sur des fractions', icon:'<img src="assets/logos/op_fractions.webp" class="w-full h-full object-contain" />', screen:'screen-op-fractions', fn:'' },
     { id:'num_fractions_addition', label:'Opérer sur des fractions — Addition de fractions', icon:'➕', screen:'screen-op-fractions-addition', fn:'' },
   ]},
   { cat: '🔢 Mathématiques', sub: '📐 Grandeurs — Mesures de base', items: [
     { id:'grandeur_masses', label:'Les masses (Menu)', icon:'⚖️', screen:'screen-grandeurs-masses', fn:'renderMassesMenu' },
     { id:'grandeur_masses_qcm', label:'Conversions de masses (QCM)', icon:'⚖️', screen:'screen-grandeur-masses-qcm', fn:'renderMassesQCM' },
     { id:'grandeur_masses_qcm_abaque', label:'Conversions & Abaque (QCM)', icon:'🧮', screen:'screen-grandeur-masses-qcm-abaque', fn:'' },
-    { id:'grandeur_capacites', label:'Les capacités (Menu)', icon:'<img src="assets/logos/grandeur_capacites.png" class="w-full h-full object-contain" />', screen:'screen-grandeurs-capacites', fn:'renderCapacitesMenu' },
-    { id:'grandeur_capacites_qcm', label:'Conversions de capacités (QCM)', icon:'<img src="assets/logos/grandeur_capacites.png" class="w-full h-full object-contain" />', screen:'screen-grandeur-capacites-qcm', fn:'renderCapacitesQCM' },
+    { id:'grandeur_capacites', label:'Les capacités (Menu)', icon:'<img src="assets/logos/grandeur_capacites.webp" class="w-full h-full object-contain" />', screen:'screen-grandeurs-capacites', fn:'renderCapacitesMenu' },
+    { id:'grandeur_capacites_qcm', label:'Conversions de capacités (QCM)', icon:'<img src="assets/logos/grandeur_capacites.webp" class="w-full h-full object-contain" />', screen:'screen-grandeur-capacites-qcm', fn:'renderCapacitesQCM' },
     { id:'grandeur_capacites_qcm_sup', label:'Conversions de capacités & abaque (QCM)', icon:'🧮', screen:'screen-grandeur-capacites-qcm-sup', fn:'' },
-    { id:'grandeur_longueurs', label:'Les longueurs (Menu)', icon:'<img src="assets/logos/grandeur_longueurs.png" class="w-full h-full object-contain" />', screen:'screen-grandeurs-longueurs', fn:'renderLongueursMenu' },
-    { id:'grandeur_longueurs_qcm', label:'Conversions de longueurs (QCM)', icon:'<img src="assets/logos/grandeur_longueurs.png" class="w-full h-full object-contain" />', screen:'screen-grandeur-longueurs-qcm', fn:'renderLongueursQCM' },
+    { id:'grandeur_longueurs', label:'Les longueurs (Menu)', icon:'<img src="assets/logos/grandeur_longueurs.webp" class="w-full h-full object-contain" />', screen:'screen-grandeurs-longueurs', fn:'renderLongueursMenu' },
+    { id:'grandeur_longueurs_qcm', label:'Conversions de longueurs (QCM)', icon:'<img src="assets/logos/grandeur_longueurs.webp" class="w-full h-full object-contain" />', screen:'screen-grandeur-longueurs-qcm', fn:'renderLongueursQCM' },
     { id:'grandeur_longueurs_qcm_sup', label:'Conversions de longueurs & abaque (QCM)', icon:'🧮', screen:'screen-grandeur-longueurs-qcm-sup', fn:'' },
   ]},
   { cat: '🔢 Mathématiques', sub: '📐 Grandeurs — Périmètre, Aire & Volume', items: [
@@ -34447,36 +34476,36 @@ const PLAN_CATALOGUE = [
     { id:'grandeur_aire_quadrillage', label:"Le Géomètre des Carreaux (Quadrillage)", icon:'🟩', screen:'screen-grandeur-aire-quadrillage', fn:'' },
     { id:'grandeur_aire_conversions', label:"L'Arpenteur Impérial (Conversions d'Aire)", icon:'⚖️', screen:'screen-grandeur-aire-conversions', fn:'' },
     { id:'grandeur_aire_agraire', label:"Mesures Agraires & Superficies", icon:'🌾', screen:'screen-grandeur-aire-agraire', fn:'' },
-    { id:'grandeur_aire_rectangle', label:"Le Maître Carreleur (Aire du carré et du rectangle)", icon:'<img src="assets/logos/grandeur_aire_rectangle.png" class="w-full h-full object-contain" />', screen:'screen-grandeur-aire-rectangle', fn:'' },
+    { id:'grandeur_aire_rectangle', label:"Le Maître Carreleur (Aire du carré et du rectangle)", icon:'<img src="assets/logos/grandeur_aire_rectangle.webp" class="w-full h-full object-contain" />', screen:'screen-grandeur-aire-rectangle', fn:'' },
     { id:"grandeur_aire_formules", label:"L'Arpenteur du Château (Formules d'aire)", icon:"📐", screen:"screen-grandeur-aire-formules", fn:"" },
     { id:"grandeur_aire_composee", label:"Le Calcul d'Aires Composées", icon:"📐", screen:"screen-grandeur-aire-composee", fn:"" },
-    { id:'grandeur_volume', label:'Le volume', icon:'<img src="assets/logos/grandeur_volume.png" class="w-full h-full object-contain" />', screen:'screen-grandeurs-volume', fn:'renderVolumeMenu' },
+    { id:'grandeur_volume', label:'Le volume', icon:'<img src="assets/logos/grandeur_volume.webp" class="w-full h-full object-contain" />', screen:'screen-grandeurs-volume', fn:'renderVolumeMenu' },
     { id:'grandeur_volume_cubes', label:"Le Bâtisseur de Cubes (Volume 3D)", icon:'🧊', screen:'screen-grandeur-volume-cubes', fn:'' },
     { id:'grandeur_volume_architecte', label:"L'Architecte des Pavés (Formules)", icon:'🧱', screen:'screen-grandeur-volume-formules', fn:'' },
     { id:'grandeur_volume_liquides', label:"Le Laboratoire des Liquides", icon:'🧪', screen:'screen-grandeur-volume-conversions', fn:'' },
   ]},
   { cat: '🔢 Mathématiques', sub: '📐 Grandeurs — Durées, Monnaie & Vitesse', items: [
-    { id:'grandeur_durees', label:'Les durées', icon:'<img src="assets/logos/grandeur_durees.png" class="w-full h-full object-contain" />', screen:'screen-grandeurs-durees', fn:'renderGrandeurDurees' },
+    { id:'grandeur_durees', label:'Les durées', icon:'<img src="assets/logos/grandeur_durees.webp" class="w-full h-full object-contain" />', screen:'screen-grandeurs-durees', fn:'renderGrandeurDurees' },
     { id:"grandeur_durees_conversions", label:"Les durées — Conversions", icon:"⏱️", screen:"screen-durees-exercise", fn:"() => startDureesExercise('conversions')" },
     { id:"grandeur_durees_entre", label:"Les durées — Durée entre 2 heures", icon:"🕑", screen:"screen-durees-exercise", fn:"() => startDureesExercise('duree_entre')" },
     { id:'grandeur_durees_heure_secondes', label:'Quelle heure est-il ? (avec secondes)', icon:'🚆', screen:'screen-grandeurs-durees-heure-secondes', fn:'' },
     { id:'grandeur_durees_situations', label:'Le Labo des Durées', icon:'⏱️', screen:'screen-grandeur-durees-situations', fn:'' },
-    { id:'grandeur_monnaie', label:'La monnaie (Menu)', icon:'<img src="assets/logos/grandeur_monnaie.png" class="w-full h-full object-contain" />', screen:'screen-grandeurs-monnaie', fn:'renderGrandeursMonnaieMenu' },
+    { id:'grandeur_monnaie', label:'La monnaie (Menu)', icon:'<img src="assets/logos/grandeur_monnaie.webp" class="w-full h-full object-contain" />', screen:'screen-grandeurs-monnaie', fn:'renderGrandeursMonnaieMenu' },
     { id:'grandeur_monnaie_payer', label:'Paie le commerçant', icon:'👛', screen:'screen-grandeurs-monnaie-payer', fn:'' },
     { id:'grandeur_monnaie_rendre', label:'Rends la monnaie', icon:'🪙', screen:'screen-grandeurs-monnaie-rendre', fn:'' },
     { id:'grandeur_monnaie_deux_objets', label:'Deux objets — Rends la monnaie', icon:'🛍️', screen:'screen-grandeurs-monnaie-deux-objets', fn:'' },
-    { id:'grandeur_proportionnalite', label:'La proportionnalité (Menu)', icon:'<img src="assets/logos/grandeur_proportionnalite.png" class="w-full h-full object-contain" />', screen:'screen-grandeurs-proportionnalite', fn:'renderProportionnaliteMenu' },
+    { id:'grandeur_proportionnalite', label:'La proportionnalité (Menu)', icon:'<img src="assets/logos/grandeur_proportionnalite.webp" class="w-full h-full object-contain" />', screen:'screen-grandeurs-proportionnalite', fn:'renderProportionnaliteMenu' },
     { id:'grandeur_proportionnalite_exercice', label:'Recettes', icon:'🥣', screen:'screen-grandeurs-proportionnalite-exercice', fn:'' },
     { id:'grandeur_proportionnalite_rallye_bolides', label:'Le rallye des bolides', icon:'🏎️', screen:'screen-grandeurs-proportionnalite-rallye-bolides', fn:'' },
     { id:'grandeur_proportionnalite_supermarche_malin', label:'Le supermarché malin', icon:'🛒', screen:'screen-grandeurs-proportionnalite-supermarche-malin', fn:'' },
-    { id:'grandeur_vitesse_horaire', label:'La vitesse horaire (Menu)', icon:'<img src="assets/logos/grandeur_vitesse_horaire.png" class="w-full h-full object-contain" />', screen:'screen-grandeurs-vitesse-horaire', fn:'renderVitesseHoraireMenu' },
-    { id:'grandeur_vitesse_horaire_qcm', label:'QCM de vitesse horaire', icon:'<img src="assets/logos/grandeur_vitesse_horaire_qcm.png" class="w-full h-full object-contain" />', screen:'screen-grandeurs-vitesse-horaire-qcm', fn:'' },
+    { id:'grandeur_vitesse_horaire', label:'La vitesse horaire (Menu)', icon:'<img src="assets/logos/grandeur_vitesse_horaire.webp" class="w-full h-full object-contain" />', screen:'screen-grandeurs-vitesse-horaire', fn:'renderVitesseHoraireMenu' },
+    { id:'grandeur_vitesse_horaire_qcm', label:'QCM de vitesse horaire', icon:'<img src="assets/logos/grandeur_vitesse_horaire_qcm.webp" class="w-full h-full object-contain" />', screen:'screen-grandeurs-vitesse-horaire-qcm', fn:'' },
     { id:'grandeur_echelle', label:"L'échelle", icon:'🗺️', screen:'screen-grandeurs-echelle', fn:'' },
   ]},
   { cat: '🔢 Mathématiques', sub: '📊 Traitement de données', items: [
     { id:'td_tableau', label:'Lire un tableau', icon:'📋', screen:'screen-td-tableau', fn:'renderTDTableau' },
-    { id:'td_graphique', label:'Lire un graphique', icon:'<img src="assets/logos/td_graphique.png" class="w-full h-full object-contain" />', screen:'screen-td-graphique', fn:'renderTDGraphique' },
-    { id:'td_la_moyenne_menu', label:'La moyenne', icon:'<img src="assets/logos/td_la_moyenne.png" class="w-full h-full object-contain" />', screen:'screen-td-la-moyenne-menu', fn:'renderLaMoyenneMenu' },
+    { id:'td_graphique', label:'Lire un graphique', icon:'<img src="assets/logos/td_graphique.webp" class="w-full h-full object-contain" />', screen:'screen-td-graphique', fn:'renderTDGraphique' },
+    { id:'td_la_moyenne_menu', label:'La moyenne', icon:'<img src="assets/logos/td_la_moyenne.webp" class="w-full h-full object-contain" />', screen:'screen-td-la-moyenne-menu', fn:'renderLaMoyenneMenu' },
     { id:'td_moyenne_qcm', label:'La moyenne (QCM)', icon:'❓', screen:'screen-td-moyenne-qcm', fn:'renderTDMoyenneQCM' },
     { id:"td_moyenne", label:"Moyenne et étendue", icon:"🔢", screen:"screen-td-moyenne", fn:"renderTDMoyenne" },
     { id:'td_donnees_circulaires', label:'Le décodeur de camemberts', icon:'🍕', screen:'screen-td-donnees-circulaires', fn:'renderDonneesCirculaires' },
@@ -34490,7 +34519,7 @@ const PLAN_CATALOGUE = [
     { id:'polygones_caracteristiques', label:'Caractéristiques des polygones', icon:'🏷️', screen:'screen-polygones-carac', fn:'' },
   ]},
   { cat: '🔢 Mathématiques', sub: '🔷 Solides & Figures — Triangles & Angles', items: [
-    { id:'solide_triangles', label:'Les triangles (Menu)', icon:'<img src="assets/logos/solide_triangles.png" class="w-full h-full object-contain" />', screen:'screen-solides-triangles', fn:'renderTrianglesMenu' },
+    { id:'solide_triangles', label:'Les triangles (Menu)', icon:'<img src="assets/logos/solide_triangles.webp" class="w-full h-full object-contain" />', screen:'screen-solides-triangles', fn:'renderTrianglesMenu' },
     { id:'triangles_qcm', label:'Identifier les triangles', icon:'🔺', screen:'screen-triangles-qcm', fn:'' },
     { id:'triangles_caracteristiques', label:'Caractéristiques des triangles', icon:'🏷️', screen:'screen-triangles-carac', fn:'' },
     { id:'solide_triangles_hauteurs', label:'Les hauteurs du triangle', icon:'🔺', screen:'screen-triangles-hauteurs', fn:'' },
@@ -34511,12 +34540,12 @@ const PLAN_CATALOGUE = [
     { id:'disque_compas', label:'Le cercle et le disque — L\'enquête du compas', icon:'🧭', screen:'screen-disque-compas', fn:'' },
   ]},
   { cat: '🔢 Mathématiques', sub: '🔷 Solides & Figures — Polyèdres, Symétrie & 3D', items: [
-    { id:'solide_polyedres', label:'Les polyèdres (Menu)', icon:'<img src="assets/logos/solide_polyedres.png" class="w-full h-full object-contain" />', screen:'screen-solides-polyedres', fn:'' },
+    { id:'solide_polyedres', label:'Les polyèdres (Menu)', icon:'<img src="assets/logos/solide_polyedres.webp" class="w-full h-full object-contain" />', screen:'screen-solides-polyedres', fn:'' },
     { id:'polyedres_reconnaitre', label:'Polyèdre ou non-polyèdre', icon:'🎯', screen:'screen-polyedres-reconnaitre', fn:'' },
     { id:'polyedres_patrons', label:'Patrons de solides', icon:'📦', screen:'screen-polyedres-patrons', fn:'' },
     { id:'polyedres_definitions', label:'Trouve le bon solide (Définitions)', icon:'❓', screen:'screen-polyedres-definitions', fn:'' },
     { id:'polyedres_caracteristiques', label:'Trouve les caractéristiques (Définitions)', icon:'🏷️', screen:'screen-polyedres-caracteristiques', fn:'' },
-    { id:'solide_symetrie', label:'Les axes de symétrie', icon:'<img src="assets/logos/solide_symetrie.png" class="w-full h-full object-contain" />', screen:'screen-solides-symetrie', fn:'' },
+    { id:'solide_symetrie', label:'Les axes de symétrie', icon:'<img src="assets/logos/solide_symetrie.webp" class="w-full h-full object-contain" />', screen:'screen-solides-symetrie', fn:'' },
     { id:'solide_transformations_labo', label:'Le labo des transformations', icon:'🔄', screen:'screen-solides-transformations', fn:'' },
     { id:'solide_projections_cubes', label:'Projections de cubes (Solides 3D)', icon:'🧊', screen:'screen-solides-projections', fn:'' },
     { id:'solide_vocabulaire', label:'Le vocabulaire géométrique', icon:'📖', screen:'screen-solides-vocabulaire', fn:'' },
@@ -34526,23 +34555,23 @@ const PLAN_CATALOGUE = [
     { id:'fiche_frise', label:'La frise chronologique (Interactive)', icon:'📜', screen:'screen-vocabulaire', fn:"() => openFiche('frise-chronologique-histoire.html', 'La frise chronologique', 'screen-plan-travail-student')" },
     { id:'hist_grand_voyage_temps', label:'Le grand voyage du Temps (Carnet d\'investigation)', icon:'🏛️', screen:'screen-fiche-viewer', filename:'lecon_frise_historique.html', fn:"() => openFiche('lecon_frise_historique.html', 'Le grand voyage du Temps', 'screen-plan-travail-student')" },
     { id:'hist_ligne_du_temps', label:'La ligne du temps (Séquence P5–P6)', icon:'⏳', screen:'screen-fiche-viewer', filename:'ligne-du-temps_5.html', fn:"() => openFiche('ligne-du-temps_5.html', 'La ligne du temps', 'screen-plan-travail-student')" },
-    { id:'hist_grandes_periodes', label:'Les grandes périodes de l\'Histoire', icon:'<img src="assets/logos/hist_grandes_periodes.png" class="w-full h-full object-contain" />', screen:'screen-hist-grandes-periodes', fn:'' },
-    { id:'qvgdm_prehistoire', label:'Quiz Préhistoire', icon:'<img src="assets/logos/qvgdm_prehistoire.png" class="w-full h-full object-contain" />', screen:'screen-qvgdm-prehistoire', fn:'renderQVGDMPrehistoire' },
-    { id:'prehistoire_assoc', label:'Préhistoire — Termes et définitions', icon:'<img src="assets/logos/prehistoire_assoc.png" class="w-full h-full object-contain" />', screen:'screen-prehistoire-assoc', fn:'renderPrehistoireAssoc' },
-    { id:'prehistoire_doc', label:'Préhistoire — Campement du Paléolithique', icon:'<img src="assets/logos/prehistoire_doc.png" class="w-full h-full object-contain" />', screen:'screen-prehistoire-doc', fn:'renderPrehistoireDoc' },
-    { id:'qvgdm_antiquite', label:"Quiz L'Antiquité", icon:'<img src="assets/logos/qvgdm_antiquite.png" class="w-full h-full object-contain" />', screen:'screen-qvgdm-antiquite', fn:'renderQVGDMAntiquite' },
-    { id:'antiquite_assoc', label:'Antiquité — Termes et définitions', icon:'<img src="assets/logos/antiquite_assoc.png" class="w-full h-full object-contain" />', screen:'screen-antiquite-assoc', fn:'renderAntiquiteAssoc' },
-    { id:'antiquite_doc', label:'Antiquité — Document historique', icon:'<img src="assets/logos/antiquite_doc.png" class="w-full h-full object-contain" />', screen:'screen-antiquite-doc', fn:'renderAntiquiteDoc' },
-    { id:'qvgdm_moyen_age', label:'Quiz Moyen Âge', icon:'<img src="assets/logos/qvgdm_moyen_age.png" class="w-full h-full object-contain" />', screen:'screen-qvgdm-moyen-age', fn:'renderQVGDMMoyenAge' },
-    { id:'moyen_age_assoc', label:'Moyen Âge — Termes et définitions', icon:'<img src="assets/logos/moyen_age_assoc.png" class="w-full h-full object-contain" />', screen:'screen-moyen-age-assoc', fn:'renderMoyenAgeAssoc' },
-    { id:'moyen_age_doc', label:'Moyen Âge — La Peste Noire', icon:'<img src="assets/logos/moyen_age_doc.png" class="w-full h-full object-contain" />', screen:'screen-moyen-age-doc', fn:'renderMoyenAgeDoc' },
-    { id:'moyen_age_texte_trous', label:'Moyen Âge — Texte lacunaire', icon:'<img src="assets/logos/moyen_age_texte_trous.png" class="w-full h-full object-contain" />', screen:'screen-fiche-viewer', filename:'moyen_age_texte_trous.html', fn:"() => openFiche('moyen_age_texte_trous.html', 'Moyen Âge — Texte lacunaire', 'screen-plan-travail-student')" },
-    { id:'moyen_age_vocabulaire', label:'Moyen Âge — Je relie (Vocabulaire)', icon:'<img src="assets/logos/moyen_age_vocabulaire.png" class="w-full h-full object-contain" />', screen:'screen-fiche-viewer', filename:'moyen_age_vocabulaire.html', fn:"() => openFiche('moyen_age_vocabulaire.html', 'Moyen Âge — Je relie (Vocabulaire)', 'screen-plan-travail-student')" },
-    { id:'hist_temps_modernes', label:'Les Temps Modernes', icon:'<img src="assets/logos/hist_temps_modernes.png" class="w-full h-full object-contain" />', screen:'screen-hist-temps-modernes', fn:'' },
-    { id:'hist_contemporaine', label:"L'Époque Contemporaine", icon:'<img src="assets/logos/hist_contemporaine.png" class="w-full h-full object-contain" />', screen:'screen-hist-contemporaine', fn:'' },
+    { id:'hist_grandes_periodes', label:'Les grandes périodes de l\'Histoire', icon:'<img src="assets/logos/hist_grandes_periodes.webp" class="w-full h-full object-contain" />', screen:'screen-hist-grandes-periodes', fn:'' },
+    { id:'qvgdm_prehistoire', label:'Quiz Préhistoire', icon:'<img src="assets/logos/qvgdm_prehistoire.webp" class="w-full h-full object-contain" />', screen:'screen-qvgdm-prehistoire', fn:'renderQVGDMPrehistoire' },
+    { id:'prehistoire_assoc', label:'Préhistoire — Termes et définitions', icon:'<img src="assets/logos/prehistoire_assoc.webp" class="w-full h-full object-contain" />', screen:'screen-prehistoire-assoc', fn:'renderPrehistoireAssoc' },
+    { id:'prehistoire_doc', label:'Préhistoire — Campement du Paléolithique', icon:'<img src="assets/logos/prehistoire_doc.webp" class="w-full h-full object-contain" />', screen:'screen-prehistoire-doc', fn:'renderPrehistoireDoc' },
+    { id:'qvgdm_antiquite', label:"Quiz L'Antiquité", icon:'<img src="assets/logos/qvgdm_antiquite.webp" class="w-full h-full object-contain" />', screen:'screen-qvgdm-antiquite', fn:'renderQVGDMAntiquite' },
+    { id:'antiquite_assoc', label:'Antiquité — Termes et définitions', icon:'<img src="assets/logos/antiquite_assoc.webp" class="w-full h-full object-contain" />', screen:'screen-antiquite-assoc', fn:'renderAntiquiteAssoc' },
+    { id:'antiquite_doc', label:'Antiquité — Document historique', icon:'<img src="assets/logos/antiquite_doc.webp" class="w-full h-full object-contain" />', screen:'screen-antiquite-doc', fn:'renderAntiquiteDoc' },
+    { id:'qvgdm_moyen_age', label:'Quiz Moyen Âge', icon:'<img src="assets/logos/qvgdm_moyen_age.webp" class="w-full h-full object-contain" />', screen:'screen-qvgdm-moyen-age', fn:'renderQVGDMMoyenAge' },
+    { id:'moyen_age_assoc', label:'Moyen Âge — Termes et définitions', icon:'<img src="assets/logos/moyen_age_assoc.webp" class="w-full h-full object-contain" />', screen:'screen-moyen-age-assoc', fn:'renderMoyenAgeAssoc' },
+    { id:'moyen_age_doc', label:'Moyen Âge — La Peste Noire', icon:'<img src="assets/logos/moyen_age_doc.webp" class="w-full h-full object-contain" />', screen:'screen-moyen-age-doc', fn:'renderMoyenAgeDoc' },
+    { id:'moyen_age_texte_trous', label:'Moyen Âge — Texte lacunaire', icon:'<img src="assets/logos/moyen_age_texte_trous.webp" class="w-full h-full object-contain" />', screen:'screen-fiche-viewer', filename:'moyen_age_texte_trous.html', fn:"() => openFiche('moyen_age_texte_trous.html', 'Moyen Âge — Texte lacunaire', 'screen-plan-travail-student')" },
+    { id:'moyen_age_vocabulaire', label:'Moyen Âge — Je relie (Vocabulaire)', icon:'<img src="assets/logos/moyen_age_vocabulaire.webp" class="w-full h-full object-contain" />', screen:'screen-fiche-viewer', filename:'moyen_age_vocabulaire.html', fn:"() => openFiche('moyen_age_vocabulaire.html', 'Moyen Âge — Je relie (Vocabulaire)', 'screen-plan-travail-student')" },
+    { id:'hist_temps_modernes', label:'Les Temps Modernes', icon:'<img src="assets/logos/hist_temps_modernes.webp" class="w-full h-full object-contain" />', screen:'screen-hist-temps-modernes', fn:'' },
+    { id:'hist_contemporaine', label:"L'Époque Contemporaine", icon:'<img src="assets/logos/hist_contemporaine.webp" class="w-full h-full object-contain" />', screen:'screen-hist-contemporaine', fn:'' },
   ]},
   { cat: '🌍 Éveil', sub: '🔬 Sciences — Corps humain & Santé', items: [
-    { id:'sci_squelette', label:'Le squelette humain', icon:'<img src="assets/logos/sci_squelette.png" class="w-full h-full object-contain" />', screen:'screen-sci-squelette', fn:'renderSciSqueletteMenu' },
+    { id:'sci_squelette', label:'Le squelette humain', icon:'<img src="assets/logos/sci_squelette.webp" class="w-full h-full object-contain" />', screen:'screen-sci-squelette', fn:'renderSciSqueletteMenu' },
     { id:"sci_sq_schema", label:"Le squelette — Le schéma", icon:"💀", screen:"screen-sci-sq-schema", fn:"renderSciSqSchema" },
     { id:"sci_sq_texte", label:"Le squelette — Le fonctionnement du mouvement", icon:"💪", screen:"screen-sci-sq-texte", fn:"renderSciSqTexte" },
     { id:"sci_sq_qcm", label:"Le squelette — QCM", icon:"❓", screen:"screen-sci-sq-qcm", fn:"renderSciSqQCM" },
@@ -34550,29 +34579,29 @@ const PLAN_CATALOGUE = [
     { id:"sci_sq_vrai_faux", label:"Le squelette — Vrai ou faux ?", icon:"✅", screen:"screen-sci-sq-vrai-faux", fn:"renderSciSqVraiFaux" },
     { id:'fiche_respiratoire', label:"Appareil respiratoire — La leçon", icon:'🫁', screen:'screen-vocabulaire', fn:"() => openFiche('appareil-respiratoire.html', 'L\\'appareil respiratoire (Leçon)', 'screen-plan-travail-student')" },
     { id:'sci_resp_schema', label:'Appareil respiratoire — Le schéma', icon:'🫁', screen:'screen-sci-resp-schema', fn:'renderSciRespSchema' },
-    { id:'sci_resp_texte', label:'Appareil respiratoire — Trajet de l\'air', icon:'<img src="assets/logos/sci_resp_texte.png" class="w-full h-full object-contain" />', screen:'screen-sci-resp-texte', fn:'renderSciRespTexte' },
+    { id:'sci_resp_texte', label:'Appareil respiratoire — Trajet de l\'air', icon:'<img src="assets/logos/sci_resp_texte.webp" class="w-full h-full object-contain" />', screen:'screen-sci-resp-texte', fn:'renderSciRespTexte' },
     { id:'sci_resp_qcm', label:'Appareil respiratoire — QCM', icon:'❓', screen:'screen-sci-resp-qcm', fn:'renderSciRespQCM' },
-    { id:'sci_resp_assoc', label:'Appareil respiratoire — Termes et définitions', icon:'<img src="assets/logos/sci_resp_assoc.png" class="w-full h-full object-contain" />', screen:'screen-sci-resp-assoc', fn:'renderSciRespAssoc' },
-    { id:'sci_resp_ordre', label:"Appareil respiratoire — Remettre de l'ordre", icon:'<img src="assets/logos/sci_resp_ordre.png" class="w-full h-full object-contain" />', screen:'screen-sci-resp-ordre', fn:'renderSciRespOrdre' },
+    { id:'sci_resp_assoc', label:'Appareil respiratoire — Termes et définitions', icon:'<img src="assets/logos/sci_resp_assoc.webp" class="w-full h-full object-contain" />', screen:'screen-sci-resp-assoc', fn:'renderSciRespAssoc' },
+    { id:'sci_resp_ordre', label:"Appareil respiratoire — Remettre de l'ordre", icon:'<img src="assets/logos/sci_resp_ordre.webp" class="w-full h-full object-contain" />', screen:'screen-sci-resp-ordre', fn:'renderSciRespOrdre' },
     { id:'fiche_digestif', label:"Appareil digestif — La leçon", icon:'🫃', screen:'screen-vocabulaire', fn:"() => openFiche('appareil-digestif.html', 'L\\'appareil digestif (Leçon)', 'screen-plan-travail-student')" },
     { id:'sci_dig_schema', label:'Appareil digestif — Le schéma', icon:'🫃', screen:'screen-sci-dig-schema', fn:'renderSciDigSchema' },
-    { id:'sci_dig_texte', label:'Appareil digestif — Trajet des aliments', icon:'<img src="assets/logos/sci_dig_texte.png" class="w-full h-full object-contain" />', screen:'screen-sci-dig-texte', fn:'renderSciDigTexte' },
+    { id:'sci_dig_texte', label:'Appareil digestif — Trajet des aliments', icon:'<img src="assets/logos/sci_dig_texte.webp" class="w-full h-full object-contain" />', screen:'screen-sci-dig-texte', fn:'renderSciDigTexte' },
     { id:'sci_dig_qcm', label:'Appareil digestif — QCM', icon:'❓', screen:'screen-sci-dig-qcm', fn:'renderSciDigQCM' },
-    { id:'sci_dig_assoc', label:'Appareil digestif — Termes et définitions', icon:'<img src="assets/logos/sci_dig_assoc.png" class="w-full h-full object-contain" />', screen:'screen-sci-dig-assoc', fn:'renderSciDigAssoc' },
-    { id:'sci_dig_ordre', label:"Appareil digestif — Remettre de l'ordre", icon:'<img src="assets/logos/sci_dig_ordre.png" class="w-full h-full object-contain" />', screen:'screen-sci-dig-ordre', fn:'renderSciDigOrdre' },
+    { id:'sci_dig_assoc', label:'Appareil digestif — Termes et définitions', icon:'<img src="assets/logos/sci_dig_assoc.webp" class="w-full h-full object-contain" />', screen:'screen-sci-dig-assoc', fn:'renderSciDigAssoc' },
+    { id:'sci_dig_ordre', label:"Appareil digestif — Remettre de l'ordre", icon:'<img src="assets/logos/sci_dig_ordre.webp" class="w-full h-full object-contain" />', screen:'screen-sci-dig-ordre', fn:'renderSciDigOrdre' },
     { id:'fiche_circulatoire', label:"Système circulatoire — La leçon", icon:'❤️', screen:'screen-vocabulaire', fn:"() => openFiche('systeme-circulatoire.html', 'Le système circulatoire (Leçon)', 'screen-plan-travail-student')" },
     { id:'sci_coeur', label:'Appareil circulatoire — Le cœur', icon:'❤️', screen:'screen-sci-coeur', fn:'renderSciCoeurScreen' },
-    { id:'sci_trajet_sang', label:'Appareil circulatoire — Le trajet du sang', icon:'<img src="assets/logos/sci_trajet_sang.png" class="w-full h-full object-contain" />', screen:'screen-sci-trajet-sang', fn:'renderSciTrajetSangScreen' },
+    { id:'sci_trajet_sang', label:'Appareil circulatoire — Le trajet du sang', icon:'<img src="assets/logos/sci_trajet_sang.webp" class="w-full h-full object-contain" />', screen:'screen-sci-trajet-sang', fn:'renderSciTrajetSangScreen' },
     { id:'sci_circulatoire_qcm', label:"Appareil circulatoire — QCM", icon:'❓', screen:'screen-sci-circulatoire-qcm', fn:'renderSciCirculatoireQCM' },
-    { id:'sci_circulatoire_assoc', label:'Appareil circulatoire — Termes et définitions', icon:'<img src="assets/logos/sci_circulatoire_assoc.png" class="w-full h-full object-contain" />', screen:'screen-sci-circulatoire-assoc', fn:'renderSciCirculatoireAssoc' },
-    { id:'sci_circ_petite', label:"La petite circulation (Ordre)", icon:'<img src="assets/logos/sci_circ_ordre.png" class="w-full h-full object-contain" />', screen:'screen-sci-circ-ordre', fn:'renderSciCircOrdrePetite' },
-    { id:'sci_circ_grande', label:"La grande circulation (Ordre)", icon:'<img src="assets/logos/sci_circ_ordre.png" class="w-full h-full object-contain" />', screen:'screen-sci-circ-ordre', fn:'renderSciCircOrdreGrande' },
-    { id:'sci_circ_ensemble', label:"Le trajet du sang (Ordre complet)", icon:'<img src="assets/logos/sci_circ_ordre.png" class="w-full h-full object-contain" />', screen:'screen-sci-circ-ordre', fn:'renderSciCircOrdreEnsemble' },
+    { id:'sci_circulatoire_assoc', label:'Appareil circulatoire — Termes et définitions', icon:'<img src="assets/logos/sci_circulatoire_assoc.webp" class="w-full h-full object-contain" />', screen:'screen-sci-circulatoire-assoc', fn:'renderSciCirculatoireAssoc' },
+    { id:'sci_circ_petite', label:"La petite circulation (Ordre)", icon:'<img src="assets/logos/sci_circ_ordre.webp" class="w-full h-full object-contain" />', screen:'screen-sci-circ-ordre', fn:'renderSciCircOrdrePetite' },
+    { id:'sci_circ_grande', label:"La grande circulation (Ordre)", icon:'<img src="assets/logos/sci_circ_ordre.webp" class="w-full h-full object-contain" />', screen:'screen-sci-circ-ordre', fn:'renderSciCircOrdreGrande' },
+    { id:'sci_circ_ensemble', label:"Le trajet du sang (Ordre complet)", icon:'<img src="assets/logos/sci_circ_ordre.webp" class="w-full h-full object-contain" />', screen:'screen-sci-circ-ordre', fn:'renderSciCircOrdreEnsemble' },
   ]},
   { cat: '🌍 Éveil', sub: '🔬 Sciences — Monde vivant & Matière', items: [
     { id:'fiche_lune', label:'Le Soleil, la Terre et la Lune (Leçon)', icon:'🌕', screen:'screen-vocabulaire', fn:"() => openFiche('soleil-terre-lune.html', 'Le Soleil, la Terre et la Lune', 'screen-plan-travail-student')" },
     { id:'fiche_classification', label:'La classification phylogénétique (Leçon)', icon:'🌿', screen:'screen-vocabulaire', fn:"() => openFiche('classification-phylogenetique.html', 'La classification phylogénétique', 'screen-plan-travail-student')" },
-    { id:'sci_systeme_solaire', label:'Le système solaire', icon:'<img src="assets/logos/sci_systeme_solaire.png" class="w-full h-full object-contain" />', screen:'screen-sci-systeme-solaire', fn:'' },
+    { id:'sci_systeme_solaire', label:'Le système solaire', icon:'<img src="assets/logos/sci_systeme_solaire.webp" class="w-full h-full object-contain" />', screen:'screen-sci-systeme-solaire', fn:'' },
     { id:'sci_planetes_ordre', label:'Planètes — Ordre et distance', icon:'🪐', screen:'screen-sci-planetes-ordre', fn:'' },
     { id:'sci_planetes_infos', label:'Planètes — Informations & Caractéristiques', icon:'🌍', screen:'screen-sci-planetes-infos', fn:'' },
     { id:'sci_planetes_qcm', label:'Système solaire — QCM', icon:'❓', screen:'screen-sci-planetes-infos', fn:'renderSciPlanetesInfosScreen' },
@@ -34596,24 +34625,24 @@ const PLAN_CATALOGUE = [
   { cat: '🌍 Éveil', sub: '🌍 Géographie', items: [
     { id:'geo_globe_3d', label:'Le globe terrestre 3D', icon:'🌐', screen:'screen-geo-globe-3d', fn:'' },
     { id:'geo_belgique_provinces', label:'Les provinces de Belgique', icon:'🗺️', screen:'screen-geo-belgique-provinces', fn:'renderGeoBelgiqueScreen' },
-    { id:'geo_belgique_hydro', label:"Les cours d'eau de Belgique", icon:'<img src="assets/logos/geo_belgique_hydro.png" class="w-full h-full object-contain" />', screen:'screen-geo-belgique-hydro', fn:'renderGeoHydroScreen' },
-    { id:'geo_belgique_communes', label:'Les communes de notre région', icon:'<img src="assets/logos/geo_belgique_communes.png" class="w-full h-full object-contain" />', screen:'screen-geo-belgique-communes', fn:'renderGeoCommunesScreen' },
+    { id:'geo_belgique_hydro', label:"Les cours d'eau de Belgique", icon:'<img src="assets/logos/geo_belgique_hydro.webp" class="w-full h-full object-contain" />', screen:'screen-geo-belgique-hydro', fn:'renderGeoHydroScreen' },
+    { id:'geo_belgique_communes', label:'Les communes de notre région', icon:'<img src="assets/logos/geo_belgique_communes.webp" class="w-full h-full object-contain" />', screen:'screen-geo-belgique-communes', fn:'renderGeoCommunesScreen' },
     { id:'geo_belgique_regions_communautes', label:'Régions et Communautés (Quiz)', icon:'🗺️', screen:'screen-geo-belgique-regions-communautes', fn:'renderGeoBelgiqueRegionsCommunautes' },
     { id:'geo_belgique_qcm', label:'La Belgique — QCM', icon:'❓', screen:'screen-geo-belgique-qcm', fn:'renderGeoBelgiqueQCM' },
     { id:'geo_planisphere_interactif', label:'Le planisphère interactif (découverte)', icon:'🗺️', screen:'screen-geo-planisphere-interactif', fn:'' },
     { id:'geo_planispheres', label:'Les planisphères', icon:'🗺️', screen:'screen-geo-planispheres', fn:'renderGeoPlanispheres' },
     { id:'geo_continents_qcm', label:'QCM — Continents et océans', icon:'❓', screen:'screen-geo-continents-qcm', fn:'renderGeoContinentsQCM' },
-    { id:'geo_tour_monde', label:'Le tour du monde', icon:'<img src="assets/logos/geo_tour_monde.png" class="w-full h-full object-contain" />', screen:'screen-geo-tour-monde', fn:'renderGeoTourMonde' },
-    { id:'geo_oceans', label:'Les océans et continents', icon:'<img src="assets/logos/geo_oceans.png" class="w-full h-full object-contain" />', screen:'screen-geo-oceans', fn:'' },
+    { id:'geo_tour_monde', label:'Le tour du monde', icon:'<img src="assets/logos/geo_tour_monde.webp" class="w-full h-full object-contain" />', screen:'screen-geo-tour-monde', fn:'renderGeoTourMonde' },
+    { id:'geo_oceans', label:'Les océans et continents', icon:'<img src="assets/logos/geo_oceans.webp" class="w-full h-full object-contain" />', screen:'screen-geo-oceans', fn:'' },
     { id:'geo_europe_cartes', label:"L'Europe — Cartes interactives", icon:'🇪🇺', screen:'screen-geo-europe-cartes', fn:'' },
     { id:'geo_europe_climats', label:"L'Europe — Climats et climagrammes", icon:'🌤️', screen:'screen-geo-europe-climats', fn:'' },
     { id:'geo_europe_relief_fleuves', label:"L'Europe — Relief et Fleuves", icon:'🏔️', screen:'screen-geo-europe-relief-fleuves', fn:'' },
     { id:'geo_europe_villes_pop', label:"L'Europe — Villes, Population et Mégalopole", icon:'🌆', screen:'screen-geo-europe-villes-pop', fn:'' },
-    { id:'geo_paysages', label:'Les paysages (Menu)', icon:'<img src="assets/logos/geo_paysages.png" class="w-full h-full object-contain" />', screen:'screen-geo-paysages-menu', fn:'renderGeoPaysagesMenu' },
+    { id:'geo_paysages', label:'Les paysages (Menu)', icon:'<img src="assets/logos/geo_paysages.webp" class="w-full h-full object-contain" />', screen:'screen-geo-paysages-menu', fn:'renderGeoPaysagesMenu' },
     { id:'geo_paysages_vallee', label:'Les paysages : la vallée', icon:'🏔️', screen:'screen-geo-paysages-vallee', fn:'renderGeoPaysagesMenu', filename:'analyse_paysages.html' },
     { id:'geo_paysages_littoral', label:'Les paysages : le littoral', icon:'🏖️', screen:'screen-geo-paysages-littoral', fn:'renderGeoPaysagesMenu', filename:'analyse_paysage_littoral.html' },
     { id:'geo_paysages_types', label:'Les types de paysages', icon:'🗺️', screen:'screen-geo-paysages-types', fn:'renderGeoPaysagesMenu', filename:'analyse_types_paysages.html' },
-    { id:'geo_hydro', label:'Le vocabulaire hydrographique (Menu)', icon:'<img src="assets/logos/geo_hydro.png" class="w-full h-full object-contain" />', screen:'screen-geo-hydro', fn:'renderGeoHydroMenu' },
+    { id:'geo_hydro', label:'Le vocabulaire hydrographique (Menu)', icon:'<img src="assets/logos/geo_hydro.webp" class="w-full h-full object-contain" />', screen:'screen-geo-hydro', fn:'renderGeoHydroMenu' },
     { id:'geo_hydro_schema', label:"Le schéma du cours d'eau", icon:'🌊', screen:'screen-geo-hydro-schema', fn:'renderGeoHydroMenu', filename:'vocabulaire_hydrographique.html' },
     { id:'geo_hydro_definitions', label:'Vocabulaire hydrographique (Définitions)', icon:'📖', screen:'screen-geo-hydro-definitions', fn:'renderGeoHydroMenu', filename:'hydrographie_definitions.html' },
     { id:'geo_hydro_belgique', label:'Relief et hydrographie de Belgique', icon:'🇧🇪', screen:'screen-geo-hydro-belgique', fn:'renderGeoHydroMenu', filename:'relief-hydrographie.html' },
@@ -35203,14 +35232,14 @@ function getActivitiesMasterRegistry() {
       { id:'jeu_flux', label:'Flux Connecté (Logique spatiale)', icon:'⚡', screen:'screen-jeu-flux', fn:'' },
       { id:'jeu_code_secret', label:'Le Code Secret (Déduction logique)', icon:'🕵️‍♂️', screen:'screen-jeu-code-secret', fn:'' },
       { id:'jeu_pendu', label:'Le Pendu des Mots (Vocabulaire)', icon:'🎈', screen:'screen-jeu-pendu', fn:'' },
-      { id:'jeu_pentomino', label:'Les Pentominos (Géométrie & Logique)', icon:'<img src="assets/logos/jeu_pentomino.png" class="w-full h-full object-contain" alt="Les Pentominos" />', screen:'screen-jeu-pentomino', fn:'' },
-      { id:'jeu_nonogram', label:'Le Nonogram (Logique & Déduction)', icon:'<img src="assets/logos/jeu_nonogram.png" class="w-full h-full object-contain" alt="Le Nonogram" />', screen:'screen-jeu-nonogram', fn:'' },
-      { id:'jeu_2048', label:'2048 (Calcul & Stratégie)', icon:'<img src="assets/logos/jeu_2048.png" class="w-full h-full object-contain" alt="2048" />', screen:'screen-jeu-2048', fn:'' },
-      { id:'jeu_motus', label:'Motus (Vocabulaire & Orthographe)', icon:'<img src="assets/logos/jeu_motus.png" class="w-full h-full object-contain" alt="Motus" />', screen:'screen-jeu-motus', fn:'' },
-      { id:'jeu_tangram', label:'Le Tangram (Géométrie & Logique)', icon:'<img src="assets/logos/jeu_tangram.png" class="w-full h-full object-contain" alt="Le Tangram" />', screen:'screen-jeu-tangram', fn:'' },
-      { id:'jeu_demineur', label:'Le Démineur (Logique & Déduction)', icon:'<img src="assets/logos/jeu_demineur.png" class="w-full h-full object-contain" alt="Le Démineur" />', screen:'screen-jeu-demineur', fn:'' },
-      { id:'jeu_pipopipette', label:'La Pipopipette (Logique & Stratégie)', icon:'<img src="assets/logos/jeu_pipopipette.png" class="w-full h-full object-contain" alt="La Pipopipette" />', screen:'screen-jeu-pipopipette', fn:'' },
-      { id:'jeu_echecs', label:'Les Échecs (Stratégie)', icon:'<img src="assets/logos/jeu_echecs.png" class="w-full h-full object-contain" alt="Les Échecs" />', screen:'screen-jeu-echecs', fn:'' },
+      { id:'jeu_pentomino', label:'Les Pentominos (Géométrie & Logique)', icon:'<img src="assets/logos/jeu_pentomino.webp" class="w-full h-full object-contain" alt="Les Pentominos" />', screen:'screen-jeu-pentomino', fn:'' },
+      { id:'jeu_nonogram', label:'Le Nonogram (Logique & Déduction)', icon:'<img src="assets/logos/jeu_nonogram.webp" class="w-full h-full object-contain" alt="Le Nonogram" />', screen:'screen-jeu-nonogram', fn:'' },
+      { id:'jeu_2048', label:'2048 (Calcul & Stratégie)', icon:'<img src="assets/logos/jeu_2048.webp" class="w-full h-full object-contain" alt="2048" />', screen:'screen-jeu-2048', fn:'' },
+      { id:'jeu_motus', label:'Motus (Vocabulaire & Orthographe)', icon:'<img src="assets/logos/jeu_motus.webp" class="w-full h-full object-contain" alt="Motus" />', screen:'screen-jeu-motus', fn:'' },
+      { id:'jeu_tangram', label:'Le Tangram (Géométrie & Logique)', icon:'<img src="assets/logos/jeu_tangram.webp" class="w-full h-full object-contain" alt="Le Tangram" />', screen:'screen-jeu-tangram', fn:'' },
+      { id:'jeu_demineur', label:'Le Démineur (Logique & Déduction)', icon:'<img src="assets/logos/jeu_demineur.webp" class="w-full h-full object-contain" alt="Le Démineur" />', screen:'screen-jeu-demineur', fn:'' },
+      { id:'jeu_pipopipette', label:'La Pipopipette (Logique & Stratégie)', icon:'<img src="assets/logos/jeu_pipopipette.webp" class="w-full h-full object-contain" alt="La Pipopipette" />', screen:'screen-jeu-pipopipette', fn:'' },
+      { id:'jeu_echecs', label:'Les Échecs (Stratégie)', icon:'<img src="assets/logos/jeu_echecs.webp" class="w-full h-full object-contain" alt="Les Échecs" />', screen:'screen-jeu-echecs', fn:'' },
       { id:'kim_histoire', label:'L\'Œil du Temps (Jeu de Kim Historique)', icon:'<img src="assets/logos/jeu_kim.png" class="w-full h-full object-contain" alt="L\'Œil du Temps" />', screen:'screen-jeu-kim', fn:'' }
     ]
   });
@@ -37554,10 +37583,10 @@ function renderSciRespiratoire(){
   const isTeacher = (state.role === 'teacher');
   const TABS = [
     {id:'sci_resp_schema',  screen:'screen-sci-resp-schema',  label:'Le schéma',             icon:'🫁', desc:"Légender le schéma de l'appareil respiratoire", fn:'renderSciRespSchema'},
-    {id:'sci_resp_texte',   screen:'screen-sci-resp-texte',   label:"Le trajet de l'air",    icon:'<img src="assets/logos/sci_resp_texte.png" class="w-full h-full object-contain" />', desc:'Texte lacunaire — glisse les mots au bon endroit', fn:'renderSciRespTexte'},
+    {id:'sci_resp_texte',   screen:'screen-sci-resp-texte',   label:"Le trajet de l'air",    icon:'<img src="assets/logos/sci_resp_texte.webp" class="w-full h-full object-contain" />', desc:'Texte lacunaire — glisse les mots au bon endroit', fn:'renderSciRespTexte'},
     {id:'sci_resp_qcm',     screen:'screen-sci-resp-qcm',     label:'QCM',                   icon:'❓', desc:'10 questions aléatoires parmi 30', fn:'renderSciRespQCM'},
-    {id:'sci_resp_assoc',   screen:'screen-sci-resp-assoc',   label:'Termes et définitions', icon:'<img src="assets/logos/sci_resp_assoc.png" class="w-full h-full object-contain" />', desc:'Associe chaque terme à sa définition', fn:'renderSciRespAssoc'},
-    {id:'sci_resp_ordre',   screen:'screen-sci-resp-ordre',   label:"Remettre de l'ordre",   icon:'<img src="assets/logos/sci_resp_ordre.png" class="w-full h-full object-contain" />', desc:"Remets le trajet de l'air dans le bon ordre", fn:'renderSciRespOrdre'},
+    {id:'sci_resp_assoc',   screen:'screen-sci-resp-assoc',   label:'Termes et définitions', icon:'<img src="assets/logos/sci_resp_assoc.webp" class="w-full h-full object-contain" />', desc:'Associe chaque terme à sa définition', fn:'renderSciRespAssoc'},
+    {id:'sci_resp_ordre',   screen:'screen-sci-resp-ordre',   label:"Remettre de l'ordre",   icon:'<img src="assets/logos/sci_resp_ordre.webp" class="w-full h-full object-contain" />', desc:"Remets le trajet de l'air dans le bon ordre", fn:'renderSciRespOrdre'},
   ];
   const menu = document.getElementById('sci-respiratoire-menu');
   if(!menu) return;
@@ -37628,7 +37657,7 @@ function renderSciRespSchema(){
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;align-items:start;">
       <div>
-        <img src="appareil_respiratoire.png" alt="Schéma de l'appareil respiratoire" style="width:100%;max-width:520px;display:block;margin:0 auto;border-radius:6px;border:2px solid var(--border);">
+        <img src="appareil_respiratoire.webp" alt="Schéma de l'appareil respiratoire" style="width:100%;max-width:520px;display:block;margin:0 auto;border-radius:6px;border:2px solid var(--border);">
         ${tagsHtml}
       </div>
       <div>
@@ -38365,10 +38394,10 @@ function renderSciDigestif(){
   const isTeacher = (state.role === 'teacher');
   const TABS = [
     {id:'sci_dig_schema', screen:'screen-sci-dig-schema', label:'Le schéma',             icon:'🫃', desc:"Légender le schéma de l'appareil digestif", fn:'renderSciDigSchema'},
-    {id:'sci_dig_texte',  screen:'screen-sci-dig-texte',  label:'Le trajet des aliments', icon:'<img src="assets/logos/sci_dig_texte.png" class="w-full h-full object-contain" />', desc:'3 textes lacunaires sur la digestion',      fn:'renderSciDigTexte'},
+    {id:'sci_dig_texte',  screen:'screen-sci-dig-texte',  label:'Le trajet des aliments', icon:'<img src="assets/logos/sci_dig_texte.webp" class="w-full h-full object-contain" />', desc:'3 textes lacunaires sur la digestion',      fn:'renderSciDigTexte'},
     {id:'sci_dig_qcm',    screen:'screen-sci-dig-qcm',    label:'QCM',                   icon:'❓', desc:'10 questions aléatoires parmi 30',          fn:'renderSciDigQCM'},
-    {id:'sci_dig_assoc',  screen:'screen-sci-dig-assoc',  label:'Termes et définitions', icon:'<img src="assets/logos/sci_dig_assoc.png" class="w-full h-full object-contain" />', desc:'Associe chaque terme à sa définition',      fn:'renderSciDigAssoc'},
-    {id:'sci_dig_ordre',  screen:'screen-sci-dig-ordre',  label:"Remettre de l'ordre",   icon:'<img src="assets/logos/sci_dig_ordre.png" class="w-full h-full object-contain" />', desc:"Remets le trajet de la nourriture dans le bon ordre", fn:'renderSciDigOrdre'},
+    {id:'sci_dig_assoc',  screen:'screen-sci-dig-assoc',  label:'Termes et définitions', icon:'<img src="assets/logos/sci_dig_assoc.webp" class="w-full h-full object-contain" />', desc:'Associe chaque terme à sa définition',      fn:'renderSciDigAssoc'},
+    {id:'sci_dig_ordre',  screen:'screen-sci-dig-ordre',  label:"Remettre de l'ordre",   icon:'<img src="assets/logos/sci_dig_ordre.webp" class="w-full h-full object-contain" />', desc:"Remets le trajet de la nourriture dans le bon ordre", fn:'renderSciDigOrdre'},
   ];
   const menu = document.getElementById('sci-digestif-menu');
   if(!menu) return;
@@ -38552,13 +38581,13 @@ let sciPlanetesState = {
   step: 1,
   planets: [
     { id: 'mercure', label: 'Mercure', size: 55, img: 'planete_mercure.jpg' },
-    { id: 'venus', label: 'Vénus', size: 68, img: 'planete_venus.jpg' },
+    { id: 'venus', label: 'Vénus', size: 68, img: 'planete_venus.webp' },
     { id: 'terre', label: 'Terre', size: 72, img: 'planete_terre.jpg' },
-    { id: 'mars', label: 'Mars', size: 60, img: 'planete_mars.jpg' },
-    { id: 'jupiter', label: 'Jupiter', size: 110, img: 'planete_jupiter.jpg' },
-    { id: 'saturne', label: 'Saturne', size: 120, img: 'planete_saturne.jpg', hasRings: true },
-    { id: 'uranus', label: 'Uranus', size: 85, img: 'planete_uranus.jpg' },
-    { id: 'neptune', label: 'Neptune', size: 80, img: 'planete_neptune.jpg' }
+    { id: 'mars', label: 'Mars', size: 60, img: 'planete_mars.webp' },
+    { id: 'jupiter', label: 'Jupiter', size: 110, img: 'planete_jupiter.webp' },
+    { id: 'saturne', label: 'Saturne', size: 120, img: 'planete_saturne.webp', hasRings: true },
+    { id: 'uranus', label: 'Uranus', size: 85, img: 'planete_uranus.webp' },
+    { id: 'neptune', label: 'Neptune', size: 80, img: 'planete_neptune.webp' }
   ],
   correctOrder: ['mercure', 'venus', 'terre', 'mars', 'jupiter', 'saturne', 'uranus', 'neptune'],
   planetPlacements: Array(8).fill(null),
@@ -38853,7 +38882,7 @@ function renderSciPlanetesOrdreScreen() {
     <div id="sci-planetes-track">
       <!-- Sun Column (Fixed) -->
       <div class="sci-column" style="width: 130px;">
-        <div style="width: 120px; height: 120px; border-radius: 50%; background-image: url('photos/planete_soleil.jpg'); background-size: cover; background-position: center; position: relative; box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);" class="sci-sun-sphere"></div>
+        <div style="width: 120px; height: 120px; border-radius: 50%; background-image: url('photos/planete_soleil.webp'); background-size: cover; background-position: center; position: relative; box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);" class="sci-sun-sphere"></div>
         <div class="sci-name-tag placed" style="background: #fef3c7; border-color: #f59e0b; color: #92400e; text-align: center; width: 100px;">Soleil</div>
       </div>
       
@@ -39548,7 +39577,7 @@ const SCI_PLANETES_DETAILS = {
   soleil: {
     name: "Le Soleil",
     subtitle: "Étoile naine jaune • Centre de notre système",
-    img: "planete_soleil.jpg",
+    img: "planete_soleil.webp",
     type: "Étoile (naine jaune)",
     rotation: "~25 à 35 jours terrestres (selon la latitude)",
     revolution: "Sans objet (ce sont les planètes qui tournent autour de lui)",
@@ -39576,7 +39605,7 @@ const SCI_PLANETES_DETAILS = {
   venus: {
     name: "Vénus",
     subtitle: "La jumelle de la Terre sous un effet de serre infernal",
-    img: "planete_venus.jpg",
+    img: "planete_venus.webp",
     type: "Planète tellurique (rocheuse)",
     rotation: "243 jours terrestres (sens rétrograde / à l'envers)",
     revolution: "225 jours terrestres",
@@ -39604,7 +39633,7 @@ const SCI_PLANETES_DETAILS = {
   mars: {
     name: "Mars",
     subtitle: "La planète rouge, cible d'explorations futures",
-    img: "planete_mars.jpg",
+    img: "planete_mars.webp",
     type: "Planète tellurique (rocheuse)",
     rotation: "24 heures et 37 minutes",
     revolution: "687 jours terrestres (environ 2 ans)",
@@ -39632,7 +39661,7 @@ const SCI_PLANETES_DETAILS = {
   jupiter: {
     name: "Jupiter",
     subtitle: "Le géant gazeux et protecteur du système solaire",
-    img: "planete_jupiter.jpg",
+    img: "planete_jupiter.webp",
     type: "Géante gazeuse",
     rotation: "9 heures et 56 minutes (rotation la plus rapide)",
     revolution: "12 ans terrestres",
@@ -39646,7 +39675,7 @@ const SCI_PLANETES_DETAILS = {
   saturn: {
     name: "Saturne",
     subtitle: "La merveille du système solaire et ses anneaux géants",
-    img: "planete_saturne.jpg",
+    img: "planete_saturne.webp",
     type: "Géante gazeuse",
     rotation: "10 heures et 33 minutes",
     revolution: "29 ans terrestres",
@@ -39660,7 +39689,7 @@ const SCI_PLANETES_DETAILS = {
   uranus: {
     name: "Uranus",
     subtitle: "La géante de glace inclinée sur son axe",
-    img: "planete_uranus.jpg",
+    img: "planete_uranus.webp",
     type: "Géante de glace",
     rotation: "17 heures et 14 minutes (sens rétrograde / à l'envers)",
     revolution: "84 ans terrestres",
@@ -39674,7 +39703,7 @@ const SCI_PLANETES_DETAILS = {
   neptune: {
     name: "Neptune",
     subtitle: "Le monde bleu balayé par les vents les plus violents",
-    img: "planete_neptune.jpg",
+    img: "planete_neptune.webp",
     type: "Géante de glace",
     rotation: "16 heures et 6 minutes",
     revolution: "165 ans terrestres",
@@ -39982,7 +40011,7 @@ function renderSciPlanetesInfosContent() {
   </div>
 
   <div id="sci-infos-map-wrapper">
-    <img src="photos/systeme_solaire_vierge.jpg" alt="Le système solaire">
+    <img src="photos/systeme_solaire_vierge.webp" alt="Le système solaire">
     ${hotspotsHtml}
   </div>
   <div class="text-sm font-medium text-slate-600" style="text-align:center">… ou choisis un astre dans la liste :</div>
@@ -40442,7 +40471,7 @@ function renderSciDigSchema(){
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;align-items:start;">
       <div>
-        <img src="appareil_digestif.png" alt="Schéma de l'appareil digestif" style="width:100%;max-width:520px;display:block;margin:0 auto;border-radius:6px;border:2px solid var(--border);">
+        <img src="appareil_digestif.webp" alt="Schéma de l'appareil digestif" style="width:100%;max-width:520px;display:block;margin:0 auto;border-radius:6px;border:2px solid var(--border);">
         ${tagsHtml}
       </div>
       <div>
@@ -41563,7 +41592,7 @@ function renderGeoOceansMenu(){
     {id:'geo_planisphere_interactif', screen:'screen-geo-planisphere-interactif', label:'Le planisphère interactif', icon:'🗺️', desc:'Découvre les continents et océans en cliquant dessus', fn:''},
     {id:'geo_planispheres',    screen:'screen-geo-planispheres',    label:'Les planisphères',      icon:'🧩', desc:'Place les continents et océans sur 5 cartes', fn:'renderGeoPlanispheres'},
     {id:'geo_continents_qcm', screen:'screen-geo-continents-qcm',  label:'QCM',                   icon:'❓', desc:'10 questions aléatoires parmi 30',           fn:'renderGeoContinentsQCM'},
-    {id:'geo_tour_monde',     screen:'screen-geo-tour-monde',       label:'Tour du monde',         icon:'<img src="assets/logos/geo_tour_monde.png" class="w-full h-full object-contain" />', desc:"Un voyage avec l'atlas de la classe",        fn:'renderGeoTourMonde'},
+    {id:'geo_tour_monde',     screen:'screen-geo-tour-monde',       label:'Tour du monde',         icon:'<img src="assets/logos/geo_tour_monde.webp" class="w-full h-full object-contain" />', desc:"Un voyage avec l'atlas de la classe",        fn:'renderGeoTourMonde'},
   ];
   const menu = document.getElementById('geo-oceans-menu');
   if(!menu) return;
@@ -48463,7 +48492,7 @@ function renderSujetMenu() {
 
       <!-- EXERCICE 3: LES 4 CLASSES DU SUJET -->
       <div class="sub-subject-card active-card" id="btn-sujet-ex3">
-        <div class="sub-icon"><img src="assets/logos/gram_classes_sujet.png" class="w-full h-full object-contain rounded-xl" alt="Les 4 classes du sujet" /></div>
+        <div class="sub-icon"><img src="assets/logos/gram_classes_sujet.webp" class="w-full h-full object-contain rounded-xl" alt="Les 4 classes du sujet" /></div>
         <div class="sub-title">3. Les 4 classes du sujet</div>
         <div class="sub-desc">Repère les mots du sujet et identifie sa classe grammaticale (GN, nom propre, infinitif, pronom).</div>
       </div>
@@ -52109,12 +52138,12 @@ function renderAdverbeMenu() {
 
     <div class="sub-subjects-grid">
       <div class="sub-subject-card active-card" id="btn-adv-ex1" style="position:relative">
-        <div class="sub-icon"><img src="assets/logos/gram_adverbe.png" class="w-full h-full object-contain" /></div>
+        <div class="sub-icon"><img src="assets/logos/gram_adverbe.webp" class="w-full h-full object-contain" /></div>
         <div class="sub-title">1. Reconnaître les adverbes</div>
         <div class="sub-desc">Trouve tous les adverbes dans des phrases simples ou des courts paragraphes · 10 questions.</div>
       </div>
       <div class="sub-subject-card active-card" id="btn-adv-ex2" style="position:relative">
-        <div class="sub-icon"><img src="assets/logos/gram_adverbe.png" class="w-full h-full object-contain" /></div>
+        <div class="sub-icon"><img src="assets/logos/gram_adverbe.webp" class="w-full h-full object-contain" /></div>
         <div class="sub-title">2. Adjectif ou Adverbe ?</div>
         <div class="sub-desc">Entraine-toi à distinguer l'adjectif (s'accorde) de l'adverbe (invariable) · 2 modes de jeu.</div>
       </div>
@@ -52786,44 +52815,44 @@ function getFicheIcon(fiche) {
   const title = (fiche.title || '').toLowerCase();
   
   if (title.includes('frise') || title.includes('histoire') || title.includes('chronologique')) {
-    return '<img src="assets/logos/histoire.png" class="w-full h-full object-contain" />';
+    return '<img src="assets/logos/histoire.webp" class="w-full h-full object-contain" />';
   }
   if (title.includes('planisphère') || title.includes('carte') || title.includes('pays') || title.includes('europe') || title.includes('monde')) {
-    return '<img src="assets/logos/geographie.png" class="w-full h-full object-contain" />';
+    return '<img src="assets/logos/geographie.webp" class="w-full h-full object-contain" />';
   }
   if (title.includes('respiratoire') || title.includes('poumon') || title.includes('respirer') || title.includes('air')) {
-    return '<img src="assets/logos/sciences_respiratoire.png" class="w-full h-full object-contain" />';
+    return '<img src="assets/logos/sciences_respiratoire.webp" class="w-full h-full object-contain" />';
   }
   if (title.includes('digestif') || title.includes('digestion') || title.includes('estomac') || title.includes('nourriture') || title.includes('manger')) {
-    return '<img src="assets/logos/sciences_digestif.png" class="w-full h-full object-contain" />';
+    return '<img src="assets/logos/sciences_digestif.webp" class="w-full h-full object-contain" />';
   }
   if (title.includes('circulatoire') || title.includes('cœur') || title.includes('sang') || title.includes('vaisseaux')) {
-    return '<img src="assets/logos/sciences_circulatoire.png" class="w-full h-full object-contain" />';
+    return '<img src="assets/logos/sciences_circulatoire.webp" class="w-full h-full object-contain" />';
   }
   if (title.includes('soleil') || title.includes('terre') || title.includes('lune') || title.includes('astronomie') || title.includes('espace')) {
-    return '<img src="assets/logos/sci_systeme_solaire.png" class="w-full h-full object-contain" />';
+    return '<img src="assets/logos/sci_systeme_solaire.webp" class="w-full h-full object-contain" />';
   }
   if (title.includes('classification') || title.includes('phylogénétique') || title.includes('animaux') || title.includes('arbre') || title.includes('espèces')) {
-    return '<img src="assets/logos/subject_sciences.png" class="w-full h-full object-contain" />';
+    return '<img src="assets/logos/subject_sciences.webp" class="w-full h-full object-contain" />';
   }
   
   const category = (fiche.category || '').toLowerCase();
   if (category.includes('math')) {
-    return '<img src="assets/logos/subject_mathematiques.png" class="w-full h-full object-contain" />';
+    return '<img src="assets/logos/subject_mathematiques.webp" class="w-full h-full object-contain" />';
   }
   if (category.includes('scien')) {
-    return '<img src="assets/logos/subject_sciences.png" class="w-full h-full object-contain" />';
+    return '<img src="assets/logos/subject_sciences.webp" class="w-full h-full object-contain" />';
   }
   if (category.includes('fran') || category.includes('lect')) {
-    return '<img src="assets/logos/subject_francais.png" class="w-full h-full object-contain" />';
+    return '<img src="assets/logos/subject_francais.webp" class="w-full h-full object-contain" />';
   }
   if (category.includes('hist')) {
-    return '<img src="assets/logos/histoire.png" class="w-full h-full object-contain" />';
+    return '<img src="assets/logos/histoire.webp" class="w-full h-full object-contain" />';
   }
   if (category.includes('géo')) {
-    return '<img src="assets/logos/geographie.png" class="w-full h-full object-contain" />';
+    return '<img src="assets/logos/geographie.webp" class="w-full h-full object-contain" />';
   }
-  return '<img src="assets/logos/subject_fiches.png" class="w-full h-full object-contain" />';
+  return '<img src="assets/logos/subject_fiches.webp" class="w-full h-full object-contain" />';
 }
 
 function getFicheThemeClass(fiche) {
