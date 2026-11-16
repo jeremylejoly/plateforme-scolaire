@@ -3839,6 +3839,14 @@ input[type=text].calc-input.incorrect {
     try { const snap = await get(ref(db, path)); return snap.exists() ? snap.val() : null; }
     catch(e) { console.warn('Firebase loadGameProgress error:', e); return null; }
   };
+  // (16/11/2026, Astrelune) Comme FB_loadGameProgress, mais dit si la lecture a réussi : { ok: true, data } (data = null s'il n'y a
+  // pas de partie) ou { ok: false } en cas d'erreur (hors ligne, base injoignable). Le jeu ne doit pas prendre une erreur pour
+  // « pas de partie » : il proposerait une nouvelle partie, qui remplacerait la vraie.
+  window.FB_loadGameProgressEtat = async function(game) {
+    const path = gameProgressPath(game); if (!path) return { ok: true, data: null };
+    try { const snap = await get(ref(db, path)); return { ok: true, data: snap.exists() ? snap.val() : null }; }
+    catch(e) { console.warn('Firebase loadGameProgressEtat error:', e); return { ok: false }; }
+  };
   // Enseignant (06/11/2026, Astrelune) : les parties de toute une classe pour un jeu → { élève: données }
   window.FB_loadClassGameProgress = async function(cls, game) {
     const g = String(game).replace(/[.#$\[\]\/]/g, '_');
