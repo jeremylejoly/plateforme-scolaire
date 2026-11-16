@@ -13,7 +13,7 @@
  *  ➜ Si vous remplacez une image en gardant le même nom et voulez forcer la mise à jour
  *    immédiate sur les tablettes : incrémenter MEDIA_VERSION.
  */
-const VERSION = 'v908';
+const VERSION = 'v909';
 const MEDIA_VERSION = 'm8';
 
 const CORE_CACHE  = 'lcml-core-'  + VERSION;
@@ -38,7 +38,8 @@ const CORE_ASSETS = [
   'KGElephantHiccups.ttf',
   'KGHaventSleptShadow.ttf',
   'recits_express.html',
-  'tailwind.min.js',
+  'assets/tw/index.css',
+  'assets/tw/recits_express.css',
   'lucide.min.js',
   'lcml_copyright.js'
 ];

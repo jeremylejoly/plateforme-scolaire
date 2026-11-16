@@ -1,0 +1,12 @@
+#!/bin/sh
+# Crochet git LCML : régénère les feuilles Tailwind (assets/tw/) avant chaque commit.
+# Installation : cp outils/tailwind/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+ROOT="$(git rev-parse --show-toplevel)"
+cd "$ROOT/outils/tailwind" 2>/dev/null || exit 0
+if ! command -v node >/dev/null 2>&1 || [ ! -d node_modules ]; then
+  echo "LCML : feuilles Tailwind NON régénérées (node ou node_modules absent). Voir outils/tailwind/LISEZMOI.md" >&2
+  exit 0
+fi
+node build.cjs >/dev/null || { echo "LCML : la génération des feuilles Tailwind a échoué (node outils/tailwind/build.cjs)" >&2; exit 1; }
+cd "$ROOT" && git add assets/tw
+exit 0
