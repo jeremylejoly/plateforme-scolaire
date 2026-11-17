@@ -3587,15 +3587,16 @@ input[type=text].calc-input.incorrect {
     }
   };
 
+  // LÈVE une erreur si la lecture échoue (pas connecté, réseau…) : « liste vide » veut dire « vraiment aucun résultat ».
   window.FB_loadStudentResults = async function(cls, student) {
-    try {
-      const studentClean = student.replace(/\s+/g, '_');
-      const snap = await get(ref(db, 'student_results/' + cls + '/' + studentClean));
-      if (!snap.exists()) return [];
-      const all = [];
-      snap.forEach(child => { all.push(child.val()); });
-      return all;
-    } catch(e) { console.warn('Firebase loadStudentResults error:', e); return []; }
+    const ok = await window.FB_waitAuth(15000);
+    if (!ok) throw new Error('Firebase : authentification non disponible');
+    const studentClean = student.replace(/\s+/g, '_');
+    const snap = await get(ref(db, 'student_results/' + cls + '/' + studentClean));
+    if (!snap.exists()) return [];
+    const all = [];
+    snap.forEach(child => { all.push(child.val()); });
+    return all;
   };
 
   window.FB_saveStudentResultsBatch = async function(cls, student, resultsArray) {
@@ -9700,7 +9701,8 @@ function goToHome(){
 }
 
 async function syncStudentFromFirebase(){
-  if(!window.FB_ready){ setTimeout(syncStudentFromFirebase, 1000); return; }
+  // Attendre la vraie connexion : un écouteur lancé avant est refusé par Firebase et ne se relance jamais
+  if(!window.FB_authOk){ setTimeout(syncStudentFromFirebase, 1000); return; }
   try {
     initRealtimeStudentSync();
     const cls = (typeof state !== 'undefined' && state.studentCls) ? state.studentCls : 'lejoly';
@@ -25958,8 +25960,8 @@ function loadStudentResults(){
   if(!state.student || !state.studentCls) return;
   const cacheKey = state.student + '_' + state.studentCls;
   if(_studentResultsCacheFor === cacheKey) return;
-  // Attendre que Firebase soit prêt
-  if(!window.FB_ready){
+  // Attendre que la tablette soit VRAIMENT connectée à Firebase (sinon la lecture est refusée)
+  if(!window.FB_authOk){
     setTimeout(loadStudentResults, 500);
     return;
   }
@@ -25987,50 +25989,21 @@ function loadStudentResults(){
           });
           refreshCurrentMenu();
         } else {
-          loadStudentResultsFallback();
+          refreshCurrentMenu();
         }
       }).catch(function(e) {
-        console.warn('Erreur FB_loadStudentResults, repli sur l\'historique global:', e);
-        loadStudentResultsFallback();
+        // Lecture refusée ou réseau coupé : on ne fait PAS comme si l'élève n'avait rien fait.
+        // Nouvel essai dans 5 s (le plan se remet à jour tout seul dès que les résultats arrivent).
+        console.warn('⏳ Résultats de l\'élève non chargés, nouvel essai dans 5 s :', e && e.message);
+        if (_studentResultsCacheFor === cacheKey) _studentResultsCacheFor = null;
+        setTimeout(function(){
+          if (state.student + '_' + state.studentCls === cacheKey) loadStudentResults();
+        }, 5000);
       });
-    } else {
-      loadStudentResultsFallback();
     }
   } catch(e) { console.error('loadStudentResults error:', e); }
 }
 
-function loadStudentResultsFallback() {
-  try {
-    const _lsrRef = window.FB_ref(window.FB_DB, 'results');
-    window.FB_get(_lsrRef).then(function(snap){
-      if(!snap.exists()){ refreshCurrentMenu(); return; }
-      const myResults = [];
-      snap.forEach(function(child){
-        const r = child.val();
-        if(!r || !r.student || r.student !== state.student) return;
-        const rCls = r.cls || 'lejoly';
-        if(rCls !== state.studentCls) return;
-        myResults.push(r);
-        const act = r.activity;
-        if(!act) return;
-        if(!_studentResultsCache[act]){
-          _studentResultsCache[act] = r;
-        } else {
-          const existing = _studentResultsCache[act];
-          const existingDT = (existing.date||'') + ' ' + (existing.time||'');
-          const newDT = (r.date||'') + ' ' + (r.time||'');
-          if(newDT > existingDT) _studentResultsCache[act] = r;
-        }
-      });
-      refreshCurrentMenu();
-      window._planFbResults = myResults;
-      if (typeof ptRefreshStudentPlanIfVisible === 'function') ptRefreshStudentPlanIfVisible();
-      if (myResults.length > 0 && window.FB_saveStudentResultsBatch) {
-        window.FB_saveStudentResultsBatch(state.studentCls, state.student, myResults);
-      }
-    }).catch(function(e){ console.error('loadStudentResultsFallback error:', e); });
-  } catch(e) { console.error('loadStudentResultsFallback error:', e); }
-}
 
 
 function refreshCurrentMenu(){
@@ -34721,7 +34694,7 @@ function savePlanTravail() {
 let fbStudentListeners = {};
 
 function initRealtimeStudentSync() {
-  if (!window.FB_ready || !state.student || !state.studentCls) return;
+  if (!window.FB_authOk || !state.student || !state.studentCls) return;
   const cls = state.studentCls;
   const student = state.student;
   clearRealtimeStudentSync();
