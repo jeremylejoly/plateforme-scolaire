@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<!-- © 2026 Jérémy Lejoly — LCML. Reproduction interdite sans autorisation. -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Le Maître Géomètre</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  /* Charte LCML : fond crème, contours #1A1A2E, ombres décalées, Fredoka + Nunito */
+  :root {
+    --purple: #5B4FCF; --purple-light: #EEF0FF; --purple-mid: #C7C2F5;
+    --green: #1A9E75; --green-light: #E2F5EE;
+    --red: #D94F3D; --red-light: #FDECEA;
+    --amber: #C97B1A; --amber-light: #FEF3E2;
+    --blue: #1A6FA0; --blue-light: #E2F0FA;
+    --correction: #1f5fbf;
+    --bg: #FDFBF7; --surface: #FFFFFF;
+    --text: #1A1A2E; --muted: #6B7080; --border: #1A1A2E;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); }
+  body { font-family: 'Nunito', sans-serif; color: var(--text); padding: 12px 16px 16px; -webkit-font-smoothing: antialiased; }
+  button { font-family: inherit; touch-action: manipulation; color: var(--text); }
+  .container { max-width: 860px; margin: 0 auto; }
+
+  /* ----- En-tête ----- */
+  header {
+    text-align: center; background: var(--blue-light); border: 3px solid var(--border); border-radius: 18px;
+    padding: 8px 14px; margin-bottom: 12px; box-shadow: 4px 4px 0 var(--border);
+  }
+  h1 { font-family: 'Fredoka', sans-serif; font-size: 22px; font-weight: 700; line-height: 1.2; }
+  .subtitle { font-size: 13px; color: var(--muted); font-weight: 700; }
+
+  /* ----- Choix du niveau (comme le Code Secret) ----- */
+  .niveaux { display: grid; grid-template-columns: 1fr; gap: 14px; max-width: 720px; margin: 4px auto 0; }
+  @media (min-width: 600px) { .niveaux { grid-template-columns: 1fr 1fr; } }
+  .carte-niveau {
+    background: var(--surface); border: 3px solid var(--border); border-radius: 16px; padding: 12px 14px;
+    text-align: left; cursor: pointer; box-shadow: 4px 4px 0 var(--border); display: flex; gap: 12px; align-items: center;
+    transition: transform .12s, box-shadow .12s;
+  }
+  .carte-niveau:hover { transform: translate(-1px, -1px); box-shadow: 5px 5px 0 var(--border); }
+  .carte-niveau:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--border); }
+  .badge-niv {
+    flex: 0 0 50px; height: 50px; border-radius: 12px; border: 2.5px solid var(--border); box-shadow: 2px 2px 0 var(--border);
+    display: flex; align-items: center; justify-content: center; font-family: 'Fredoka', sans-serif; font-size: 24px; font-weight: 700; color: #fff;
+  }
+  .carte-niveau h2 { font-family: 'Fredoka', sans-serif; font-size: 17px; font-weight: 700; color: var(--purple); margin-bottom: 2px; }
+  .carte-niveau p { font-size: 13px; color: var(--muted); font-weight: 700; line-height: 1.35; }
+  .record { display: inline-block; font-size: 12px; font-weight: 800; color: var(--green); background: var(--green-light); border: 1.5px solid var(--green); border-radius: 99px; padding: 1px 9px; margin-top: 5px; }
+
+  /* ----- Barre d'info ----- */
+  .info-card {
+    background: var(--blue-light); border: 3px solid var(--border); border-radius: 16px; padding: 6px 10px; margin-bottom: 12px;
+    display: flex; justify-content: space-between; align-items: center; gap: 8px; box-shadow: 4px 4px 0 var(--border);
+  }
+  .info-card p { font-family: 'Fredoka', sans-serif; font-size: 16px; color: var(--blue); font-weight: 700; white-space: nowrap; }
+  .btn-mini {
+    border: 2px solid var(--border); background: var(--surface); border-radius: 8px; padding: 5px 10px; font-size: 13px; font-weight: 800;
+    cursor: pointer; white-space: nowrap; box-shadow: 2px 2px 0 var(--border);
+  }
+  .btn-mini:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--border); }
+  .btn-mini.calc { background: var(--amber-light); }
+  .btn-mini.calc.ouverte { background: var(--amber); color: #fff; }
+  .dots { display: flex; gap: 6px; }
+  .dot { width: 13px; height: 13px; border-radius: 50%; background: #D1D5DB; border: 1.5px solid var(--border); transition: all .3s; }
+  .dot.current { background: var(--purple); transform: scale(1.2); }
+  .dot.correct { background: var(--green); }
+  .dot.incorrect { background: var(--red); }
+  .gauche, .droite { display: flex; align-items: center; gap: 8px; }
+
+  .main { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media (min-width: 640px) { .main { grid-template-columns: 1.15fr 1fr; align-items: start; } }
+
+  .shape-card {
+    background: var(--surface); border: 3px solid var(--border); border-radius: 18px; padding: 8px;
+    box-shadow: 4px 4px 0 var(--border); display: flex; flex-direction: column; align-items: center;
+  }
+  .shape-svg { width: 100%; max-width: 420px; height: auto; display: block; }
+  .legende { font-size: 12px; color: var(--muted); font-weight: 700; text-align: center; min-height: 16px; }
+
+  .step-card { background: var(--surface); border: 3px solid var(--border); border-radius: 18px; padding: 12px 14px; box-shadow: 4px 4px 0 var(--border); }
+  .step-title {
+    font-family: 'Fredoka', sans-serif; font-size: 17px; font-weight: 700; text-align: center; line-height: 1.35; margin-bottom: 12px;
+    background: var(--amber-light); border: 2.5px solid var(--border); border-radius: 12px; padding: 8px 10px; box-shadow: 2px 2px 0 var(--border);
+  }
+  .attention { display: block; font-size: 13px; color: var(--amber); font-family: 'Nunito', sans-serif; font-weight: 800; margin-top: 2px; }
+  .input-zone { display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .answer-input {
+    width: 170px; height: 46px; border: 3px solid var(--border); border-radius: 12px; text-align: center; font-size: 22px; font-weight: 800;
+    font-family: 'Nunito', sans-serif; color: var(--text); background: var(--bg); outline: none; box-shadow: 2px 2px 0 var(--border);
+  }
+  .answer-input.correct { background: var(--green-light); color: var(--green); }
+  .answer-input.incorrect { background: var(--red-light); color: var(--red); }
+  .answer-unit { font-family: 'Fredoka', sans-serif; font-size: 22px; font-weight: 700; color: var(--text); }
+
+  .keypad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-width: 300px; margin: 0 auto; }
+  .key {
+    height: 42px; border: 2.5px solid var(--border); background: var(--surface); border-radius: 10px; font-size: 18px; font-weight: 800;
+    cursor: pointer; box-shadow: 2px 2px 0 var(--border); font-family: 'Fredoka', sans-serif;
+  }
+  .key:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--border); }
+  .key.action { background: var(--red-light); color: var(--red); }
+  .key.submit { background: var(--green); color: #fff; grid-column: span 4; font-size: 17px; }
+  .message { font-size: 13px; font-weight: 800; color: var(--red); text-align: center; min-height: 18px; margin-top: 6px; }
+
+  .feedback-box { padding: 10px 12px; border-radius: 12px; font-size: 13.5px; line-height: 1.45; font-weight: 600; display: none; border: 2.5px solid var(--border); box-shadow: 2px 2px 0 var(--border); }
+  .feedback-box.correct { display: block; background: var(--green-light); color: var(--green); }
+  .feedback-box.incorrect { display: block; background: var(--red-light); color: var(--red); }
+  .feedback-box .bonne { color: var(--correction); }
+  .feedback-box .ligne { display: block; margin-top: 3px; color: var(--text); font-weight: 600; }
+  .feedback-box .piece { display: inline-block; min-width: 20px; text-align: center; border-radius: 6px; border: 1.5px solid var(--border); font-weight: 900; color: #fff; padding: 0 5px; margin-right: 3px; }
+  .feedback-box .autre { display: block; margin-top: 6px; font-size: 12.5px; color: var(--muted); font-style: italic; }
+
+  .btn-next {
+    width: 100%; padding: 11px; background: var(--purple); color: #fff; border: 3px solid var(--border); border-radius: 12px;
+    font-size: 16px; font-weight: 700; cursor: pointer; font-family: 'Fredoka', sans-serif; margin-top: 12px; box-shadow: 3px 3px 0 var(--border);
+  }
+  .btn-next:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--border); }
+  .btn-next.secondaire { background: var(--surface); color: var(--text); }
+
+  /* ----- Score ----- */
+  .score-card { display: none; background: var(--surface); border: 3px solid var(--border); border-radius: 20px; padding: 16px; text-align: center; box-shadow: 6px 6px 0 var(--border); max-width: 560px; margin: 0 auto; }
+  .score-emoji { font-size: 42px; }
+  .score-title { font-family: 'Fredoka', sans-serif; font-size: 22px; font-weight: 700; }
+  .score-num { font-family: 'Fredoka', sans-serif; font-size: 32px; font-weight: 700; color: var(--purple); margin: 2px 0 4px; }
+  .congrats { font-size: 14px; color: var(--muted); margin-bottom: 10px; line-height: 1.45; font-weight: 600; }
+  .score-details { text-align: left; border: 2.5px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .score-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; font-size: 13.5px; border-bottom: 1.5px solid #E5E1D8; gap: 8px; }
+  .score-row:last-child { border-bottom: none; }
+  .tag { font-size: 12px; font-weight: 800; padding: 2px 8px; border-radius: 99px; white-space: nowrap; border: 1.5px solid currentColor; }
+  .tag.ok { background: var(--green-light); color: var(--green); }
+  .tag.ko { background: var(--red-light); color: var(--red); }
+  .tag .bonne { color: var(--correction); }
+  .boutons-fin { display: flex; gap: 10px; }
+
+  /* ----- Calculatrice ----- */
+  .calculatrice {
+    position: fixed; left: 14px; bottom: 14px; z-index: 40; width: 236px; display: none; touch-action: none;
+    background: var(--purple-light); border: 3px solid var(--border); border-radius: 18px; padding: 10px; box-shadow: 5px 5px 0 var(--border);
+  }
+  .calculatrice.ouverte { display: block; }
+  .calc-haut { cursor: grab; user-select: none; -webkit-user-select: none; display: flex; justify-content: space-between; align-items: center; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 15px; margin-bottom: 8px; }
+  .calc-fermer { background: var(--red-light); color: var(--red); border: 2px solid var(--border); border-radius: 8px; width: 30px; height: 28px; font-size: 14px; font-weight: 900; cursor: pointer; box-shadow: 1.5px 1.5px 0 var(--border); }
+  .calc-ecran { background: #fff; border: 2.5px solid var(--border); border-radius: 10px; padding: 5px 9px; text-align: right; margin-bottom: 9px; min-height: 58px; }
+  .calc-expr { font-size: 13px; color: var(--muted); font-weight: 700; min-height: 17px; word-break: break-all; }
+  .calc-res { font-family: 'Fredoka', sans-serif; font-size: 26px; font-weight: 700; color: var(--text); word-break: break-all; line-height: 1.2; }
+  .calc-touches { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .ck { height: 38px; border: 2px solid var(--border); border-radius: 9px; background: #fff; font-size: 18px; font-weight: 700; cursor: pointer; box-shadow: 2px 2px 0 var(--border); font-family: 'Fredoka', sans-serif; }
+  .ck:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--border); }
+  .ck.op { background: var(--amber-light); color: var(--amber); }
+  .ck.eg { background: var(--green); color: #fff; }
+  .ck.ef { background: var(--red-light); color: var(--red); }
+
+  .confetti { position: fixed; top: -12px; z-index: 50; border-radius: 2px; animation: tombe linear forwards; pointer-events: none; }
+  @keyframes tombe { to { transform: translateY(105vh) rotate(540deg); } }
+
+  /* ----- Formules ----- */
+  .btn-mini.formules { background: var(--green-light); }
+  .btn-mini.formules.ouverte { background: var(--green); color: #fff; }
+  .panneau-formules {
+    display: none; background: var(--green-light); border: 3px solid var(--border); border-radius: 16px; padding: 8px 12px; margin-bottom: 12px;
+    box-shadow: 4px 4px 0 var(--border); gap: 4px 18px; grid-template-columns: 1fr;
+  }
+  @media (min-width: 640px) { .panneau-formules { grid-template-columns: 1fr 1fr; } }
+  .panneau-formules.ouvert { display: grid; }
+  .formule { font-size: 14px; font-weight: 700; }
+  .f-nom { display: inline-block; min-width: 128px; font-family: 'Fredoka', sans-serif; font-weight: 700; color: var(--green); }
+  .feedback-box .indice { display: block; margin: 6px 0 4px; padding: 5px 8px; border-radius: 8px; background: var(--amber-light); color: var(--amber); font-weight: 800; border: 1.5px solid var(--amber); }
+  @media (max-width: 520px) { .info-card { flex-wrap: wrap; } .btn-mini.formules, .btn-mini.calc { font-size: 12px; padding: 5px 7px; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>📐 Le Maître Géomètre</h1>
+    <div class="subtitle" id="sous-titre">Aire des quadrilatères</div>
+  </header>
+
+  <!-- ===== ÉCRAN 1 : choix du niveau ===== -->
+  <div id="ecran-niveaux">
+    <div class="niveaux" id="liste-niveaux"></div>
+  </div>
+
+  <!-- ===== ÉCRAN 2 : exercice ===== -->
+  <div id="exercice-zone" style="display:none">
+    <div class="info-card">
+      <div class="gauche">
+        <button class="btn-mini" id="btn-retour">← Niveaux</button>
+        <p id="info-numero">Question 1/5</p>
+      </div>
+      <div class="droite">
+        <div class="dots" id="dots-progress"></div>
+        <button class="btn-mini formules" id="btn-formules">📘 Formules</button>
+        <button class="btn-mini calc" id="btn-calc">🧮 Calculatrice</button>
+      </div>
+    </div>
+
+    <div class="panneau-formules" id="panneau-formules">
+      <div class="formule"><span class="f-nom">Carré</span> côté × côté</div>
+      <div class="formule"><span class="f-nom">Rectangle</span> longueur × largeur</div>
+      <div class="formule"><span class="f-nom">Parallélogramme</span> base × hauteur</div>
+      <div class="formule"><span class="f-nom">Losange</span> (grande diagonale × petite diagonale) ÷ 2</div>
+      <div class="formule"><span class="f-nom">Trapèze</span> (grande base + petite base) × hauteur ÷ 2</div>
+    </div>
+
+    <div class="main">
+      <div class="shape-card">
+        <svg id="shape-svg" class="shape-svg" viewBox="0 0 340 260" role="img" aria-label="Figure de la question"></svg>
+        <div class="legende" id="legende"></div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-title" id="question-text"></div>
+        <div id="zone-reponse">
+          <div class="input-zone">
+            <input type="text" class="answer-input" id="answer-input" readonly inputmode="none" placeholder="Réponse" aria-label="Ta réponse"/>
+            <span class="answer-unit" id="answer-unit">cm²</span>
+          </div>
+          <div class="keypad" id="keypad">
+            <button class="key" data-k="1">1</button><button class="key" data-k="2">2</button><button class="key" data-k="3">3</button><button class="key action" data-k="del" aria-label="Effacer un chiffre">⌫</button>
+            <button class="key" data-k="4">4</button><button class="key" data-k="5">5</button><button class="key" data-k="6">6</button><button class="key action" data-k="clear" aria-label="Tout effacer">C</button>
+            <button class="key" data-k="7">7</button><button class="key" data-k="8">8</button><button class="key" data-k="9">9</button><button class="key" data-k="0">0</button>
+            <button class="key submit" data-k="ok">Valider</button>
+          </div>
+          <div class="message" id="message"></div>
+        </div>
+        <div class="feedback-box" id="feedback-box"></div>
+        <button class="btn-next" id="btn-next" style="display:none">Question suivante ➡️</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ÉCRAN 3 : score ===== -->
+  <div class="score-card" id="score-screen">
+    <div class="score-emoji" id="final-emoji">🏆</div>
+    <div class="score-title" id="final-title">Excellent travail !</div>
+    <div class="score-num" id="final-score">5 / 5</div>
+    <div class="congrats" id="congrats-msg"></div>
+    <div class="score-details" id="final-details"></div>
+    <div class="boutons-fin">
+      <button class="btn-next" id="btn-restart">🔄 Recommencer ce niveau</button>
+      <button class="btn-next secondaire" id="btn-autre">Choisir un niveau</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Calculatrice ===== -->
+<div class="calculatrice" id="calculatrice" aria-label="Calculatrice">
+  <div class="calc-haut" id="calc-haut"><span>✥ 🧮 Calculatrice</span><button class="calc-fermer" id="calc-fermer" aria-label="Fermer la calculatrice">✕</button></div>
+  <div class="calc-ecran"><div class="calc-expr" id="calc-expr"></div><div class="calc-res" id="calc-res">0</div></div>
+  <div class="calc-touches" id="calc-touches">
+    <button class="ck ef" data-c="C">C</button><button class="ck ef" data-c="del">⌫</button><button class="ck op" data-c="÷">÷</button><button class="ck op" data-c="×">×</button>
+    <button class="ck" data-c="7">7</button><button class="ck" data-c="8">8</button><button class="ck" data-c="9">9</button><button class="ck op" data-c="−">−</button>
+    <button class="ck" data-c="4">4</button><button class="ck" data-c="5">5</button><button class="ck" data-c="6">6</button><button class="ck op" data-c="+">+</button>
+    <button class="ck" data-c="1">1</button><button class="ck" data-c="2">2</button><button class="ck" data-c="3">3</button><button class="ck eg" data-c="=" style="grid-row: span 2; height: auto">=</button>
+    <button class="ck" data-c="0" style="grid-column: span 2">0</button><button class="ck" data-c=",">,</button>
+  </div>
+</div>
+
+<script>
+// ===================== SONS =====================
+let audioCtx = null;
+function playSound(type) {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    const t = audioCtx.currentTime;
+    if (type === 'success') {
+      [523.25, 659.25, 783.99].forEach((f, i) => osc.frequency.setValueAtTime(f, t + i * 0.1));
+      gain.gain.setValueAtTime(0.12, t); gain.gain.exponentialRampToValueAtTime(0.005, t + 0.4); osc.start(); osc.stop(t + 0.4);
+    } else if (type === 'error') {
+      osc.frequency.setValueAtTime(220, t); osc.frequency.setValueAtTime(147, t + 0.15);
+      gain.gain.setValueAtTime(0.14, t); gain.gain.exponentialRampToValueAtTime(0.005, t + 0.4); osc.start(); osc.stop(t + 0.4);
+    } else {
+      osc.frequency.setValueAtTime(580, t); gain.gain.setValueAtTime(0.04, t); gain.gain.exponentialRampToValueAtTime(0.005, t + 0.07); osc.start(); osc.stop(t + 0.07);
+    }
+  } catch (e) { /* pas de son */ }
+}
+
+// ===================== OUTILS =====================
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+const fr = n => String(n).replace('.', ',');
+const mille = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); // 24000 → « 24 000 »
+function aireLacet(p) { let s = 0; for (let i = 0; i < p.length; i++) { const [x1, y1] = p[i], [x2, y2] = p[(i + 1) % p.length]; s += x1 * y2 - x2 * y1; } return Math.abs(s) / 2; }
+// ===================== FIGURES =====================
+/* Une figure :
+   poly   : sommets (x vers la droite, y vers le bas)
+   segs   : mesures écrites sur le dessin {p, q, v, kind:'side'|'dash', utile, lt?, ln?}
+            side = côté de la figure (étiquette à l'extérieur) ; dash = hauteur ou diagonale en pointillés
+            lt = position de l'étiquette le long du trait (0 à 1), ln = côté du trait (+1 / −1)
+   angles : angles droits codés {V, A, B}
+   ticks  : petits traits « côtés de même longueur » {p, q, n}
+   ext    : prolongement de la base en pointillés fins (hauteur extérieure) {p, q}
+   erreurs: réponses fausses fréquentes et message d'aide {v, m} */
+const hyp = (a, b) => Math.sqrt(a * a + b * b);
+const r1 = v => Math.round(v * 10) / 10;              // valeur affichée, arrondie au dixième
+const fmt = v => fr(r1(v));
+const entier = v => Math.abs(v - Math.round(v)) < 1e-9;
+const res = (n, u) => `<strong>${mille(n)} ${u}²</strong>`;
+function coins(P) { return P.map((V, i) => ({ V, A: P[(i + 1) % P.length], B: P[(i + P.length - 1) % P.length] })); }
+function cotesDe(P) { return P.map((p, i) => ({ p, q: P[(i + 1) % P.length], n: 1 })); }
+
+function carre(c, unit) {
+  const P = [[0, 0], [c, 0], [c, c], [0, c]];
+  return {
+    fam: 'carre', nom: 'carré', un: 'un', ce: 'ce carré', titre: `Carré de ${c} ${unit}`, unit, poly: P,
+    segs: [{ p: [0, c], q: [c, c], v: c, kind: 'side', utile: true }],
+    angles: coins(P), ticks: cotesDe(P), ext: [], correct: c * c,
+    lignes: [`Les 4 côtés d'un carré ont la même longueur.`, `Aire du carré = côté × côté`, `= ${c} × ${c} = ${res(c * c, unit)}`],
+    inutiles: [],
+    erreurs: [{ v: 4 * c, m: `Tu as calculé le périmètre (4 côtés). Pour l'aire, on multiplie côté × côté.` },
+              { v: 2 * c, m: `Tu as additionné les côtés. Pour l'aire, on multiplie côté × côté.` }]
+  };
+}
+function rect(L, l, unit, diag) {
+  const P = [[0, 0], [L, 0], [L, l], [0, l]], dg = hyp(L, l);
+  const segs = [{ p: [0, l], q: [L, l], v: L, kind: 'side', utile: true }, { p: [0, 0], q: [0, l], v: l, kind: 'side', utile: true }];
+  if (diag) segs.push({ p: [0, 0], q: [L, l], v: dg, kind: 'dash', utile: false, lt: 0.62, ln: 1 });
+  return {
+    fam: 'rect', nom: 'rectangle', un: 'un', ce: 'ce rectangle', titre: `Rectangle ${L} × ${l}`, unit, poly: P,
+    segs, angles: coins(P), ticks: [], ext: [], correct: L * l,
+    lignes: [`Aire du rectangle = longueur × largeur`, `= ${L} × ${l} = ${res(L * l, unit)}`],
+    inutiles: diag ? [`La diagonale (${fmt(dg)} ${unit}) ne sert pas pour calculer l'aire.`] : [],
+    erreurs: [{ v: 2 * (L + l), m: `Tu as calculé le périmètre. Pour l'aire, on multiplie longueur × largeur.` },
+              { v: L + l, m: `Tu as additionné les côtés. Pour l'aire, on multiplie longueur × largeur.` }]
+  };
+}
+function para(b, h, o, unit) {
+  const P = [[o, 0], [o + b, 0], [b, h], [0, h]], cote = r1(hyp(o, h));
+  let hx = (o >= 0 && o <= b) ? o : ((o + b >= 0 && o + b <= b) ? o + b : o);
+  const ext = hx > b ? [{ p: [b, h], q: [hx, h] }] : hx < 0 ? [{ p: [hx, h], q: [0, h] }] : [];
+  const erreurs = [{ v: b * cote, m: `Tu as multiplié la base par le côté penché. Il faut utiliser la hauteur (le trait en pointillés).` },
+                   { v: b * h / 2, m: `Pas de ÷ 2 pour le parallélogramme : son aire, c'est base × hauteur.` },
+                   { v: b + h, m: `Tu as additionné. L'aire du parallélogramme, c'est base × hauteur.` }];
+  return {
+    fam: 'para', nom: 'parallélogramme', un: 'un', ce: 'ce parallélogramme', titre: `Parallélogramme (base ${b}, hauteur ${h})`, unit, poly: P,
+    segs: [{ p: [0, h], q: [b, h], v: b, kind: 'side', utile: true },
+           { p: [0, h], q: [o, 0], v: cote, kind: 'side', utile: false },
+           { p: [hx, 0], q: [hx, h], v: h, kind: 'dash', utile: true, ln: hx > b ? -1 : hx < 0 ? 1 : undefined, lt: (hx > b || hx < 0) ? 0.8 : 0.5 }],
+    angles: [{ V: [hx, h], A: [hx, 0], B: [hx + (hx < b / 2 ? 1 : -1), h] }], ticks: [], ext, correct: b * h,
+    lignes: [`Aire du parallélogramme = base × hauteur`, `= ${b} × ${h} = ${res(b * h, unit)}`],
+    inutiles: [`Le côté penché (${fr(cote)} ${unit}) ne sert pas : on utilise la hauteur, qui tombe à angle droit sur la base.`],
+    erreurs
+  };
+}
+function losange(D, d, unit) {
+  const P = [[0, d / 2], [D / 2, 0], [D, d / 2], [D / 2, d]], cote = r1(hyp(D / 2, d / 2));
+  return {
+    fam: 'los', nom: 'losange', un: 'un', ce: 'ce losange', titre: `Losange (diagonales ${D} et ${d})`, unit, poly: P,
+    segs: [{ p: [0, d / 2], q: [D, d / 2], v: D, kind: 'dash', utile: true, lt: 0.34, ln: -1 },
+           { p: [D / 2, 0], q: [D / 2, d], v: d, kind: 'dash', utile: true, lt: 0.74, ln: -1 },
+           { p: [D / 2, d], q: [D, d / 2], v: cote, kind: 'side', utile: false }],
+    angles: [{ V: [D / 2, d / 2], A: [D, d / 2], B: [D / 2, 0] }], ticks: cotesDe(P), ext: [], correct: D * d / 2,
+    lignes: [`Aire du losange = (grande diagonale × petite diagonale) ÷ 2`, `= (${D} × ${d}) ÷ 2 = ${mille(D * d)} ÷ 2 = ${res(D * d / 2, unit)}`],
+    inutiles: [`Le côté (${fr(cote)} ${unit}) ne sert pas : on utilise les deux diagonales.`],
+    erreurs: [{ v: D * d, m: `Tu as oublié de diviser par 2 : (grande diagonale × petite diagonale) ÷ 2.` },
+              { v: cote * cote, m: `Tu as fait côté × côté, comme pour un carré. Pour le losange, on utilise les diagonales.` },
+              { v: 4 * cote, m: `Tu as calculé le périmètre. Pour l'aire, on utilise les diagonales.` },
+              { v: D + d, m: `Tu as additionné les diagonales. Il faut les multiplier, puis diviser par 2.` }]
+  };
+}
+// type : 'iso' (isocèle), 'rect' (rectangle, o = 0), 'q' (quelconque)
+function trapeze(B, b, h, o, unit, type) {
+  const P = [[o, 0], [o + b, 0], [B, h], [0, h]];
+  const gauche = type === 'rect' ? h : r1(hyp(o, h)), droite = r1(hyp(B - o - b, h));
+  const segs = [{ p: [0, h], q: [B, h], v: B, kind: 'side', utile: true },
+                { p: [o, 0], q: [o + b, 0], v: b, kind: 'side', utile: true },
+                { p: [0, h], q: [o, 0], v: gauche, kind: 'side', utile: type === 'rect' },
+                { p: [B, h], q: [o + b, 0], v: droite, kind: 'side', utile: false }];
+  let angles = [], ticks = [];
+  if (type === 'rect') angles = [{ V: [0, 0], A: [1, 0], B: [0, 1] }, { V: [0, h], A: [0, 0], B: [1, h] }];
+  else {
+    const hx = (o > 0 && o < B) ? o : ((o + b > 0 && o + b < B) ? o + b : (Math.max(o, 0) + Math.min(o + b, B)) / 2);
+    segs.push({ p: [hx, 0], q: [hx, h], v: h, kind: 'dash', utile: true });
+    angles = [{ V: [hx, h], A: [hx, 0], B: [hx + 1, h] }];
+  }
+  if (type === 'iso') ticks = [{ p: [0, h], q: [o, 0], n: 1 }, { p: [B, h], q: [o + b, 0], n: 1 }];
+  const noms = { iso: 'trapèze isocèle', rect: 'trapèze rectangle', q: 'trapèze' };
+  const lignes = [];
+  if (type === 'rect') lignes.push(`Dans un trapèze rectangle, le côté perpendiculaire aux bases est la hauteur.`);
+  lignes.push(`Aire du trapèze = (grande base + petite base) × hauteur ÷ 2`,
+              `= (${B} + ${b}) × ${h} ÷ 2 = ${B + b} × ${h} ÷ 2 = ${mille((B + b) * h)} ÷ 2 = ${res((B + b) * h / 2, unit)}`);
+  const inutiles = type === 'rect' ? [`Le côté oblique (${fr(droite)} ${unit}) ne sert pas.`]
+    : type === 'iso' ? [`Les deux côtés obliques (${fr(gauche)} ${unit}) ne servent pas : on utilise la hauteur.`]
+    : [`Les côtés obliques (${fr(gauche)} ${unit} et ${fr(droite)} ${unit}) ne servent pas : on utilise la hauteur.`];
+  const erreurs = [{ v: (B + b) * h, m: `Tu as oublié de diviser par 2 : (grande base + petite base) × hauteur ÷ 2.` },
+                   { v: B * h, m: `Tu n'as pris que la grande base. Il faut additionner les deux bases avant de multiplier.` },
+                   { v: B * b, m: `Tu as multiplié les deux bases. Il faut les additionner, puis multiplier par la hauteur et diviser par 2.` }];
+  if (type !== 'rect') erreurs.push({ v: (B + b) * gauche / 2, m: `Tu as utilisé un côté oblique au lieu de la hauteur (le trait en pointillés).` },
+                                     { v: (B + b) * droite / 2, m: `Tu as utilisé un côté oblique au lieu de la hauteur (le trait en pointillés).` });
+  return {
+    fam: 't' + type, nom: noms[type], un: 'un', ce: 'ce ' + noms[type], titre: `${noms[type][0].toUpperCase() + noms[type].slice(1)} (bases ${B} et ${b}, hauteur ${h})`,
+    unit, poly: P, segs, angles, ticks, ext: [], correct: (B + b) * h / 2, lignes, inutiles, erreurs
+  };
+}
+const trapIso = (B, b, h, unit) => trapeze(B, b, h, (B - b) / 2, unit, 'iso');
+const trapRect = (B, b, h, unit) => trapeze(B, b, h, 0, unit, 'rect');
+const trapQ = (B, b, h, o, unit) => trapeze(B, b, h, o, unit, 'q');
+
+// Transformations pour varier l'orientation (tous les points de la figure bougent ensemble)
+function transformer(f, flip, s) {
+  const t = p => f(p);
+  s.poly = s.poly.map(t);
+  s.segs.forEach(g => { g.p = t(g.p); g.q = t(g.q); if (flip && g.ln) g.ln = -g.ln; });
+  s.angles.forEach(a => { a.V = t(a.V); a.A = t(a.A); a.B = t(a.B); });
+  s.ticks.forEach(k => { k.p = t(k.p); k.q = t(k.q); });
+  s.ext.forEach(e => { e.p = t(e.p); e.q = t(e.q); });
+  if (flip) s.poly.reverse();
+  return s;
+}
+function rot(s, deg) { const a = deg * Math.PI / 180, c = Math.cos(a), si = Math.sin(a); return transformer(([x, y]) => [x * c - y * si, x * si + y * c], false, s); }
+function miroir(s) { return transformer(([x, y]) => [-x, y], true, s); }
+
+// ===================== BANQUE (38 figures) =====================
+const BANQUE = [
+  // Carrés (6)
+  { fam: 'carre', f: () => carre(8, 'cm') },
+  { fam: 'carre', f: () => carre(12, 'm') },
+  { fam: 'carre', f: () => rot(carre(6, 'dm'), 20) },
+  { fam: 'carre', f: () => carre(15, 'cm') },
+  { fam: 'carre', f: () => rot(carre(9, 'm'), 45) },
+  { fam: 'carre', f: () => rot(carre(25, 'cm'), -12) },
+  // Rectangles (6)
+  { fam: 'rect', f: () => rect(9, 4, 'cm') },
+  { fam: 'rect', f: () => rect(14, 6, 'm') },
+  { fam: 'rect', f: () => rect(12, 5, 'dm', true) },
+  { fam: 'rect', f: () => rot(rect(18, 7, 'cm'), 90) },
+  { fam: 'rect', f: () => rot(rect(20, 15, 'm', true), -25) },
+  { fam: 'rect', f: () => rect(11, 8, 'cm') },
+  // Parallélogrammes (8)
+  { fam: 'para', f: () => para(10, 6, 3, 'cm') },
+  { fam: 'para', f: () => para(12, 5, 4, 'm') },
+  { fam: 'para', f: () => para(8, 7, -3, 'dm') },
+  { fam: 'para', f: () => para(15, 8, 6, 'cm') },
+  { fam: 'para', f: () => para(9, 4, 3, 'm') },
+  { fam: 'para', f: () => para(7, 6, 10, 'cm') },
+  { fam: 'para', f: () => rot(para(9, 7, 3, 'dm'), 90) },
+  { fam: 'para', f: () => rot(para(13, 4, 5, 'cm'), 180) },
+  // Losanges (8)
+  { fam: 'los', f: () => losange(8, 6, 'cm') },
+  { fam: 'los', f: () => losange(12, 8, 'm') },
+  { fam: 'los', f: () => losange(10, 4, 'dm') },
+  { fam: 'los', f: () => losange(16, 12, 'cm') },
+  { fam: 'los', f: () => rot(losange(18, 12, 'm'), 90) },
+  { fam: 'los', f: () => losange(14, 9, 'cm') },
+  { fam: 'los', f: () => rot(losange(20, 15, 'dm'), 30) },
+  { fam: 'los', f: () => rot(losange(16, 10, 'm'), -35) },
+  // Trapèzes (10) : 3 isocèles, 3 rectangles, 4 quelconques
+  { fam: 'tiso', f: () => trapIso(12, 6, 4, 'cm') },
+  { fam: 'tiso', f: () => trapIso(16, 10, 7, 'm') },
+  { fam: 'tiso', f: () => rot(trapIso(14, 8, 5, 'dm'), 180) },
+  { fam: 'trect', f: () => trapRect(10, 6, 5, 'cm') },
+  { fam: 'trect', f: () => miroir(trapRect(15, 9, 8, 'm')) },
+  { fam: 'trect', f: () => rot(trapRect(13, 7, 6, 'dm'), 90) },
+  { fam: 'tq', f: () => trapQ(11, 5, 6, 2, 'cm') },
+  { fam: 'tq', f: () => trapQ(18, 8, 9, 7, 'm') },
+  { fam: 'tq', f: () => trapQ(12, 7, 8, -2, 'dm') },
+  { fam: 'tq', f: () => rot(trapQ(14, 8, 7, 2, 'cm'), -90) }
+];
+const TRAP = ['tiso', 'trect', 'tq'], TOUTES = ['carre', 'rect', 'para', 'los'].concat(TRAP);
+
+const NIVEAUX = [
+  { n: 1, couleur: '#1A9E75', titre: 'Carré, rectangle, parallélogramme', desc: 'Côté × côté, longueur × largeur, base × hauteur.',
+    quotas: [[['carre'], 1], [['rect'], 1], [['para'], 2], [['carre', 'rect', 'para'], 1]] },
+  { n: 2, couleur: '#1A6FA0', titre: 'Le losange', desc: 'Utilise les deux diagonales.', quotas: [[['los'], 5]] },
+  { n: 3, couleur: '#C97B1A', titre: 'Les trapèzes', desc: 'Isocèles, rectangles et quelconques : les deux bases et la hauteur.',
+    quotas: [[['tiso'], 1], [['trect'], 1], [['tq'], 1], [TRAP, 2]] },
+  { n: 4, couleur: '#5B4FCF', titre: 'Tout mélangé', desc: 'Le nom de la figure n\'est pas donné : reconnais-la toi-même !',
+    quotas: [[['carre', 'rect'], 1], [['para'], 1], [['los'], 1], [TRAP, 1], [TOUTES, 1]] }
+];
+const PAR_SERIE = 5;
+
+// Prépare une question : énoncé, correction écrite, vérification de l'aire
+function construire(q, niveau) {
+  q.niveau = niveau;
+  if (Math.abs(aireLacet(q.poly) - q.correct) > 1e-6) console.error('Aire fausse :', q.titre, aireLacet(q.poly), q.correct);
+  if (!entier(q.correct)) console.error('Aire non entière :', q.titre);
+  q.desc = niveau === 4 ? `Calcule l'aire de ce quadrilatère.<span class="attention">Reconnais d'abord la figure !</span>` : `Calcule l'aire de ${q.ce}.`;
+  let h = niveau === 4 ? `<span class="ligne">C'est ${q.un} <strong>${q.nom}</strong>.</span>` : '';
+  h += q.lignes.map(l => `<span class="ligne">${l}</span>`).join('');
+  q.inutiles.forEach(t => { h += `<span class="autre">${t}</span>`; });
+  q.explication = h;
+  return q;
+}
+
+// Tirage : quotas par famille, en évitant les figures de la série précédente du même niveau
+const dernierTirage = {};
+function genererSerie(niv) {
+  const deja = dernierTirage[niv] || [], choix = [];
+  NIVEAUX[niv - 1].quotas.forEach(([fams, nb]) => {
+    const libres = BANQUE.map((_, i) => i).filter(i => fams.includes(BANQUE[i].fam) && !choix.includes(i));
+    const ordre = shuffle(libres.filter(i => !deja.includes(i))).concat(shuffle(libres.filter(i => deja.includes(i))));
+    choix.push(...ordre.slice(0, nb));
+  });
+  dernierTirage[niv] = choix;
+  return shuffle(choix.slice()).map(i => construire(BANQUE[i].f(), niv));
+}
+
+// ===================== DESSIN =====================
+const NS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs, parent) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+const VB = { w: 340, h: 260, marge: 48 };
+const VERT = '#1A9E75', GRIS = '#9CA3AF', NOIR = '#1A1A2E', VIOLET = '#5B4FCF';
+function dessiner(q, correction) {
+  const svg = document.getElementById('shape-svg');
+  svg.innerHTML = '';
+  const tous = q.poly.concat(...q.ext.map(e => [e.p, e.q]));
+  const xs = tous.map(p => p[0]), ys = tous.map(p => p[1]);
+  const minX = Math.min(...xs), minY = Math.min(...ys), W = Math.max(...xs) - minX, H = Math.max(...ys) - minY;
+  const dW = VB.w - 2 * VB.marge, dH = VB.h - 2 * VB.marge + 8;
+  const s = Math.min(dW / W, dH / H, 26);
+  const ox = VB.marge + (dW - W * s) / 2, oy = VB.marge - 4 + (dH - H * s) / 2;
+  const S = ([x, y]) => [ox + (x - minX) * s, oy + (y - minY) * s];
+  const P = q.poly.map(S);
+  const C = [P.reduce((a, p) => a + p[0], 0) / P.length, P.reduce((a, p) => a + p[1], 0) / P.length];
+  const pts = P.map(p => p.map(v => v.toFixed(1)).join(',')).join(' ');
+
+  el('polygon', { points: pts, fill: correction ? '#E2F0FA' : '#EEF0FF', stroke: NOIR, 'stroke-width': 3, 'stroke-linejoin': 'round' }, svg);
+  // Prolongement de la base (hauteur à l'extérieur)
+  q.ext.forEach(e => { const [a, b] = [S(e.p), S(e.q)]; el('line', { x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: '#6B7080', 'stroke-width': 1.5, 'stroke-dasharray': '2,3' }, svg); });
+  // Hauteurs et diagonales
+  q.segs.filter(g => g.kind === 'dash').forEach(g => {
+    const [a, b] = [S(g.p), S(g.q)];
+    const col = correction ? (g.utile ? VERT : GRIS) : VIOLET;
+    el('line', { x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: col, 'stroke-width': correction && g.utile ? 3 : 2, 'stroke-dasharray': '6,4' }, svg);
+  });
+  // Côtés utiles surlignés dans la correction
+  if (correction) q.segs.filter(g => g.kind === 'side' && g.utile).forEach(g => {
+    const [a, b] = [S(g.p), S(g.q)];
+    el('line', { x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: VERT, 'stroke-width': 5, 'stroke-linecap': 'round' }, svg);
+  });
+  // Angles droits
+  q.angles.forEach(an => {
+    const V = S(an.V), u = unit(S(an.A), V), w = unit(S(an.B), V), k = 10;
+    const p1 = [V[0] + u[0] * k, V[1] + u[1] * k], p2 = [p1[0] + w[0] * k, p1[1] + w[1] * k], p3 = [V[0] + w[0] * k, V[1] + w[1] * k];
+    el('path', { d: `M${p1[0].toFixed(1)},${p1[1].toFixed(1)} L${p2[0].toFixed(1)},${p2[1].toFixed(1)} L${p3[0].toFixed(1)},${p3[1].toFixed(1)}`, fill: 'none', stroke: NOIR, 'stroke-width': 1.6 }, svg);
+  });
+  // Côtés de même longueur
+  q.ticks.forEach(t => {
+    const a = S(t.p), b = S(t.q), d = unit(b, a), n = [-d[1], d[0]], M = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+    for (let i = 0; i < t.n; i++) {
+      const dec = (i - (t.n - 1) / 2) * 5, c = [M[0] + d[0] * dec, M[1] + d[1] * dec];
+      el('line', { x1: c[0] + n[0] * 6, y1: c[1] + n[1] * 6, x2: c[0] - n[0] * 6, y2: c[1] - n[1] * 6, stroke: NOIR, 'stroke-width': 2 }, svg);
+    }
+  });
+  // Mesures
+  q.segs.forEach(g => {
+    const a = S(g.p), b = S(g.q), d = unit(b, a), n = [-d[1], d[0]], t = g.lt !== undefined ? g.lt : 0.5;
+    const M = [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+    const versC = (C[0] - M[0]) * n[0] + (C[1] - M[1]) * n[1];
+    let sg;
+    if (g.kind === 'side') sg = versC > 0 ? -1 : 1;                 // à l'extérieur de la figure
+    else sg = g.ln ? g.ln : (versC >= 0 ? 1 : -1);                    // vers l'intérieur (ou côté imposé)
+    const nx = n[0] * sg, ny = n[1] * sg, off = g.kind === 'side' ? 13 : 9;
+    const x = M[0] + nx * off, y = M[1] + ny * off + 4.5 + ny * 5;
+    const anc = nx > 0.4 ? 'start' : nx < -0.4 ? 'end' : 'middle';
+    const col = correction ? (g.utile ? VERT : GRIS) : (g.kind === 'dash' ? VIOLET : NOIR);
+    el('text', { x: x.toFixed(1), y: y.toFixed(1), 'text-anchor': anc, 'font-size': 13.5, 'font-weight': 900, fill: col, 'font-family': 'Nunito, sans-serif', stroke: '#fff', 'stroke-width': 3.5, 'paint-order': 'stroke', 'stroke-linejoin': 'round' }, svg)
+      .textContent = `${fmt(g.v)} ${q.unit}`;
+  });
+}
+function unit(b, a) { const dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy) || 1; return [dx / l, dy / l]; }
+
+// ===================== DÉROULEMENT =====================
+let niveau = 1, questions = [], idx = 0, score = 0, aRepondu = false, reponses = [], saved = false;
+const ecran = id => ['ecran-niveaux', 'exercice-zone', 'score-screen'].forEach(e => { document.getElementById(e).style.display = e === id ? 'block' : 'none'; });
+
+// Meilleur score par niveau, gardé sur l'appareil (simple confort ; rien d'important n'y est stocké)
+function lireRecords() { try { return JSON.parse(localStorage.getItem('lcml_aire_quadri_records') || '{}'); } catch (e) { return {}; } }
+function ecrireRecord(n, s) { try { const r = lireRecords(); if (!(r[n] >= s)) { r[n] = s; localStorage.setItem('lcml_aire_quadri_records', JSON.stringify(r)); } } catch (e) { } }
+
+function afficherNiveaux() {
+  fermerCalc(); fermerFormules();
+  document.getElementById('sous-titre').textContent = 'Aire des quadrilatères — choisis ton niveau';
+  const rec = lireRecords();
+  const box = document.getElementById('liste-niveaux');
+  box.innerHTML = '';
+  NIVEAUX.forEach(nv => {
+    const b = document.createElement('button');
+    b.className = 'carte-niveau';
+    b.innerHTML = `<div class="badge-niv" style="background:${nv.couleur}">${nv.n}</div><div><h2>Niveau ${nv.n} — ${nv.titre}</h2><p>${nv.desc}</p>${rec[nv.n] !== undefined ? `<div class="record">Meilleur score : ${rec[nv.n]} / ${PAR_SERIE}</div>` : ''}</div>`;
+    b.addEventListener('click', () => { playSound('click'); demarrer(nv.n); });
+    box.appendChild(b);
+  });
+  ecran('ecran-niveaux');
+}
+
+function demarrer(n) {
+  niveau = n;
+  questions = genererSerie(n);
+  idx = 0; score = 0; reponses = []; saved = false;
+  document.getElementById('sous-titre').textContent = `Niveau ${n} — ${NIVEAUX[n - 1].titre}`;
+  const dots = document.getElementById('dots-progress');
+  dots.innerHTML = '';
+  questions.forEach(() => { const d = document.createElement('div'); d.className = 'dot'; dots.appendChild(d); });
+  ecran('exercice-zone');
+  chargerQuestion();
+}
+
+function chargerQuestion() {
+  aRepondu = false;
+  const q = questions[idx];
+  document.getElementById('info-numero').textContent = `Question ${idx + 1}/${questions.length}`;
+  document.getElementById('question-text').innerHTML = q.desc;
+  document.getElementById('answer-unit').textContent = q.unit + '²';
+  const input = document.getElementById('answer-input');
+  input.value = ''; input.className = 'answer-input';
+  document.getElementById('zone-reponse').style.display = 'block';
+  document.getElementById('message').textContent = '';
+  const fb = document.getElementById('feedback-box'); fb.className = 'feedback-box'; fb.innerHTML = '';
+  document.getElementById('btn-next').style.display = 'none';
+  document.getElementById('legende').textContent = 'Attention : toutes les mesures ne servent pas forcément !';
+  const dots = document.getElementById('dots-progress').children;
+  for (const d of dots) d.classList.remove('current');
+  dots[idx].classList.add('current');
+  dessiner(q, false);
+}
+
+function touche(k) {
+  if (aRepondu) return;
+  const input = document.getElementById('answer-input');
+  document.getElementById('message').textContent = '';
+  if (k === 'ok') return valider();
+  playSound('click');
+  if (k === 'del') input.value = input.value.replace(/\s/g, '').slice(0, -1);
+  else if (k === 'clear') input.value = '';
+  else { const v = input.value.replace(/\s/g, ''); if (v.length < 8) input.value = (v === '0' ? '' : v) + k; }
+  input.value = mille(input.value.replace(/\s/g, ''));
+}
+
+function valider() {
+  if (aRepondu) return;
+  const input = document.getElementById('answer-input');
+  const brut = input.value.replace(/\s/g, '');
+  if (!/^\d+$/.test(brut)) { document.getElementById('message').textContent = 'Écris ta réponse avant de valider.'; return; }
+  aRepondu = true;
+  const q = questions[idx], val = parseInt(brut, 10);
+  const ok = val === q.correct;
+  const dots = document.getElementById('dots-progress').children;
+  if (ok) { score++; playSound('success'); input.classList.add('correct'); dots[idx].classList.add('correct'); }
+  else { playSound('error'); input.classList.add('incorrect'); dots[idx].classList.add('incorrect'); }
+  reponses.push({ n: idx + 1, titre: q.titre, saisi: brut, juste: q.correct, ok, unit: q.unit });
+  document.getElementById('zone-reponse').style.display = 'none';
+  let aide = '';
+  if (!ok) { const e = q.erreurs.find(e => entier(e.v) && Math.round(e.v) === val && val !== q.correct); if (e) aide = `<span class="indice">💡 ${e.m}</span>`; }
+  const fb = document.getElementById('feedback-box');
+  fb.className = 'feedback-box ' + (ok ? 'correct' : 'incorrect');
+  fb.innerHTML = (ok ? `<strong>Bravo !</strong> ${mille(brut)} ${q.unit}², c'est juste.` : `<strong>Oups !</strong> Tu as écrit ${mille(brut)} ${q.unit}². La bonne réponse est <strong class="bonne">${mille(q.correct)} ${q.unit}²</strong>.`) + aide + q.explication;
+  document.getElementById('legende').innerHTML = '<span style="color:#1A9E75">En vert : les mesures utiles.</span> En gris : celles qui ne servent pas.';
+  dessiner(q, true);
+  const btn = document.getElementById('btn-next');
+  btn.textContent = idx + 1 < questions.length ? 'Question suivante ➡️' : 'Voir mon score 🏁';
+  btn.style.display = 'block';
+}
+
+function suivante() {
+  if (!aRepondu) return;
+  aRepondu = false;
+  playSound('click');
+  idx++;
+  if (idx < questions.length) chargerQuestion(); else afficherScore();
+}
+
+function afficherScore() {
+  fermerCalc(); fermerFormules();
+  ecran('score-screen');
+  const total = questions.length, pct = Math.round(score / total * 100);
+  ecrireRecord(niveau, score);
+  document.getElementById('final-score').textContent = `${score} / ${total}`;
+  const em = document.getElementById('final-emoji'), ti = document.getElementById('final-title'), msg = document.getElementById('congrats-msg');
+  if (score === total) { em.textContent = '🏆'; ti.textContent = 'Maître Géomètre !'; msg.innerHTML = `<strong>Niveau ${niveau} réussi sans faute !</strong>${niveau < 4 ? ' Essaie le niveau suivant.' : ''}`; confettis(); }
+  else if (score >= 4) { em.textContent = '⭐'; ti.textContent = 'Très bien !'; msg.innerHTML = `<strong>${pct} % de réussite.</strong> Regarde bien l'erreur ci-dessous.`; }
+  else if (score >= 3) { em.textContent = '👍'; ti.textContent = 'Pas mal !'; msg.innerHTML = `<strong>${pct} % de réussite.</strong> Choisis bien les mesures utiles : la hauteur, pas le côté penché !`; }
+  else { em.textContent = '💪'; ti.textContent = 'Il faut encore t\'entrainer'; msg.innerHTML = `<strong>${pct} % de réussite.</strong> Ouvre le bouton 📘 Formules pendant l'exercice pour t'aider.`; }
+
+  if (!saved && window.parent && window.parent !== window && typeof window.parent.saveResult === 'function') {
+    saved = true;
+    try {
+      window.parent.saveResult({
+        activity: 'grandeur_aire_formules',
+        bookTitle: `Le Maître Géomètre — Niveau ${niveau}`,
+        score, total, pct,
+        date: new Date().toLocaleDateString('fr-BE'),
+        time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+      });
+    } catch (e) { console.warn('Erreur sauvegarde', e); }
+  }
+  const det = document.getElementById('final-details');
+  det.innerHTML = '';
+  reponses.forEach(r => {
+    const row = document.createElement('div');
+    row.className = 'score-row';
+    row.innerHTML = `<span>Q${r.n} : <strong>${r.titre}</strong></span><span class="tag ${r.ok ? 'ok' : 'ko'}">${r.ok ? '✅ ' + mille(r.juste) + ' ' + r.unit + '²' : '❌ ' + mille(r.saisi) + ' → <span class="bonne">' + mille(r.juste) + ' ' + r.unit + '²</span>'}</span>`;
+    det.appendChild(row);
+  });
+}
+
+function confettis() {
+  const cols = ['#5B4FCF', '#1A9E75', '#D94F3D', '#C97B1A', '#1A6FA0', '#C7C2F5'];
+  for (let i = 0; i < 70; i++) {
+    const c = document.createElement('div'); c.className = 'confetti';
+    const t = 6 + Math.random() * 7;
+    Object.assign(c.style, { left: Math.random() * 100 + 'vw', width: t + 'px', height: t + 'px', background: cols[i % cols.length], animationDelay: Math.random() * 1.2 + 's', animationDuration: 1.6 + Math.random() * 1.8 + 's' });
+    document.body.appendChild(c); setTimeout(() => c.remove(), 4000);
+  }
+}
+
+// ===================== FORMULES =====================
+function ouvrirFormules() { document.getElementById('panneau-formules').classList.add('ouvert'); document.getElementById('btn-formules').classList.add('ouverte'); }
+function fermerFormules() { document.getElementById('panneau-formules').classList.remove('ouvert'); document.getElementById('btn-formules').classList.remove('ouverte'); }
+
+// ===================== CALCULATRICE =====================
+// Respecte les priorités (× et ÷ avant + et −), comme les calculatrices de l'école.
+let calcExpr = '', calcFini = false, calcResultat = 0;
+const OPS = ['+', '−', '×', '÷'];
+function calcAfficher(res) {
+  document.getElementById('calc-expr').textContent = calcFini ? calcExpr + ' =' : '';
+  document.getElementById('calc-res').textContent = res !== undefined ? res : (calcExpr || '0');
+}
+function calcEvaluer(expr) {
+  const tokens = expr.match(/\d+(,\d*)?|[+−×÷]/g);
+  if (!tokens) return null;
+  if (OPS.includes(tokens[tokens.length - 1])) tokens.pop();
+  // Nombre négatif en tête (après un résultat négatif)
+  if (tokens[0] === '−' && tokens.length > 1) { tokens.splice(0, 2, '-' + tokens[1]); }
+  const nums = [], ops = [];
+  for (const t of tokens) { if (OPS.includes(t)) ops.push(t); else nums.push(parseFloat(t.replace(',', '.'))); }
+  if (nums.length !== ops.length + 1 || nums.some(isNaN)) return null;
+  // 1) × et ÷ de gauche à droite
+  const n2 = [nums[0]], o2 = [];
+  for (let i = 0; i < ops.length; i++) {
+    if (ops[i] === '×') n2.push(n2.pop() * nums[i + 1]);
+    else if (ops[i] === '÷') { if (nums[i + 1] === 0) return 'Erreur'; n2.push(n2.pop() / nums[i + 1]); }
+    else { o2.push(ops[i]); n2.push(nums[i + 1]); }
+  }
+  // 2) + et − de gauche à droite
+  let r = n2[0];
+  o2.forEach((o, i) => { r = o === '+' ? r + n2[i + 1] : r - n2[i + 1]; });
+  r = Math.round(r * 1e8) / 1e8;
+  return r;
+}
+function calcTouche(k) {
+  playSound('click');
+  if (k === 'C') { calcExpr = ''; calcFini = false; return calcAfficher(); }
+  if (k === 'del') { if (calcFini) { calcFini = false; calcExpr = ''; } calcExpr = calcExpr.slice(0, -1); return calcAfficher(); }
+  if (k === '=') {
+    if (!calcExpr) return;
+    const r = calcEvaluer(calcExpr);
+    if (r === null) return;
+    calcFini = true;
+    const txt = r === 'Erreur' ? 'Erreur' : mille(fr(r).split(',')[0]).replace('-', '−') + (fr(r).includes(',') ? ',' + fr(r).split(',')[1] : '');
+    calcAfficher(txt);
+    calcResultat = r;
+    return;
+  }
+  if (calcFini) { // on repart du résultat si on tape une opération, sinon d'un nouveau calcul
+    calcFini = false;
+    const r = calcResultat;
+    calcExpr = (OPS.includes(k) && r !== 'Erreur') ? (r < 0 ? '−' + fr(-r) : fr(r)) : '';
+  }
+  const dernier = calcExpr.slice(-1);
+  if (OPS.includes(k)) {
+    if (!calcExpr) return;
+    if (OPS.includes(dernier)) calcExpr = calcExpr.slice(0, -1);
+    if (dernier === ',') calcExpr = calcExpr.slice(0, -1);
+    calcExpr += k;
+  } else if (k === ',') {
+    const nbCourant = calcExpr.split(/[+−×÷]/).pop();
+    if (nbCourant.includes(',')) return;
+    calcExpr += nbCourant === '' ? '0,' : ',';
+  } else {
+    if (calcExpr.replace(/\D/g, '').length > 14) return;
+    calcExpr += k;
+  }
+  calcAfficher();
+}
+function ouvrirCalc() { document.getElementById('calculatrice').classList.add('ouverte'); document.getElementById('btn-calc').classList.add('ouverte'); }
+function fermerCalc() { document.getElementById('calculatrice').classList.remove('ouverte'); document.getElementById('btn-calc').classList.remove('ouverte'); }
+const calcOuverte = () => document.getElementById('calculatrice').classList.contains('ouverte');
+
+// ===================== ÉVÈNEMENTS =====================
+document.getElementById('keypad').addEventListener('pointerdown', e => { const b = e.target.closest('.key'); if (!b) return; e.preventDefault(); touche(b.dataset.k); });
+document.getElementById('calc-touches').addEventListener('pointerdown', e => { const b = e.target.closest('.ck'); if (!b) return; e.preventDefault(); calcTouche(b.dataset.c); });
+document.getElementById('btn-calc').addEventListener('click', () => { playSound('click'); calcOuverte() ? fermerCalc() : ouvrirCalc(); });
+document.getElementById('calc-fermer').addEventListener('click', fermerCalc);
+document.getElementById('btn-formules').addEventListener('click', () => { playSound('click'); document.getElementById('panneau-formules').classList.contains('ouvert') ? fermerFormules() : ouvrirFormules(); });
+// La calculatrice se déplace en la tirant par sa barre du haut (doigt ou souris)
+(function () {
+  const box = document.getElementById('calculatrice'), barre = document.getElementById('calc-haut');
+  let dx = 0, dy = 0, tire = false;
+  barre.addEventListener('pointerdown', e => {
+    if (e.target.closest('button')) return;
+    const r = box.getBoundingClientRect();
+    dx = e.clientX - r.left; dy = e.clientY - r.top; tire = true;
+    barre.setPointerCapture(e.pointerId); e.preventDefault();
+  });
+  barre.addEventListener('pointermove', e => {
+    if (!tire) return;
+    const x = Math.min(Math.max(0, e.clientX - dx), window.innerWidth - box.offsetWidth);
+    const y = Math.min(Math.max(0, e.clientY - dy), window.innerHeight - box.offsetHeight);
+    Object.assign(box.style, { left: x + 'px', top: y + 'px', bottom: 'auto', right: 'auto' });
+  });
+  const lacher = () => { tire = false; };
+  barre.addEventListener('pointerup', lacher); barre.addEventListener('pointercancel', lacher);
+})();
+document.getElementById('btn-next').addEventListener('click', suivante);
+document.getElementById('btn-retour').addEventListener('click', () => { playSound('click'); afficherNiveaux(); });
+document.getElementById('btn-restart').addEventListener('click', () => { playSound('click'); demarrer(niveau); });
+document.getElementById('btn-autre').addEventListener('click', () => { playSound('click'); afficherNiveaux(); });
+document.addEventListener('keydown', e => {
+  if (document.getElementById('exercice-zone').style.display !== 'block') return;
+  if (calcOuverte()) { // le clavier de l'ordinateur sert à la calculatrice quand elle est ouverte
+    const map = { '+': '+', '-': '−', '*': '×', 'x': '×', '/': '÷', ',': ',', '.': ',', 'Enter': '=', '=': '=', 'Backspace': 'del', 'Escape': 'C' };
+    if (e.key >= '0' && e.key <= '9') { e.preventDefault(); calcTouche(e.key); }
+    else if (map[e.key]) { e.preventDefault(); calcTouche(map[e.key]); }
+    return;
+  }
+  if (aRepondu) { if (e.key === 'Enter') { e.preventDefault(); suivante(); } return; }
+  if (e.key >= '0' && e.key <= '9') touche(e.key);
+  else if (e.key === 'Backspace') { e.preventDefault(); touche('del'); }
+  else if (e.key === 'Enter') { e.preventDefault(); touche('ok'); }
+});
+// Dans le site : quitter l'écran ramène au choix du niveau
+window.lcmlOnLeave = function () { afficherNiveaux(); };
+
+afficherNiveaux();
+</script>
+<script src="../lcml_copyright.js"></script>
+</body>
+</html>
