@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<!-- © 2026 Jérémy Lejoly — LCML. Reproduction interdite sans autorisation. -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Énigmes flash</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --purple: #5B4FCF; --purple-light: #EEF0FF;
+    --green: #1A9E75; --green-light: #E2F5EE;
+    --red: #D94F3D; --red-light: #FDECEA;
+    --amber: #C97B1A; --amber-light: #FEF3E2;
+    --blue: #1A6FA0; --blue-light: #E2F0FA;
+    --bg: #FDFBF7; --surface: #FFFFFF;
+    --text: #1A1A2E; --muted: #6B7080; --border: #1A1A2E;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); }
+  body { font-family: 'Nunito', sans-serif; color: var(--text); padding: 10px 14px 14px; -webkit-font-smoothing: antialiased; }
+  button { font-family: inherit; touch-action: manipulation; color: var(--text); }
+  .container { max-width: 860px; margin: 0 auto; }
+  .hidden { display: none !important; }
+
+  header {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    background: var(--amber-light); border: 3px solid var(--border); border-radius: 16px;
+    padding: 6px 12px; margin-bottom: 10px; box-shadow: 4px 4px 0 var(--border);
+  }
+  h1 { font-family: 'Fredoka', sans-serif; font-size: 21px; font-weight: 700; }
+  .subtitle { font-size: 13px; color: var(--muted); font-weight: 700; }
+  .hud { font-family: 'Fredoka', sans-serif; font-size: 16px; font-weight: 600; white-space: nowrap; }
+
+  .btn {
+    border: 2.5px solid var(--border); border-radius: 12px; padding: 8px 16px; font-size: 15px; font-weight: 800;
+    background: var(--surface); box-shadow: 3px 3px 0 var(--border); cursor: pointer;
+  }
+  .btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--border); }
+  .btn-primary { background: var(--purple); color: #fff; }
+  .btn-green { background: var(--green); color: #fff; }
+  .btn:disabled { opacity: .5; cursor: default; transform: none; box-shadow: 3px 3px 0 var(--border); }
+
+  /* Menu */
+  .intro { background: var(--surface); border: 2.5px solid var(--border); border-radius: 14px; padding: 10px 14px; margin-bottom: 12px; font-size: 15px; line-height: 1.45; }
+  .niveaux { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  @media (min-width: 640px) { .niveaux { grid-template-columns: 1fr 1fr 1fr; } }
+  .carte-niveau {
+    background: var(--surface); border: 3px solid var(--border); border-radius: 16px; padding: 12px; text-align: left;
+    cursor: pointer; box-shadow: 4px 4px 0 var(--border); display: flex; flex-direction: column; gap: 6px;
+  }
+  .carte-niveau:active { transform: translate(2px,2px); box-shadow: 2px 2px 0 var(--border); }
+  .carte-niveau .badge { font-family: 'Fredoka', sans-serif; font-size: 19px; font-weight: 700; }
+  .carte-niveau .desc { font-size: 14px; color: var(--muted); font-weight: 700; line-height: 1.35; }
+  .carte-niveau .record { font-size: 14px; font-weight: 800; }
+  .n1 { background: var(--green-light); } .n2 { background: var(--blue-light); } .n3 { background: var(--purple-light); }
+
+  /* Énigme */
+  .texte {
+    background: var(--surface); border: 3px solid var(--border); border-radius: 16px; padding: 12px 16px;
+    font-size: 17px; line-height: 1.55; box-shadow: 4px 4px 0 var(--border); margin-bottom: 10px;
+  }
+  .texte .titre-enigme { font-family: 'Fredoka', sans-serif; font-size: 15px; color: var(--amber); font-weight: 700; margin-bottom: 4px; }
+  .phrase { border-radius: 6px; padding: 1px 2px; transition: background .15s; }
+  .texte.preuve-mode .phrase { cursor: pointer; background: #FFF6D6; box-shadow: inset 0 -2px 0 #E8C766; }
+  .texte.preuve-mode .phrase.faux { background: var(--red-light); box-shadow: inset 0 -2px 0 var(--red); }
+  .phrase.juste { background: #BDEBD9 !important; box-shadow: inset 0 -2px 0 var(--green) !important; font-weight: 700; }
+  .ligne-dialogue { display: block; }
+
+  .question { font-family: 'Fredoka', sans-serif; font-size: 18px; font-weight: 600; margin: 2px 0 8px; }
+  .options { display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 10px; }
+  .option {
+    text-align: left; background: var(--surface); border: 2.5px solid var(--border); border-radius: 12px; padding: 8px 12px;
+    font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 3px 3px 0 var(--border);
+  }
+  .option.choisie { background: var(--purple-light); border-color: var(--purple); box-shadow: 3px 3px 0 var(--purple); }
+  .option.bonne { background: var(--green-light); border-color: var(--green); box-shadow: 3px 3px 0 var(--green); }
+  .option:disabled { cursor: default; }
+  .options.fige .option:not(.bonne) { opacity: .45; }
+
+  .barre { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .message { flex: 1; min-width: 200px; font-size: 15px; font-weight: 700; line-height: 1.4; border-radius: 12px; padding: 8px 12px; border: 2.5px solid transparent; }
+  .message:empty { display: none; }
+  .message.info { background: var(--blue-light); border-color: var(--blue); }
+  .message.erreur { background: var(--red-light); border-color: var(--red); }
+  .message.indice { background: var(--amber-light); border-color: var(--amber); }
+  .message.bravo { background: var(--green-light); border-color: var(--green); }
+
+  /* Fin */
+  .fin { text-align: center; background: var(--surface); border: 3px solid var(--border); border-radius: 18px; padding: 18px; box-shadow: 4px 4px 0 var(--border); }
+  .fin .etoiles { font-size: 34px; margin: 8px 0; }
+  .fin p { font-size: 16px; font-weight: 700; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div>
+      <h1>🔎 Énigmes flash</h1>
+      <div class="subtitle">Lis, devine… et prouve-le !</div>
+    </div>
+    <div class="hud" id="hud"></div>
+  </header>
+
+  <!-- MENU -->
+  <section id="ecran-menu">
+    <div class="intro">
+      Chaque énigme est un petit texte. La réponse n'est <b>jamais écrite</b> : il faut la <b>deviner grâce aux indices</b>.<br>
+      Ensuite, tu dois <b>prouver ta réponse</b> en touchant la phrase du texte qui la montre. 🕵️
+    </div>
+    <div class="niveaux" id="niveaux"></div>
+  </section>
+
+  <!-- ÉNIGME -->
+  <section id="ecran-jeu" class="hidden">
+    <div class="texte" id="texte"></div>
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+    <div class="barre">
+      <button class="btn" id="btn-menu">← Niveaux</button>
+      <div class="message" id="message"></div>
+      <button class="btn btn-primary" id="btn-valider" disabled>Valider</button>
+      <button class="btn btn-green hidden" id="btn-suivant">Énigme suivante →</button>
+    </div>
+  </section>
+
+  <!-- FIN -->
+  <section id="ecran-fin" class="hidden">
+    <div class="fin">
+      <h1 id="fin-titre">Bravo, détective !</h1>
+      <div class="etoiles" id="fin-etoiles"></div>
+      <p id="fin-texte"></p>
+      <button class="btn btn-primary" id="btn-fin-menu">Choisir un niveau</button>
+    </div>
+  </section>
+</div>
+
+<script>
+/* ===================================================================
+   BANQUE D'ÉNIGMES
+   phrases  : le texte, découpé en phrases (chaque phrase se touche)
+   dialogue : true = une réplique par ligne
+   options  : la 1re est la bonne (elles sont mélangées à l'affichage)
+   indice   : après 2 erreurs sur la question (guide, ne donne pas la réponse)
+   preuves  : numéros des phrases qui prouvent la réponse (0 = 1re phrase)
+   pieges   : message pour une phrase tentante mais qui ne prouve pas assez
+   indicePreuve : après 2 erreurs sur la preuve
+   explication  : affichée quand tout est trouvé
+   =================================================================== */
+const ENIGMES = {
+  1: [
+    { titre: "Le grand plongeon",
+      phrases: [
+        "Léa serre sa serviette contre elle.",
+        "Une forte odeur de chlore lui pique le nez.",
+        "Autour d'elle, des cris résonnent sous le grand toit vitré.",
+        "Un coup de sifflet retentit : le maitre-nageur fait signe aux enfants de ne pas courir sur le carrelage mouillé.",
+        "Léa ajuste son bonnet, respire un grand coup et s'approche du bord du bassin."
+      ],
+      question: "Où se trouve Léa ?",
+      options: ["À la piscine", "À la plage", "Dans sa salle de bain"],
+      indice: "Cherche les mots qui font penser à un lieu précis : une odeur, une personne qui y travaille…",
+      preuves: [1, 3, 4],
+      pieges: { 0: "Une serviette, on peut en avoir à la plage ou dans la salle de bain aussi. Cherche une preuve plus sure.",
+                2: "Des cris sous un toit… ça pourrait être ailleurs. Cherche une preuve plus sure." },
+      indicePreuve: "Quelle odeur sent-on seulement dans un lieu bien précis ? Qui surveille les nageurs ?",
+      explication: "Le chlore, le maitre-nageur et le bassin montrent que Léa est à la piscine." },
+
+    { titre: "Vite, vite !",
+      phrases: [
+        "Tom bâille et se frotte les yeux.",
+        "Dans la cuisine, la radio annonce les informations de sept heures.",
+        "Maman verse du lait chaud dans un bol pendant que le grille-pain fait sauter deux tartines.",
+        "Dehors, il fait encore sombre et les lampadaires sont allumés.",
+        "« Dépêche-toi, le bus de l'école passe dans vingt minutes ! » lance Papa en enfilant sa veste."
+      ],
+      question: "À quel moment de la journée se passe la scène ?",
+      options: ["Le matin, avant l'école", "Le soir, avant d'aller dormir", "À midi, pendant le repas"],
+      indice: "Regarde ce que la famille mange et ce que Papa dit à Tom.",
+      preuves: [2, 4],
+      pieges: { 0: "On bâille aussi le soir quand on est fatigué ! Cherche une preuve plus sure.",
+                1: "Sept heures… du matin ou du soir ? Cette phrase ne suffit pas.",
+                3: "Il fait sombre le matin en hiver, mais aussi le soir. Cherche une preuve plus sure." },
+      indicePreuve: "Quel repas mange-t-on avec des tartines et un bol de lait ? Où va Tom ensuite ?",
+      explication: "Les tartines et le bol de lait, c'est le petit-déjeuner. Et le bus de l'école va bientôt passer : c'est le matin." },
+
+    { titre: "Ouvre grand !",
+      phrases: [
+        "Madame Dumont enfile sa blouse blanche et sourit à Hugo.",
+        "« Ouvre grand la bouche, s'il te plait. »",
+        "Elle allume la petite lampe au-dessus du fauteuil et prend son petit miroir.",
+        "« Hum… tu manges beaucoup de bonbons, toi ! On voit deux caries. »",
+        "Elle montre ensuite à Hugo comment bien tenir sa brosse et frotter au moins deux minutes, matin et soir."
+      ],
+      question: "Quel est le métier de Madame Dumont ?",
+      options: ["Dentiste", "Médecin", "Coiffeuse"],
+      indice: "Que regarde-t-elle exactement chez Hugo ? Quels conseils lui donne-t-elle ?",
+      preuves: [3, 4],
+      pieges: { 0: "Plusieurs métiers portent une blouse blanche. Cherche une preuve plus précise.",
+                1: "Un médecin peut aussi regarder dans la bouche pour voir la gorge. Cherche une preuve plus précise.",
+                2: "Une lampe et un fauteuil, ça ne suffit pas. Cherche une preuve plus précise." },
+      indicePreuve: "Quelle partie de la bouche s'abime quand on mange trop de bonbons ?",
+      explication: "Elle soigne les caries et apprend à Hugo à se brosser les dents : c'est une dentiste." },
+
+    { titre: "La cour de récré",
+      phrases: [
+        "Les enfants courent dans la cour en soufflant de petits nuages de buée.",
+        "Sur le bord du bac à sable, une fine couche de givre craque sous les chaussures.",
+        "Yanis a oublié ses gants : il cache ses mains dans ses manches.",
+        "Dans la classe, des flocons en papier décorent les fenêtres."
+      ],
+      question: "À quelle période de l'année se passe l'histoire ?",
+      options: ["En hiver", "Au printemps", "En été"],
+      indice: "Que se passe-t-il quand on souffle dehors ? Pourquoi Yanis aurait-il besoin de gants ?",
+      preuves: [0, 1, 2],
+      pieges: { 3: "Des décorations, on peut les laisser longtemps aux fenêtres… Cherche une preuve dans ce qui se passe dehors." },
+      indicePreuve: "Cherche une phrase qui montre qu'il fait très froid dehors.",
+      explication: "La buée, le givre et le besoin de gants montrent qu'il fait très froid : c'est l'hiver." },
+
+    { titre: "Qui suis-je ?",
+      phrases: [
+        "Je passe mes journées dans une trousse, entre la gomme et la latte.",
+        "Quand on me prend, c'est souvent pour me faire tourner dans un petit trou.",
+        "Je perds alors un peu de moi-même : de fins copeaux tombent dans la poubelle.",
+        "Plus on m'utilise, plus je deviens petit.",
+        "Mais grâce à moi, on peut écrire et dessiner."
+      ],
+      question: "Quel objet parle dans ce texte ?",
+      options: ["Un crayon", "Une gomme", "Un taille-crayon"],
+      indice: "Qu'est-ce qu'on fait tourner dans un taille-crayon ? Qu'est-ce qui sert à écrire ?",
+      preuves: [1, 2, 4],
+      pieges: { 0: "Les trois objets peuvent être dans une trousse ! Cherche une preuve plus sure.",
+                3: "Une gomme aussi devient de plus en plus petite… Cherche une preuve plus sure." },
+      indicePreuve: "Cherche ce que l'objet permet de faire, ou ce qui tombe quand on le taille.",
+      explication: "On le fait tourner dans un taille-crayon, il fait des copeaux et il sert à écrire : c'est un crayon." },
+
+    { titre: "Ça sent bon !",
+      phrases: [
+        "Noé pousse la porte et une petite clochette tinte.",
+        "Tout de suite, une délicieuse odeur de pain chaud lui chatouille le nez.",
+        "Derrière le comptoir, une dame en tablier range des croissants dorés dans une corbeille.",
+        "Dans la vitrine, des éclairs au chocolat et des tartes aux fraises attendent d'être choisis.",
+        "Noé tend une pièce : « Une baguette bien cuite, s'il vous plait ! »"
+      ],
+      question: "Où se trouve Noé ?",
+      options: ["Dans une boulangerie", "Chez le boucher", "À la pharmacie"],
+      indice: "Que sent Noé ? Que voit-il dans la vitrine ? Qu'achète-t-il ?",
+      preuves: [1, 2, 3, 4],
+      pieges: { 0: "Beaucoup de magasins ont une clochette à la porte. Cherche une preuve plus sure." },
+      indicePreuve: "Cherche une phrase qui parle de ce qu'on vend ou de ce qu'on sent dans ce magasin.",
+      explication: "L'odeur de pain chaud, les croissants, les gâteaux et la baguette montrent que Noé est dans une boulangerie." },
+
+    { titre: "La sirène",
+      phrases: [
+        "Dès que la sirène retentit, Karim saute dans ses grosses bottes.",
+        "Il enfile sa veste épaisse et attrape son casque.",
+        "Quelques secondes plus tard, le grand camion rouge sort de la caserne, gyrophare allumé.",
+        "Au bout de la rue, une épaisse fumée noire s'échappe du toit d'une maison."
+      ],
+      question: "Quel est le métier de Karim ?",
+      options: ["Pompier", "Policier", "Ambulancier"],
+      indice: "Regarde la couleur du véhicule et ce qui se passe au bout de la rue.",
+      preuves: [2, 3],
+      pieges: { 0: "Les policiers et les ambulanciers entendent aussi des sirènes ! Cherche une preuve plus sure.",
+                1: "Plusieurs métiers portent une veste et un casque. Cherche une preuve plus sure." },
+      indicePreuve: "Cherche le véhicule de Karim, ou ce qu'il va devoir éteindre.",
+      explication: "Un camion rouge qui sort de la caserne et un toit qui fume : Karim est pompier." },
+
+    { titre: "Fais de beaux rêves",
+      phrases: [
+        "Mia enfile son pyjama à étoiles.",
+        "Papa ferme les volets et allume la petite veilleuse en forme de lune.",
+        "Assis au bord du lit, il ouvre le livre d'histoires à la page du marque-page.",
+        "Après le dernier chapitre, il dépose un bisou sur le front de Mia et murmure : « Bonne nuit, fais de beaux rêves. »"
+      ],
+      question: "À quel moment de la journée se passe la scène ?",
+      options: ["Le soir, au moment de dormir", "Le matin, au réveil", "L'après-midi, au retour de l'école"],
+      indice: "Que fait Papa avec les volets et la lumière ? Que dit-il à la fin ?",
+      preuves: [1, 3],
+      pieges: { 0: "Le matin aussi, on est en pyjama ! Cherche une preuve plus sure.",
+                2: "On peut lire une histoire à n'importe quel moment de la journée. Cherche une preuve plus sure." },
+      indicePreuve: "Cherche ce que fait Papa pour que la chambre soit prête, ou ce qu'il dit à Mia.",
+      explication: "Les volets fermés, la veilleuse et « bonne nuit » montrent que c'est le soir, au moment de dormir." },
+
+    { titre: "Ma maison sur le dos",
+      phrases: [
+        "Je me déplace très lentement et je laisse derrière moi une trace brillante.",
+        "Ma maison, je la porte toujours sur mon dos.",
+        "Quand il fait trop sec, je me cache tout au fond de ma coquille.",
+        "Après la pluie, je sors pour grignoter les salades du jardin."
+      ],
+      question: "Quel animal parle dans ce texte ?",
+      options: ["Un escargot", "Un hérisson", "Un papillon"],
+      indice: "Quel animal porte sa maison sur son dos ?",
+      preuves: [0, 1, 2],
+      pieges: { 3: "Beaucoup de petites bêtes aiment les salades du jardin… Cherche une preuve plus sure." },
+      indicePreuve: "Cherche une phrase qui parle de sa maison, de sa coquille ou de la trace qu'il laisse.",
+      explication: "Une trace brillante, une coquille portée sur le dos : c'est un escargot." },
+
+    { titre: "La descente",
+      phrases: [
+        "Zélie serre bien ses chaussures et ajuste ses lunettes de protection.",
+        "Tout autour d'elle, les montagnes sont couvertes de blanc.",
+        "Elle plante ses bâtons dans la neige et se penche en avant.",
+        "Et la voilà qui glisse le long de la pente, en zigzaguant entre les drapeaux rouges."
+      ],
+      question: "Quel sport pratique Zélie ?",
+      options: ["Du ski", "Du patin à glace", "De la natation"],
+      indice: "Qu'est-ce que Zélie tient dans les mains ? Sur quoi glisse-t-elle ?",
+      preuves: [2, 3],
+      pieges: { 0: "On met des lunettes de protection pour plusieurs sports. Cherche une preuve plus sure.",
+                1: "La montagne enneigée, c'est le décor… mais que fait Zélie ?" },
+      indicePreuve: "Cherche une phrase qui montre ce que Zélie fait avec son matériel.",
+      explication: "Des bâtons plantés dans la neige et une descente entre les drapeaux : Zélie fait du ski." },
+
+    { titre: "La lettre",
+      phrases: [
+        "Quand Malo ouvre l'enveloppe, il pousse un grand cri.",
+        "Il saute partout dans le salon en agitant la lettre au-dessus de sa tête.",
+        "« J'ai gagné ! J'ai gagné le concours de dessin ! »",
+        "Il court serrer sa maman dans ses bras, avec un immense sourire."
+      ],
+      question: "Comment se sent Malo ?",
+      options: ["Très heureux", "Effrayé", "Fâché"],
+      indice: "Que fait Malo avec son corps ? Que dit-il ?",
+      preuves: [1, 2, 3],
+      pieges: { 0: "On peut aussi crier de peur ou de colère. Cherche une preuve plus sure." },
+      indicePreuve: "Cherche ce que Malo dit, ou ce qu'il fait après avoir lu la lettre.",
+      explication: "Il saute partout, il a gagné un concours et il sourit : Malo est très heureux." },
+
+    { titre: "Chut !",
+      phrases: [
+        "Ici, tout le monde parle à voix basse.",
+        "Sur de grandes étagères, des centaines de livres sont rangés par ordre alphabétique.",
+        "Romane rend les deux romans qu'elle avait empruntés il y a trois semaines.",
+        "La dame du comptoir les vérifie et lui rappelle qu'elle peut en emporter trois nouveaux."
+      ],
+      question: "Où se trouve Romane ?",
+      options: ["À la bibliothèque", "Dans une librairie", "Dans sa chambre"],
+      indice: "Que fait Romane avec les livres ? Les achète-t-elle ?",
+      preuves: [2, 3],
+      pieges: { 0: "On parle aussi tout bas dans d'autres endroits. Cherche une preuve plus sure.",
+                1: "Dans une librairie aussi, il y a beaucoup de livres sur des étagères. Cherche une preuve plus sure." },
+      indicePreuve: "Cherche une phrase qui montre que Romane emprunte les livres et doit les rendre.",
+      explication: "Romane rend des livres empruntés et peut en emporter d'autres : elle est à la bibliothèque." },
+
+    { titre: "Drôle de temps",
+      phrases: [
+        "Monsieur et Madame Petit sortent faire leurs courses.",
+        "Les branches des arbres se plient dans tous les sens.",
+        "Le parapluie de Monsieur Petit se retourne d'un coup et s'envole.",
+        "Dans la cour, les feuilles mortes tourbillonnent et les poubelles se renversent.",
+        "Madame Petit retient son chapeau à deux mains."
+      ],
+      question: "Quel temps fait-il ?",
+      options: ["Il y a beaucoup de vent", "Il fait très chaud", "Il y a du brouillard"],
+      indice: "Qu'est-ce qui fait bouger les arbres, les feuilles et les parapluies ?",
+      preuves: [1, 2, 3, 4],
+      pieges: { 0: "Cette phrase dit seulement ce que font Monsieur et Madame Petit. Cherche une preuve sur le temps." },
+      indicePreuve: "Cherche une phrase où quelque chose bouge ou s'envole tout seul.",
+      explication: "Les arbres se plient, le parapluie s'envole, les poubelles se renversent : il y a beaucoup de vent." },
+
+    { titre: "Là-haut dans le ciel",
+      phrases: [
+        "Chaque matin, je me lève à l'est.",
+        "Toute la journée, je traverse le ciel et je réchauffe la Terre.",
+        "Grâce à moi, les plantes poussent.",
+        "Le soir, je me couche à l'ouest et je laisse la place à la Lune et aux étoiles."
+      ],
+      question: "Qui parle dans ce texte ?",
+      options: ["Le Soleil", "La Lune", "Un nuage"],
+      indice: "Qui réchauffe la Terre pendant la journée ?",
+      preuves: [1, 3],
+      pieges: { 0: "La Lune aussi se lève à l'est ! Cherche une preuve plus sure.",
+                2: "La pluie des nuages aussi aide les plantes à pousser… Cherche une preuve plus sure." },
+      indicePreuve: "Cherche ce que fait celui qui parle pendant la journée, ou à qui il laisse la place le soir.",
+      explication: "Il réchauffe la Terre le jour et laisse la place à la Lune le soir : c'est le Soleil." },
+
+    { titre: "La tour",
+      phrases: [
+        "Sur la pointe des pieds, Arthur pose un dernier cube tout en haut de sa tour.",
+        "La tour est maintenant plus haute que lui, et elle penche dangereusement.",
+        "À ce moment-là, le chien entre dans la pièce en courant et en remuant la queue.",
+        "Il fonce droit vers la tour…"
+      ],
+      question: "Que va-t-il sans doute se passer ?",
+      options: ["La tour va tomber.", "Arthur va ajouter un autre cube.", "Le chien va s'endormir."],
+      indice: "Regarde comment est la tour, et ce que fait le chien.",
+      preuves: [1, 2, 3],
+      pieges: { 0: "Cette phrase dit ce que fait Arthur maintenant, pas ce qui va arriver." },
+      indicePreuve: "Cherche une phrase qui montre que la tour est fragile, ou que le chien arrive vite.",
+      explication: "La tour penche déjà et le chien fonce sur elle : elle va sans doute tomber !" }
+  ],
+
+  2: [
+    { titre: "Le spectacle",
+      phrases: [
+        "Nora regarde l'horloge pour la dixième fois.",
+        "Ses mains sont moites et son cœur bat très vite.",
+        "Dans quelques minutes, elle montera sur la scène pour jouer du piano devant toute l'école.",
+        "Elle relit sa partition, mais les notes dansent devant ses yeux.",
+        "Elle se mord la lèvre et murmure : « Et si je me trompais ? »"
+      ],
+      question: "Comment se sent Nora ?",
+      options: ["Inquiète", "En colère", "Triste"],
+      indice: "Observe ce que fait son corps et ce qu'elle se demande.",
+      preuves: [1, 3, 4],
+      pieges: { 0: "Regarder l'horloge, ça peut vouloir dire qu'on s'ennuie ou qu'on est pressé. Cherche une preuve plus sure.",
+                2: "Cette phrase dit ce qui va se passer, pas ce que Nora ressent." },
+      indicePreuve: "Cherche une phrase qui décrit son corps, ou une phrase où elle parle.",
+      explication: "Mains moites, cœur qui bat vite, peur de se tromper : Nora a le trac, elle est inquiète." },
+
+    { titre: "Une voix dans la classe",
+      phrases: [
+        "Ce matin, la maitresse m'a posée sur l'appui de fenêtre, juste au soleil.",
+        "J'adore ça !",
+        "Mes feuilles s'étirent et je sens la chaleur jusqu'au bout de mes racines.",
+        "Hier, Arthur m'a oubliée : pas une goutte d'eau de toute la journée.",
+        "J'avais la tête qui pendait…",
+        "Heureusement, ce matin, Inès a rempli son arrosoir et me l'a versé tout doucement au pied."
+      ],
+      question: "Qui raconte cette histoire ?",
+      options: ["Une plante de la classe", "Un chat de la classe", "Une élève de la classe"],
+      indice: "Quelles parties de son corps la narratrice décrit-elle ? De quoi a-t-elle besoin ?",
+      preuves: [2, 5],
+      pieges: { 0: "Un chat aussi aime être au soleil sur la fenêtre… Cherche une preuve plus sure.",
+                3: "Un animal aussi a besoin d'eau. Cherche une preuve plus sure.",
+                4: "Une personne fatiguée peut aussi avoir la tête qui pend. Cherche une preuve plus sure." },
+      indicePreuve: "Cherche une phrase qui parle de parties du corps que seule une plante possède.",
+      explication: "Elle a des feuilles et des racines, et on l'arrose : c'est une plante qui raconte." },
+
+    { titre: "Catastrophe dans la cuisine",
+      phrases: [
+        "Quand Maxime pousse la porte de la cuisine, il s'arrête net.",
+        "Des morceaux de tasse sont éparpillés sur le carrelage.",
+        "Sur la table, la nappe a glissé d'un côté et pend jusqu'au sol.",
+        "Une flaque de lait s'étale près du pied de la chaise.",
+        "Tout en haut de l'armoire, le chat, les poils hérissés et les pattes blanches de lait, refuse de descendre."
+      ],
+      question: "Que s'est-il sans doute passé avant l'arrivée de Maxime ?",
+      options: ["Le chat a sauté sur la table et a fait tomber une tasse de lait.",
+                "Un voleur est entré dans la maison.",
+                "Maxime a laissé tomber son bol."],
+      indice: "Maxime vient seulement d'arriver. Qui était déjà dans la cuisine ? Comment se comporte-t-il ?",
+      preuves: [4],
+      pieges: { 0: "Cette phrase montre que Maxime vient seulement d'arriver… Alors, qui était là avant lui ?",
+                1: "Cette phrase montre que quelque chose est tombé, mais pas QUI l'a fait tomber.",
+                2: "Cette phrase montre que quelque chose a bougé, mais pas QUI l'a fait.",
+                3: "Cette phrase montre que du lait s'est renversé, mais pas QUI l'a renversé." },
+      indicePreuve: "Cherche la phrase qui montre un coupable… avec un indice sur lui.",
+      explication: "Le chat a des pattes pleines de lait et il se cache, les poils hérissés : c'est lui qui a tout renversé." },
+
+    { titre: "Tout là-haut",
+      phrases: [
+        "Clara colle son front contre le petit hublot.",
+        "En bas, les maisons ressemblent à des jouets et les routes à de minces fils gris.",
+        "Une voix annonce qu'il faut garder sa ceinture attachée.",
+        "Son petit frère a les oreilles bouchées et avale sa salive pour les déboucher.",
+        "Une hôtesse passe dans l'allée avec un chariot et propose des boissons."
+      ],
+      question: "Dans quel moyen de transport se trouve Clara ?",
+      options: ["Dans un avion", "Dans un train", "Dans un bateau"],
+      indice: "Que voit Clara en regardant en bas ? Que ressent son petit frère ?",
+      preuves: [1, 3],
+      pieges: { 0: "Il y a aussi des hublots sur les bateaux ! Cherche une preuve plus sure.",
+                2: "On attache aussi sa ceinture en voiture ou dans un car… Cherche une preuve plus sure.",
+                4: "Dans un train aussi, on peut te proposer des boissons. Cherche une preuve plus sure." },
+      indicePreuve: "Cherche une phrase qui montre que Clara est très, très haut.",
+      explication: "Les maisons paraissent minuscules et les oreilles se bouchent à cause de l'altitude : Clara est dans un avion." },
+
+    { titre: "La pièce manquante",
+      phrases: [
+        "Romain pose délicatement le dernier morceau de ciel, tout en haut à gauche.",
+        "Il ne manque plus qu'une pièce, au milieu du château.",
+        "Il fouille sous la table, soulève la boite, secoue le tapis… rien.",
+        "Sa sœur entre dans la pièce en croquant une pomme.",
+        "Le chiot la suit en remuant la queue, un petit bout de carton gris coincé entre les dents."
+      ],
+      question: "Où est sans doute la pièce manquante du puzzle ?",
+      options: ["Dans la gueule du chiot", "Sous le tapis", "Dans la main de sa sœur"],
+      indice: "Une pièce de puzzle, c'est fait en quelle matière ? Et un château, de quelle couleur est-il ?",
+      preuves: [4],
+      pieges: { 2: "Romain a déjà secoué le tapis… et il n'a rien trouvé.",
+                3: "Sa sœur croque une pomme, pas un morceau de puzzle.",
+                1: "Cette phrase dit où est le trou dans le puzzle, mais pas où est la pièce." },
+      indicePreuve: "Cherche quelqu'un qui tient un petit morceau de carton…",
+      explication: "Le chiot a un bout de carton gris entre les dents : c'est sans doute la pièce du château !" },
+
+    { titre: "Les vacances de Lucas",
+      phrases: [
+        "« Tu as encore grandi, toi ! » s'exclame la vieille dame en serrant Lucas dans ses bras.",
+        "Elle sent la lavande, comme toujours.",
+        "Dans le salon, rien n'a changé : sur le buffet, les photos de Papa quand il était petit sont toujours alignées, à côté de sa photo de mariage avec Grand-Père.",
+        "« J'ai fait ton gâteau aux pommes, mon poussin, je sais que c'est ton préféré. »",
+        "Lucas sourit : chaque été, c'est le même rituel."
+      ],
+      question: "Qui est la vieille dame ?",
+      options: ["La grand-mère de Lucas", "La voisine de Lucas", "L'ancienne maitresse de Lucas"],
+      indice: "Une seule phrase montre un lien de famille. Regarde bien ce qui est posé dans le salon.",
+      preuves: [2],
+      pieges: { 0: "Une voisine aussi pourrait trouver que Lucas a grandi. Cherche une preuve plus sure.",
+                3: "Une voisine très gentille pourrait aussi l'appeler « mon poussin ». Cherche une preuve plus sure.",
+                4: "On peut rendre visite à beaucoup de gens chaque été. Cherche une preuve plus sure." },
+      indicePreuve: "Qui sont les personnes sur les photos du buffet ? Qu'est-ce que ça dit de la dame ?",
+      explication: "Elle garde les photos de Papa enfant et la photo de son mariage avec Grand-Père : c'est la maman de Papa, donc la grand-mère de Lucas." },
+
+    { titre: "Le cadeau",
+      phrases: [
+        "Samia déballe le paquet.",
+        "C'est un pull vert à grosses fleurs orange, avec un énorme lapin brodé au milieu.",
+        "Elle reste un moment silencieuse.",
+        "Sa tante la regarde avec espoir.",
+        "« Oh… merci… il est… très original », dit Samia avec un petit sourire.",
+        "Le soir même, le pull disparait tout au fond de son armoire, sous une pile de vieux draps."
+      ],
+      question: "Que pense vraiment Samia du pull ?",
+      options: ["Elle ne l'aime pas, mais ne veut pas faire de peine à sa tante.",
+                "Elle l'adore et veut le mettre tous les jours.",
+                "Elle le trouve beau, mais trop petit."],
+      indice: "Écoute comment Samia parle. Et regarde ce qu'elle fait du pull ensuite.",
+      preuves: [4, 5],
+      pieges: { 1: "Cette phrase décrit le pull, mais elle ne dit pas ce que Samia en pense.",
+                2: "Rester silencieuse peut vouloir dire qu'on est surprise… Cherche une preuve plus sure.",
+                3: "Cette phrase dit ce que ressent la tante, pas Samia." },
+      indicePreuve: "Cherche la phrase où Samia hésite en parlant, ou celle qui dit où finit le pull.",
+      explication: "Samia hésite (« il est… très original ») et cache le pull au fond de l'armoire : elle ne l'aime pas, mais elle reste polie." },
+
+    { titre: "La gourde disparue",
+      phrases: [
+        "Dans le vestiaire du club de foot, la gourde de Malik a disparu.",
+        "Trois enfants étaient encore là.",
+        "Élise jure qu'elle était sous la douche à ce moment-là : ses cheveux sont pourtant parfaitement secs.",
+        "Jonas a les cheveux mouillés et une serviette autour du cou.",
+        "Quant à Rayan, il n'est entré dans le vestiaire qu'après le départ de Malik : l'entraineur l'a vu arriver."
+      ],
+      question: "Quel enfant ment sans doute ?",
+      options: ["Élise", "Jonas", "Rayan"],
+      indice: "Compare ce que chaque enfant dit avec ce qu'on voit de lui.",
+      preuves: [2],
+      pieges: { 3: "Cette phrase montre que Jonas sort sans doute de la douche. Est-ce un mensonge ?",
+                4: "Ici, c'est l'entraineur qui confirme ce que dit Rayan.",
+                0: "Cette phrase présente le mystère, mais ne montre aucun menteur.",
+                1: "Cette phrase présente les suspects, mais ne montre aucun menteur." },
+      indicePreuve: "Cherche la phrase où ce qu'un enfant dit ne colle pas avec ce qu'on voit.",
+      explication: "Élise dit qu'elle sortait de la douche, mais ses cheveux sont secs : elle ment." },
+
+    { titre: "Une autre époque",
+      phrases: [
+        "Joséphine trempe sa plume dans l'encrier et s'applique : la maitresse a horreur des taches.",
+        "Par la fenêtre ouverte, elle entend les sabots du cheval du laitier sur les pavés.",
+        "Ce soir, il faudra rentrer avant la nuit, car la rue n'est éclairée que par quelques becs de gaz.",
+        "Elle pense déjà à la lettre qu'elle écrira à son frère, parti travailler à la mine, et que le facteur emportera demain."
+      ],
+      question: "À quelle époque se passe cette histoire ?",
+      options: ["Il y a plus de cent ans", "Aujourd'hui", "Dans le futur"],
+      indice: "Compare les objets du texte avec ceux d'aujourd'hui : écris-tu de cette façon ? Comment les rues sont-elles éclairées ?",
+      preuves: [0, 1, 2],
+      pieges: { 3: "On envoie encore des lettres aujourd'hui… Cherche un objet ou une habitude qui n'existe presque plus." },
+      indicePreuve: "Cherche une manière d'écrire, de livrer le lait ou d'éclairer les rues qui n'existe presque plus.",
+      explication: "Plume et encrier, laitier à cheval, éclairage au gaz : tout cela date d'il y a plus de cent ans." },
+
+    { titre: "Fâchées ?",
+      phrases: [
+        "Quand Zoé arrive à l'école, elle cherche son amie Inès des yeux.",
+        "Inès est assise seule sur un banc, les bras croisés.",
+        "Zoé s'approche, mais Inès tourne la tête vers le mur.",
+        "« Tout le monde parle de ta fête d'anniversaire de samedi… Moi, tu ne m'as même pas invitée ! »",
+        "Zoé ouvre la bouche, puis devient toute rouge : l'enveloppe au nom d'Inès est toujours au fond de son cartable."
+      ],
+      question: "Pourquoi Inès n'a-t-elle pas reçu d'invitation ?",
+      options: ["Zoé a oublié de la lui donner.",
+                "Zoé ne voulait pas l'inviter.",
+                "L'invitation s'est perdue à la poste."],
+      indice: "Attention : ce que croit Inès n'est pas forcément la vérité. Lis le texte jusqu'au bout.",
+      preuves: [4],
+      pieges: { 3: "Cette phrase dit ce que CROIT Inès. Mais est-ce vrai ? Lis jusqu'au bout.",
+                1: "Cette phrase montre qu'Inès est fâchée, mais pas pourquoi elle n'a rien reçu.",
+                2: "Cette phrase montre qu'Inès est fâchée, mais pas pourquoi elle n'a rien reçu." },
+      indicePreuve: "Cherche la phrase qui dit où se trouve l'invitation d'Inès.",
+      explication: "L'enveloppe d'Inès est encore dans le cartable de Zoé : elle a simplement oublié de la lui donner." },
+
+    { titre: "La jambe de Jules",
+      phrases: [
+        "Jules a la jambe posée sur un coussin, enveloppée dans un plâtre tout blanc.",
+        "À côté de son lit, une machine fait de petits « bip » réguliers.",
+        "Ses copains de classe lui ont envoyé une grande carte : « Reviens vite ! »",
+        "Une infirmière entre, vérifie le bracelet à son poignet et lui apporte son plateau-repas.",
+        "Par la fenêtre, Jules voit une ambulance se garer devant l'entrée des urgences."
+      ],
+      question: "Où se trouve Jules ?",
+      options: ["À l'hôpital", "Chez lui, dans sa chambre", "Chez le médecin, dans la salle d'attente"],
+      indice: "Qui s'occupe de Jules ? Que voit-il par la fenêtre ?",
+      preuves: [1, 3, 4],
+      pieges: { 0: "On peut rentrer chez soi avec un plâtre. Cherche une preuve plus sure.",
+                2: "On peut aussi recevoir une carte à la maison. Cherche une preuve plus sure." },
+      indicePreuve: "Cherche une personne, un objet ou un véhicule qu'on trouve surtout dans un seul endroit.",
+      explication: "Une infirmière, un bracelet au poignet, une machine qui fait « bip » et l'entrée des urgences : Jules est à l'hôpital." },
+
+    { titre: "Sur l'étagère",
+      phrases: [
+        "Il y a longtemps, Emma ne pouvait pas s'endormir sans moi.",
+        "Elle me serrait contre elle toute la nuit : mon oreille droite est encore toute mâchouillée.",
+        "Mes yeux sont deux boutons noirs et mon ventre est rempli de mousse.",
+        "Aujourd'hui, je passe mes journées sur la plus haute étagère de sa chambre.",
+        "Parfois, quand elle est triste, elle me descend et me raconte sa journée."
+      ],
+      question: "Qui raconte cette histoire ?",
+      options: ["Le vieux nounours d'Emma", "Le chat d'Emma", "Le petit frère d'Emma"],
+      indice: "De quoi sont faits les yeux et le ventre de celui qui raconte ?",
+      preuves: [2],
+      pieges: { 0: "Un chat ou un petit frère peuvent aussi aider à s'endormir… Cherche une preuve plus sure.",
+                1: "Un chat aussi pourrait avoir l'oreille mâchouillée ! Cherche une preuve plus sure.",
+                3: "Un chat aussi aime s'installer tout en haut d'une étagère ! Cherche une preuve plus sure.",
+                4: "On peut aussi raconter sa journée à son chat ou à son petit frère. Cherche une preuve plus sure." },
+      indicePreuve: "Cherche la phrase qui décrit le corps de celui qui raconte.",
+      explication: "Des yeux en boutons et un ventre rempli de mousse : c'est le vieux nounours d'Emma qui raconte." },
+
+    { titre: "En retard !",
+      phrases: [
+        "Ce matin, Lisa arrive en classe avec vingt minutes de retard.",
+        "Ses chaussures sont couvertes de boue et son pantalon est mouillé jusqu'aux genoux.",
+        "Dans ses bras, elle tient un petit chaton tout tremblant.",
+        "« Il était coincé au fond du fossé, au bord de la route, et il miaulait si fort… », explique-t-elle à la maitresse.",
+        "La maitresse sourit et va chercher une vieille serviette."
+      ],
+      question: "Pourquoi Lisa est-elle en retard ?",
+      options: ["Elle a sauvé un chaton coincé dans un fossé.",
+                "Elle est tombée dans une flaque en jouant.",
+                "Elle a raté son bus."],
+      indice: "Lisa explique elle-même ce qui s'est passé. Que dit-elle à la maitresse ?",
+      preuves: [3],
+      pieges: { 1: "La boue montre qu'elle est passée dans un endroit mouillé, mais pas pourquoi.",
+                2: "Cette phrase montre qu'elle a un chaton, mais pas pourquoi elle est en retard.",
+                0: "Cette phrase dit qu'elle est en retard, mais pas pourquoi.",
+                4: "Cette phrase dit ce que fait la maitresse, pas pourquoi Lisa est en retard." },
+      indicePreuve: "Cherche la phrase où Lisa raconte où elle a trouvé le chaton.",
+      explication: "Lisa est descendue dans le fossé pour sauver le chaton : voilà pourquoi elle est en retard… et pleine de boue !" },
+
+    { titre: "Les cupcakes",
+      phrases: [
+        "Maman avait laissé trois cupcakes sur la table de la cuisine : il n'en reste plus que deux.",
+        "Elle demande à Théo s'il en a mangé un.",
+        "« Moi ? Pas du tout ! Je n'aime même pas le chocolat ! » répond-il.",
+        "Maman se penche vers lui.",
+        "Au coin de sa bouche, il reste une petite trace de crème rose.",
+        "Elle sourit : les cupcakes étaient à la fraise."
+      ],
+      question: "Théo dit-il la vérité ?",
+      options: ["Non, il a mangé un cupcake.", "Oui, il n'a rien mangé.", "On ne peut pas le savoir."],
+      indice: "Regarde bien le visage de Théo.",
+      preuves: [4],
+      pieges: { 2: "Cette phrase dit ce que Théo raconte. Mais est-ce vrai ?",
+                5: "Cette phrase montre que son excuse ne tient pas… mais laquelle montre vraiment qu'il a mangé ?",
+                0: "Cette phrase montre qu'un cupcake a disparu, mais pas qui l'a mangé." },
+      indicePreuve: "Cherche ce que Maman découvre en se penchant vers Théo.",
+      explication: "Il a de la crème rose au coin de la bouche : Théo a mangé le cupcake à la fraise." },
+
+    { titre: "Bonjour, Nils !",
+      phrases: [
+        "Le réveil de Nils ne sonne pas : c'est la voix douce de la maison qui lui souhaite le bonjour.",
+        "Pendant qu'il s'habille, son petit robot prépare ses tartines et les dépose sur la table.",
+        "Pour aller à l'école, Nils monte dans une voiture sans volant qui vole au-dessus des toits.",
+        "Depuis Mars, son cousin lui envoie un message : « Il fait moins soixante ce matin, ici ! »",
+        "Nils sourit et attrape son cartable."
+      ],
+      question: "Quand se passe cette histoire ?",
+      options: ["Dans le futur", "Aujourd'hui", "Il y a cent ans"],
+      indice: "Les objets et les voyages du texte existent-ils déjà aujourd'hui ?",
+      preuves: [1, 2, 3],
+      pieges: { 0: "Aujourd'hui déjà, certaines maisons ont des enceintes qui parlent… Cherche une preuve plus sure.",
+                4: "On prend son cartable à toutes les époques !" },
+      indicePreuve: "Cherche un objet ou un voyage qui n'existe pas encore aujourd'hui.",
+      explication: "Un robot qui prépare le petit-déjeuner, une voiture volante, un cousin qui vit sur Mars : l'histoire se passe dans le futur." }
+  ],
+
+  3: [
+    { titre: "Les biscuits envolés", nbPreuves: 2,
+      phrases: [
+        "À la récréation, le paquet de biscuits au chocolat de Lina a disparu de son banc.",
+        "Trois élèves sont restés en classe : Achille, Mila et Sacha.",
+        "Achille était au tableau, à recopier une punition à la craie blanche.",
+        "Mila a passé toute la récré à ranger la bibliothèque, au fond de la classe.",
+        "Sacha arrosait les plantes près des fenêtres, juste à côté du banc de Lina.",
+        "Quand la maitresse demande qui a vu quelque chose, Sacha répond très vite qu'il n'a rien remarqué.",
+        "Dans la poubelle, on retrouve l'emballage vide, avec une trace de doigt toute blanche dessus."
+      ],
+      question: "Qui a sans doute mangé les biscuits de Lina ?",
+      options: ["Achille", "Sacha", "Mila"],
+      indice: "Ne te fie pas à qui était le plus près du banc. Cherche un indice laissé sur l'emballage… et qui aurait pu le laisser.",
+      preuves: [2, 6],
+      pieges: { 4: "Être près du banc ne prouve pas qu'on a pris les biscuits.",
+                5: "Répondre vite, ce n'est pas une preuve : on peut être timide ou pressé.",
+                3: "Cette phrase parle de Mila, mais elle ne montre aucun indice contre quelqu'un.",
+                0: "Cette phrase présente le mystère, mais ne montre pas le coupable.",
+                1: "Cette phrase présente les suspects, mais ne montre pas le coupable." },
+      indicePreuve: "Il faut relier deux phrases : une qui parle d'une trace, une autre qui dit qui avait de quoi laisser cette trace.",
+      explication: "La trace blanche sur l'emballage vient de la craie : seul Achille avait les doigts pleins de craie." },
+
+    { titre: "Le retour de Paul", nbPreuves: 2,
+      phrases: [
+        "Quand Paul pousse enfin la porte de la maison, il a du mal à la reconnaitre.",
+        "Le petit sapin qu'il avait planté avec sa mère au fond du jardin lui arrive maintenant à l'épaule.",
+        "Dans l'entrée, le papier peint à fleurs a été remplacé par une peinture bleue.",
+        "Sa petite sœur, qui ne savait pas encore marcher quand il est parti, court vers lui en criant son prénom.",
+        "Elle lui tend fièrement un dessin : « Regarde, c'est toi ! Je l'ai fait à l'école ! »",
+        "Paul pose son gros sac sur le carrelage et soupire de bonheur."
+      ],
+      question: "Pendant combien de temps Paul a-t-il sans doute été absent ?",
+      options: ["Plusieurs années", "Quelques mois", "Quelques semaines"],
+      indice: "Qu'est-ce qui a changé ? Combien de temps faut-il pour que ces choses-là changent autant ?",
+      preuves: [1, 3, 4],
+      pieges: { 0: "Ne pas reconnaitre sa maison, c'est trop vague. Cherche ce qui a changé.",
+                2: "On peut repeindre un mur en quelques jours. Cherche un changement qui prend beaucoup plus de temps.",
+                5: "Cette phrase dit ce que ressent Paul, mais pas combien de temps il est parti." },
+      indicePreuve: "Cherche deux choses qui ont beaucoup grandi ou beaucoup changé : une plante, une personne…",
+      explication: "Un petit sapin devenu grand, une petite sœur qui marchait à peine et qui va maintenant à l'école : il s'est passé plusieurs années." },
+
+    { titre: "La promenade de Mamie Rose", nbPreuves: 2,
+      phrases: [
+        "Mamie Rose a toujours dit qu'elle détestait les surprises.",
+        "Pourtant, ce samedi, toute la famille chuchote dans la cuisine.",
+        "Oncle Marc cache un grand paquet derrière le canapé.",
+        "Dans le garage, les cousins gonflent des ballons en faisant bien attention qu'elle ne les entende pas.",
+        "Maman a commandé à la boulangerie un énorme gâteau avec un grand « 80 » en chocolat.",
+        "À quinze heures, Papa propose à Mamie d'aller faire une promenade au parc.",
+        "« Surtout, ne vous pressez pas pour rentrer ! » lance Maman en souriant."
+      ],
+      question: "Pourquoi Papa emmène-t-il Mamie Rose se promener ?",
+      options: ["Pour que la famille puisse tout préparer sans qu'elle s'en aperçoive.",
+                "Parce que Mamie Rose a besoin de prendre l'air.",
+                "Parce que la fête aura lieu au parc."],
+      indice: "Que fait la famille pendant ce temps ? Et que veut la famille quand elle fait tout ça ?",
+      preuves: [1, 2, 3, 6],
+      pieges: { 0: "Cette phrase dit ce que Mamie pense des surprises, mais pas pourquoi elle part au parc.",
+                4: "Cette phrase montre qu'on fête un anniversaire, mais pas pourquoi Mamie doit partir.",
+                5: "Cette phrase dit ce que fait Papa, mais pas pourquoi il le fait." },
+      indicePreuve: "Cherche des phrases où la famille se cache de Mamie, ou veut qu'elle reste longtemps dehors.",
+      explication: "La famille chuchote, cache des choses et veut que Mamie ne rentre pas trop vite : on l'éloigne pour préparer sa fête surprise." },
+
+    { titre: "Premier jour", nbPreuves: 2,
+      phrases: [
+        "Ce matin, j'avais le ventre noué en passant la grille de l'école.",
+        "Vingt-deux visages inconnus m'attendaient dans le rang.",
+        "J'ai sorti une liste de mon cartable et j'ai appelé les noms, un par un.",
+        "Certains répondaient « présent » d'une toute petite voix, d'autres en riant.",
+        "Une petite fille m'a même demandé si j'allais donner beaucoup de devoirs.",
+        "Le soir, en buvant mon café, j'ai corrigé leurs premières dictées et j'ai souri : cette année va bien se passer."
+      ],
+      question: "Qui raconte cette histoire ?",
+      options: ["La personne qui va enseigner dans cette classe", "Un nouvel élève de la classe", "Le parent d'un élève"],
+      indice: "Que fait la personne qui raconte, avec les enfants ? Et le soir, avec leurs dictées ?",
+      preuves: [2, 4, 5],
+      pieges: { 0: "Un nouvel élève aussi peut avoir le ventre noué le premier jour…",
+                1: "Un nouvel élève aussi ne connait personne le premier jour…",
+                3: "Cette phrase décrit les enfants, pas la personne qui raconte." },
+      indicePreuve: "Cherche ce que la personne fait que seul un enseignant fait : avec une liste, avec des dictées…",
+      explication: "Elle fait l'appel, on lui demande si elle donnera des devoirs, et elle corrige les dictées : c'est l'enseignant ou l'enseignante de la classe." },
+
+    { titre: "Une journée parfaite", nbPreuves: 2,
+      phrases: [
+        "Ce dimanche, la famille Martin part enfin en piquenique.",
+        "À peine la nappe étalée sur l'herbe, de gros nuages noirs envahissent le ciel.",
+        "Une guêpe tourne autour de la limonade, puis pique Papa sur le doigt.",
+        "En courant vers la voiture sous la pluie, Léon glisse dans une flaque de boue.",
+        "Une fois les portières fermées, Papa soupire en regardant son doigt tout gonflé : « Eh bien… quelle journée parfaite ! »",
+        "Dans la voiture, personne n'a envie de rire."
+      ],
+      question: "Que pense vraiment Papa quand il dit « quelle journée parfaite » ?",
+      options: ["Il pense le contraire : la journée a été ratée.",
+                "Il est content d'avoir passé du temps en famille malgré tout.",
+                "Il trouve que la pluie a fait du bien au jardin."],
+      indice: "Compare ce que Papa dit avec tout ce qui est arrivé pendant la journée. Comment le dit-il ?",
+      preuves: [1, 2, 3, 4, 5],
+      pieges: { 0: "Cette phrase dit seulement où va la famille." },
+      indicePreuve: "Cherche les ennuis de la journée, ou comment réagit la famille dans la voiture.",
+      explication: "Nuages, guêpe, boue, personne ne rit : la journée a été ratée. Papa dit « parfaite » pour se moquer, il pense le contraire." },
+
+    { titre: "Le vase brisé", nbPreuves: 2,
+      phrases: [
+        "Lundi matin, le vase de la classe est retrouvé en morceaux, par terre, à côté de l'aquarium.",
+        "Le concierge explique qu'il est passé samedi pour vider les poubelles, et que tout était en ordre.",
+        "Basile devait nourrir les poissons pendant le weekend.",
+        "Il affirme qu'il est venu dimanche après-midi, qu'il leur a donné à manger et qu'il n'a rien remarqué.",
+        "Sur le carrelage, l'eau du vase a complètement séché.",
+        "Pourtant, à côté de l'aquarium, la boite de nourriture pour poissons est toujours pleine, avec son couvercle encore collé."
+      ],
+      question: "Qui ne dit sans doute pas la vérité ?",
+      options: ["Basile", "Le concierge", "Personne ne ment"],
+      indice: "Compare ce que dit chaque personne avec ce qu'on retrouve dans la classe.",
+      preuves: [3, 5],
+      pieges: { 4: "L'eau peut sécher en une nuit. Cette phrase ne montre pas qui ment.",
+                1: "Rien dans la classe ne contredit ce que dit le concierge.",
+                0: "Cette phrase présente le mystère, mais ne montre aucun menteur.",
+                2: "Cette phrase dit ce que Basile devait faire, pas ce qu'il a vraiment fait." },
+      indicePreuve: "Il faut relier deux phrases : ce que quelqu'un affirme avoir fait, et un objet qui montre le contraire.",
+      explication: "Basile dit qu'il a nourri les poissons, mais la boite de nourriture n'a jamais été ouverte : il n'est sans doute pas venu." },
+
+    { titre: "Monsieur Grégoire", nbPreuves: 2,
+      phrases: [
+        "Chaque matin, Monsieur Grégoire arrive au bureau à sept heures pile : ni une minute avant, ni une minute après.",
+        "Ses crayons sont alignés du plus petit au plus grand, et personne n'a le droit d'y toucher.",
+        "Quand un collègue pose une tasse sur son bureau, il l'essuie aussitôt avec un mouchoir.",
+        "À midi, il mange toujours le même sandwich, sur le même banc, en face de la même fontaine.",
+        "Le jour où la cantine a changé l'heure du repas, il en a parlé pendant toute la semaine."
+      ],
+      question: "Quel trait de caractère décrit le mieux Monsieur Grégoire ?",
+      options: ["Il aime que tout soit bien rangé et que rien ne change.",
+                "Il est timide et n'aime pas parler aux autres.",
+                "Il est de mauvaise humeur et n'aime pas ses collègues."],
+      indice: "Qu'est-ce qui revient dans presque toutes ses habitudes ?",
+      preuves: [0, 1, 3, 4],
+      pieges: { 2: "Essuyer une tasse… on pourrait croire qu'il n'aime pas ses collègues. Mais c'est peut-être autre chose ! Cherche une preuve plus sure." },
+      indicePreuve: "Cherche ses habitudes : ce qu'il fait toujours de la même façon, ou comment il range ses affaires.",
+      explication: "Toujours la même heure, le même sandwich, des crayons bien alignés, et un changement qui le dérange : il aime l'ordre et les habitudes." },
+
+    { titre: "Le weekend de Lou", nbPreuves: 2,
+      phrases: [
+        "Ce lundi, Lou arrive en classe avec un gros pansement sur le genou.",
+        "Ses bras sont tout rouges, sauf une marque blanche autour du poignet, là où elle porte sa montre.",
+        "Au fond de son sac, on aperçoit encore un peu de sable.",
+        "Elle bâille sans arrêt : la route du retour a été longue, et la famille est rentrée tard dans la nuit.",
+        "« Les vagues étaient énormes, j'ai bu la tasse au moins dix fois ! » raconte-t-elle à Nour."
+      ],
+      question: "Qu'a fait Lou pendant le weekend ?",
+      options: ["Elle est allée à la mer.", "Elle a fait du vélo au parc.", "Elle est restée chez elle."],
+      indice: "Que racontent ses bras, son sac et ses souvenirs ?",
+      preuves: [1, 2, 4],
+      pieges: { 0: "Un genou écorché, ça peut arriver en faisant du vélo aussi. Cherche une preuve plus sure.",
+                3: "Une longue route ne dit pas où elle est allée. Cherche une preuve plus sure." },
+      indicePreuve: "Cherche des traces de soleil, de plage ou de baignade.",
+      explication: "Un coup de soleil, du sable dans le sac et des vagues énormes : Lou est allée à la mer." },
+
+    { titre: "Il est passé !", nbPreuves: 2,
+      phrases: [
+        "Ce matin-là, Élodie n'a pas eu besoin de son réveil.",
+        "Elle est descendue en courant et a trouvé ses chaussures, devant la cheminée, remplies de mandarines et de pièces en chocolat.",
+        "À côté, un cheval en bois était posé sur un petit mot signé « S. N. ».",
+        "Dans l'assiette laissée la veille au soir, il ne restait que des miettes de biscuit et une carotte à moitié croquée.",
+        "Élodie a couru réveiller ses parents en criant : « Il est passé ! Il est passé ! »"
+      ],
+      question: "Quel jour est-on ?",
+      options: ["Le 6 décembre, jour de la Saint-Nicolas", "Le 25 décembre, jour de Noël", "Le jour de son anniversaire"],
+      indice: "Pense aux traditions : où trouve-t-on les cadeaux ? Qui signe le mot ?",
+      preuves: [1, 2],
+      pieges: { 3: "Une carotte, on en laisse pour l'âne de saint Nicolas… mais aussi pour les rennes du père Noël ! Cherche une preuve plus sure.",
+                4: "« Il est passé » : saint Nicolas ou le père Noël ? Cette phrase ne suffit pas.",
+                0: "On peut se réveiller tôt pour beaucoup de raisons. Cherche une preuve plus sure." },
+      indicePreuve: "Cherche où sont les cadeaux, ce qu'il y a dedans, ou les initiales sur le mot.",
+      explication: "Des chaussures remplies de mandarines et de chocolat, un mot signé « S. N. » : saint Nicolas est passé, on est le 6 décembre." },
+
+    { titre: "Le secret de Nathan", nbPreuves: 2,
+      phrases: [
+        "Depuis une semaine, Nathan met de côté toutes les pièces qu'on lui donne.",
+        "Hier, il a demandé tout bas à son père quelle était la fleur préférée de Maman.",
+        "Ce matin, il s'est levé très tôt et a pris des feuilles de couleur et de la colle dans le tiroir.",
+        "Il s'est enfermé dans sa chambre et, quand sa mère a frappé, il a crié : « Surtout, n'entre pas ! »",
+        "Sur le calendrier de la cuisine, le dimanche suivant est entouré en rouge."
+      ],
+      question: "Que prépare sans doute Nathan ?",
+      options: ["Une surprise pour sa maman", "Un cadeau d'anniversaire pour son père", "Un bricolage pour l'école"],
+      indice: "Pour qui Nathan se renseigne-t-il ? Et à qui cache-t-il ce qu'il fait ?",
+      preuves: [1, 3],
+      pieges: { 0: "Mettre des pièces de côté ne dit pas pour qui c'est.",
+                2: "Des feuilles et de la colle, ça peut aussi servir pour l'école.",
+                4: "Un jour entouré… mais pour quelle fête, et pour qui ?" },
+      indicePreuve: "Il faut deux phrases : une où Nathan pose une question sur quelqu'un, une où il se cache de cette personne.",
+      explication: "Il cherche à connaitre la fleur préférée de Maman et lui interdit d'entrer : il lui prépare une surprise." },
+
+    { titre: "Oncle Jean", nbPreuves: 2,
+      phrases: [
+        "Le samedi, Oncle Jean ne lève jamais le petit doigt.",
+        "Pendant que toute la famille repeint la cuisine, il reste allongé dans le hamac.",
+        "Quand on lui demande de porter un seau, il répond qu'il a mal au dos… puis il part jouer au tennis.",
+        "Mamie lève les yeux au ciel : « Celui-là, il a vraiment un poil dans la main ! »",
+        "Tout le monde éclate de rire, sauf Oncle Jean."
+      ],
+      question: "Que veut dire Mamie ?",
+      options: ["Qu'Oncle Jean est paresseux", "Qu'Oncle Jean est malade", "Qu'Oncle Jean devrait se raser les mains"],
+      indice: "Mamie utilise une expression. Pour la comprendre, regarde comment Oncle Jean se comporte.",
+      preuves: [0, 1, 2],
+      pieges: { 3: "C'est la phrase de Mamie : elle ne t'explique pas ce qu'elle veut dire. Regarde comment Oncle Jean se comporte.",
+                4: "Cette phrase montre que les autres ont compris… mais pas ce qu'ils ont compris." },
+      indicePreuve: "Cherche ce que fait (ou ne fait pas) Oncle Jean quand il y a du travail.",
+      explication: "Il ne fait rien, reste dans son hamac et invente un mal de dos pour ne pas aider : « avoir un poil dans la main » veut dire être paresseux." },
+
+    { titre: "L'âge de Gaspard", nbPreuves: 3,
+      phrases: [
+        "Gaspard et sa cousine Alice sont nés la même année : Alice en avril, Gaspard en juin.",
+        "Aujourd'hui, nous sommes le 1er mai.",
+        "Le mois dernier, Alice a soufflé ses dix bougies.",
+        "Gaspard adore les dinosaures : il voudrait un livre sur les fossiles pour sa fête."
+      ],
+      question: "Quel âge a Gaspard aujourd'hui ?",
+      options: ["9 ans", "10 ans", "11 ans"],
+      indice: "Alice et Gaspard sont nés la même année. Qui a déjà fêté son anniversaire cette année ?",
+      preuves: [0, 1, 2],
+      pieges: { 3: "Cette phrase dit ce que Gaspard aime, pas son âge." },
+      indicePreuve: "Il faut 3 phrases : quand ils sont nés, quelle est la date d'aujourd'hui, et l'âge d'Alice.",
+      explication: "Alice vient d'avoir 10 ans en avril. Gaspard, né la même année, n'aura 10 ans qu'en juin : il a donc encore 9 ans." },
+
+    { titre: "La sortie de classe", nbPreuves: 2,
+      phrases: [
+        "Les enfants avancent en silence, deux par deux.",
+        "Autour d'eux, d'immenses squelettes se dressent dans la pénombre.",
+        "Sous chacun, une petite pancarte indique un nom compliqué et un nombre de millions d'années.",
+        "Ilyes voudrait toucher la griffe géante d'un iguanodon, mais un gardien lui fait non de la tête.",
+        "À la sortie, la maitresse leur achète des cartes postales au magasin de souvenirs."
+      ],
+      question: "Où se trouvent les enfants ?",
+      options: ["Dans un musée", "Dans un cimetière", "Sur un chantier de fouilles"],
+      indice: "Qui surveille les enfants ? Qu'y a-t-il sous les squelettes ? Que trouve-t-on à la sortie ?",
+      preuves: [2, 3, 4],
+      pieges: { 0: "On marche deux par deux pendant toutes les sorties scolaires. Cherche une preuve plus sure.",
+                1: "Des squelettes… on en trouve aussi dans un cimetière ou sur un chantier de fouilles ! Cherche une preuve plus sure." },
+      indicePreuve: "Cherche une personne qui surveille, des pancartes d'explication ou un magasin de souvenirs.",
+      explication: "Des squelettes avec des pancartes, un gardien et un magasin de souvenirs : les enfants visitent un musée." },
+
+    { titre: "Le gâteau raté", nbPreuves: 2,
+      phrases: [
+        "Pour la fête des voisins, Tim a voulu préparer tout seul un gâteau au yaourt.",
+        "Il a suivi la recette à la lettre : trois pots de farine, deux pots de sucre, trois œufs.",
+        "Mais quand il goute la pâte, il fait la grimace et la recrache aussitôt.",
+        "Il regarde le pot qu'il a utilisé : c'est celui où Mamie range le gros sel.",
+        "Le pot de sucre, lui, est resté bien fermé au fond de l'armoire."
+      ],
+      question: "Pourquoi le gâteau est-il raté ?",
+      options: ["Tim a mis du sel à la place du sucre.", "Tim a oublié les œufs.", "Tim a mis trop de farine."],
+      indice: "Tim a suivi la recette… mais avec quels ingrédients ?",
+      preuves: [3, 4],
+      pieges: { 1: "Cette phrase montre au contraire qu'il a bien suivi la recette.",
+                2: "La grimace montre que c'est mauvais, mais pas pourquoi." },
+      indicePreuve: "Il faut deux phrases : une sur le pot qu'il a pris, une sur celui qu'il aurait dû prendre.",
+      explication: "Il a pris le pot de gros sel, et le pot de sucre n'a pas été ouvert : Tim a mis du sel à la place du sucre." },
+
+    { titre: "Jeudi, piscine", nbPreuves: 2,
+      phrases: [
+        "Tous les copains d'Adam sont ravis : jeudi, la classe va à la piscine.",
+        "Adam, lui, ne dit rien.",
+        "Le soir, il explique à sa maman qu'il a mal au ventre, puis mal à la tête, puis mal au pied.",
+        "Le lendemain, il « oublie » son sac de natation à la maison.",
+        "Quand sa maman lui demande s'il sait nager, il rougit et regarde ses chaussures.",
+        "Il murmure : « Dans le grand bassin, ils vont tous se moquer de moi… »"
+      ],
+      question: "Pourquoi Adam ne veut-il pas aller à la piscine ?",
+      options: ["Il ne sait pas bien nager et a peur qu'on se moque de lui.",
+                "Il est vraiment malade.",
+                "Il n'aime pas ses copains de classe."],
+      indice: "Ses maux changent sans arrêt… Regarde surtout comment il réagit à la question de sa maman.",
+      preuves: [4, 5],
+      pieges: { 2: "Il a mal partout, et ça change tout le temps… Est-ce vraiment une maladie ? Cherche une preuve plus sure.",
+                3: "Les guillemets autour de « oublie » montrent qu'il ne l'a pas vraiment oublié… mais pourquoi ?",
+                1: "Ne rien dire, ça ne dit pas pourquoi.",
+                0: "Cette phrase parle des copains, pas d'Adam." },
+      indicePreuve: "Cherche comment Adam réagit quand on lui parle de nager, et ce qu'il murmure.",
+      explication: "Il rougit quand on lui demande s'il sait nager, et il a peur des moqueries dans le grand bassin : il ne sait pas bien nager." }
+  ]
+};
+
+const NIVEAUX_INFO = {
+  1: { nom: "Niveau 1", desc: "Indices faciles à repérer : un lieu, un moment, un métier…", cls: "n1", emoji: "🟢" },
+  2: { nom: "Niveau 2", desc: "Lire entre les lignes : phrases pièges, sentiments cachés, menteurs…", cls: "n2", emoji: "🔵" },
+  3: { nom: "Niveau 3", desc: "Textes plus longs, réponses qui se ressemblent… et 2 preuves à trouver !", cls: "n3", emoji: "🟣" }
+};
+
+const PAR_PARTIE = 5;    // nombre d'énigmes par partie (tirées au hasard dans le niveau)
+const CLE_RECORDS = "lcml_enigmes_flash_records";
+// Dans le site, chaque niveau est une activité à part : fiches/enigmes_flash.html?niveau=1 (2, 3)
+const NIVEAU_SITE = (() => { const n = parseInt(new URLSearchParams(location.search).get("niveau"), 10); return [1, 2, 3].includes(n) ? n : null; })();
+
+/* ------------------------------------------------------------------ */
+const $ = id => document.getElementById(id);
+let partie = null;   // {niveau, liste, index, etoiles}
+let etat = null;     // état de l'énigme en cours
+
+function lireRecords() { try { return JSON.parse(localStorage.getItem(CLE_RECORDS)) || {}; } catch (e) { return {}; } }
+function ecrireRecords(r) { try { localStorage.setItem(CLE_RECORDS, JSON.stringify(r)); } catch (e) {} }
+function melange(t) { const a = t.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function montrer(id) { ["ecran-menu", "ecran-jeu", "ecran-fin"].forEach(e => $(e).classList.toggle("hidden", e !== id)); }
+function msg(texte, type) { const m = $("message"); m.textContent = texte || ""; m.className = "message " + (type || ""); }
+
+/* ----- Menu ----- */
+function afficherMenu() {
+  const rec = lireRecords();
+  $("hud").textContent = "";
+  $("niveaux").innerHTML = "";
+  [1, 2, 3].forEach(n => {
+    const info = NIVEAUX_INFO[n], total = Math.min(PAR_PARTIE, ENIGMES[n].length) * 2;
+    const b = document.createElement("button");
+    b.className = "carte-niveau " + info.cls;
+    b.innerHTML = `<span class="badge">${info.emoji} ${info.nom}</span>
+      <span class="desc">${info.desc}</span>
+      <span class="record">${rec[n] !== undefined ? "Meilleur score : ⭐ " + rec[n] + " / " + total : PAR_PARTIE + " énigmes par partie"}</span>`;
+    b.addEventListener("click", () => demarrer(n));
+    $("niveaux").appendChild(b);
+  });
+  montrer("ecran-menu");
+}
+
+/* ----- Partie ----- */
+function demarrer(n) {
+  partie = { niveau: n, liste: melange(ENIGMES[n]).slice(0, PAR_PARTIE), index: 0, etoiles: 0 };
+  afficherEnigme();
+  montrer("ecran-jeu");
+}
+
+function majHud() {
+  $("hud").textContent = `${NIVEAUX_INFO[partie.niveau].emoji} ${partie.index + 1} / ${partie.liste.length}   ⭐ ${partie.etoiles}`;
+}
+
+function afficherEnigme() {
+  const e = partie.liste[partie.index];
+  etat = { e, etape: "question", choix: null, erreursQ: 0, erreursP: 0, trouvees: [], nb: e.nbPreuves || 1, ordre: melange(e.options.map((t, i) => ({ t, bonne: i === 0 }))) };
+  majHud();
+
+  const tx = $("texte");
+  tx.className = "texte";
+  tx.innerHTML = `<div class="titre-enigme">${e.titre}</div>`;
+  e.phrases.forEach((p, i) => {
+    const s = document.createElement("span");
+    s.className = "phrase" + (e.dialogue ? " ligne-dialogue" : "");
+    s.textContent = p;
+    s.dataset.i = i;
+    s.addEventListener("click", () => toucherPhrase(i, s));
+    tx.appendChild(s);
+    if (!e.dialogue) tx.appendChild(document.createTextNode(" "));
+  });
+
+  $("question").textContent = "❓ " + e.question;
+  const op = $("options");
+  op.className = "options"; op.innerHTML = "";
+  etat.ordre.forEach((o, k) => {
+    const b = document.createElement("button");
+    b.className = "option"; b.textContent = o.t;
+    b.addEventListener("click", () => {
+      if (etat.etape !== "question") return;
+      etat.choix = k;
+      op.querySelectorAll(".option").forEach((x, j) => x.classList.toggle("choisie", j === k));
+      $("btn-valider").disabled = false;
+    });
+    op.appendChild(b);
+  });
+
+  $("btn-valider").classList.remove("hidden");
+  $("btn-valider").disabled = true;
+  $("btn-valider").textContent = "Valider";
+  $("btn-suivant").classList.add("hidden");
+  msg("Lis bien le texte, puis choisis ta réponse.", "info");
+}
+
+function validerQuestion() {
+  if (etat.etape !== "question" || etat.choix === null) return;
+  const o = etat.ordre[etat.choix];
+  if (o.bonne) {
+    if (etat.erreursQ === 0) partie.etoiles++;
+    etat.etape = "preuve";
+    const op = $("options");
+    op.classList.add("fige");
+    op.querySelectorAll(".option").forEach((x, j) => { x.disabled = true; x.classList.remove("choisie"); if (j === etat.choix) x.classList.add("bonne"); });
+    $("btn-valider").classList.add("hidden");
+    $("texte").classList.add("preuve-mode");
+    majHud();
+    msg(etat.nb === 1 ? "✅ Bonne réponse ! Maintenant, prouve-le : touche une phrase du texte qui le montre."
+                      : "✅ Bonne réponse ! Maintenant, prouve-le : touche " + etat.nb + " phrases différentes du texte qui le montrent.", "bravo");
+  } else {
+    etat.erreursQ++;
+    if (etat.erreursQ === 1) msg("❌ Ce n'est pas ça. Relis bien le texte et cherche les indices…", "erreur");
+    else msg("💡 Indice : " + etat.e.indice, "indice");
+  }
+}
+
+function toucherPhrase(i, span) {
+  if (etat.etape !== "preuve") return;
+  const e = etat.e;
+  if (etat.trouvees.includes(i)) { msg("👍 Tu as déjà choisi cette phrase. Trouve une autre preuve.", "info"); return; }
+  if (e.preuves.includes(i)) {
+    etat.trouvees.push(i);
+    span.classList.remove("faux"); span.classList.add("juste");
+    if (etat.trouvees.length < etat.nb) {
+      msg("✅ Bonne preuve ! Il en faut encore " + (etat.nb - etat.trouvees.length) + " : touche une autre phrase.", "bravo");
+      return;
+    }
+    if (etat.erreursP === 0) partie.etoiles++;
+    etat.etape = "fini";
+    $("texte").classList.remove("preuve-mode");
+    $("texte").querySelectorAll(".phrase").forEach(s => s.classList.remove("faux"));
+    span.classList.add("juste");
+    majHud();
+    msg("🎉 Bien prouvé ! " + e.explication, "bravo");
+    const suiv = $("btn-suivant");
+    suiv.textContent = partie.index + 1 < partie.liste.length ? "Énigme suivante →" : "Voir mon score →";
+    suiv.classList.remove("hidden");
+  } else {
+    etat.erreursP++;
+    span.classList.add("faux");
+    let t = (e.pieges && e.pieges[i]) ? "🤔 " + e.pieges[i] : "❌ Cette phrase ne prouve pas ta réponse. Relis le texte.";
+    if (etat.erreursP >= 2) t += "  💡 Indice : " + e.indicePreuve;
+    msg(t, etat.erreursP >= 2 ? "indice" : "erreur");
+  }
+}
+
+function suivant() {
+  partie.index++;
+  if (partie.index < partie.liste.length) { afficherEnigme(); return; }
+  // Fin du niveau
+  const n = partie.niveau, total = partie.liste.length * 2, rec = lireRecords();
+  envoyerResultat(n, partie.etoiles, total);
+  if (rec[n] === undefined || partie.etoiles > rec[n]) { rec[n] = partie.etoiles; ecrireRecords(rec); }
+  $("hud").textContent = "";
+  $("fin-etoiles").textContent = "⭐ " + partie.etoiles + " / " + total;
+  const ratio = partie.etoiles / total;
+  $("fin-titre").textContent = ratio === 1 ? "Détective de génie ! 🏆" : ratio >= 0.7 ? "Bravo, détective ! 🕵️" : "Enquête terminée ! 🔎";
+  $("fin-texte").textContent = "Tu gagnes une étoile quand tu trouves la réponse du premier coup, et une autre quand tu trouves les preuves sans te tromper.";
+  montrer("ecran-fin");
+}
+
+/* Résultat envoyé au site (page enseignant, plan de travail) */
+function envoyerResultat(n, score, total) {
+  try {
+    if (window.parent && window.parent !== window && window.parent.saveResult) {
+      window.parent.saveResult({ activity: "enigmes_flash_n" + n, bookTitle: "Énigmes flash — Niveau " + n,
+        score, total, pct: Math.round(score / total * 100), date: new Date().toLocaleDateString("fr-BE"),
+        time: new Date().toLocaleTimeString("fr-BE", { hour: "2-digit", minute: "2-digit" }) });
+    }
+  } catch (e) { /* page ouverte hors du site */ }
+}
+
+$("btn-valider").addEventListener("click", validerQuestion);
+$("btn-suivant").addEventListener("click", suivant);
+$("btn-menu").addEventListener("click", afficherMenu);
+$("btn-fin-menu").addEventListener("click", () => NIVEAU_SITE ? demarrer(NIVEAU_SITE) : afficherMenu());
+
+if (NIVEAU_SITE) {
+  // Mode site : pas de menu des niveaux, on commence directement le niveau demandé
+  $("btn-menu").classList.add("hidden");
+  $("btn-fin-menu").textContent = "🔁 Rejouer (5 nouvelles énigmes)";
+  document.querySelector(".subtitle").textContent = "Niveau " + NIVEAU_SITE + " — Lis, devine… et prouve-le !";
+  window.lcmlOnLeave = () => demarrer(NIVEAU_SITE);
+  demarrer(NIVEAU_SITE);
+} else {
+  window.lcmlOnLeave = afficherMenu;
+  afficherMenu();
+}
+</script>
+<script src="../lcml_copyright.js"></script>
+</body>
+</html>

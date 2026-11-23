@@ -3981,6 +3981,10 @@ input[type=text].calc-input.incorrect {
       'conj_cond_pqpf': "Exercice : Conditionnel & Plus-que-parfait",
       'screen-conj-subj-imp': "Exercice : Subjonctif & Impératif",
       'screen-conj-imperatif': "Menu : Impératif présent",
+      'screen-lecture-enigmes': "Menu : Énigmes flash",
+      'enigmes_flash_n1': "Exercice : Énigmes flash (niveau 1)",
+      'enigmes_flash_n2': "Exercice : Énigmes flash (niveau 2)",
+      'enigmes_flash_n3': "Exercice : Énigmes flash (niveau 3)",
       'conj_imperatif_qcm': "Exercice : Impératif présent (QCM)",
       'conj_imperatif_transfo': "Exercice : Impératif présent (Donne l'ordre)",
       'conj_imperatif_ou_pas': "Exercice : Impératif ou pas ?",
@@ -5689,6 +5693,13 @@ input[type=text].calc-input.incorrect {
         <div class="activity-type-desc">Lis, choisis ton chemin, résous les énigmes et démasque le coupable !</div>
       </div>
     </div>
+    <div class="activity-type-card" onclick="showScreen('screen-lecture-enigmes');renderLectureEnigmesMenu();">
+      <div class="activity-type-icon">🔎</div>
+      <div>
+        <div class="activity-type-title">Énigmes flash</div>
+        <div class="activity-type-desc">Un petit texte, une énigme : devine la réponse… et prouve-la !</div>
+      </div>
+    </div>
     <div class="activity-type-card" onclick="showScreen('screen-expression-ecrite');renderExpressionEcriteMenu();">
       <div class="activity-type-icon">📝</div>
       <div>
@@ -5858,6 +5869,13 @@ input[type=text].calc-input.incorrect {
   </div>
 
   <!-- SCREEN: Enquêtes dont tu es le héros - menu (Lecture) -->
+  <!-- SCREEN: Lecture - Énigmes flash (3 niveaux = 3 activités) -->
+  <div id="screen-lecture-enigmes" class="screen">
+    <button class="back-btn" onclick="state.role==='teacher'?showScreen('screen-teacher-lecture'):showScreen('screen-lecture')">← Retour</button>
+    <div class="page-title">🔎 Énigmes flash</div>
+    <div id="lecture-enigmes-menu"></div>
+  </div>
+
   <div id="screen-lecture-enquetes" class="screen">
     <button class="back-btn" onclick="state.role==='teacher'?showScreen('screen-teacher-lecture'):showScreen('screen-lecture')">← Retour</button>
     <div class="page-title">🕵️ Enquêtes dont tu es le héros</div>
@@ -8382,6 +8400,13 @@ input[type=text].calc-input.incorrect {
         <div class="activity-type-desc">Lis, choisis ton chemin, résous les énigmes et démasque le coupable !</div>
       </div>
     </div>
+    <div class="activity-type-card" onclick="showScreen('screen-lecture-enigmes');renderLectureEnigmesMenu();">
+      <div class="activity-type-icon">🔎</div>
+      <div>
+        <div class="activity-type-title">Énigmes flash</div>
+        <div class="activity-type-desc">Un petit texte, une énigme : devine la réponse… et prouve-la !</div>
+      </div>
+    </div>
     <div class="activity-type-card" onclick="showScreen('screen-lecture-rapide');renderLectureRapideMenu();">
       <div class="activity-type-icon">⚡</div>
       <div>
@@ -9224,6 +9249,7 @@ function showScreen(id){
   if(id==='screen-grandeurs-vitesse-horaire') setTimeout(renderVitesseHoraireMenu, 50);
   if(id==='screen-conj-un-peu-de-tout') setTimeout(renderConjUnPeuDeToutMenu, 50);
   if(id==='screen-conj-imperatif') setTimeout(renderConjImperatifMenu, 50);
+  if(id==='screen-lecture-enigmes') setTimeout(renderLectureEnigmesMenu, 50);
   if(id==='screen-op-vocabulaire') setTimeout(renderOpVocabulaireMenu, 50);
   if(id==='screen-solides-angles') setTimeout(renderAnglesMenu, 50);
   if(id==='screen-solides-disque') setTimeout(renderDisqueMenu, 50);
@@ -10266,6 +10292,25 @@ async function syncFromFirebase(){
         if (state.role !== 'teacher' && !localStorage.getItem('lq_student_synced_v8_' + currentClass)) {
           IMPERATIF_NEW_IDS.forEach(id => { if (!locked.includes(id)) locked.push(id); });
           localStorage.setItem('lq_student_synced_v8_' + currentClass, 'true');
+        }
+        localStorage.setItem('lq_locked_activities_' + currentClass, JSON.stringify(locked));
+        if (currentClass === 'lejoly') localStorage.setItem('lq_locked_activities', JSON.stringify(locked));
+      }
+      // v9 (23/11/2026) : les 3 niveaux des Énigmes flash sont masqués par défaut.
+      // L'enseignant les ouvre depuis le plan de travail ou la liste des activités.
+      const ENIGMES_NEW_IDS = ['enigmes_flash_n1', 'enigmes_flash_n2', 'enigmes_flash_n3'];
+      if (state.role === 'teacher' && !localStorage.getItem('lq_migrated_new_locked_v9_' + currentClass)) {
+        const currentArr = JSON.parse(localStorage.getItem('lq_locked_activities_' + currentClass) || JSON.stringify(locked));
+        const mergedArray = Array.from(new Set([...currentArr, ...ENIGMES_NEW_IDS]));
+        localStorage.setItem('lq_locked_activities_' + currentClass, JSON.stringify(mergedArray));
+        if (currentClass === 'lejoly') localStorage.setItem('lq_locked_activities', JSON.stringify(mergedArray));
+        await window.FB_saveLockedActivities(currentClass, mergedArray);
+        localStorage.setItem('lq_migrated_new_locked_v9_' + currentClass, 'true');
+        console.log(`🛡️ Les Énigmes flash ont été masquées par défaut pour ${currentClass}.`);
+      } else {
+        if (state.role !== 'teacher' && !localStorage.getItem('lq_student_synced_v9_' + currentClass)) {
+          ENIGMES_NEW_IDS.forEach(id => { if (!locked.includes(id)) locked.push(id); });
+          localStorage.setItem('lq_student_synced_v9_' + currentClass, 'true');
         }
         localStorage.setItem('lq_locked_activities_' + currentClass, JSON.stringify(locked));
         if (currentClass === 'lejoly') localStorage.setItem('lq_locked_activities', JSON.stringify(locked));
@@ -11520,6 +11565,9 @@ const ACTIVITY_PARENTS = {
   'jeu_enquete_cross': 'francais-lecture',
   'jeu_enquete_lampe': 'francais-lecture',
   'jeu_enquete_colomb': 'francais-lecture',
+  'enigmes_flash_n1': 'francais-lecture',
+  'enigmes_flash_n2': 'francais-lecture',
+  'enigmes_flash_n3': 'francais-lecture',
   'jeu_enquete_carnet': 'francais-lecture',
   'jeu_enquete_paie': 'francais-lecture',
   'jeu_enquete_fantome': 'francais-lecture',
@@ -12202,6 +12250,7 @@ function refreshAllToggles(){
   
   if (typeof renderLectureNarrativeMenu === 'function') renderLectureNarrativeMenu();
   if (typeof renderLectureEnquetesMenu === 'function') renderLectureEnquetesMenu();
+  if (typeof renderLectureEnigmesMenu === 'function') renderLectureEnigmesMenu();
   if (typeof renderLectureDescriptiveMenu === 'function') renderLectureDescriptiveMenu();
   if (typeof renderLectureArgumentativeMenu === 'function') renderLectureArgumentativeMenu();
   if (typeof renderLectureDialogueeMenu === 'function') renderLectureDialogueeMenu();
@@ -22304,6 +22353,39 @@ function renderLectureEnquetesMenu(){
 }
 window.renderLectureEnquetesMenu = renderLectureEnquetesMenu;
 
+// ===== LECTURE : ÉNIGMES FLASH (fiches/enigmes_flash.html?niveau=N) =====
+// 3 niveaux = 3 activités, masquées par défaut (migration v9) ; score sur 10 étoiles via saveResult.
+const LECTURE_ENIGMES = [
+  {id:'enigmes_flash_n1', niveau:1, label:'Énigmes flash — Niveau 1', icon:'🟢', desc:"Indices faciles à repérer : un lieu, un moment, un métier… · 5 énigmes au hasard"},
+  {id:'enigmes_flash_n2', niveau:2, label:'Énigmes flash — Niveau 2', icon:'🔵', desc:"Lire entre les lignes : phrases pièges, sentiments cachés, menteurs… · 5 énigmes au hasard"},
+  {id:'enigmes_flash_n3', niveau:3, label:'Énigmes flash — Niveau 3', icon:'🟣', desc:"Textes plus longs, réponses qui se ressemblent, 2 preuves à trouver · 5 énigmes au hasard"}
+];
+function renderLectureEnigmesMenu(){
+  const menu = document.getElementById('lecture-enigmes-menu');
+  if(!menu) return;
+  const isTeacher = state.role === 'teacher';
+  let html = '';
+  LECTURE_ENIGMES.forEach(t => {
+    const isLocked = isActivityLocked(t.id);
+    const toggleBtn = isTeacher
+      ? `<button class="card-teacher-toggle ${isLocked?'btn-show':'btn-hide'}"
+           onclick="event.stopPropagation();toggleActivity('${t.id}');renderLectureEnigmesMenu();">
+           ${isLocked?'🔓 Réactiver':'🔒 Masquer'}
+         </button>` : '';
+    if(isLocked && !isTeacher) return;
+    html += `<div class="sub-subject-card active-card" onclick="openFiche('enigmes_flash.html?niveau=${t.niveau}', '${t.label}', 'screen-lecture-enigmes')" style="position:relative">
+      ${toggleBtn}
+      <div class="sub-icon">${t.icon}</div>
+      <div class="sub-title">${t.label}</div>
+      <div class="sub-desc">${t.desc}</div>
+      ${isTeacher?'':renderScoreBadge(t.id)}
+    </div>`;
+  });
+  menu.innerHTML = html ? '<div class="sub-subjects-grid">' + html + '</div>' : '<p style="color:var(--muted);text-align:center;padding:2rem">Aucune énigme disponible pour le moment.</p>';
+  if (typeof window.replaceEmojisOnPage === 'function') window.replaceEmojisOnPage(menu);
+}
+window.renderLectureEnigmesMenu = renderLectureEnigmesMenu;
+
 function renderContesMenu(){
   const menu = document.getElementById('contes-menu');
   if(!menu) return;
@@ -26085,6 +26167,7 @@ function refreshCurrentMenu(){
     'screen-sci-squelette': 'renderSciSqueletteMenu',
     'screen-lecture-narrative': 'renderLectureNarrativeMenu',
     'screen-lecture-enquetes': 'renderLectureEnquetesMenu',
+    'screen-lecture-enigmes': 'renderLectureEnigmesMenu',
     'screen-conj-un-peu-de-tout': 'renderConjUnPeuDeToutMenu',
     'screen-conj-imperatif': 'renderConjImperatifMenu',
     'screen-op-vocabulaire': 'renderOpVocabulaireMenu',
@@ -34302,6 +34385,11 @@ const PLAN_CATALOGUE = [
     { id:'jeu_enquete_belgique', label:"La Course-poursuite du Renard (niveau 3)", icon:'🦊', screen:'screen-fiche-viewer', fn:"() => openEnquete('enquete_belgique.html', 'La Course-poursuite du Renard', 'screen-plan-travail-student')" },
     { id:'jeu_enquete_lampe', label:"La Lampe à lave sabotée (niveau 3)", icon:'🧪', screen:'screen-fiche-viewer', fn:"() => openEnquete('enquete_lampe.html', 'La Lampe à lave sabotée', 'screen-plan-travail-student')" },
     { id:'jeu_enquete_colomb', label:"Le Faux de 1493 (niveau 3)", icon:'📜', screen:'screen-fiche-viewer', fn:"() => openEnquete('enquete_colomb.html', 'Le Faux de 1493', 'screen-plan-travail-student')" },
+  ]},
+  { cat: '📖 Français', sub: '🔎 Lecture — Énigmes flash', items: [
+    { id:'enigmes_flash_n1', label:"Énigmes flash — Niveau 1", icon:'🟢', screen:'screen-fiche-viewer', fn:"() => openFiche('enigmes_flash.html?niveau=1', 'Énigmes flash — Niveau 1', 'screen-plan-travail-student')" },
+    { id:'enigmes_flash_n2', label:"Énigmes flash — Niveau 2", icon:'🔵', screen:'screen-fiche-viewer', fn:"() => openFiche('enigmes_flash.html?niveau=2', 'Énigmes flash — Niveau 2', 'screen-plan-travail-student')" },
+    { id:'enigmes_flash_n3', label:"Énigmes flash — Niveau 3", icon:'🟣', screen:'screen-fiche-viewer', fn:"() => openFiche('enigmes_flash.html?niveau=3', 'Énigmes flash — Niveau 3', 'screen-plan-travail-student')" },
   ]},
   { cat: '📖 Français', sub: '⚡ Lecture — Lecture rapide', items: [
     { id:'lecture_rapide', label:'Lecture rapide (tous niveaux)', icon:'⚡', screen:'screen-lecture-rapide', fn:'renderLectureRapideMenu' },
@@ -53101,7 +53189,10 @@ function openFiche(filename, title, sourceScreen) {
   if (titleEl) titleEl.innerText = title;
   const iframe = document.getElementById('fiche-viewer-iframe');
   if (iframe) {
-    iframe.src = `fiches/${encodeURIComponent(filename)}`;
+    // « fichier.html?param=… » : seul le nom du fichier est encodé, le paramètre reste lisible par la page
+    const q = filename.indexOf('?');
+    iframe.src = q === -1 ? `fiches/${encodeURIComponent(filename)}`
+                          : `fiches/${encodeURIComponent(filename.slice(0, q))}${filename.slice(q)}`;
   }
   showScreen('screen-fiche-viewer');
 }
