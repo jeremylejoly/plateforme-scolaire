@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<!-- © 2026 Jérémy Lejoly — LCML. Reproduction interdite sans autorisation. -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Conjugaison — Impératif présent QCM</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: #f5f6fa; padding: 1.5rem; }
+.container { max-width: 680px; margin: 0 auto; }
+.info-card { background:#fce7f3;border:1px solid #ec4899;border-radius:12px;padding:.8rem 1rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center; }
+.info-card p { font-size:13px;color:#9d174d;font-weight:700;margin:0; }
+.dots { display:flex;gap:6px; }
+.dot { width:12px;height:12px;border-radius:50%; }
+.question-card { background:white;border-radius:16px;padding:1.75rem 1.5rem;margin-bottom:1.25rem;box-shadow:0 2px 8px rgba(0,0,0,.08);border:2px solid #e5e7eb; }
+.q-label { font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#9ca3af;margin-bottom:.75rem;text-align:center; }
+.q-phrase { font-size:17px;font-weight:800;color:#1e1b4b;margin-bottom:1.5rem;text-align:center;line-height:1.6; }
+.q-phrase em { font-style:normal;color:#ec4899;font-size:20px; }
+.q-verbe { font-size:13px;font-weight:700;color:#9ca3af; }
+.options { display:flex;flex-direction:column;gap:8px; }
+.opt-btn { padding:12px 16px;border-radius:12px;border:2px solid #e5e7eb;background:white;font-size:15px;font-weight:800;color:#374151;cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;transition:all .15s;display:flex;align-items:center;gap:10px; }
+.opt-btn:hover:not(:disabled) { border-color:#ec4899;background:#fce7f3;color:#9d174d; }
+.opt-btn .opt-letter { width:28px;height:28px;border-radius:50%;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#6b7280;flex-shrink:0;transition:all .15s; }
+.opt-btn:hover:not(:disabled) .opt-letter { background:#ec4899;color:white; }
+.opt-btn.correct { border-color:#16a34a;background:#f0fdf4;color:#166534; }
+.opt-btn.correct .opt-letter { background:#16a34a;color:white; }
+.opt-btn.incorrect { border-color:#dc2626;background:#fff5f5;color:#991b1b; }
+.opt-btn.incorrect .opt-letter { background:#dc2626;color:white; }
+.opt-btn.disabled-neutral { border-color:#e5e7eb;color:#9ca3af; }
+.explication { display:none;margin-top:1rem;padding:.75rem 1rem;border-radius:12px;background:#f9fafb;border:1px solid #e5e7eb;font-size:14px;font-weight:700;color:#4b5563;line-height:1.5; }
+.explication b { color:#9d174d; }
+.btn { width:100%;padding:12px;background:#ec4899;color:white;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:background .2s;margin-bottom:.75rem; }
+.btn:hover { background:#db2777; }
+.score-final { display:none;text-align:center;padding:2rem;background:white;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,.1); }
+.big-emoji { font-size:64px;margin-bottom:.5rem; }
+.big-score { font-size:36px;font-weight:900;margin-bottom:1rem; }
+.score-detail { font-size:13px;color:#6b7280;margin-bottom:1.5rem;line-height:2; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="exercice-zone">
+    <div class="info-card">
+      <p id="info-numero">Question 1/10</p>
+      <div class="dots" id="dots-progress"></div>
+    </div>
+    <div id="question-zone"></div>
+    <button class="btn" id="btn-suivant" style="display:none" onclick="suivant()">➡️ Question suivante</button>
+  </div>
+  <div class="score-final" id="score-final">
+    <div class="big-emoji" id="final-emoji">🎉</div>
+    <div class="big-score" id="final-score"></div>
+    <div class="score-detail" id="final-detail"></div>
+    <button class="btn" onclick="demarrer()">🔄 Recommencer</button>
+  </div>
+</div>
+<script>
+// Explications communes, affichées après chaque réponse
+const EXPL = {
+  g1:    "Verbes en <b>-er</b> : pas de <b>s</b> à la 2<sup>e</sup> personne du singulier de l'impératif (tu ranges → <b>range</b>).",
+  g1nv:  "À l'impératif, on garde les terminaisons du présent pour <b>nous</b> (-ons) et <b>vous</b> (-ez), mais sans le sujet.",
+  ouvrir:"<b>Ouvrir, offrir, cueillir, couvrir…</b> se conjuguent comme les verbes en -er : pas de <b>s</b> (tu ouvres → <b>ouvre</b>).",
+  g23:   "Verbes des 2<sup>e</sup> et 3<sup>e</sup> groupes : on garde le <b>s</b> à la 2<sup>e</sup> personne du singulier (tu finis → <b>finis</b>).",
+  irr:   "Verbe irrégulier à l'impératif : <b>dites</b> et <b>faites</b> (comme au présent : vous dites, vous faites).",
+  etre:  "Impératif d'<b>être</b> : <b>sois</b>, <b>soyons</b>, <b>soyez</b> (sans i après le y).",
+  avoir: "Impératif d'<b>avoir</b> : <b>aie</b>, <b>ayons</b>, <b>ayez</b> (sans i après le y).",
+  savoir:"Impératif de <b>savoir</b> : <b>sache</b>, <b>sachons</b>, <b>sachez</b>.",
+  vouloir:"Impératif de <b>vouloir</b> (formule de politesse) : <b>veuillez</b>.",
+  aller: "Impératif d'<b>aller</b> : <b>va</b>, sans s… sauf devant <b>y</b> : <b>vas-y</b> !",
+  pron:  "Verbe pronominal à l'impératif : le pronom se place <b>après</b> le verbe, avec un trait d'union (<b>lève-toi</b>, <b>dépêchons-nous</b>).",
+  enY:   "Devant <b>en</b> ou <b>y</b>, on ajoute un <b>s</b> pour mieux prononcer : mange → <b>manges-en</b>, pense → <b>penses-y</b>.",
+  neg:   "À la forme négative, le verbe se place entre <b>ne</b> et <b>pas</b>, et garde la même forme qu'à l'impératif affirmatif."
+};
+
+// La bonne réponse est toujours la première ; les propositions sont mélangées à l'affichage.
+const QUESTIONS = [
+  // 1er groupe — 2e personne du singulier (pas de s)
+  { p:"Léo, <em>...</em> ta chambre avant le souper !",          v:"ranger",   opts:["range","ranges","rangé"],        e:"g1" },
+  { p:"Emma, <em>...</em> bien la consigne avant de commencer.", v:"écouter",  opts:["écoute","écoutes","écouté"],     e:"g1" },
+  { p:"<em>...</em> ta soupe, elle va refroidir !",              v:"manger",   opts:["mange","manges","mangé"],        e:"g1" },
+  { p:"Tom, <em>...</em> la porte derrière toi, s'il te plait.", v:"fermer",   opts:["ferme","fermes","fermé"],        e:"g1" },
+  { p:"<em>...</em> ton frère pour le repas !",                  v:"appeler",  opts:["appelle","appelles","appèle"],   e:"g1" },
+  { p:"<em>...</em> ce papier à la poubelle.",                   v:"jeter",    opts:["jette","jettes","jète"],         e:"g1" },
+  { p:"<em>...</em> du pain en rentrant de l'école.",            v:"acheter",  opts:["achète","achètes","achete"],     e:"g1" },
+  { p:"<em>...</em> le doigt avant de parler.",                  v:"lever",    opts:["lève","lèves","leve"],           e:"g1" },
+  { p:"<em>...</em> fort sur le bouton vert.",                   v:"appuyer",  opts:["appuie","appuies","appuye"],     e:"g1" },
+  { p:"<em>...</em> la table après le repas.",                   v:"essuyer",  opts:["essuie","essuies","essuye"],     e:"g1" },
+  { p:"<em>...</em> une carte postale à ta mamie.",              v:"envoyer",  opts:["envoie","envoies","envoye"],     e:"g1" },
+  { p:"<em>...</em> le ballon à ton coéquipier !",               v:"lancer",   opts:["lance","lances","lançe"],        e:"g1" },
+  // 1er groupe — nous / vous
+  { p:"Nous sommes prêts : <em>...</em> le jeu !",               v:"commencer",opts:["commençons","commenceons","commençez"], e:"g1nv" },
+  { p:"Il fait chaud : <em>...</em> dans la piscine !",          v:"nager (nous)", opts:["nageons","nagons","nageont"], e:"g1nv" },
+  { p:"Les enfants, <em>...</em> vos jouets dans le coffre.",    v:"ranger",   opts:["rangez","rangé","rangés"],       e:"g1nv" },
+  { p:"Les choristes, <em>...</em> plus fort !",                 v:"chanter",  opts:["chantez","chanté","chantait"],   e:"g1nv" },
+  { p:"Tout le monde ensemble : <em>...</em> la classe pour la fête !", v:"décorer (nous)", opts:["décorons","décorions","décorrons"], e:"g1nv" },
+  // Ouvrir, offrir, cueillir (comme les verbes en -er)
+  { p:"<em>...</em> la fenêtre, on étouffe ici !",               v:"ouvrir",   opts:["ouvre","ouvres","ouvert"],       e:"ouvrir" },
+  { p:"<em>...</em> ce dessin à ta sœur.",                       v:"offrir",   opts:["offre","offres","offert"],       e:"ouvrir" },
+  { p:"<em>...</em> quelques fleurs pour la table.",             v:"cueillir", opts:["cueille","cueilles","cueillis"], e:"ouvrir" },
+  { p:"Les élèves, <em>...</em> votre cahier à la page 12.",     v:"ouvrir",   opts:["ouvrez","ouvrissez","ouvrés"],   e:"g1nv" },
+  // 2e et 3e groupes — 2e personne du singulier (avec s)
+  { p:"<em>...</em> ton exercice avant de jouer.",               v:"finir",    opts:["finis","finit","fini"],          e:"g23" },
+  { p:"<em>...</em> ici tout de suite !",                        v:"venir",    opts:["viens","vient","viends"],        e:"g23" },
+  { p:"<em>...</em> vite, le bus arrive !",                      v:"courir",   opts:["cours","court","coure"],         e:"g23" },
+  { p:"<em>...</em> la vérité, s'il te plait.",                  v:"dire",     opts:["dis","dit","dies"],              e:"g23" },
+  { p:"<em>...</em> ton manteau, il fait froid.",                v:"prendre",  opts:["prends","prend","prent"],        e:"g23" },
+  { p:"<em>...</em> tes bottes pour aller dans la boue.",        v:"mettre",   opts:["mets","met","mette"],            e:"g23" },
+  { p:"<em>...</em> attention en traversant la rue !",           v:"faire",    opts:["fais","fait","fai"],             e:"g23" },
+  { p:"<em>...</em> une phrase avec ce mot.",                    v:"écrire",   opts:["écris","écrit","écrie"],         e:"g23" },
+  { p:"<em>...</em> ce livre, il est passionnant.",              v:"lire",     opts:["lis","lit","lise"],              e:"g23" },
+  { p:"<em>...</em> bien cette nuit !",                          v:"dormir",   opts:["dors","dort","dor"],             e:"g23" },
+  { p:"<em>...</em> ton tour dans la file.",                     v:"attendre", opts:["attends","attend","attens"],     e:"g23" },
+  { p:"<em>...</em> au téléphone, il sonne !",                   v:"répondre", opts:["réponds","répond","répons"],     e:"g23" },
+  { p:"<em>...</em> la main de ta petite sœur pour traverser.",  v:"tenir",    opts:["tiens","tient","tiend"],         e:"g23" },
+  // 2e et 3e groupes — nous / vous
+  { p:"Les enfants, <em>...</em> vos devoirs en silence.",       v:"faire",    opts:["faites","faisez","faitez"],      e:"irr" },
+  { p:"Les amis, <em>...</em>-nous ce qui s'est passé !",        v:"dire",     opts:["dites","disez","ditez"],         e:"irr" },
+  { p:"Nous sommes en retard : <em>...</em> vite !",             v:"partir (nous)", opts:["partons","partissons","partont"], e:"g1nv" },
+  { p:"Il pleut : <em>...</em> nos parapluies !",                v:"prendre (nous)", opts:["prenons","prendons","prennons"], e:"g1nv" },
+  // Être, avoir, savoir, vouloir, aller
+  { p:"<em>...</em> sage pendant mon absence !",                 v:"être",     opts:["sois","soit","sois-tu"],         e:"etre" },
+  { p:"Les enfants, <em>...</em> prudents sur la route !",       v:"être",     opts:["soyez","soyiez","êtes"],         e:"etre" },
+  { p:"<em>...</em> confiance en toi !",                         v:"avoir",    opts:["aie","aies","ait"],              e:"avoir" },
+  { p:"Les amis, <em>...</em> du courage : c'est bientôt fini !",v:"avoir",    opts:["ayez","ayiez","avez"],           e:"avoir" },
+  { p:"<em>...</em> que je serai toujours là pour toi.",         v:"savoir",   opts:["sache","saches","sais"],         e:"savoir" },
+  { p:"Mesdames et Messieurs, <em>...</em> patienter quelques instants.", v:"vouloir", opts:["veuillez","voulez","veuilliez"], e:"vouloir" },
+  { p:"<em>...</em> à la boulangerie, s'il te plait.",           v:"aller",    opts:["va","vas","vat"],                e:"aller" },
+  { p:"Ton copain t'attend au parc : <em>...</em> !",            v:"aller + y",opts:["vas-y","va-y","va-s-y"],         e:"aller" },
+  // Verbes pronominaux
+  { p:"Il est 7 heures : <em>...</em>, tu vas être en retard !", v:"se lever", opts:["lève-toi","lèves-toi","lève-te"], e:"pron" },
+  { p:"Les enfants, <em>...</em> les mains avant de manger.",    v:"se laver", opts:["lavez-vous","lavez-nous","vous lavez"], e:"pron" },
+  { p:"Le train va partir : <em>...</em> !",                     v:"se dépêcher (nous)", opts:["dépêchons-nous","dépêchons-vous","nous dépêchons"], e:"pron" },
+  { p:"<em>...</em> sur ce banc pour te reposer.",               v:"s'asseoir",opts:["assieds-toi","assied-toi","assieds-te"], e:"pron" },
+  // Devant en / y
+  { p:"Ces cerises sont délicieuses : <em>...</em> !",           v:"manger + en", opts:["manges-en","mange-en","mange-s-en"], e:"enY" },
+  { p:"N'oublie pas ton rendez-vous : <em>...</em> !",           v:"penser + y",  opts:["penses-y","pense-y","pense-s-y"],    e:"enY" },
+  { p:"Tu veux des bonbons ? Alors, <em>...</em> un !",                 v:"prendre + en",opts:["prends-en","prend-en","prends-s-en"], e:"enY" },
+  // Forme négative
+  { p:"Ne <em>...</em> pas avec la nourriture !",                v:"jouer",    opts:["joue","joues","jouer"],          e:"neg" },
+  { p:"N'<em>...</em> pas peur, ce chien est gentil.",           v:"avoir",    opts:["aie","as","ait"],                e:"neg" },
+  { p:"Ne <em>...</em> pas en retard demain, les enfants !",     v:"être",     opts:["soyez","êtes","soyiez"],         e:"neg" },
+];
+
+const NB = 10;
+const LETTRES = ['A','B','C'];
+// Mélange de Fisher-Yates (équitable)
+function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+function shuffleQ(q){
+  const pairs = q.opts.map((o,i)=>({o, isCorrect:i===0}));
+  const s = shuffle(pairs);
+  return { p:q.p, v:q.v, e:q.e, opts:s.map(p=>p.o), correct:s.findIndex(p=>p.isCorrect) };
+}
+
+// Majuscule en début de phrase quand le trou est le premier mot
+function majuscule(o, p){ return p.startsWith('<em>') ? o.charAt(0).toUpperCase()+o.slice(1) : o; }
+
+let selection=[], curIdx=0, scores=[];
+
+function demarrer(){
+  selection = shuffle(QUESTIONS).slice(0,NB).map(shuffleQ);
+  curIdx=0; scores=[];
+  document.getElementById('score-final').style.display='none';
+  document.getElementById('exercice-zone').style.display='block';
+  afficherQuestion();
+}
+
+function afficherQuestion(){
+  const q = selection[curIdx];
+  document.getElementById('info-numero').textContent = `Question ${curIdx+1}/${NB}`;
+  document.getElementById('dots-progress').innerHTML =
+    selection.map((_,i)=>`<div class="dot" style="background:${i<curIdx?(scores[i]?'#16a34a':'#dc2626'):i===curIdx?'#ec4899':'#d1d5db'}"></div>`).join('');
+
+  const optsHtml = q.opts.map((o,i)=>`
+    <button class="opt-btn" id="opt-${i}" onclick="choisir(${i},${q.correct})">
+      <span class="opt-letter">${LETTRES[i]}</span><span>${majuscule(o,q.p)}</span>
+    </button>`).join('');
+
+  document.getElementById('question-zone').innerHTML = `
+    <div class="question-card">
+      <div class="q-label">✏️ Impératif présent — Choisis la bonne forme</div>
+      <div class="q-phrase">${q.p}<br><span class="q-verbe">(${q.v})</span></div>
+      <div class="options">${optsHtml}</div>
+      <div class="explication" id="explication">💡 ${EXPL[q.e]}</div>
+    </div>`;
+  document.getElementById('btn-suivant').style.display='none';
+}
+
+function choisir(idx, correct){
+  const ok=(idx===correct);
+  scores.push(ok);
+  for(let i=0;i<LETTRES.length;i++){
+    const b=document.getElementById('opt-'+i);
+    if(!b) continue; b.disabled=true;
+    if(i===correct) b.classList.add('correct');
+    else if(i===idx&&!ok) b.classList.add('incorrect');
+    else b.classList.add('disabled-neutral');
+  }
+  document.getElementById('explication').style.display='block';
+  const isLast=curIdx>=NB-1;
+  const btn=document.getElementById('btn-suivant');
+  btn.style.display='block';
+  btn.textContent=isLast?'🏁 Voir mon score final':'➡️ Question suivante';
+  btn.onclick=isLast?afficherScoreFinal:suivant;
+}
+
+function suivant(){ curIdx++; afficherQuestion(); }
+
+function afficherScoreFinal(){
+  document.getElementById('exercice-zone').style.display='none';
+  const sf=document.getElementById('score-final'); sf.style.display='block';
+  const ok=scores.filter(Boolean).length, total=scores.length;
+  const pct=Math.round(ok/total*100);
+  document.getElementById('final-emoji').textContent=pct===100?'🎉':pct>=60?'👍':'💪';
+  document.getElementById('final-score').textContent=`${ok}/${total} — ${pct}%`;
+  document.getElementById('final-score').style.color=pct===100?'#16a34a':pct>=60?'#f59e0b':'#dc2626';
+  document.getElementById('final-detail').innerHTML=scores.map((s,i)=>`Q${i+1} : ${s?'✅':'❌'}`).join('  ');
+  try {
+    if (window.parent && window.parent !== window && window.parent.saveResult) {
+      window.parent.saveResult({ activity:'conj_imperatif_qcm', bookTitle:"Conjugaison — Impératif présent (QCM)",
+        score:ok, total, pct, date:new Date().toLocaleDateString('fr-BE'),
+        time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'}) });
+    }
+  } catch(e) { /* fiche ouverte hors du site */ }
+}
+
+demarrer();
+</script>
+<script src="../lcml_copyright.js"></script>
+</body>
+</html>
