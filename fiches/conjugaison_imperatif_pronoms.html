@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<!-- © 2026 Jérémy Lejoly — LCML. Reproduction interdite sans autorisation. -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Conjugaison — Impératif présent et pronoms</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: #f5f6fa; padding: 1.5rem; }
+.container { max-width: 680px; margin: 0 auto; }
+.info-card { background:#fce7f3;border:1px solid #ec4899;border-radius:12px;padding:.8rem 1rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center; }
+.info-card p { font-size:13px;color:#9d174d;font-weight:700;margin:0; }
+.dots { display:flex;gap:6px; }
+.dot { width:12px;height:12px;border-radius:50%; }
+.question-card { background:white;border-radius:16px;padding:1.75rem 1.5rem;margin-bottom:1.25rem;box-shadow:0 2px 8px rgba(0,0,0,.08);border:2px solid #e5e7eb; }
+.q-label { font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#9ca3af;margin-bottom:.75rem;text-align:center; }
+.q-indices { display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-bottom:1.25rem; }
+.q-verbe { display:inline-block;background:#fce7f3;border:1.5px solid #ec4899;border-radius:8px;padding:3px 10px;font-size:13px;font-weight:800;color:#9d174d; }
+.q-pron { display:inline-block;background:#eef2ff;border:1.5px solid #a5b4fc;border-radius:8px;padding:3px 10px;font-size:13px;font-weight:800;color:#4338ca; }
+.q-consigne { text-align:center;font-size:13px;font-weight:700;color:#6b7280;margin-bottom:.6rem; }
+.q-exemple { text-align:center;font-size:13px;font-weight:700;color:#6b7280;background:#f9fafb;border:1px dashed #d1d5db;border-radius:10px;padding:6px 10px;margin:0 auto 1rem;max-width:420px; }
+.q-exemple b { color:#9d174d; }
+.q-source { text-align:center;margin-bottom:.75rem; }
+.q-source span { display:inline-block;background:#fce7f3;border:1.5px solid #ec4899;border-radius:10px;padding:8px 16px;font-size:17px;font-weight:800;color:#9d174d; }
+.q-source u { text-decoration-thickness:2px;text-underline-offset:3px;color:#4338ca; }
+.fleche { color:#ec4899;font-size:20px;margin-right:6px; }
+.q-phrase { font-size:18px;font-weight:800;color:#1e1b4b;text-align:center;line-height:2.1; }
+.q-input { font-family:'Nunito',sans-serif;font-size:18px;font-weight:800;color:#1e1b4b;text-align:center;border:none;border-bottom:2.5px solid #ec4899;background:transparent;outline:none;padding:2px 6px;transition:border-color .2s; }
+.q-input:focus { border-color:#9d174d; }
+.q-input.correct { border-color:#16a34a;color:#16a34a; }
+.q-input.incorrect { border-color:#dc2626;color:#dc2626; }
+.correction { font-size:14px;font-weight:800;color:#dc2626;margin-top:.75rem;text-align:center;display:none; }
+.explication { display:none;margin-top:1rem;padding:.75rem 1rem;border-radius:12px;background:#f9fafb;border:1px solid #e5e7eb;font-size:14px;font-weight:700;color:#4b5563;line-height:1.5; }
+.explication b { color:#9d174d; }
+.btn { width:100%;padding:12px;background:#ec4899;color:white;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:background .2s;margin-bottom:.75rem; }
+.btn:hover { background:#db2777; }
+.score-final { display:none;text-align:center;padding:2rem;background:white;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,.1); }
+.big-emoji { font-size:64px;margin-bottom:.5rem; }
+.big-score { font-size:36px;font-weight:900;margin-bottom:1rem; }
+.score-detail { font-size:13px;color:#6b7280;margin-bottom:1.5rem;line-height:2; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="exercice-zone">
+    <div class="info-card">
+      <p id="info-numero">Question 1/10</p>
+      <div class="dots" id="dots-progress"></div>
+    </div>
+    <div id="question-zone"></div>
+    <button class="btn" id="btn-valider" onclick="valider()">✅ Valider</button>
+    <button class="btn" id="btn-suivant" style="display:none" onclick="suivant()">➡️ Question suivante</button>
+  </div>
+  <div class="score-final" id="score-final">
+    <div class="big-emoji" id="final-emoji">🎉</div>
+    <div class="big-score" id="final-score"></div>
+    <div class="score-detail" id="final-detail"></div>
+    <button class="btn" onclick="demarrer()">🔄 Recommencer</button>
+  </div>
+</div>
+<script>
+const EXPL = {
+  pron: "Verbe pronominal : le pronom se place <b>après</b> le verbe, avec un trait d'union, et <b>te</b> devient <b>toi</b> (lève-toi, lavez-vous, dépêchons-nous).",
+  y:    "<b>y</b> remplace un lieu ou une chose (au parc, à ce jeu…). Il se place <b>après</b> le verbe, avec un trait d'union. Devant <b>y</b>, si le verbe se termine par une voyelle (va, pense, joue), on ajoute un <b>s</b> : vas-y, penses-y.",
+  en:   "<b>en</b> remplace « des, du, de la + nom ». Il se place <b>après</b> le verbe, avec un trait d'union. Devant <b>en</b>, si le verbe se termine par une voyelle (mange, cueille), on ajoute un <b>s</b> : manges-en, cueilles-en.",
+  cod:  "<b>le, la, les</b> remplacent un nom (ton manteau → le). À l'impératif, ils se placent <b>après</b> le verbe, avec un trait d'union : prends-le, range-la.",
+  moi:  "À l'impératif, <b>me</b> se place après le verbe et devient <b>moi</b> : aide-moi, écoute-moi.",
+  lui:  "<b>lui</b> (à une personne) et <b>leur</b> (à plusieurs personnes) se placent <b>après</b> le verbe, avec un trait d'union : parle-lui, donne-leur. Ici, <b>leur</b> ne prend jamais de s."
+};
+
+// s = phrase de départ (mots à remplacer soulignés) ; t = ordre à compléter ({} = case) ;
+// pr = pronom à utiliser (sauf verbes pronominaux) ; r = réponses acceptées (la 1re est affichée)
+const EXEMPLES = {
+  pron: "Tu te caches. → <b>Cache-toi</b> !",
+  y:    "Tu entres <u>dans la classe</u>. → <b>Entres-y</b> !",
+  en:   "Tu bois <u>de l'eau</u>. → <b>Bois-en</b> !",
+  cod:  "Tu ouvres <u>la fenêtre</u>. → <b>Ouvre-la</b> !",
+  moi:  "Tu <u>m'</u>attends. → <b>Attends-moi</b> !",
+  lui:  "Tu souris <u>à ta voisine</u>. → <b>Souris-lui</b> !"
+};
+const QUESTIONS = [
+  // ===== Verbes pronominaux — tu =====
+  { s:"Tu te lèves tôt.",                  t:"{} tôt !",            r:["lève-toi"], e:"pron" },
+  { s:"Tu te laves les mains.",            t:"{} les mains !",      r:["lave-toi"], e:"pron" },
+  { s:"Tu te brosses les dents.",          t:"{} les dents !",      r:["brosse-toi"], e:"pron" },
+  { s:"Tu t'assieds sur la chaise.",       t:"{} sur la chaise !",  r:["assieds-toi","assois-toi"], e:"pron" },
+  { s:"Tu te dépêches.",                   t:"{} !",                r:["dépêche-toi"], e:"pron" },
+  { s:"Tu te couvres bien.",               t:"{} bien !",           r:["couvre-toi"], e:"pron" },
+  { s:"Tu te reposes un peu.",             t:"{} un peu !",         r:["repose-toi"], e:"pron" },
+  { s:"Tu te tiens à la rampe.",           t:"{} à la rampe !",     r:["tiens-toi"], e:"pron" },
+  { s:"Tu t'habilles vite.",               t:"{} vite !",           r:["habille-toi"], e:"pron" },
+  { s:"Tu t'excuses auprès de ta sœur.",   t:"{} auprès de ta sœur !", r:["excuse-toi"], e:"pron" },
+  { s:"Tu t'amuses bien.",                 t:"{} bien !",           r:["amuse-toi"], e:"pron" },
+  { s:"Tu te souviens de ton cartable.",   t:"{} de ton cartable !", r:["souviens-toi"], e:"pron" },
+  // ===== Verbes pronominaux — vous =====
+  { s:"Vous vous lavez les mains.",        t:"{} les mains !",      r:["lavez-vous"], e:"pron" },
+  { s:"Vous vous asseyez en silence.",     t:"{} en silence !",     r:["asseyez-vous","assoyez-vous"], e:"pron" },
+  { s:"Vous vous dépêchez.",               t:"{} !",                r:["dépêchez-vous"], e:"pron" },
+  { s:"Vous vous habillez chaudement.",    t:"{} chaudement !",     r:["habillez-vous"], e:"pron" },
+  { s:"Vous vous mettez en ligne.",        t:"{} en ligne !",       r:["mettez-vous"], e:"pron" },
+  { s:"Vous vous amusez bien.",            t:"{} bien !",           r:["amusez-vous"], e:"pron" },
+  { s:"Vous vous brossez les dents.",      t:"{} les dents !",      r:["brossez-vous"], e:"pron" },
+  // ===== Verbes pronominaux — nous =====
+  { s:"Nous nous dépêchons.",              t:"{} !",                r:["dépêchons-nous"], e:"pron" },
+  { s:"Nous nous reposons un peu.",        t:"{} un peu !",         r:["reposons-nous"], e:"pron" },
+  { s:"Nous nous asseyons ici.",           t:"{} ici !",            r:["asseyons-nous","assoyons-nous"], e:"pron" },
+  { s:"Nous nous installons en silence.",  t:"{} en silence !",     r:["installons-nous"], e:"pron" },
+  { s:"Nous nous abritons sous l'arbre.",  t:"{} sous l'arbre !",   r:["abritons-nous"], e:"pron" },
+  { s:"Nous nous plaçons côte à côte.",    t:"{} côte à côte !",    r:["plaçons-nous"], e:"pron" },
+  // ===== y =====
+  { s:"Tu vas <u>au parc</u>.",                     t:"{} !",               pr:"y", r:["vas-y"], e:"y" },
+  { s:"Tu penses <u>à ton rendez-vous</u>.",        t:"{} !",               pr:"y", r:["penses-y"], e:"y" },
+  { s:"Vous allez <u>à la piscine</u>.",            t:"{} !",               pr:"y", r:["allez-y"], e:"y" },
+  { s:"Nous allons <u>au jardin</u>.",              t:"{} !",               pr:"y", r:["allons-y"], e:"y" },
+  { s:"Tu restes <u>dans ce coin</u> pour lire.",   t:"{} pour lire !",     pr:"y", r:["restes-y"], e:"y" },
+  { s:"Tu mets tes jouets <u>dans la boite</u>.",   t:"{} tes jouets !",    pr:"y", r:["mets-y"], e:"y" },
+  { s:"Tu joues <u>à ce jeu</u> avec moi.",         t:"{} avec moi !",      pr:"y", r:["joues-y"], e:"y" },
+  // ===== en =====
+  { s:"Tu manges <u>des cerises</u>.",              t:"{} !",               pr:"en", r:["manges-en"], e:"en" },
+  { s:"Tu prends <u>des bonbons</u>.",              t:"{} !",               pr:"en", r:["prends-en"], e:"en" },
+  { s:"Tu reprends <u>de la soupe</u>.",            t:"{} !",               pr:"en", r:["reprends-en"], e:"en" },
+  { s:"Tu cueilles <u>des fleurs</u>.",             t:"{} !",               pr:"en", r:["cueilles-en"], e:"en" },
+  { s:"Tu demandes <u>des crayons</u> à ta voisine.", t:"{} à ta voisine !", pr:"en", r:["demandes-en"], e:"en" },
+  { s:"Vous prenez <u>des gâteaux</u>.",            t:"{} !",               pr:"en", r:["prenez-en"], e:"en" },
+  { s:"Tu achètes <u>du pain</u>.",                 t:"{} !",               pr:"en", r:["achètes-en"], e:"en" },
+  { s:"Nous achetons <u>du lait</u>.",              t:"{} !",               pr:"en", r:["achetons-en"], e:"en" },
+  // ===== le, la, les =====
+  { s:"Tu prends <u>ton manteau</u>.",              t:"{} !",               pr:"le", r:["prends-le"], e:"cod" },
+  { s:"Tu ranges <u>ta chambre</u>.",               t:"{} !",               pr:"la", r:["range-la"], e:"cod" },
+  { s:"Tu nettoies <u>tes chaussures</u>.",         t:"{} !",               pr:"les", r:["nettoie-les"], e:"cod" },
+  { s:"Tu fermes <u>la porte</u>.",                 t:"{} !",               pr:"la", r:["ferme-la"], e:"cod" },
+  { s:"Vous prenez <u>les cahiers</u>.",            t:"{} !",               pr:"les", r:["prenez-les"], e:"cod" },
+  { s:"Tu lis <u>ce livre</u>.",                    t:"{} !",               pr:"le", r:["lis-le"], e:"cod" },
+  { s:"Vous faites <u>ces exercices</u> seuls.",    t:"{} seuls !",         pr:"les", r:["faites-les"], e:"cod" },
+  { s:"Nous chantons <u>cette chanson</u> ensemble.", t:"{} ensemble !",    pr:"la", r:["chantons-la"], e:"cod" },
+  { s:"Tu consoles <u>ton petit frère</u>.",        t:"{} !",               pr:"le", r:["console-le"], e:"cod" },
+  // ===== me → moi =====
+  { s:"Tu <u>m'</u>aides.",                         t:"{} !",               pr:"moi", r:["aide-moi"], e:"moi" },
+  { s:"Tu <u>m'</u>écoutes bien.",                  t:"{} bien !",          pr:"moi", r:["écoute-moi"], e:"moi" },
+  { s:"Tu <u>me</u> réponds.",                      t:"{} !",               pr:"moi", r:["réponds-moi"], e:"moi" },
+  { s:"Tu <u>me</u> regardes.",                     t:"{} !",               pr:"moi", r:["regarde-moi"], e:"moi" },
+  { s:"Tu <u>me</u> cherches dans le jardin.",      t:"{} dans le jardin !", pr:"moi", r:["cherche-moi"], e:"moi" },
+  // ===== lui, leur =====
+  { s:"Tu écris une lettre <u>à mamie</u>.",        t:"{} une lettre !",    pr:"lui", r:["écris-lui"], e:"lui" },
+  { s:"Tu parles gentiment <u>à ton ami</u>.",      t:"{} gentiment !",     pr:"lui", r:["parle-lui"], e:"lui" },
+  { s:"Tu téléphones <u>à tes parents</u>.",        t:"{} !",               pr:"leur", r:["téléphone-leur"], e:"lui" },
+  { s:"Tu donnes un gouter <u>aux enfants</u>.",    t:"{} un gouter !",     pr:"leur", r:["donne-leur"], e:"lui" },
+  { s:"Tu sers un verre d'eau <u>à ton frère</u>.", t:"{} un verre d'eau !", pr:"lui", r:["sers-lui"], e:"lui" },
+];
+
+const NB = 10;
+function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+// Comparaison souple : majuscules, espaces, apostrophes courbes, tirets variés, ponctuation finale
+function normaliser(v){
+  return v.normalize('NFC').trim().toLowerCase()
+    .replace(/[’‘ʼ`]/g, "'")
+    .replace(/[‐‑‒–—]/g, '-')
+    .replace(/\s*-\s*/g, '-')
+    .replace(/[!.?,]+$/,'').trim()
+    .replace(/\s+/g,' ');
+}
+// Sur tablette, la majuscule É est souvent tapée « E » : on l'accepte en début de phrase
+function variantesMajuscule(rep, saisieBrute){
+  const out=[rep];
+  if(/^é/.test(rep) && /^\s*E/.test(saisieBrute)) out.push('e'+rep.slice(1));
+  return out;
+}
+function majuscule(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+function enDebut(q){ return q.t.startsWith('{}'); }
+function forme(q, r){ return enDebut(q) ? majuscule(r) : r; }
+
+let selection=[], curIdx=0, scores=[];
+
+function demarrer(){
+  // Mélange équilibré : environ 4 pronominaux et 6 autres pronoms (y, en, le/la/les, moi, lui/leur)
+  const pron = shuffle(QUESTIONS.filter(q=>q.e==='pron')).slice(0,4);
+  const autres = shuffle(QUESTIONS.filter(q=>q.e!=='pron')).slice(0,NB-4);
+  selection = shuffle([...pron, ...autres]);
+  curIdx=0; scores=[];
+  document.getElementById('score-final').style.display='none';
+  document.getElementById('exercice-zone').style.display='block';
+  afficherQuestion();
+}
+
+function afficherQuestion(){
+  const q = selection[curIdx];
+  const aide = curIdx < 5; // questions 1 à 5 : exemple + pronom donnés ; 6 à 10 : sans aide
+  document.getElementById('info-numero').textContent = `Question ${curIdx+1}/${NB}` + (aide ? ' — avec aide' : ' — sans aide');
+  document.getElementById('dots-progress').innerHTML =
+    selection.map((_,i)=>`<div class="dot" style="background:${i<curIdx?(scores[i]?'#16a34a':'#dc2626'):i===curIdx?'#ec4899':'#d1d5db'}"></div>`).join('');
+
+  const largeur = Math.max(6, ...q.r.map(r=>r.length)) + 3;
+  const input = `<input type="text" class="q-input" id="q-inp" style="width:${largeur}ch" placeholder="………"
+      autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+      onkeydown="if(event.key==='Enter') valider()"/>`;
+
+  document.getElementById('question-zone').innerHTML = `
+    <div class="question-card">
+      <div class="q-label">✏️ Impératif présent — Le verbe et son pronom</div>
+      <div class="q-consigne">${q.e==='pron'
+        ? (aide ? 'Donne l\'ordre, comme dans l\'exemple.' : 'Donne l\'ordre.')
+        : (aide ? 'Donne l\'ordre en remplaçant les mots soulignés par un pronom, comme dans l\'exemple.' : 'Donne l\'ordre en remplaçant les mots soulignés par le bon pronom.')}</div>
+      ${aide ? `<div class="q-exemple">Exemple : ${EXEMPLES[q.e]}</div>` : ''}
+      <div class="q-source"><span>${q.s}</span></div>
+      ${(aide && q.pr) ? `<div class="q-indices"><span class="q-pron">🔁 Utilise le pronom « ${q.pr} »</span></div>` : ''}
+      <div class="q-phrase"><span class="fleche">→</span>${q.t.replace('{}', input)}</div>
+      <div class="correction" id="correction"></div>
+      <div class="explication" id="explication">💡 ${EXPL[q.e]}</div>
+    </div>`;
+
+  document.getElementById('btn-valider').style.display='block';
+  document.getElementById('btn-suivant').style.display='none';
+  setTimeout(()=>{ document.getElementById('q-inp')?.focus(); }, 100);
+}
+
+function valider(){
+  const q = selection[curIdx];
+  const inp = document.getElementById('q-inp');
+  if(!inp || inp.disabled) return;
+  if(!inp.value.trim()){ inp.focus(); return; }
+  const val = normaliser(inp.value);
+  const acceptees = q.r.flatMap(r => variantesMajuscule(r, inp.value)).map(normaliser);
+  const ok = acceptees.includes(val);
+
+  inp.disabled = true;
+  inp.classList.add(ok ? 'correct' : 'incorrect');
+  scores.push(ok);
+
+  if(!ok){
+    const corr = document.getElementById('correction');
+    corr.style.display = 'block';
+    const alt = q.r.length > 1 ? ` (ou ${forme(q, q.r[1])})` : '';
+    corr.innerHTML = `La bonne réponse est : ${q.t.replace('{}', '<u>'+forme(q, q.r[0])+'</u>')}${alt}`;
+  }
+  document.getElementById('explication').style.display = 'block';
+
+  document.getElementById('btn-valider').style.display='none';
+  const isLast = curIdx >= NB-1;
+  const btn = document.getElementById('btn-suivant');
+  btn.style.display='block';
+  btn.textContent = isLast ? '🏁 Voir mon score final' : '➡️ Question suivante';
+  btn.onclick = isLast ? afficherScoreFinal : suivant;
+  setTimeout(()=>btn.focus(), 50);
+}
+
+function suivant(){ curIdx++; afficherQuestion(); }
+
+function afficherScoreFinal(){
+  document.getElementById('exercice-zone').style.display='none';
+  const sf=document.getElementById('score-final'); sf.style.display='block';
+  const ok=scores.filter(Boolean).length, total=scores.length;
+  const pct=Math.round(ok/total*100);
+  document.getElementById('final-emoji').textContent=pct===100?'🎉':pct>=60?'👍':'💪';
+  document.getElementById('final-score').textContent=`${ok}/${total} — ${pct}%`;
+  document.getElementById('final-score').style.color=pct===100?'#16a34a':pct>=60?'#f59e0b':'#dc2626';
+  document.getElementById('final-detail').innerHTML=scores.map((s,i)=>`Q${i+1} : ${s?'✅':'❌'}`).join('  ');
+  try {
+    if (window.parent && window.parent !== window && window.parent.saveResult) {
+      window.parent.saveResult({ activity:'conj_imperatif_pronoms', bookTitle:"Conjugaison — Impératif présent et pronoms",
+        score:ok, total, pct, date:new Date().toLocaleDateString('fr-BE'),
+        time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'}) });
+    }
+  } catch(e) { /* fiche ouverte hors du site */ }
+}
+
+demarrer();
+</script>
+<script src="../lcml_copyright.js"></script>
+</body>
+</html>

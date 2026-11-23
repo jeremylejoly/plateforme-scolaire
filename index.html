@@ -3984,6 +3984,7 @@ input[type=text].calc-input.incorrect {
       'conj_imperatif_qcm': "Exercice : Impératif présent (QCM)",
       'conj_imperatif_transfo': "Exercice : Impératif présent (Donne l'ordre)",
       'conj_imperatif_ou_pas': "Exercice : Impératif ou pas ?",
+      'conj_imperatif_pronoms': "Exercice : Impératif présent et pronoms",
       'conj_subj_imp': "Exercice : Subjonctif & Impératif",
       'conj_passe_simple': "Exercice : Passé simple (Lecture)",
       'screen-conj-passe-simple': "Exercice : Passé simple (Lecture)",
@@ -10249,6 +10250,26 @@ async function syncFromFirebase(){
         localStorage.setItem('lq_locked_activities_' + currentClass, JSON.stringify(locked));
         if (currentClass === 'lejoly') localStorage.setItem('lq_locked_activities', JSON.stringify(locked));
       }
+      // v8 (23/11/2026) : les 4 exercices de l'impératif présent sont masqués par défaut.
+      // On masque les exercices, pas la tuile : la tuile se cache seule quand ses 4 exercices le sont,
+      // et réapparait dès que l'enseignant en réactive un.
+      const IMPERATIF_NEW_IDS = ['conj_imperatif_qcm', 'conj_imperatif_transfo', 'conj_imperatif_ou_pas', 'conj_imperatif_pronoms'];
+      if (state.role === 'teacher' && !localStorage.getItem('lq_migrated_new_locked_v8_' + currentClass)) {
+        const currentArr = JSON.parse(localStorage.getItem('lq_locked_activities_' + currentClass) || JSON.stringify(locked));
+        const mergedArray = Array.from(new Set([...currentArr, ...IMPERATIF_NEW_IDS]));
+        localStorage.setItem('lq_locked_activities_' + currentClass, JSON.stringify(mergedArray));
+        if (currentClass === 'lejoly') localStorage.setItem('lq_locked_activities', JSON.stringify(mergedArray));
+        await window.FB_saveLockedActivities(currentClass, mergedArray);
+        localStorage.setItem('lq_migrated_new_locked_v8_' + currentClass, 'true');
+        console.log(`🛡️ Les exercices de l'impératif présent ont été masqués par défaut pour ${currentClass}.`);
+      } else {
+        if (state.role !== 'teacher' && !localStorage.getItem('lq_student_synced_v8_' + currentClass)) {
+          IMPERATIF_NEW_IDS.forEach(id => { if (!locked.includes(id)) locked.push(id); });
+          localStorage.setItem('lq_student_synced_v8_' + currentClass, 'true');
+        }
+        localStorage.setItem('lq_locked_activities_' + currentClass, JSON.stringify(locked));
+        if (currentClass === 'lejoly') localStorage.setItem('lq_locked_activities', JSON.stringify(locked));
+      }
     } else {
       // Pas encore dans Firebase → on pousse les valeurs locales
       const localLocked = getLockedActivities(currentClass);
@@ -11554,6 +11575,7 @@ const ACTIVITY_PARENTS = {
   'conj_imperatif_qcm': 'conj_imperatif',
   'conj_imperatif_transfo': 'conj_imperatif',
   'conj_imperatif_ou_pas': 'conj_imperatif',
+  'conj_imperatif_pronoms': 'conj_imperatif',
   'present': 'francais-conjugaison',
   'imparfait': 'francais-conjugaison',
   'futur': 'francais-conjugaison',
@@ -11970,7 +11992,7 @@ function _isActivityLockedImpl(id){
     return locked.includes('un_peu_de_tout') || (locked.includes('conj_tableau_3_temps') && locked.includes('conj_trois_temps_simples') && locked.includes('conj_repere_verbe'));
   }
   if (id === 'conj_imperatif') {
-    return locked.includes('conj_imperatif') || (locked.includes('conj_imperatif_qcm') && locked.includes('conj_imperatif_transfo') && locked.includes('conj_imperatif_ou_pas'));
+    return locked.includes('conj_imperatif') || (locked.includes('conj_imperatif_qcm') && locked.includes('conj_imperatif_transfo') && locked.includes('conj_imperatif_ou_pas') && locked.includes('conj_imperatif_pronoms'));
   }
   if (id === 'op_vocabulaire') {
     return locked.includes('op_vocabulaire') || (locked.includes('op_vocabulaire_def') && locked.includes('op_vocabulaire_calc') && locked.includes('op_vocabulaire_prob'));
@@ -12095,7 +12117,7 @@ function toggleActivity(id){
     'ortho_participe_passe': ['ortho_participe_accord', 'ortho_participe_texte', 'ortho_participe_infinitif', 'ortho_participe_seul', 'ortho_participe_etre', 'ortho_participe_avoir', 'ortho_participe_cdv'],
     'grandeur_perimetre_cercle': ['grandeur_perimetre_cercle_labo', 'grandeur_perimetre_cercle_inverse', 'grandeur_perimetre_cercle_compose'],
     'un_peu_de_tout': ['conj_tableau_3_temps', 'conj_trois_temps_simples', 'conj_repere_verbe'],
-    'conj_imperatif': ['conj_imperatif_qcm', 'conj_imperatif_transfo', 'conj_imperatif_ou_pas'],
+    'conj_imperatif': ['conj_imperatif_qcm', 'conj_imperatif_transfo', 'conj_imperatif_ou_pas', 'conj_imperatif_pronoms'],
     'op_vocabulaire': ['op_vocabulaire_def', 'op_vocabulaire_calc', 'op_vocabulaire_prob'],
     'td_la_moyenne_menu': ['td_moyenne', 'td_moyenne_qcm'],
     'solide_angles': ['angles_reconnaitre', 'angles_estimation', 'angles_mesurer', 'geometrie_angles_manquants'],
@@ -31845,6 +31867,7 @@ function renderConjImperatifMenu(){
     {id:'conj_imperatif_qcm', label:'1. Choisis la bonne forme (QCM)', icon:'❓', desc:'Choisir la forme correcte du verbe à l\'impératif présent. 56 phrases · Recommençable', action:"openFiche('conjugaison_imperatif_qcm.html', 'Impératif présent (QCM)', 'screen-conj-imperatif')"},
     {id:'conj_imperatif_transfo', label:'2. Donne l\'ordre (Écriture)', icon:'✍️', desc:'Transformer une phrase pour donner un ordre : écrire le verbe à l\'impératif présent. 52 phrases · Recommençable', action:"openFiche('conjugaison_imperatif_transfo.html', 'Impératif présent (Donne l\\'ordre)', 'screen-conj-imperatif')"},
     {id:'conj_imperatif_ou_pas', label:'3. Impératif ou pas ?', icon:'🧐', desc:'Reconnaitre l\'impératif ; sinon, trouver le temps du verbe (présent, imparfait, futur, passé composé). 72 phrases · Recommençable', action:"openFiche('conjugaison_imperatif_ou_pas.html', 'Impératif ou pas ?', 'screen-conj-imperatif')"},
+    {id:'conj_imperatif_pronoms', label:'4. Le verbe et son pronom (Écriture)', icon:'🔁', desc:'Donner l\'ordre avec un pronom : lève-toi, vas-y, prends-en, range-la, aide-moi… 59 phrases · Recommençable', action:"openFiche('conjugaison_imperatif_pronoms.html', 'Impératif présent et pronoms', 'screen-conj-imperatif')"},
   ];
   let html = '';
   items.forEach(t => {
@@ -34358,6 +34381,7 @@ const PLAN_CATALOGUE = [
     { id:'conj_imperatif_qcm', label:'Impératif présent (QCM)', icon:'❓', screen:'screen-conj-imperatif', fn:"() => openFiche('conjugaison_imperatif_qcm.html', 'Impératif présent (QCM)', 'screen-conj-imperatif')" },
     { id:'conj_imperatif_transfo', label:'Impératif présent (Donne l\'ordre)', icon:'✍️', screen:'screen-conj-imperatif', fn:"() => openFiche('conjugaison_imperatif_transfo.html', 'Impératif présent (Donne l\\'ordre)', 'screen-conj-imperatif')" },
     { id:'conj_imperatif_ou_pas', label:'Impératif ou pas ?', icon:'🧐', screen:'screen-conj-imperatif', fn:"() => openFiche('conjugaison_imperatif_ou_pas.html', 'Impératif ou pas ?', 'screen-conj-imperatif')" },
+    { id:'conj_imperatif_pronoms', label:'Impératif présent et pronoms', icon:'🔁', screen:'screen-conj-imperatif', fn:"() => openFiche('conjugaison_imperatif_pronoms.html', 'Impératif présent et pronoms', 'screen-conj-imperatif')" },
   ]},
   { cat: '📖 Français', sub: '🔀 Conjugaison — Un peu de tout', items: [
     { id:'conj_present_qcm', label:'Présent de l\'indicatif (QCM)', icon:'❓', screen:'screen-vocabulaire', fn:"() => openFiche('conjugaison_present_QCM.html', 'Présent de l\\'indicatif (QCM)', 'screen-plan-travail-student')" },
