@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<!-- © 2026 Jérémy Lejoly — LCML. Reproduction interdite sans autorisation. -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Conjugaison — Impératif ou pas ?</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: #f5f6fa; padding: 1.5rem; }
+.container { max-width: 680px; margin: 0 auto; }
+.info-card { background:#fce7f3;border:1px solid #ec4899;border-radius:12px;padding:.8rem 1rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center; }
+.info-card p { font-size:13px;color:#9d174d;font-weight:700;margin:0; }
+.dots { display:flex;gap:6px; }
+.dot { width:12px;height:12px;border-radius:50%; }
+.question-card { background:white;border-radius:16px;padding:1.75rem 1.5rem;margin-bottom:1.25rem;box-shadow:0 2px 8px rgba(0,0,0,.08);border:2px solid #e5e7eb; }
+.q-label { font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#9ca3af;margin-bottom:.75rem;text-align:center; }
+.q-phrase { font-size:19px;font-weight:800;color:#1e1b4b;margin-bottom:1.25rem;text-align:center;line-height:1.6; }
+.q-phrase b { color:#ec4899;background:#fce7f3;border-radius:6px;padding:0 5px; }
+.q-question { font-size:14px;font-weight:800;color:#4b5563;text-align:center;margin-bottom:.75rem; }
+.choix-2 { display:grid;grid-template-columns:1fr 1fr;gap:10px; }
+.choix-4 { display:grid;grid-template-columns:1fr 1fr;gap:8px; }
+.etape2 { display:none;margin-top:1.25rem;padding-top:1.25rem;border-top:2px dashed #fbcfe8; }
+.opt-btn { padding:12px 16px;border-radius:12px;border:2px solid #e5e7eb;background:white;font-size:15px;font-weight:800;color:#374151;cursor:pointer;text-align:center;font-family:'Nunito',sans-serif;transition:all .15s; }
+.opt-btn:hover:not(:disabled) { border-color:#ec4899;background:#fce7f3;color:#9d174d; }
+.opt-btn.correct { border-color:#16a34a;background:#f0fdf4;color:#166534; }
+.opt-btn.incorrect { border-color:#dc2626;background:#fff5f5;color:#991b1b; }
+.opt-btn.disabled-neutral { border-color:#e5e7eb;color:#9ca3af; }
+.opt-btn:disabled { cursor:default; }
+.explication { display:none;margin-top:1rem;padding:.75rem 1rem;border-radius:12px;background:#f9fafb;border:1px solid #e5e7eb;font-size:14px;font-weight:700;color:#4b5563;line-height:1.5; }
+.explication b { color:#9d174d; }
+.btn { width:100%;padding:12px;background:#ec4899;color:white;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:background .2s;margin-bottom:.75rem; }
+.btn:hover { background:#db2777; }
+.score-final { display:none;text-align:center;padding:2rem;background:white;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,.1); }
+.big-emoji { font-size:64px;margin-bottom:.5rem; }
+.big-score { font-size:36px;font-weight:900;margin-bottom:1rem; }
+.score-detail { font-size:13px;color:#6b7280;margin-bottom:1.5rem;line-height:2; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="exercice-zone">
+    <div class="info-card">
+      <p id="info-numero">Question 1/10</p>
+      <div class="dots" id="dots-progress"></div>
+    </div>
+    <div id="question-zone"></div>
+    <button class="btn" id="btn-suivant" style="display:none" onclick="suivant()">➡️ Question suivante</button>
+  </div>
+  <div class="score-final" id="score-final">
+    <div class="big-emoji" id="final-emoji">🎉</div>
+    <div class="big-score" id="final-score"></div>
+    <div class="score-detail" id="final-detail"></div>
+    <button class="btn" onclick="demarrer()">🔄 Recommencer</button>
+  </div>
+</div>
+<script>
+// t : imp (impératif), pres, imparf, futur, pc — s : sujet du verbe (phrases qui ne sont pas à l'impératif)
+const QUESTIONS = [
+  // ===== Impératif =====
+  { p:"<b>Range</b> ta chambre.", t:"imp" },
+  { p:"<b>Finis</b> ton assiette.", t:"imp" },
+  { p:"<b>Rangez</b> vos affaires.", t:"imp" },
+  { p:"<b>Mange</b> ta soupe !", t:"imp" },
+  { p:"<b>Partons</b> tôt demain.", t:"imp" },
+  { p:"<b>Écoute</b> bien la consigne.", t:"imp" },
+  { p:"<b>Prends</b> ton manteau.", t:"imp" },
+  { p:"<b>Faites</b> attention en traversant.", t:"imp" },
+  { p:"<b>Sois</b> sage chez mamie.", t:"imp" },
+  { p:"<b>Ayez</b> confiance en vous.", t:"imp" },
+  { p:"<b>Va</b> chercher le pain.", t:"imp" },
+  { p:"N'<b>oublie</b> pas ton cartable.", t:"imp" },
+  { p:"Ne <b>cours</b> pas dans le couloir.", t:"imp" },
+  { p:"<b>Dites</b> bonjour à la dame.", t:"imp" },
+  { p:"<b>Choisissez</b> un livre dans la bibliothèque.", t:"imp" },
+  { p:"<b>Ouvre</b> la fenêtre, s'il te plait.", t:"imp" },
+  { p:"<b>Chantons</b> tous ensemble !", t:"imp" },
+  { p:"<b>Sache</b> que je compte sur toi.", t:"imp" },
+  { p:"<b>Attends</b> ton tour.", t:"imp" },
+  { p:"<b>Lis</b> cette histoire à ta sœur.", t:"imp" },
+  { p:"<b>Appelle</b> ton frère pour le repas.", t:"imp" },
+  { p:"<b>Viens</b> ici tout de suite !", t:"imp" },
+  { p:"Ne <b>touchez</b> pas à ce bouton.", t:"imp" },
+  { p:"<b>Écrivez</b> votre prénom en haut de la feuille.", t:"imp" },
+  { p:"<b>Jouons</b> dehors cet après-midi.", t:"imp" },
+  { p:"<b>Offre</b> ce dessin à ta maman.", t:"imp" },
+  // Impératif avec pronom
+  { p:"<b>Lève-toi</b>, il est tard !", t:"imp", pron:true },
+  { p:"<b>Lavez-vous</b> les mains avant de manger.", t:"imp", pron:true },
+  { p:"<b>Dépêchons-nous</b>, le bus arrive.", t:"imp", pron:true },
+  { p:"<b>Vas-y</b>, tu vas réussir !", t:"imp", pron:true },
+  { p:"<b>Prends-en</b> un deuxième.", t:"imp", pron:true },
+  { p:"<b>Assieds-toi</b> près de moi.", t:"imp", pron:true },
+
+  // ===== Indicatif présent =====
+  { p:"Tu <b>ranges</b> ta chambre.", t:"pres", s:"tu" },
+  { p:"Je <b>finis</b> mon assiette.", t:"pres", s:"je" },
+  { p:"Vous <b>rangez</b> vos affaires.", t:"pres", s:"vous" },
+  { p:"Il <b>mange</b> sa soupe.", t:"pres", s:"il" },
+  { p:"Nous <b>partons</b> tôt demain.", t:"pres", s:"nous" },
+  { p:"Tu <b>écoutes</b> bien la consigne.", t:"pres", s:"tu" },
+  { p:"Tu <b>prends</b> ton manteau !", t:"pres", s:"tu" },
+  { p:"Vous <b>faites</b> attention en traversant.", t:"pres", s:"vous" },
+  { p:"Tu <b>es</b> sage chez mamie.", t:"pres", s:"tu" },
+  { p:"Vous <b>avez</b> confiance en vous.", t:"pres", s:"vous" },
+  { p:"Tu <b>vas</b> chercher le pain.", t:"pres", s:"tu" },
+  { p:"Tu n'<b>oublies</b> pas ton cartable.", t:"pres", s:"tu" },
+  { p:"Nous ne <b>courons</b> pas dans le couloir.", t:"pres", s:"nous" },
+  { p:"Tu te <b>lèves</b> tôt.", t:"pres", s:"tu" },
+  { p:"Vous vous <b>lavez</b> les mains avant de manger.", t:"pres", s:"vous" },
+  { p:"Nous nous <b>dépêchons</b>, le bus arrive.", t:"pres", s:"nous" },
+  { p:"Elle <b>dit</b> bonjour à la dame.", t:"pres", s:"elle" },
+  { p:"Les élèves <b>choisissent</b> un livre.", t:"pres", s:"les élèves" },
+  { p:"Nous <b>chantons</b> tous ensemble !", t:"pres", s:"nous" },
+  { p:"Tu <b>attends</b> ton tour.", t:"pres", s:"tu" },
+  { p:"Mon frère <b>lit</b> une histoire.", t:"pres", s:"mon frère" },
+  { p:"Tu <b>viens</b> ici tout de suite !", t:"pres", s:"tu" },
+
+  // ===== Indicatif imparfait =====
+  { p:"Tu <b>rangeais</b> ta chambre chaque samedi.", t:"imparf", s:"tu" },
+  { p:"Nous <b>jouions</b> dehors tout l'après-midi.", t:"imparf", s:"nous" },
+  { p:"Il <b>finissait</b> toujours son assiette.", t:"imparf", s:"il" },
+  { p:"Vous <b>étiez</b> sages chez mamie.", t:"imparf", s:"vous" },
+  { p:"Je <b>lisais</b> une histoire à ma sœur.", t:"imparf", s:"je" },
+  { p:"Les enfants <b>couraient</b> dans le couloir.", t:"imparf", s:"les enfants" },
+
+  // ===== Indicatif futur simple =====
+  { p:"Tu <b>rangeras</b> ta chambre demain.", t:"futur", s:"tu" },
+  { p:"Nous <b>partirons</b> tôt demain.", t:"futur", s:"nous" },
+  { p:"Vous <b>ferez</b> attention en traversant.", t:"futur", s:"vous" },
+  { p:"Je <b>viendrai</b> te voir demain.", t:"futur", s:"je" },
+  { p:"Elle <b>sera</b> sage chez mamie.", t:"futur", s:"elle" },
+  { p:"Ils <b>écriront</b> leur prénom en haut de la feuille.", t:"futur", s:"ils" },
+
+  // ===== Indicatif passé composé =====
+  { p:"Tu <b>as rangé</b> ta chambre.", t:"pc", s:"tu" },
+  { p:"Nous <b>avons chanté</b> tous ensemble.", t:"pc", s:"nous" },
+  { p:"Il <b>est parti</b> tôt ce matin.", t:"pc", s:"il" },
+  { p:"Vous <b>avez fini</b> votre assiette.", t:"pc", s:"vous" },
+  { p:"Je <b>suis allé</b> chercher le pain.", t:"pc", s:"je" },
+  { p:"Elles se <b>sont levées</b> tôt.", t:"pc", s:"elles" },
+];
+
+const TEMPS = [
+  { id:'pres',   label:'Indicatif présent' },
+  { id:'imparf', label:'Indicatif imparfait' },
+  { id:'futur',  label:'Indicatif futur simple' },
+  { id:'pc',     label:'Indicatif passé composé' },
+];
+const INDICES = {
+  pres:  "Il est à l'<b>indicatif présent</b>.",
+  imparf:"Il est à l'<b>indicatif imparfait</b> (terminaisons -ais, -ait, -ions, -iez, -aient).",
+  futur: "Il est à l'<b>indicatif futur simple</b> (terminaisons -rai, -ras, -ra, -rons, -rez, -ront).",
+  pc:    "Il est à l'<b>indicatif passé composé</b> (auxiliaire <b>avoir</b> ou <b>être</b> + participe passé)."
+};
+function explication(q){
+  if(q.t==='imp'){
+    return "Il n'y a <b>pas de sujet</b> : le verbe donne un ordre ou un conseil → <b>impératif présent</b>."
+      + (q.pron ? " Le pronom placé <b>après</b> le verbe (toi, vous, nous, y, en) n'est pas un sujet." : "");
+  }
+  return `Le verbe a un sujet (<b>${q.s}</b>) : ce n'est pas l'impératif. ` + INDICES[q.t];
+}
+
+const NB = 10;
+function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+let selection=[], curIdx=0, scores=[];
+
+function demarrer(){
+  // 4 ou 5 phrases à l'impératif, le reste à d'autres temps (le présent domine dans la banque)
+  const nImp = 4 + Math.floor(Math.random()*2);
+  const imp = shuffle(QUESTIONS.filter(q=>q.t==='imp')).slice(0,nImp);
+  const autres = shuffle(QUESTIONS.filter(q=>q.t!=='imp')).slice(0,NB-nImp);
+  selection = shuffle([...imp, ...autres]);
+  curIdx=0; scores=[];
+  document.getElementById('score-final').style.display='none';
+  document.getElementById('exercice-zone').style.display='block';
+  afficherQuestion();
+}
+
+function afficherQuestion(){
+  const q = selection[curIdx];
+  document.getElementById('info-numero').textContent = `Question ${curIdx+1}/${NB}`;
+  document.getElementById('dots-progress').innerHTML =
+    selection.map((_,i)=>`<div class="dot" style="background:${i<curIdx?(scores[i]?'#16a34a':'#dc2626'):i===curIdx?'#ec4899':'#d1d5db'}"></div>`).join('');
+
+  document.getElementById('question-zone').innerHTML = `
+    <div class="question-card">
+      <div class="q-label">✏️ Impératif présent — Impératif ou pas ?</div>
+      <div class="q-phrase">${q.p}</div>
+      <div class="q-question">Le verbe en couleur est-il à l'impératif ?</div>
+      <div class="choix-2">
+        <button class="opt-btn" id="e1-imp" onclick="etape1(true)">❗ Impératif</button>
+        <button class="opt-btn" id="e1-pas" onclick="etape1(false)">✖️ Pas l'impératif</button>
+      </div>
+      <div class="etape2" id="etape2">
+        <div class="q-question">Alors, à quel temps est-il conjugué ?</div>
+        <div class="choix-4">
+          ${TEMPS.map(t=>`<button class="opt-btn" id="e2-${t.id}" onclick="etape2('${t.id}')">${t.label}</button>`).join('')}
+        </div>
+      </div>
+      <div class="explication" id="explication">💡 ${explication(q)}</div>
+    </div>`;
+  document.getElementById('btn-suivant').style.display='none';
+}
+
+function marquer(ids, bonId, choisiId){
+  ids.forEach(id=>{
+    const b=document.getElementById(id); b.disabled=true;
+    if(id===bonId) b.classList.add('correct');
+    else if(id===choisiId) b.classList.add('incorrect');
+    else b.classList.add('disabled-neutral');
+  });
+}
+
+function etape1(repImp){
+  const q = selection[curIdx];
+  const estImp = q.t==='imp';
+  marquer(['e1-imp','e1-pas'], estImp?'e1-imp':'e1-pas', repImp?'e1-imp':'e1-pas');
+  if(repImp !== estImp){
+    // Erreur : on montre aussi le bon temps quand la phrase n'est pas à l'impératif
+    if(!estImp){
+      document.getElementById('etape2').style.display='block';
+      marquer(TEMPS.map(t=>'e2-'+t.id), 'e2-'+q.t, null);
+    }
+    terminer(false);
+  } else if(estImp){
+    terminer(true);
+  } else {
+    document.getElementById('etape2').style.display='block';
+  }
+}
+
+function etape2(temps){
+  const q = selection[curIdx];
+  marquer(TEMPS.map(t=>'e2-'+t.id), 'e2-'+q.t, 'e2-'+temps);
+  terminer(temps===q.t);
+}
+
+function terminer(ok){
+  scores.push(ok);
+  document.getElementById('explication').style.display='block';
+  const isLast=curIdx>=NB-1;
+  const btn=document.getElementById('btn-suivant');
+  btn.style.display='block';
+  btn.textContent=isLast?'🏁 Voir mon score final':'➡️ Question suivante';
+  btn.onclick=isLast?afficherScoreFinal:suivant;
+}
+
+function suivant(){ curIdx++; afficherQuestion(); }
+
+function afficherScoreFinal(){
+  document.getElementById('exercice-zone').style.display='none';
+  const sf=document.getElementById('score-final'); sf.style.display='block';
+  const ok=scores.filter(Boolean).length, total=scores.length;
+  const pct=Math.round(ok/total*100);
+  document.getElementById('final-emoji').textContent=pct===100?'🎉':pct>=60?'👍':'💪';
+  document.getElementById('final-score').textContent=`${ok}/${total} — ${pct}%`;
+  document.getElementById('final-score').style.color=pct===100?'#16a34a':pct>=60?'#f59e0b':'#dc2626';
+  document.getElementById('final-detail').innerHTML=scores.map((s,i)=>`Q${i+1} : ${s?'✅':'❌'}`).join('  ');
+  try {
+    if (window.parent && window.parent !== window && window.parent.saveResult) {
+      window.parent.saveResult({ activity:'conj_imperatif_ou_pas', bookTitle:"Conjugaison — Impératif ou pas ?",
+        score:ok, total, pct, date:new Date().toLocaleDateString('fr-BE'),
+        time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'}) });
+    }
+  } catch(e) { /* fiche ouverte hors du site */ }
+}
+
+demarrer();
+</script>
+<script src="../lcml_copyright.js"></script>
+</body>
+</html>
