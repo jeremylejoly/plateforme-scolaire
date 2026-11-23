@@ -19596,7 +19596,1919 @@ window.LIVRES = [
         "explanation": "Seul le résumé B est correct. Le lancer du marteau redonne la joie de vivre à Timéo. Avec l'argent du musée, doublé par Monsieur Tournecot, une cage est construite dans le champ de Suzanna, juste avant que la famille d'Alexis ne reparte."
       }
     ]
+  },
+  {
+    "id": "en_voiture_simone",
+    "title": "En voiture Simone",
+    "series": "Récit Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Au début, pourquoi la mère dit-elle : « Chaque matin c'est la même histoire » ?",
+        "options": [
+          "Simone oublie chaque matin son sac de sport",
+          "Simone refuse chaque matin de déjeuner",
+          "Simone a beaucoup de mal à se lever le matin",
+          "Simone se dispute toujours avec son père"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "La mère appelle Simone à sept heures, sept heures cinq, sept heures et quart… Elle dit : « Il est impossible de la réveiller. »"
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que s'est-il passé pendant le cours de sport ?",
+        "options": [
+          "Simone s'est foulé la cheville en jouant au basket",
+          "Simone a gagné un match de boxe",
+          "Simone a reçu un ballon de foot sur la tête",
+          "Simone est tombée pendant un combat de boxe"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "En sport, la classe fait de la boxe. Simone tombe sur le tapis pendant un combat contre la boxeuse."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment l'automobiliste s'est-il occupé de Simone après l'accident ?",
+        "options": [
+          "Il l'a emmenée à l'hôpital dans sa propre voiture",
+          "Il l'a mise en position latérale de sécurité",
+          "Il lui a donné à boire et l'a réchauffée",
+          "Il est parti chercher un médecin en courant"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Il explique : « je l'ai simplement mise en position latérale de sécurité. J'ai pris des cours de secourisme. »"
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi le brancardier ne peut-il pas emmener Simone tout de suite ?",
+        "options": [
+          "Son ambulance est tombée en panne en chemin",
+          "Il ne trouve pas l'adresse de l'accident",
+          "Son brancard est encore en pièces détachées",
+          "La police lui interdit de toucher Simone"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "On lui livre des brancards « en kit », dans des sachets numérotés, et il n'a pas eu le temps de monter le sien."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qui le brancardier embarque-t-il finalement sur le brancard tout neuf ?",
+        "options": [
+          "Simone, encore évanouie sur la route",
+          "Le policier assommé par la boxeuse",
+          "Le journaliste giflé par la mère",
+          "L'automobiliste qui s'est évanoui"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "La boxeuse envoie un direct à la police, qui s'effondre. Le brancardier voit quelqu'un par terre et l'embarque : « Ce n'est pas moi Simone… »"
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que fait l'infirmière quand le sixième sens lui parle au nom de Simone ?",
+        "options": [
+          "Elle appelle vite le médecin",
+          "Elle s'enfuit en criant",
+          "Elle pose enfin la perfusion",
+          "Elle tombe dans les pommes"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Le sixième sens lui dit d'arrêter de tirer les paupières et de pincer la peau de Simone. L'infirmière regarde Simone et tombe dans les pommes."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que le père apporte-t-il à Simone à l'hôpital ?",
+        "options": [
+          "Un bouquet de fleurs et du chocolat",
+          "Un livre sur le tour du monde",
+          "Une photo de leurs voyages à deux",
+          "Une paire de chaussures de marche"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Il ouvre une boite à chaussures : ce sont des chaussures de marche, les mêmes que les siennes, pour qu'elle se remette debout."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qui est en réalité le « chef de gare » ?",
+        "options": [
+          "Un infirmier qui aide les malades à se réveiller",
+          "Le conducteur de l'Orient Express",
+          "Le père de Simone, qui travaille dans une gare de train",
+          "Un ami de la mère venu lui rendre visite"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Il se présente : « Je suis infirmier. Masseur kinésithérapeute et spécialiste en réanimation ». Il parle comme dans une gare : « Les voyageurs à destination de la salle de bains en voiture ! »"
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Simone et la boxeuse ne se parlaient plus depuis trois mois.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : la boxeuse le dit à la mère : « On ne se parle plus. Depuis trois mois. »"
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Le père de Simone a toujours vécu avec elle et sa mère.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : il est parti en pleine nuit quand Simone était petite, et il revient seulement à l'hôpital."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Le journaliste veut prendre des photos de l'accident.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : il demande « Je peux prendre des photos ? ». À la fin, il prend même une photo de groupe."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "À la fin, Jules dit à Simone qu'il l'aime.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : Jules lui tend les chaussures laissées par son père et dit « Simone… Je t'aime. » Simone tombe alors dans les pommes."
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Moi je ne peux pas fermer l'œil. » Que veut dire ici « fermer l'œil » ?",
+        "options": [
+          "Réussir à dormir",
+          "Cligner des yeux",
+          "Surveiller quelqu'un",
+          "Avoir mal aux yeux"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "La veilleuse 1 explique qu'elle ne dort ni le jour ni la nuit, et que les somnifères n'y font rien."
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Elle l'a échappé belle. » Que veut dire « l'a échappé belle » ?",
+        "options": [
+          "Elle s'est enfuie en courant le plus vite possible",
+          "Elle a évité de justesse un grand danger",
+          "Elle a eu beaucoup de chance au jeu",
+          "Elle a été punie très sévèrement"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Les veilleuses parlent de Simone : « Au moins elle n'est pas morte. » Elle a évité le pire."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Vous n'y allez pas de main morte ! » Que veut dire « vous n'y allez pas de main morte » ?",
+        "options": [
+          "Vous êtes très maladroite",
+          "Vous avez les mains glacées",
+          "Vous frappez très fort",
+          "Vous ne savez pas boxer"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Le brancardier le dit à la boxeuse, qui vient d'assommer la police d'un seul direct."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
+        "options": [
+          "Simone, une lycéenne qui a du mal à se lever le matin, tombe pendant un cours de boxe puis est renversée par une voiture en sortant du lycée. À l'hôpital, elle est dans le coma. Ses cinq sens, puis un sixième, essaient de la réveiller. Son père, parti depuis longtemps, revient et lui laisse des chaussures de marche. Avec l'aide du « chef de gare », un infirmier, Simone se réveille, se lève et marche. Jules lui avoue alors son amour.",
+          "Simone, une lycéenne qui a du mal à se lever le matin, tombe pendant un cours de boxe puis est renversée par une voiture en sortant du lycée. À l'hôpital, elle est dans le coma. Ses cinq sens, puis un sixième, essaient de la réveiller, sans succès. Son père, parti depuis longtemps, ne vient pas la voir. C'est le journaliste qui la réveille avec le flash de son appareil photo, et Simone décide de devenir boxeuse.",
+          "Simone, une lycéenne qui a du mal à se lever le matin, tombe pendant un cours de boxe puis est renversée par une voiture en sortant du lycée. À l'hôpital, elle est dans le coma. Ses cinq sens, puis un sixième, essaient de la réveiller. Son père, parti depuis longtemps, revient et lui laisse des chaussures de marche. Simone se réveille, mais elle quitte l'hôpital en cachette pour partir faire le tour du monde avec Jules."
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Seul le résumé A est correct. Le père revient avec des chaussures, le chef de gare (un infirmier) l'aide à se réveiller, elle marche, puis Jules lui dit « Je t'aime ». Le journaliste ne la réveille pas, et elle ne s'enfuit pas de l'hôpital."
+      }
+    ]
+  },
+  {
+    "id": "mission_eurovision",
+    "title": "Mission Eurovision",
+    "series": "Récit Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Aurélie arrive-t-elle à quitter l'école pour sa mission ?",
+        "options": [
+          "Elle s'enfuit par la fenêtre des toilettes",
+          "Elle avale une pilule qui la rend malade",
+          "Elle dit au professeur que sa mère l'attend",
+          "Elle fait semblant de s'évanouir en classe"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Vaisseau-Fantôme lui dit d'avaler une pilule bleue : elle est « malade comme un chien », va à l'infirmerie et on la renvoie chez elle."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que veulent faire les terroristes ?",
+        "options": [
+          "Mettre hors service les télés des grands pays d'Europe",
+          "Enlever les chanteurs gagnants du concours de chant",
+          "Faire exploser l'avion qui va à Lisbonne",
+          "Truquer les votes du concours par SMS"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Ils veulent faire sauter en même temps les émetteurs télé des grands pays d'Europe, pendant l'Eurovision, pour faire paniquer la population."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qui est l'agent Z-32 ?",
+        "options": [
+          "Le majordome du château de Vaisseau-Fantôme",
+          "Un chanteur du groupe français",
+          "Antoine, un garçon de l'école d'Aurélie",
+          "Le fils de Vaisseau-Fantôme"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Surprise au repas : l'agent Z-32, c'est Antoine, « le rouquin » de son école, avec qui elle se dispute tout le temps."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel rôle Aurélie joue-t-elle dans la délégation lituanienne ?",
+        "options": [
+          "Elle est danseuse et choriste",
+          "Elle est la chanteuse principale",
+          "Elle maquille les artistes",
+          "Elle porte les caisses du décor"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Vaisseau-Fantôme l'explique : « vous serez danseuse et choriste, avec un joli costume de cosmogirl à paillettes »."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Dans l'avion, qu'est-ce qui rend louche l'homme qui reprend son sac ?",
+        "options": [
+          "Il téléphone en coréen pendant tout le voyage",
+          "Il a des pièces de monnaie de Corée du Nord",
+          "Il cache un détonateur dans son baladeur",
+          "Il porte un faux badge de l'Eurovision"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Antoine le bouscule exprès et ils ramassent ses affaires : les pièces sont des won, la monnaie de la Corée du Nord."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Antoine sauve-t-il Aurélie dans la ruelle de Lisbonne ?",
+        "options": [
+          "Il appelle la police portugaise à l'aide",
+          "Il fonce sur l'homme avec le taxi",
+          "Il fait sauter les lumières de la rue",
+          "Il assomme l'homme avec un casque de moto"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "« Bong » : Antoine, venu en mobylette, assomme le gros type avec un casque de moto, puis il emmène Aurélie."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Où la bombe est-elle cachée ?",
+        "options": [
+          "Dans un gâteau d'anniversaire géant",
+          "Dans la batterie en troncs d'arbre",
+          "Dans une valise du chanteur français",
+          "Sous le piano de la chanteuse suédoise"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Le groupe français prépare un gâteau géant pour l'anniversaire d'Ousmane. Aurélie et Antoine le trouvent suspendu au-dessus de la scène."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Antoine empêche-t-il la bombe de faire des dégâts ?",
+        "options": [
+          "Il emporte le gâteau et le jette dans le fleuve",
+          "Il provoque une panne de courant dans la salle",
+          "Il désamorce la bombe avec son détecteur",
+          "Il fait évacuer toute la salle par la police portugaise"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "La bombe ne peut abimer que du matériel en marche. Antoine jette sa mobylette dans la cabine à haute tension : tout s'éteint juste avant l'explosion."
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Avant la mission, Aurélie et Antoine s'entendaient très bien.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : ils se disputaient sans arrêt. Antoine l'a dénoncée à l'interro de géo, et Aurélie l'a poussé dans la piscine et a mis de la colle dans son dictionnaire."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Pendant la mission, le bilan de math est reporté.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : Vaisseau-Fantôme l'annonce au téléphone : le professeur avait de la matière en retard."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Pendant le concours, l'image disparait d'un coup sur les télévisions.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : chez elle, Mathilde voit l'image disparaitre. Le présentateur parle ensuite d'une panne de courant dans la salle."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Après la mission, Aurélie et Antoine restent une semaine en vacances à Lisbonne.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : ils ont seulement deux jours de repos. Aurélie aurait préféré une semaine."
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« On doit être rentrés pour le bilan de math, sinon ça va barder pour nous. » Que veut dire « ça va barder » ?",
+        "options": [
+          "On va beaucoup s'amuser",
+          "On va être en retard",
+          "On va rentrer en avion",
+          "On va avoir de gros ennuis"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "S'ils ratent le bilan de math, ils risquent d'être punis ou d'avoir de mauvaises notes."
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Bien joué, Antoine, là, tu m'en bouches un coin ! » Que veut dire « tu m'en bouches un coin » ?",
+        "options": [
+          "Tu me fais très peur",
+          "Tu m'énerves vraiment",
+          "Tu me caches quelque chose",
+          "Tu me surprends beaucoup"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Aurélie est étonnée : Antoine a reconnu Ousmane, le chanteur, et l'a bousculé exprès pour voir ce qu'il transportait."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Monte vite, Aurélie, il ne faut pas moisir ici. » Que veut dire « il ne faut pas moisir ici » ?",
+        "options": [
+          "Il ne faut pas salir cet endroit",
+          "Il ne faut pas avoir peur",
+          "Il ne faut pas rester ici",
+          "Il ne faut pas faire de bruit"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "L'homme au couteau est assommé, mais il faut partir vite avant qu'il se relève."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
+        "options": [
+          "Aurélie, 13 ans, est en réalité l'agent secret X-13. Son chef, Vaisseau-Fantôme, l'envoie à Lisbonne avec Antoine, l'agent Z-32, pour empêcher des terroristes de faire exploser une bombe pendant le concours Eurovision de la chanson. Aurélie danse avec le groupe lituanien et Antoine se fait passer pour un technicien. Ils découvrent que la bombe est cachée dans un gâteau géant. Aurélie le mange en entier sur scène, et le groupe lituanien gagne le concours.",
+          "Aurélie, 13 ans, est en réalité l'agent secret X-13. Son chef, Vaisseau-Fantôme, l'envoie à Lisbonne avec Antoine, l'agent Z-32, pour empêcher des terroristes de faire exploser une bombe pendant le concours Eurovision de la chanson. Aurélie danse avec le groupe lituanien et Antoine se fait passer pour un technicien. Ils cherchent la bombe partout, sans la trouver. Elle explose pendant la chanson suédoise, et le concours est annulé.",
+          "Aurélie, 13 ans, est en réalité l'agent secret X-13. Son chef, Vaisseau-Fantôme, l'envoie à Lisbonne avec Antoine, l'agent Z-32, pour empêcher des terroristes de faire exploser une bombe pendant le concours Eurovision de la chanson. Aurélie danse avec le groupe lituanien et Antoine se fait passer pour un technicien. Ils découvrent que la bombe est cachée dans un gâteau géant. Antoine provoque une panne de courant juste avant l'explosion : la bombe ne peut plus abimer les caméras."
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Seul le résumé C est correct. La bombe était dans le gâteau, et la panne de courant provoquée par Antoine a protégé le matériel de télévision. Aurélie ne mange pas le gâteau, et le concours n'est pas annulé : il reprend après la panne."
+      }
+    ]
+  },
+  {
+    "id": "maitre_des_chiens",
+    "title": "Le maitre des chiens",
+    "series": "Récit Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Achima roule-t-elle au fond du ravin ?",
+        "options": [
+          "Un brigand lui arrache son sac et retire sa main tendue",
+          "Elle glisse en voulant cueillir des baies sauvages",
+          "Elle saute pour échapper à un dragon",
+          "Le cochon la renverse en fonçant sur elle"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Le bossu arrache son sac, lui tend la main au moment où elle va tomber, puis la retire : « Bon séjour en enfer ! »"
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que fait Achima quand le cochon fonce sur elle ?",
+        "options": [
+          "Elle se couche par terre",
+          "Elle grimpe en haut d'un arbre",
+          "Elle lui lance des pierres",
+          "Elle s'enfuit dans le ruisseau"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "« Achima devrait fuir. Elle choisit de se coucher par terre. » Le cochon s'arrête net, vient la renifler, et ils deviennent amis."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Achima veut-elle aller chez maitre Yué ?",
+        "options": [
+          "Elle veut y retrouver Daba et son chien Tsah",
+          "Elle veut y travailler comme plumeuse",
+          "Elle veut le jeune ming-ming né en décembre",
+          "Elle cherche un abri contre les brigands"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Maitre Yué a créé la race des ming-ming. Un petit est né en décembre : « Je veux ce chiot ! Je le veux pour compagnon »."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qui est Tsah ?",
+        "options": [
+          "Le cochon qui accompagne Achima",
+          "Le faucon de jade du temple",
+          "Le serviteur de maitre Yué",
+          "Le chien ming-ming du jeune Daba"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Au marché, Daba fait des tours avec Tsah, un ming-ming que maitre Yué lui a offert : « Tsah est mon frère et je suis le sien »."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Achima arrive-t-elle sur l'ile de maitre Yué ?",
+        "options": [
+          "Un passeur accepte enfin de l'emmener",
+          "La vieille Ama l'emmène dans sa barque",
+          "Elle traverse le lac sur un radeau de roseaux",
+          "Maitre Yué envoie Siun la chercher"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Les passeurs la chassent à coups de cailloux. Le lendemain matin, la vieille pêcheuse lui dit : « Allez, monte ! Je vais te conduire dans l'île. »"
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Achima s'y prend-elle pour être reçue par maitre Yué ?",
+        "options": [
+          "Elle escalade le mur de sa maison la nuit",
+          "Elle offre son Bouddha en cire au serviteur",
+          "Elle reste assise des jours devant sa maison",
+          "Elle se fait passer pour une servante du village"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Elle s'assoit en tailleur au milieu du chemin, décidée à rester jusqu'à ce qu'on la laisse entrer, même sans manger, même sous l'orage."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Après l'orage, pourquoi les gens de Ligu veulent-ils chasser Achima ?",
+        "options": [
+          "Ils l'accusent d'avoir volé des poules",
+          "Ils pensent qu'elle veut voler le chiot",
+          "Ils croient qu'elle a attiré la colère du ciel",
+          "Ils l'accusent d'avoir mordu un enfant"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Après les dégâts de la nuit, tous ont la même idée : « c'est elle qui avait attiré la colère du ciel, pas de doute ! »"
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment monsieur Fu essaie-t-il de tricher pendant la cérémonie ?",
+        "options": [
+          "Il promet de l'or au serviteur Siun",
+          "Il cache un jouet dans son éventail",
+          "Il pousse Achima pour la faire tomber devant tous",
+          "Il cache des dés de porc dans ses manches"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Il ouvre ses manches pour que l'odeur attire le chiot. Quand il laisse pendre ses bras, des petits cubes de porc tombent : il est chassé."
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Le cochon suit Achima jusqu'au village de Ligu.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : au bout du ravin, il se couche par terre. Achima comprend qu'il veut rester dans le gouffre, et ils se séparent après un long câlin."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Siun n'aime pas du tout les vagabonds et les mendiants.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : il éprouve un « vif dégoût » pour eux. Il change d'avis seulement sur Achima, une fois lavée : elle est jolie, gracieuse, et elle a de très bonnes manières."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Siun donne du parfum à Achima pour que le chiot la choisisse.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : il veut la débarrasser de l'odeur du cochon, car on pourrait croire qu'elle cherche à attirer le chiot avec ce fumet."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Pendant la cérémonie, Achima appelle le chiot avec des mots doux.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : les autres candidats roucoulent et font des promesses. Achima trouve cela ridicule : « Elle était la seule à garder le silence. »"
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Achima ne se laissa pas démonter ; elle frappa, appela encore et encore. » Que veut dire « ne se laissa pas démonter » ?",
+        "options": [
+          "Elle ne se fit pas mal",
+          "Elle ne se découragea pas",
+          "Elle ne bougea plus du tout",
+          "Elle ne voulut pas se fâcher"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "L'homme à lunettes lui ferme les volets au nez, mais elle continue à frapper et à appeler."
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Ils se sont donné le mot », pensa Achima. Que veut dire « ils se sont donné le mot » ?",
+        "options": [
+          "Ils se sont dit bonjour très poliment",
+          "Ils se sont mis d'accord en secret",
+          "Ils se sont disputés très fort",
+          "Ils ont appris un mot nouveau"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Le serviteur et les adultes de Ligu l'ignorent tous de la même façon : Achima pense qu'ils ont décidé ensemble de faire comme si elle n'existait pas."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Il décampa sans demander son reste. » Que veut dire « il décampa sans demander son reste » ?",
+        "options": [
+          "Il partit très vite sans rien dire",
+          "Il partit en réclamant tout son argent",
+          "Il resta pour se défendre",
+          "Il partit en oubliant sa monnaie"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Monsieur Fu, pris en train de tricher, « n'essaya pas de se défendre » et s'enfuit sous les huées."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
+        "options": [
+          "Achima, une orpheline de quinze ans, fait un long voyage à pied pour aller chez maitre Yué, un grand dresseur de chiens. Elle veut le jeune ming-ming né en décembre. Poussée dans un ravin par un brigand, elle se fait un ami : un cochon. À Ligu, tout le monde l'accueille avec joie et le maitre la reçoit dès le premier jour. Pendant la cérémonie, elle offre de l'or au chiot pour qu'il vienne vers elle.",
+          "Achima, une orpheline de quinze ans, fait un long voyage à pied pour aller chez maitre Yué, un grand dresseur de chiens. Elle veut le jeune ming-ming né en décembre. Poussée dans un ravin par un brigand, elle se fait un ami : un cochon. À Ligu, presque tout le monde la rejette, mais elle attend des jours devant la maison du maitre, même sous l'orage. Le maitre finit par l'accueillir. Pendant la cérémonie du choix, elle seule reste silencieuse.",
+          "Achima, une orpheline de quinze ans, fait un long voyage à pied pour aller chez maitre Yué, un grand dresseur de chiens. Elle veut le jeune ming-ming né en décembre. Poussée dans un ravin par un brigand, elle se fait un ami : un cochon. À Ligu, tout le monde la rejette. Découragée, elle repart dans le ravin avec le cochon avant la cérémonie, sans avoir jamais rencontré le maitre."
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Seul le résumé B est correct. Achima est rejetée, attend sous l'orage, puis le maitre la fait entrer. À la cérémonie, elle ne dit rien : c'est monsieur Fu qui promet de l'or, et Achima ne repart pas."
+      }
+    ]
+  },
+  {
+    "id": "vie_roman_fleuve",
+    "title": "La vie est un roman-fleuve",
+    "series": "Récit Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Au début, pourquoi Hugo se cache-t-il avec sa sœur ?",
+        "options": [
+          "Il veut observer les animaux de près",
+          "Il veut que Jean-Jacques reparte en Europe",
+          "Il s'est perdu et n'ose pas appeler",
+          "Il a peur de remonter dans la jeep"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Hugo déteste Jean-Jacques. Il imagine sa tête quand ils arriveront à pied à l'hôtel, puis son départ : « Retour vers l'Europe »."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qui est Jean-Jacques ?",
+        "options": [
+          "Le guide du safari dans le parc",
+          "Un serveur de l'hôtel Dragon's Lodge",
+          "Le nouveau copain de leur maman",
+          "L'oncle de Hugo et de Leila"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Le texte le dit : « Jean-Jacques, le nouveau copain de maman ». Leur papa est parti."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Hugo se blesse-t-il à la main ?",
+        "options": [
+          "En tombant sur un rocher pointu",
+          "En ouvrant son canif dans sa poche",
+          "En touchant une plante très piquante",
+          "En se faisant mordre par un singe"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Il veut ouvrir son canif sans le sortir de sa poche, au cas où l'animal attaquerait. La lame lui entaille le doigt."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que fait William Goldbury quand les enfants arrivent à la petite plage ?",
+        "options": [
+          "Il pêche au bord de la rivière",
+          "Il lit son journal dans un transat",
+          "Il prend des photos des animaux du parc",
+          "Il cherche un léopard avec James"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "« Allongé dans un transat ligné, un homme lit un journal. » Son majordome James sert ensuite le thé."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Goldbury lance-t-il un bout de bois dans la rivière ?",
+        "options": [
+          "Pour montrer aux enfants le chemin de l'hôtel",
+          "Pour savoir si l'eau est assez profonde",
+          "Pour faire fuir un animal caché tout près, dans les roseaux",
+          "Pour montrer que la vie continue, comme la rivière"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Il parle de sa sœur morte : « We come and we go. But the river goes on... » Les gens partent, mais la rivière continue de couler."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quand la rivière se sépare en deux, qu'est-ce qui inquiète Hugo ?",
+        "options": [
+          "Cette séparation n'est pas sur sa carte",
+          "Les deux bras de la rivière sont presque à sec",
+          "Un léopard boit au bord de l'eau",
+          "Leila refuse de marcher plus loin"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "« Cela ne correspond pas à ce qui est dessiné sur sa carte ! » Hugo choisit la droite, mais il pense ensuite s'être trompé."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qui lance des pierres sur les enfants ?",
+        "options": [
+          "Une bande de singes agressifs",
+          "Des chasseurs cachés dans le parc",
+          "Des enfants d'un village voisin",
+          "James, le majordome de Goldbury"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Hugo reconnait les cris : il les a entendus sur la vidéo du safari de Jean-Jacques. Ce sont des singes qui protègent leur territoire."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que découvrent les enfants dans la grotte ?",
+        "options": [
+          "Un vieux sac oublié par des touristes",
+          "Une famille de singes endormis au fond",
+          "Des dessins anciens sur les parois",
+          "Une petite source d'eau chaude"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "À la lumière du briquet, ils voient des dessins noirs et rouges : des mamans, des chasseurs, un homme étendu, une fête."
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Hugo a dessiné lui-même la carte qu'il utilise.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : « Hugo prend dans sa poche une carte qu'il a lui-même dessinée. » L'encre s'est effacée par endroits."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Dans la rivière, Hugo sauve Leila qui allait se noyer.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : c'est l'inverse. Le sac entraine Hugo vers le fond, et c'est Leila qui lui attrape le poignet."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Grâce au briquet de Jean-Jacques, les enfants ont de la lumière dans la grotte.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : après plusieurs essais, une flamme apparait. Hugo l'allume chaque fois que Leila sursaute, qu'ils entendent un bruit ou qu'il ne supporte plus le noir."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Les enfants rentrent à l'hôtel à pied le lendemain matin.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : un hélicoptère les repère et les ramène à l'hôtel, où leur mère et Jean-Jacques les attendent."
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Hugo fait contre mauvaise fortune bon cœur. Il lui donne la barre de chocolat. » Que veut dire « fait contre mauvaise fortune bon cœur » ?",
+        "options": [
+          "Se mettre très en colère contre sa sœur",
+          "Penser avoir beaucoup de chance",
+          "Accepter la situation sans se plaindre",
+          "Refuser de partager son chocolat"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Leila veut son chocolat tout de suite. Hugo aurait préféré attendre, mais il accepte et le lui donne."
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Son majordome tiré à quatre épingles » Que veut dire « tiré à quatre épingles » ?",
+        "options": [
+          "Couvert de piqûres d'insectes",
+          "Très maigre et très grand",
+          "Toujours pressé et nerveux",
+          "Habillé avec beaucoup de soin"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "James porte un costume noir, une chemise blanche et un nœud papillon, « comme pour une réception »."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Hugo allume son briquet à tout bout de champ. » Que veut dire « à tout bout de champ » ?",
+        "options": [
+          "Seulement au bout d'un champ",
+          "Avec beaucoup de difficulté",
+          "Très lentement, avec une grande prudence",
+          "Très souvent, à tout moment"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Il l'allume chaque fois que Leila sursaute, chaque fois qu'ils entendent un bruit, chaque fois qu'il ne supporte plus le noir."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
+        "options": [
+          "Pendant un safari en Afrique du Sud, Hugo entraine sa sœur Leila loin du groupe, pour se débarrasser de Jean-Jacques, le nouveau copain de leur mère. Les deux enfants se perdent. Ils rencontrent un Anglais qui les ramène en jeep jusqu'à l'hôtel avant la nuit. Jean-Jacques, fâché, reprend l'avion pour l'Europe, et Hugo est enfin content de rester seul avec sa mère et sa sœur.",
+          "Pendant un safari en Afrique du Sud, Hugo entraine sa sœur Leila loin du groupe, pour se débarrasser de Jean-Jacques, le nouveau copain de leur mère. Les deux enfants se perdent. Ils manquent de se noyer, sont attaqués par des singes et passent la nuit dans une grotte. Le lendemain, ils retrouvent seuls le chemin de l'hôtel, mais Hugo refuse toujours de parler à Jean-Jacques.",
+          "Pendant un safari en Afrique du Sud, Hugo entraine sa sœur Leila loin du groupe, pour se débarrasser de Jean-Jacques, le nouveau copain de leur mère. Les deux enfants se perdent. Ils rencontrent un Anglais qui compare la vie à une rivière, manquent de se noyer, sont attaqués par des singes et passent la nuit dans une grotte. Un hélicoptère les retrouve, et Hugo rend son briquet à Jean-Jacques."
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Seul le résumé C est correct. Ils passent la nuit dans la grotte et sont retrouvés par un hélicoptère. À la fin, Hugo rend le briquet à Jean-Jacques et lui dit qu'il les a peut-être sauvés : il commence à l'accepter."
+      }
+    ]
+  },
+  {
+    "id": "tarak_brouillards",
+    "title": "Tarak et le peuple des Brouillards",
+    "series": "Récit Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi les membres de son clan gardaient-ils Tarak un peu à l'écart ?",
+        "options": [
+          "Il refusait de partir à la chasse avec eux",
+          "Il avait volé la nourriture des anciens",
+          "Il venait d'un autre clan, plus lointain",
+          "Ses pouvoirs étranges leur faisaient peur"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Il guérit avec les plantes, colore le feu, anime ses dessins… Les siens, « plus inquiets qu'autre chose, le tenaient toujours un peu à distance »."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Dans quel état est Loula quand Tarak la trouve ?",
+        "options": [
+          "Épuisée, les pieds en sang",
+          "Assise près d'un feu, en train de manger",
+          "Blessée par une flèche à l'épaule",
+          "Prisonnière d'un piège à loup"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Elle gémit, couchée dans les fleurs. « Ses pieds étaient en sang, témoignant d'une longue course. »"
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi le peuple des Brouillards n'a-t-il pas le droit de sortir de sa gorge ?",
+        "options": [
+          "La gorge est entourée de bêtes sauvages",
+          "Leur propre chef l'a toujours interdit",
+          "Une coulée de lave bloque la sortie",
+          "Les guerriers croient que cela fâche le soleil"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Les guerriers des plateaux pensent que, si quelqu'un sort de la gorge, le soleil se voile, le ciel s'assombrit et parfois même un orage éclate. Tarak trouve cette croyance idiote."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que montrent les dessins que Tarak anime pour la première fois devant Loula ?",
+        "options": [
+          "Tarak gagne facilement son combat contre le chef",
+          "Le soleil disparait derrière les nuages",
+          "Le chef des guerriers jette Tarak dans le vide",
+          "Loula s'enfuit seule vers les montagnes"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Sur la paroi, Tarak défie le chef. Le guerrier le soulève « ET LE PRÉCIPITA DANS LE VIDE ». Tarak décide alors d'agir autrement."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que fabrique Tarak pendant que Loula dort ?",
+        "options": [
+          "Une cabane solide pour passer la nuit",
+          "Un radeau pour traverser la rivière",
+          "Des armes pour les hommes du clan de Loula",
+          "Des pièges pour attraper des loups"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Il fabrique un arc, des flèches, quatre lances et huit couteaux. Il pense aux hommes du clan de Loula : « Il risquait d'avoir besoin d'eux. »"
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Tarak se présente-t-il aux guerriers des plateaux ?",
+        "options": [
+          "Comme un ami d'Amok",
+          "Comme le fils du Soleil",
+          "Comme un sorcier de la forêt",
+          "Comme le frère de Loula"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Debout sur le grand rocher, le soleil dans le dos, il répond : « Je suis Tarak, le fils du Soleil ! »"
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Tarak impressionne-t-il les guerriers autour du feu ?",
+        "options": [
+          "Il fait jaillir le feu de ses mains",
+          "Il éteint le feu d'un seul regard",
+          "Il change la couleur des flammes",
+          "Il fait tomber la pluie sur le plateau"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Il lance quelque chose dans le feu (sans doute ses herbes secrètes) : les flammes deviennent bleues, puis rouges et grises. Presque tous les guerriers paniquent."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Amok décide-t-il que Tarak n'est pas le fils du Soleil ?",
+        "options": [
+          "Parce que Tarak ne sait pas tirer à l'arc",
+          "Parce que Tarak saigne quand la lance le touche",
+          "Parce que le soleil se cache derrière un nuage",
+          "Parce que Tarak a peur de la gueule du loup"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "La lance d'Amok lui effleure le bras. « Tarak saigne, hurla Amok, donc il n'est pas le fils du Soleil. Attrapez-le ! »"
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Avant de rencontrer Tarak, le peuple de Loula ne savait pas bien préparer la viande.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : Loula le dit : « mon clan ne sait pas préparer la viande comme tu le fais… Pourras-tu m'apprendre, Tarak ? »"
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Les guerriers des plateaux connaissaient bien les arcs et les flèches.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : quand Tarak tire une flèche, ils sont stupéfaits : « personne n'avait jamais vu un arc »."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "À la fin, c'est le peuple de Loula qui sauve Tarak des guerriers.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : Tarak, blessé, attend la mort. Le peuple des Brouillards charge en criant, Loula en tête, et les guerriers s'enfuient."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Les longues feuilles étroites aident les plaies à se refermer.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : Tarak les enroule autour des pieds de Loula, puis de ses propres genoux. Elles « referment les plaies »."
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Tarak haussa les épaules. Tant de bêtise l'anéantissait. » Que veut dire ici « l'anéantissait » ?",
+        "options": [
+          "Le faisait beaucoup rire",
+          "Le rendait très courageux",
+          "Le rendait très fier",
+          "Le désolait profondément"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Tarak est accablé par la croyance idiote des guerriers, qui fait souffrir tout un peuple. Il hausse les épaules parce que cette bêtise le dépasse, pas parce qu'elle lui est égale."
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Se retrouver face à une vingtaine de puissants guerriers vindicatifs n'était certes pas une mince affaire. » Que veut dire « pas une mince affaire » ?",
+        "options": [
+          "Ce n'était pas facile du tout",
+          "Ce n'était pas une affaire d'argent",
+          "Ce n'était pas très important",
+          "Ce n'était pas un long voyage"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Face à une vingtaine de guerriers, Tarak sait que ce sera très difficile et dangereux."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Ton peuple m'a sauvé, Loula. Nous sommes quittes. » Que veut dire « nous sommes quittes » ?",
+        "options": [
+          "Nous ne nous devons plus rien",
+          "Nous devons nous séparer",
+          "Nous sommes enfin arrivés",
+          "Nous sommes de la même famille"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Tarak a sauvé le peuple de Loula, et le peuple l'a sauvé à son tour : personne ne doit rien à l'autre."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
+        "options": [
+          "Tarak, un jeune chasseur préhistorique aux pouvoirs étranges, a perdu tout son clan. Il trouve Loula, épuisée, et la soigne. Elle appartient au peuple des Brouillards, enfermé dans une gorge humide par les guerriers des plateaux. Tarak défie Amok, le chef des guerriers, et le bat facilement en combat. Les guerriers deviennent ses amis et aident le peuple de Loula à vivre au soleil. Tarak devient alors le nouveau chef des guerriers des plateaux.",
+          "Tarak, un jeune chasseur préhistorique aux pouvoirs étranges, a perdu tout son clan. Il trouve Loula, épuisée, et la soigne. Elle appartient au peuple des Brouillards, enfermé dans une gorge humide par les guerriers des plateaux. Tarak se présente aux guerriers comme le fils du Soleil et les impressionne en changeant la couleur des flammes. Blessé et poursuivi, il est sauvé par le peuple de Loula, qui a fui la gorge. Libres, ils partent sous le soleil, et Tarak reste avec Loula.",
+          "Tarak, un jeune chasseur préhistorique aux pouvoirs étranges, a perdu tout son clan. Il trouve Loula, épuisée, et la soigne. Elle appartient au peuple des Brouillards, enfermé dans une gorge humide par les guerriers des plateaux. Tarak se présente comme le fils du Soleil, mais Amok le jette dans le vide, comme sur les dessins. Loula, triste, retourne dans la gorge avec son peuple, qui reste prisonnier des brouillards et des guerriers."
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Seul le résumé B est correct. Tarak ne se bat pas contre Amok : il ruse avec le soleil et le feu. Il ne meurt pas : le peuple de Loula le sauve, puis tout le monde part, libre, sous le soleil."
+      }
+    ]
+  },
+  {
+    "id": "enquete_haute_mer",
+    "title": "Enquête en haute mer",
+    "series": "Récit Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi James part-il en France ?",
+        "options": [
+          "Pour perfectionner son français à Paris",
+          "Pour rejoindre ses parents en vacances",
+          "Pour apprendre le métier de marin",
+          "Pour assister au spectacle d'Oliver"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Ses parents l'envoient quelques semaines chez une cousine à Paris, « dans le seul but de perfectionner mon français »."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel est le métier d'Oliver ?",
+        "options": [
+          "Il vend des bijoux à Paris",
+          "Il joue au rugby au pays de Galles",
+          "Il travaille comme marin sur le bateau",
+          "Il fait des tours d'illusionniste"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Il fait apparaitre des rubans et une colombe : « Illusionniste plus exactement. » Il doit donner un spectacle à Paris."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qu'est-ce que le South Africa ?",
+        "options": [
+          "Le nom du bateau du capitaine",
+          "Une mallette pleine de billets",
+          "Un célèbre spectacle de magie",
+          "Un bijou qui vaut une fortune"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "C'est le bijou que monsieur Jefferson a offert à sa femme. Il vaut « pas moins de huit cent mille livres »."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi William Baker quitte-t-il le repas ?",
+        "options": [
+          "Il veut fumer un cigare sur le pont",
+          "Il a le mal de mer et se sent mal",
+          "Il se dispute avec le capitaine",
+          "Il a renversé du vin sur sa veste"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Il a « la mine défaite de celui qui se sent gagné par le mal de mer ». Le capitaine le raccompagne à sa cabine."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qu'est-ce qui fait comprendre à James que Baker n'est pas le voleur ?",
+        "options": [
+          "Le canot de sauvetage est toujours là",
+          "Baker a laissé une lettre d'adieu à James",
+          "Ses chaussures sont restées dans sa cabine",
+          "Le bijou est caché sous son lit"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Un voleur qui a tout préparé ne partirait pas sans ses chaussures à damiers. Baker n'est donc peut-être pas parti de son plein gré."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Dans la cabine, James trouve celui qu'il croit être Oliver, immobile. Que remarque-t-il sur son poignet ?",
+        "options": [
+          "La blessure a disparu",
+          "Il porte une montre en or",
+          "Il a une nouvelle coupure",
+          "Il est couvert de vin rouge"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Oliver s'était entaillé le poignet avec la poignée de sa malle. Ce poignet-là n'a pas de blessure. James comprendra plus tard que ce n'était pas Oliver, mais son jumeau."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle est la solution de l'énigme ?",
+        "options": [
+          "Oliver revient à la vie grâce à la magie",
+          "Oliver cachait à bord son frère jumeau",
+          "Baker et Oliver sont la même personne",
+          "Le capitaine a caché le bijou lui-même"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Un plus un égale un : Jack, le jumeau d'Oliver, partageait sa cabine. Ils sortaient chacun à leur tour, et personne ne voyait la différence."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Où le South Africa est-il caché à la fin ?",
+        "options": [
+          "Dans une bouche d'aération",
+          "Dans la malle d'Oliver",
+          "Dans le canot de sauvetage",
+          "Au fond de la mer, avec Jack"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Oliver le dit : « Il est caché dans une bouche d'aération. » Mrs Jefferson va pouvoir le revoir."
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "C'est la première fois que James prend le bateau.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : il vient d'une famille de marins irlandais, mais « c'était la première fois que je prenais le bateau »."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Le capitaine O'Connors a promis au père de James de veiller sur lui.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : il le rappelle à James : « N'oublie pas que j'ai promis à ton père de veiller sur toi. »"
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Oliver savait dès le départ que son frère allait voler le bijou.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : Jack a décidé de voler le bijou pendant le repas, quand on en a parlé. Oliver jure qu'il ne savait pas : Jack lui a avoué le vol le lendemain après-midi."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Jack était un homme doux, qui ne faisait de mal à personne.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : Oliver explique que Jack était violent. Il avait déjà tué un policier dans une bagarre, deux ans plus tôt."
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Il s'était efforcé de mettre les petits plats dans les grands. » Que veut dire « mettre les petits plats dans les grands » ?",
+        "options": [
+          "Servir de toutes petites portions",
+          "Préparer un repas avec beaucoup de soin",
+          "Ranger la vaisselle très vite",
+          "Manger dans de très grandes assiettes"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Pour ce premier repas, le capitaine a mis un superbe uniforme et préparé une table « des plus accueillantes »."
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Pendant quelques minutes, personne ne pipa mot. » Que veut dire « personne ne pipa mot » ?",
+        "options": [
+          "Personne ne fuma la pipe",
+          "Personne ne bougea plus",
+          "Personne ne dit un seul mot",
+          "Personne ne comprit rien"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Après le prix du bijou, tout le monde se tait. James observe les passagers en silence."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Je vais me faire remonter les bretelles », pense James. Que veut dire « me faire remonter les bretelles » ?",
+        "options": [
+          "Recevoir de l'aide",
+          "Devoir se rhabiller",
+          "Porter la malle tout seul",
+          "Recevoir des reproches"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "James a oublié la seconde malle d'Oliver sur le quai. Il s'attend à recevoir des reproches."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
+        "options": [
+          "James, un jeune Irlandais, traverse la mer vers la France sur le Early Bird. À bord, un riche passager transporte le South Africa, un bijou d'une valeur énorme. Pendant la nuit, le bijou disparait, ainsi que Baker et un canot de sauvetage. James retrouve Baker caché au fond de la cale, avec le bijou dans sa poche. Le jeune homme avoue qu'il voulait l'offrir à sa fiancée, et le capitaine le remet à la police dès l'arrivée en France.",
+          "James, un jeune Irlandais, traverse la mer vers la France sur le Early Bird. À bord, un riche passager transporte le South Africa, un bijou d'une valeur énorme. Pendant la nuit, le bijou disparait, ainsi que Baker et un canot de sauvetage. Grâce aux chaussures de Baker, James comprend que c'est le capitaine lui-même qui a caché le bijou dans sa cabine. Oliver l'aide à le prouver avec un tour de magie, et le capitaine est arrêté à Plymouth.",
+          "James, un jeune Irlandais, traverse la mer vers la France sur le Early Bird. À bord, un riche passager transporte le South Africa, un bijou d'une valeur énorme. Pendant la nuit, le bijou disparait, ainsi que Baker et un canot de sauvetage. Grâce aux chaussures restées dans la cabine de Baker, James comprend que Baker n'est pas le voleur. Il découvre que l'illusionniste Oliver cachait à bord son frère jumeau, Jack, qui a volé le bijou. Oliver avoue tout et dit où est caché le bijou."
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Seul le résumé C est correct. Baker n'était pas le voleur : c'est Jack, le jumeau caché d'Oliver. Le capitaine n'y est pour rien, et Baker n'est jamais retrouvé."
+      }
+    ]
+  },
+  {
+    "id": "maha_oiseau_pluie",
+    "title": "Maha, oiseau de pluie",
+    "series": "Récit Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que montre Bellesahi à Isa dans la grange ?",
+        "options": [
+          "Un vieux cheval presque aveugle",
+          "Un loup qu'elle a recueilli dans les bois",
+          "Un drôle d'oiseau maigre, aux plumes ternes",
+          "Une portée de petits chats affamés"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Dans la paille, Isa découvre une bête maigre, aux plumes ternes et sales. Elle croit d'abord que c'est une autruche : c'est Maha."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Sur l'ile de Bellesahi, que se passait-il quand Maha chantait ?",
+        "options": [
+          "Le volcan se réveillait en grondant",
+          "Les poissons revenaient près du rivage",
+          "Une pluie bienfaisante tombait",
+          "Les ennemis s'enfuyaient de l'ile"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "« Chaque fois que le chant de cet oiseau magique vibrait, une ondée bienfaisante arrosait plantes et fleurs. »"
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi le roi Orion fait-il enlever Maha ?",
+        "options": [
+          "Le chant de Maha l'empêche de dormir",
+          "Il veut vendre ses plumes d'or",
+          "Il veut le manger pendant une grande fête",
+          "Maha a prédit sa mort prochaine"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Orion fait la fête la nuit et se couche à l'aube, quand Maha chante. Il lui interdit de chanter, mais Maha refuse et dit que le vrai maitre du royaume, c'est lui."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Bellesahi apprend-elle où se trouve Maha ?",
+        "options": [
+          "Maha lui envoie une de ses plumes",
+          "Son père le lui révèle en grand secret",
+          "Elle suit les traces de l'oiseau",
+          "Elle entend parler les soldats du roi"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Alors qu'elle mène ses chèvres, elle se cache dans un fourré et entend un soldat dire : « Nous l'avons emmené sur l'île de Bahami. »"
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel conseil le sorcier Caliari donne-t-il à Bellesahi ?",
+        "options": [
+          "De bien viser l'œil droit",
+          "De ne jamais quitter son ile",
+          "D'emmener son fiancé avec elle",
+          "De chanter pour calmer la mer"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "« Quand le souffle brûlant de la mort sera sur toi, vise bien l'œil droit, l'œil droit seulement. »"
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Bellesahi réussit-elle à partir quand Noor veut l'en empêcher ?",
+        "options": [
+          "Elle lui promet de revenir le soir",
+          "Elle l'assomme d'un coup de pagaie",
+          "Elle s'enfuit à la nage, sous l'eau",
+          "Elle le vise avec son lance-pierre"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Noor veut la ramener de force. « Je lui assénai un bon coup de pagaie sur la tête. » Il tombe dans l'eau et elle prend le large."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qui garde Maha prisonnier sur l'ile de Bahami ?",
+        "options": [
+          "Un serpent géant et très venimeux",
+          "Un dragon de Komodo",
+          "Des pirates armés",
+          "Le roi Orion en personne"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Un « énorme et horrible dragon de Komodo » sort de la grotte. Bellesahi le tue d'une pierre dans l'œil droit."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Maha ne chante-t-il plus ?",
+        "options": [
+          "Il a bien trop froid en Angleterre",
+          "Il est devenu beaucoup trop vieux",
+          "Son cri face au dragon a brisé sa voix",
+          "Il est triste d'avoir perdu son ile"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Maha a poussé un long hurlement face au dragon, qui s'est arrêté net. Ensuite, « le long cri qu'il avait jeté face au dragon semblait avoir brisé sa voix »."
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Isa connaissait déjà bien sa grand-mère avant ces vacances.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : « Je la connaissais si peu » : c'est la première fois qu'Isa vient chez elle."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Noor est finalement devenu le mari de Bellesahi.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : Bellesahi le dit à Isa : « c'était ton grand-père ». Ils ont eu sept garçons."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Pendant la révolte, le roi Orion s'est enfui.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : « Pour épargner sa vie, ce lâche a préféré fuir... »"
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Isa doit faire seule le voyage du retour en avion.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : « Je devais faire seule le voyage du retour, comme une grande. »"
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Elle gambadait comme un cabri et j'avais beaucoup de mal à la suivre. » Que veut dire « elle gambadait comme un cabri » ?",
+        "options": [
+          "Elle sautillait avec agilité",
+          "Elle marchait bien trop lentement",
+          "Elle boitait en grimaçant",
+          "Elle criait comme une chèvre"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Un cabri est un petit de la chèvre. La grand-mère, pourtant très âgée, avance en sautant si vite qu'Isa a du mal à la suivre."
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Le dragon mort, je n'étais cependant pas au bout de mes peines. » Que veut dire « pas au bout de mes peines » ?",
+        "options": [
+          "Je n'avais plus mal du tout",
+          "J'étais triste de partir",
+          "Je n'avais plus rien à faire",
+          "J'avais encore des ennuis"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Maha est très faible, et Bellesahi n'a plus de pirogue pour rentrer."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "Bellesahi doit quitter l'ile « sans pirogue et à la barbe de son gardien ». Que veut dire « à la barbe de son gardien » ?",
+        "options": [
+          "En coupant toute la barbe du gardien",
+          "Sous les yeux du gardien, malgré lui",
+          "Avec l'aide de son gardien",
+          "En demandant la permission au gardien"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Faire quelque chose à la barbe de quelqu'un, c'est le faire sous ses yeux et malgré lui. Bellesahi devra partir avec Maha alors que le dragon garde l'ile."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
+        "options": [
+          "Isa passe ses vacances en Angleterre chez sa grand-mère Bellesahi, qui lui montre un oiseau misérable, Maha, et lui raconte son secret. Jeune, Bellesahi vivait sur une ile du Pacifique où Maha, l'oiseau sacré, faisait tomber la pluie. Le roi Orion l'avait fait enfermer sur une autre ile. Bellesahi l'a délivré et a tué le dragon qui le gardait. Un jour, Isa devra s'occuper de Maha.",
+          "Isa passe ses vacances en Angleterre chez sa grand-mère Bellesahi, qui lui montre un oiseau misérable, Maha, et lui raconte son secret. Jeune, Bellesahi vivait sur une ile du Pacifique où Maha, l'oiseau sacré, faisait tomber la pluie. Le roi Orion l'avait vendu à des marchands. Bellesahi l'a racheté avec l'or de son père, et l'oiseau a gardé sa voix magnifique.",
+          "Isa passe ses vacances en Angleterre chez sa grand-mère Bellesahi, qui lui montre un oiseau misérable, Maha, et lui raconte son secret. Jeune, Bellesahi vivait sur une ile du Pacifique où Maha, l'oiseau sacré, faisait tomber la pluie. Le roi Orion l'avait fait enfermer. Noor l'a délivré seul en tuant le dragon, puis il a offert Maha au roi pour épouser Bellesahi."
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Seul le résumé A est correct. C'est Bellesahi elle-même qui a tué le dragon avec son lance-pierre. Maha a perdu sa voix, et c'est Isa qui devra s'en occuper plus tard."
+      }
+    ]
+  },
+  {
+    "id": "motus_babouches",
+    "title": "Motus et babouches cousues",
+    "series": "Récit Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi le peuple a-t-il si peur d'Omar Pacha ?",
+        "options": [
+          "Il fait couper des têtes pour un rien",
+          "Il prend tout l'argent des pauvres",
+          "Il a une armée immense et cruelle",
+          "Il enferme les enfants dans son palais"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Un nez trop long, des oreilles trop petites… « Tout pouvait être prétexte à Omar Pacha pour vous faire trancher le col. »"
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel travail Omar Pacha confie-t-il à Ali quelques jours après son arrivée ?",
+        "options": [
+          "Garder la porte de sa chambre",
+          "S'occuper de sa garde-robe",
+          "Compter l'or du trésor royal",
+          "Devenir le nouveau bourreau"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Le Pacha renvoie l'homme chargé de sa garde-robe et fait venir Ali pour le remplacer. Personne n'envie sa place."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qu'arrive-t-il le matin du quatrième jour ?",
+        "options": [
+          "Les babouches du maitre ont disparu",
+          "Le maitre a perdu son miroir préféré",
+          "Le garde s'endort devant la porte",
+          "Le cuisinier a brûlé tous les gâteaux"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Omar Pacha a froid aux pieds. Ali avait posé les babouches au pied du lit la veille. Il regarde même sous le lit : elles ont disparu."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Omar Pacha ne fait-il pas couper la tête d'Ali tout de suite ?",
+        "options": [
+          "Les jeux de mots d'Ali l'amusent",
+          "Ali lui promet beaucoup d'or",
+          "Le bourreau est absent ce jour-là",
+          "Ali le menace avec un cimeterre"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "« Babouche bée », « la fine babouche »… Au lieu de se fâcher, le Pacha répète les mots et finit même par sourire."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle promesse Ali fait-il à son maitre ?",
+        "options": [
+          "Lui offrir de nouvelles babouches",
+          "Ne plus jamais faire de jeux de mots",
+          "Arrêter le voleur avant le soir",
+          "Retrouver les babouches avant midi"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Il dit : si elles ne sont pas aux pieds de votre grandeur « avant que le Soleil soit au zénith », c'est-à-dire avant midi, je veux bien être pendu."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi, en réalité, les rues se vident-elles quand Omar Pacha arrive en ville ?",
+        "options": [
+          "Les habitants fuient la chaleur",
+          "C'est l'heure de la prière",
+          "Les habitants ont peur de lui",
+          "Une tempête de sable arrive"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Ali prétend qu'ils fuient la chaleur, mais il ne faisait « pas vraiment chaud ce jour-là ». En réalité, tout le monde craint le Pacha."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Au restaurant de son oncle, quel est le plan d'Ali ?",
+        "options": [
+          "Empoisonner son maitre pendant le grand repas",
+          "S'enfuir par la porte de la cuisine",
+          "Faire payer le repas à son maitre",
+          "Garder son maitre à table très longtemps"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "« Le moyen le plus sûr de retarder mon rendez-vous avec le bourreau consistait à garder mon maître à table le plus longtemps possible. »"
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "De quoi Omar Pacha meurt-il ?",
+        "options": [
+          "D'un poison caché dans le dessert",
+          "D'un coup de cimeterre donné par le garde",
+          "D'une chute dans les escaliers du palais",
+          "D'une crise de rire à la fin d'un festin"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Gavé de nourriture, il se met à rire en se rinçant la bouche, mais le rire reste coincé dans sa gorge pleine de liquide : « Cette dernière crise de rire lui avait été fatale. »"
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Omar Pacha était très avare.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : il est l'homme le plus riche du monde, mais son armée ne compte qu'une douzaine d'hommes. Il cherche un restaurant « pas trop cher », et c'est Ali qui propose de l'inviter."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Avant cette journée, Omar Pacha ne riait jamais.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : « Ai-je dit qu'Omar Pacha ne souriait jamais ? Ai-je dit qu'il riait encore moins ? » Ce matin-là, son visage se déride pour la première fois « depuis des lustres »."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Les babouches avaient été volées par un voleur.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : une jeune servante les avait prises pour enlever une petite tache. Fatiguée, elle ne s'est pas réveillée à temps pour les remettre."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "À la fin, Ali épouse la servante qui avait pris les babouches.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : pour la remercier, et parce qu'elle était très jolie, Ali l'épouse. Comme dans les contes, « ils vécurent heureux et eurent beaucoup d'enfants »."
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« C'était pour moi une manière de lui signifier que je m'en souciais comme de ma première djellaba. » Que veut dire « je m'en souciais comme de ma première djellaba » ?",
+        "options": [
+          "J'y pensais jour et nuit",
+          "Je m'en souvenais très bien",
+          "Je ne m'en inquiétais pas du tout",
+          "J'en avais terriblement honte"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Ali lève les yeux au ciel : les conseils de prudence de son père ne l'inquiètent pas du tout."
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Peut-être ont-elles été volées, dis-je à brûle-pourpoint. » Que veut dire « à brûle-pourpoint » ?",
+        "options": [
+          "Doucement, en chuchotant",
+          "En brûlant de colère",
+          "Brusquement, sans préparation",
+          "Après une longue réflexion"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Ali doit trouver une excuse immédiatement. Il la lance brusquement, sans l'avoir préparée."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« J'en connais un qui ne paye pas de mine », dit Ali. Que veut dire « qui ne paye pas de mine » ?",
+        "options": [
+          "Qui ne coute rien du tout",
+          "Qui n'a pas une belle apparence",
+          "Qui est très loin d'ici",
+          "Qui se trouve sous la terre"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Le restaurant de l'oncle est « une petite maison modeste ». Le Pacha le trouve « miteux et délabré », mais la cuisine est excellente."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
+        "options": [
+          "Ali, un jeune serviteur farceur de seize ans, travaille au palais d'Omar Pacha, un tyran qui fait couper des têtes pour un rien et qui ne rit jamais. Un matin, les babouches du maitre disparaissent. Ali promet de les retrouver avant midi. Ses jeux de mots sur les babouches font rire le Pacha pour la première fois. Au restaurant de l'oncle d'Ali, le Pacha mange énormément et meurt d'une crise de rire. Le peuple fait alors d'Ali son nouveau prince.",
+          "Ali, un jeune serviteur farceur de seize ans, travaille au palais d'Omar Pacha, un tyran qui fait couper des têtes pour un rien et qui ne rit jamais. Un matin, les babouches du maitre disparaissent. Ali promet de les retrouver avant midi et les découvre chez un voleur de la ville. Pour le remercier, le Pacha fait de lui son bourreau. Ali coupe des têtes pendant de longues années et devient aussi cruel que son maitre.",
+          "Ali, un jeune serviteur farceur de seize ans, travaille au palais d'Omar Pacha, un tyran qui fait couper des têtes pour un rien et qui ne rit jamais. Un matin, les babouches du maitre disparaissent. Ali promet de les retrouver avant midi. Ses jeux de mots fâchent tellement le Pacha qu'il l'envoie chez le bourreau. Ali s'enfuit dans le désert avec la servante, et le Pacha règne encore longtemps sur la ville."
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Seul le résumé A est correct. Ali ne retrouve pas les babouches et ne s'enfuit pas : il fait rire le Pacha, qui meurt de rire après le festin. Le peuple porte Ali sur le trône."
+      }
+    ]
   }
 ];
 
-window.LIVRES_VERSION = '20261123a';
+window.LIVRES_VERSION = '20261123b';
