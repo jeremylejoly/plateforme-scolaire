@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<!-- © 2026 Jérémy Lejoly — LCML. Reproduction interdite sans autorisation. -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Conjugaison — Impératif présent : donne l'ordre</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: #f5f6fa; padding: 1.5rem; }
+.container { max-width: 680px; margin: 0 auto; }
+.info-card { background:#fce7f3;border:1px solid #ec4899;border-radius:12px;padding:.8rem 1rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center; }
+.info-card p { font-size:13px;color:#9d174d;font-weight:700;margin:0; }
+.dots { display:flex;gap:6px; }
+.dot { width:12px;height:12px;border-radius:50%; }
+.question-card { background:white;border-radius:16px;padding:1.75rem 1.5rem;margin-bottom:1.25rem;box-shadow:0 2px 8px rgba(0,0,0,.08);border:2px solid #e5e7eb; }
+.q-label { font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#9ca3af;margin-bottom:.75rem;text-align:center; }
+.q-consigne { text-align:center;font-size:13px;font-weight:700;color:#6b7280;margin-bottom:1rem; }
+.q-source { text-align:center;margin-bottom:1.25rem; }
+.q-source span { display:inline-block;background:#fce7f3;border:1.5px solid #ec4899;border-radius:10px;padding:8px 16px;font-size:17px;font-weight:800;color:#9d174d; }
+.q-phrase { font-size:18px;font-weight:800;color:#1e1b4b;text-align:center;line-height:2; }
+.fleche { color:#ec4899;font-size:20px;margin-right:6px; }
+.q-input { font-family:'Nunito',sans-serif;font-size:18px;font-weight:800;color:#1e1b4b;text-align:center;border:none;border-bottom:2.5px solid #ec4899;background:transparent;outline:none;padding:2px 6px;transition:border-color .2s; }
+.q-input:focus { border-color:#9d174d; }
+.q-input.correct { border-color:#16a34a;color:#16a34a; }
+.q-input.incorrect { border-color:#dc2626;color:#dc2626; }
+.correction { font-size:14px;font-weight:800;color:#dc2626;margin-top:.75rem;text-align:center;display:none; }
+.explication { display:none;margin-top:1rem;padding:.75rem 1rem;border-radius:12px;background:#f9fafb;border:1px solid #e5e7eb;font-size:14px;font-weight:700;color:#4b5563;line-height:1.5; }
+.explication b { color:#9d174d; }
+.btn { width:100%;padding:12px;background:#ec4899;color:white;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:background .2s;margin-bottom:.75rem; }
+.btn:hover { background:#db2777; }
+.score-final { display:none;text-align:center;padding:2rem;background:white;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,.1); }
+.big-emoji { font-size:64px;margin-bottom:.5rem; }
+.big-score { font-size:36px;font-weight:900;margin-bottom:1rem; }
+.score-detail { font-size:13px;color:#6b7280;margin-bottom:1.5rem;line-height:2; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="exercice-zone">
+    <div class="info-card">
+      <p id="info-numero">Question 1/10</p>
+      <div class="dots" id="dots-progress"></div>
+    </div>
+    <div id="question-zone"></div>
+    <button class="btn" id="btn-valider" onclick="valider()">✅ Valider</button>
+    <button class="btn" id="btn-suivant" style="display:none" onclick="suivant()">➡️ Question suivante</button>
+  </div>
+  <div class="score-final" id="score-final">
+    <div class="big-emoji" id="final-emoji">🎉</div>
+    <div class="big-score" id="final-score"></div>
+    <div class="score-detail" id="final-detail"></div>
+    <button class="btn" onclick="demarrer()">🔄 Recommencer</button>
+  </div>
+</div>
+<script>
+const EXPL = {
+  g1:    "Verbes en <b>-er</b> : on enlève le sujet <b>et</b> le <b>s</b> final (tu ranges → <b>range</b>).",
+  ouvrir:"<b>Ouvrir, offrir, cueillir…</b> se conjuguent comme les verbes en -er : on enlève le <b>s</b> (tu ouvres → <b>ouvre</b>).",
+  nv:    "Avec <b>nous</b> et <b>vous</b>, on enlève seulement le sujet : le verbe ne change pas (nous partons → <b>partons</b>).",
+  g23:   "Verbes des 2<sup>e</sup> et 3<sup>e</sup> groupes : on enlève le sujet, mais on <b>garde le s</b> (tu finis → <b>finis</b>).",
+  etre:  "Impératif d'<b>être</b> : <b>sois</b>, <b>soyons</b>, <b>soyez</b> (sans i après le y).",
+  avoir: "Impératif d'<b>avoir</b> : <b>aie</b>, <b>ayons</b>, <b>ayez</b> (sans i après le y).",
+  savoir:"Impératif de <b>savoir</b> : <b>sache</b>, <b>sachons</b>, <b>sachez</b>.",
+  aller: "Impératif d'<b>aller</b> : <b>va</b> (sans s), <b>allons</b>, <b>allez</b>.",
+  neg:   "À la forme négative, on garde <b>ne … pas</b> autour du verbe, et on enlève seulement le sujet (tu ne cours pas → <b>ne cours pas</b>).",
+};
+
+// s = phrase à l'indicatif ; t = phrase à l'impératif ({} = case à remplir) ; r = réponses acceptées (la 1re est affichée)
+const QUESTIONS = [
+  // 1er groupe — tu (on enlève le s)
+  { s:"Tu ranges ta chambre.",              t:"{} ta chambre !",            r:["range"],     e:"g1" },
+  { s:"Tu fermes la fenêtre.",              t:"{} la fenêtre !",            r:["ferme"],     e:"g1" },
+  { s:"Tu manges tes légumes.",             t:"{} tes légumes !",           r:["mange"],     e:"g1" },
+  { s:"Tu écoutes la maitresse.",           t:"{} la maitresse !",          r:["écoute"],    e:"g1" },
+  { s:"Tu appelles ton frère.",             t:"{} ton frère !",             r:["appelle"],   e:"g1" },
+  { s:"Tu jettes les papiers à la poubelle.", t:"{} les papiers à la poubelle !", r:["jette"], e:"g1" },
+  { s:"Tu achètes du pain.",                t:"{} du pain !",               r:["achète"],    e:"g1" },
+  { s:"Tu paies le boulanger.",             t:"{} le boulanger !",          r:["paie","paye"], e:"g1" },
+  { s:"Tu envoies une carte à mamie.",      t:"{} une carte à mamie !",     r:["envoie"],    e:"g1" },
+  { s:"Tu essuies la table.",               t:"{} la table !",              r:["essuie"],    e:"g1" },
+  { s:"Tu commences ton travail.",          t:"{} ton travail !",           r:["commence"],  e:"g1" },
+  { s:"Tu ouvres la porte.",                t:"{} la porte !",              r:["ouvre"],     e:"ouvrir" },
+  { s:"Tu offres des fleurs à ta maman.",   t:"{} des fleurs à ta maman !", r:["offre"],     e:"ouvrir" },
+  { s:"Tu cueilles des pommes.",            t:"{} des pommes !",            r:["cueille"],   e:"ouvrir" },
+  // nous / vous (on enlève seulement le sujet)
+  { s:"Nous chantons ensemble.",            t:"{} ensemble !",              r:["chantons"],  e:"nv" },
+  { s:"Nous mangeons à midi.",              t:"{} à midi !",                r:["mangeons"],  e:"nv" },
+  { s:"Nous commençons la partie.",         t:"{} la partie !",             r:["commençons"],e:"nv" },
+  { s:"Vous rangez vos affaires.",          t:"{} vos affaires !",          r:["rangez"],    e:"nv" },
+  { s:"Vous écoutez attentivement.",        t:"{} attentivement !",         r:["écoutez"],   e:"nv" },
+  { s:"Vous lancez le ballon.",             t:"{} le ballon !",             r:["lancez"],    e:"nv" },
+  { s:"Nous partons tôt.",                  t:"{} tôt !",                   r:["partons"],   e:"nv" },
+  { s:"Nous finissons ce puzzle.",          t:"{} ce puzzle !",             r:["finissons"], e:"nv" },
+  { s:"Vous faites attention.",             t:"{} attention !",             r:["faites"],    e:"nv" },
+  { s:"Vous dites la vérité.",              t:"{} la vérité !",             r:["dites"],     e:"nv" },
+  { s:"Vous prenez vos cahiers.",           t:"{} vos cahiers !",           r:["prenez"],    e:"nv" },
+  { s:"Nous lisons cette histoire.",        t:"{} cette histoire !",        r:["lisons"],    e:"nv" },
+  // 2e et 3e groupes — tu (on garde le s)
+  { s:"Tu finis ton assiette.",             t:"{} ton assiette !",          r:["finis"],     e:"g23" },
+  { s:"Tu choisis une carte.",              t:"{} une carte !",             r:["choisis"],   e:"g23" },
+  { s:"Tu viens avec moi.",                 t:"{} avec moi !",              r:["viens"],     e:"g23" },
+  { s:"Tu prends ton parapluie.",           t:"{} ton parapluie !",         r:["prends"],    e:"g23" },
+  { s:"Tu mets ton bonnet.",                t:"{} ton bonnet !",            r:["mets"],      e:"g23" },
+  { s:"Tu fais tes devoirs.",               t:"{} tes devoirs !",           r:["fais"],      e:"g23" },
+  { s:"Tu dis merci.",                      t:"{} merci !",                 r:["dis"],       e:"g23" },
+  { s:"Tu lis la consigne.",                t:"{} la consigne !",           r:["lis"],       e:"g23" },
+  { s:"Tu écris ton prénom.",               t:"{} ton prénom !",            r:["écris"],     e:"g23" },
+  { s:"Tu attends ton tour.",               t:"{} ton tour !",              r:["attends"],   e:"g23" },
+  { s:"Tu réponds à la question.",          t:"{} à la question !",         r:["réponds"],   e:"g23" },
+  { s:"Tu cours plus vite.",                t:"{} plus vite !",             r:["cours"],     e:"g23" },
+  { s:"Tu bois ton verre d'eau.",           t:"{} ton verre d'eau !",       r:["bois"],      e:"g23" },
+  // Être, avoir, savoir, aller
+  { s:"Tu es sage.",                        t:"{} sage !",                  r:["sois"],      e:"etre" },
+  { s:"Nous sommes patients.",              t:"{} patients !",              r:["soyons"],    e:"etre" },
+  { s:"Vous êtes prudents.",                t:"{} prudents !",              r:["soyez"],     e:"etre" },
+  { s:"Tu as du courage.",                  t:"{} du courage !",            r:["aie"],       e:"avoir" },
+  { s:"Vous avez confiance.",               t:"{} confiance !",             r:["ayez"],      e:"avoir" },
+  { s:"Tu sais ta leçon.",                  t:"{} ta leçon !",              r:["sache"],     e:"savoir" },
+  { s:"Tu vas à l'école.",                  t:"{} à l'école !",             r:["va"],        e:"aller" },
+  { s:"Vous allez dans la cour.",           t:"{} dans la cour !",          r:["allez"],     e:"aller" },
+  // Forme négative
+  { s:"Tu ne cours pas dans le couloir.",   t:"Ne {} pas dans le couloir !", r:["cours"],    e:"neg" },
+  { s:"Tu ne cries pas.",                   t:"Ne {} pas !",                r:["crie"],      e:"neg" },
+  { s:"Vous ne touchez pas à ce bouton.",   t:"Ne {} pas à ce bouton !",    r:["touchez"],   e:"neg" },
+  { s:"Tu n'as pas peur.",                  t:"N'{} pas peur !",            r:["aie"],       e:"neg" },
+  { s:"Tu n'es pas en retard.",             t:"Ne {} pas en retard !",      r:["sois"],      e:"neg" },
+];
+
+const NB = 10;
+function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+// Comparaison souple : majuscules, espaces, apostrophes courbes, tirets variés, ponctuation finale
+function normaliser(v){
+  return v.normalize('NFC').trim().toLowerCase()
+    .replace(/[’‘ʼ`]/g, "'")
+    .replace(/[‐‑‒–—]/g, '-')
+    .replace(/\s*-\s*/g, '-')
+    .replace(/\s*'\s*/g, "'")
+    .replace(/[!.?]+$/,'').trim()
+    .replace(/\s+/g,' ');
+}
+// Sur tablette, la majuscule É est souvent tapée « E » : on l'accepte en début de phrase
+function variantesMajuscule(rep, saisieBrute){
+  const out=[rep];
+  if(/^é/.test(rep) && /^\s*E/.test(saisieBrute)) out.push('e'+rep.slice(1));
+  return out;
+}
+function majuscule(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+function enDebut(q){ return q.t.startsWith('{}'); }
+function reponseAffichee(q){ return enDebut(q) ? majuscule(q.r[0]) : q.r[0]; }
+
+let selection=[], curIdx=0, scores=[];
+
+function demarrer(){
+  selection = shuffle(QUESTIONS).slice(0,NB);
+  curIdx=0; scores=[];
+  document.getElementById('score-final').style.display='none';
+  document.getElementById('exercice-zone').style.display='block';
+  afficherQuestion();
+}
+
+function afficherQuestion(){
+  const q = selection[curIdx];
+  document.getElementById('info-numero').textContent = `Question ${curIdx+1}/${NB}`;
+  document.getElementById('dots-progress').innerHTML =
+    selection.map((_,i)=>`<div class="dot" style="background:${i<curIdx?(scores[i]?'#16a34a':'#dc2626'):i===curIdx?'#ec4899':'#d1d5db'}"></div>`).join('');
+
+  const largeur = Math.max(5, ...q.r.map(r=>r.length)) + 3;
+  const input = `<input type="text" class="q-input" id="q-inp" style="width:${largeur}ch" placeholder="………"
+      autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+      onkeydown="if(event.key==='Enter') valider()"/>`;
+
+  document.getElementById('question-zone').innerHTML = `
+    <div class="question-card">
+      <div class="q-label">✏️ Impératif présent — Donne l'ordre</div>
+      <div class="q-consigne">Transforme la phrase pour donner un ordre ou un conseil.</div>
+      <div class="q-source"><span>${q.s}</span></div>
+      <div class="q-phrase"><span class="fleche">→</span>${q.t.replace('{}', input)}</div>
+      <div class="correction" id="correction"></div>
+      <div class="explication" id="explication">💡 ${EXPL[q.e]}</div>
+    </div>`;
+
+  document.getElementById('btn-valider').style.display='block';
+  document.getElementById('btn-suivant').style.display='none';
+  setTimeout(()=>{ document.getElementById('q-inp')?.focus(); }, 100);
+}
+
+function valider(){
+  const q = selection[curIdx];
+  const inp = document.getElementById('q-inp');
+  if(!inp || inp.disabled) return;
+  if(!inp.value.trim()){ inp.focus(); return; }
+  const val = normaliser(inp.value);
+  const acceptees = q.r.flatMap(r => variantesMajuscule(r, inp.value)).map(normaliser);
+  const ok = acceptees.includes(val);
+
+  inp.disabled = true;
+  inp.classList.add(ok ? 'correct' : 'incorrect');
+  scores.push(ok);
+
+  if(!ok){
+    const corr = document.getElementById('correction');
+    corr.style.display = 'block';
+    const alt = q.r.length > 1 ? ` (ou ${enDebut(q) ? majuscule(q.r[1]) : q.r[1]})` : '';
+    corr.innerHTML = `La bonne réponse est : ${q.t.replace('{}', '<u>'+reponseAffichee(q)+'</u>')}${alt}`;
+  }
+  document.getElementById('explication').style.display = 'block';
+
+  document.getElementById('btn-valider').style.display='none';
+  const isLast = curIdx >= NB-1;
+  const btn = document.getElementById('btn-suivant');
+  btn.style.display='block';
+  btn.textContent = isLast ? '🏁 Voir mon score final' : '➡️ Question suivante';
+  btn.onclick = isLast ? afficherScoreFinal : suivant;
+  setTimeout(()=>btn.focus(), 50);
+}
+
+function suivant(){ curIdx++; afficherQuestion(); }
+
+function afficherScoreFinal(){
+  document.getElementById('exercice-zone').style.display='none';
+  const sf=document.getElementById('score-final'); sf.style.display='block';
+  const ok=scores.filter(Boolean).length, total=scores.length;
+  const pct=Math.round(ok/total*100);
+  document.getElementById('final-emoji').textContent=pct===100?'🎉':pct>=60?'👍':'💪';
+  document.getElementById('final-score').textContent=`${ok}/${total} — ${pct}%`;
+  document.getElementById('final-score').style.color=pct===100?'#16a34a':pct>=60?'#f59e0b':'#dc2626';
+  document.getElementById('final-detail').innerHTML=scores.map((s,i)=>`Q${i+1} : ${s?'✅':'❌'}`).join('  ');
+  try {
+    if (window.parent && window.parent !== window && window.parent.saveResult) {
+      window.parent.saveResult({ activity:'conj_imperatif_transfo', bookTitle:"Conjugaison — Impératif présent (Donne l'ordre)",
+        score:ok, total, pct, date:new Date().toLocaleDateString('fr-BE'),
+        time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'}) });
+    }
+  } catch(e) { /* fiche ouverte hors du site */ }
+}
+
+demarrer();
+</script>
+<script src="../lcml_copyright.js"></script>
+</body>
+</html>
