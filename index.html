@@ -24749,7 +24749,7 @@ function renderExpressionEcriteMenu(){
   const locked = getLockedActivities();
 
   const items = [
-    {id:'connecteurs', screen:'screen-connecteurs', label:'Connecteurs logiques', icon:'<img src="assets/logos/subject_connecteurs.webp" class="w-full h-full object-contain" />', desc:'Choisis le bon connecteur parmi 3-4 propositions — 10 phrases tirées aléatoirement', fn:'renderConnecteurs'},
+    {id:'connecteurs', screen:'screen-connecteurs', label:'Connecteurs logiques', icon:'<img src="assets/logos/subject_connecteurs.webp" class="w-full h-full object-contain" />', desc:'Choisis le bon connecteur parmi 3-4 propositions — 10 phrases par partie, sans répétition sur 4 parties (banque de 40)', fn:'renderConnecteurs'},
     {id:'synonymes', screen:'screen-synonymes', label:'Synonymes', icon:'<img src="assets/logos/subject_synonymes.webp" class="w-full h-full object-contain" />', desc:'Trouve le mot qui a le même sens — 10 phrases tirées aléatoirement', fn:'renderSynonymes'},
     {id:'antonymes', screen:'screen-antonymes', label:'Antonymes', icon:'<img src="assets/logos/subject_antonymes.webp" class="w-full h-full object-contain" />', desc:'Trouve le mot qui a le sens contraire — 10 phrases tirées aléatoirement', fn:'renderAntonymes'},
     {
@@ -24795,7 +24795,29 @@ function renderConnecteurs(){
   // Fisher-Yates sur les phrases ET sur les propositions (avant, la bonne réponse était
   // le plus souvent le 3e bouton).
   const fy = arr => { const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
-  connexPhrases = fy(CONNECTEURS_POOL).slice(0, 10).map(p => {
+  // Rotation de la banque : on retient (par élève, sur cette tablette) les phrases déjà vues.
+  // Les 10 phrases sont prises parmi celles pas encore vues ; quand il en reste moins de 10,
+  // on complète avec des phrases déjà vues (sauf celles de la partie précédente) et la banque repart.
+  const connexKey = 'lq_connecteurs_vus_' + (state.studentCls||'') + '_' + (state.student||'anonyme');
+  let vus = [];
+  try { vus = JSON.parse(localStorage.getItem(connexKey) || '[]'); } catch(e) { vus = []; }
+  const cle = p => (p.avant||'') + '|' + (p.apres||'');
+  const toutes = CONNECTEURS_POOL.map(cle);
+  vus = vus.filter(k => toutes.includes(k));
+  let tirage = fy(CONNECTEURS_POOL.filter(p => !vus.includes(cle(p)))).slice(0, 10);
+  if(tirage.length < 10){
+    let derniere = []; try { derniere = JSON.parse(localStorage.getItem(connexKey + '_derniere') || '[]'); } catch(e) {}
+    const dejaPris = tirage.map(cle);
+    const reste = CONNECTEURS_POOL.filter(p => !dejaPris.includes(cle(p)));
+    const prio = fy(reste.filter(p => !derniere.includes(cle(p)))).concat(fy(reste.filter(p => derniere.includes(cle(p)))));
+    const complement = prio.slice(0, 10 - tirage.length);
+    tirage = fy(tirage.concat(complement));
+    vus = complement.map(cle);          // nouveau cycle : seules les phrases du complément comptent comme vues
+  } else {
+    vus = vus.concat(tirage.map(cle));
+  }
+  try { localStorage.setItem(connexKey, JSON.stringify(vus)); localStorage.setItem(connexKey + '_derniere', JSON.stringify(tirage.map(cle))); } catch(e) {}
+  connexPhrases = tirage.map(p => {
     const bonne = p.options[p.correct];
     const options = fy(p.options);
     return {...p, options, correct: options.indexOf(bonne)};
