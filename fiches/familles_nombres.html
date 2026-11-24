@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Les familles de nombres</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  /* Charte LCML : fond crème, contours #1A1A2E, ombres décalées, Fredoka + Nunito */
+  :root {
+    --purple: #5B4FCF; --purple-light: #EEF0FF; --purple-mid: #C7C2F5;
+    --green: #1A9E75; --green-light: #E2F5EE;
+    --red: #D94F3D; --red-light: #FDECEA;
+    --amber: #C97B1A; --amber-light: #FEF3E2;
+    --blue: #1A6FA0; --blue-light: #E2F0FA;
+    --correction: #1f5fbf;
+    --bg: #FDFBF7; --surface: #FFFFFF;
+    --text: #1A1A2E; --muted: #6B7080; --border: #1A1A2E;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); }
+  body { font-family: 'Nunito', sans-serif; color: var(--text); padding: 12px 16px 16px; -webkit-font-smoothing: antialiased; }
+  button { font-family: inherit; touch-action: manipulation; color: var(--text); }
+  .container { max-width: 760px; margin: 0 auto; }
+  .ecran { display: none; }
+  .ecran.actif { display: block; }
+
+  /* ----- Barre d'info ----- */
+  .info-card {
+    background: var(--purple-light); border: 3px solid var(--border); border-radius: 16px; padding: 6px 10px; margin-bottom: 12px;
+    display: flex; justify-content: space-between; align-items: center; gap: 8px; box-shadow: 4px 4px 0 var(--border); flex-wrap: wrap;
+  }
+  .info-card p { font-family: 'Fredoka', sans-serif; font-size: 16px; color: var(--purple); font-weight: 700; white-space: nowrap; }
+  .btn-mini {
+    border: 2px solid var(--border); background: var(--surface); border-radius: 8px; padding: 5px 10px; font-size: 13px; font-weight: 800;
+    cursor: pointer; white-space: nowrap; box-shadow: 2px 2px 0 var(--border);
+  }
+  .btn-mini:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--border); }
+  .btn-mini.aide { background: var(--amber-light); }
+  .btn-mini.aide.ouverte { background: var(--amber); color: #fff; }
+  .dots { display: flex; gap: 6px; }
+  .dot { width: 13px; height: 13px; border-radius: 50%; background: #D1D5DB; border: 1.5px solid var(--border); transition: all .3s; }
+  .dot.current { background: var(--purple); transform: scale(1.2); }
+  .dot.correct { background: var(--green); }
+  .dot.corrige { background: var(--amber); }
+  .dot.incorrect { background: var(--red); }
+  .gauche, .droite { display: flex; align-items: center; gap: 8px; }
+
+  /* ----- Rappel de la méthode ----- */
+  .rappel { display: none; background: var(--amber-light); border: 2.5px solid var(--border); border-radius: 14px; padding: 8px 12px; margin-bottom: 12px; font-size: 14px; font-weight: 700; line-height: 1.55; box-shadow: 3px 3px 0 var(--border); }
+  .rappel.visible { display: block; }
+  .rappel b { color: var(--amber); }
+  .rappel .frac { font-size: 14px; vertical-align: middle; }
+  .rappel .frac > span:first-child { border-bottom-width: 2px; }
+
+  /* ----- Fractions empilées ----- */
+  .frac { display: inline-flex; flex-direction: column; align-items: center; font-family: 'Fredoka', sans-serif; font-weight: 600; line-height: 1.1; }
+  .frac > span { padding: 0 4px; min-width: 1.2em; text-align: center; }
+  .frac > span:first-child { border-bottom: 3px solid currentColor; padding-bottom: 1px; }
+  .frac > span:last-child { padding-top: 1px; }
+
+  /* ----- Carte de jeu ----- */
+  .calc-card { background: var(--surface); border: 3px solid var(--border); border-radius: 18px; padding: 14px 12px 16px; box-shadow: 4px 4px 0 var(--border); text-align: center; }
+  .consigne { font-size: 15px; font-weight: 800; color: var(--muted); margin-bottom: 12px; }
+  .consigne b { color: var(--purple); }
+
+  .grille { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 10px; }
+  .tuile {
+    min-height: 82px; display: flex; align-items: center; justify-content: center;
+    background: var(--surface); border: 3px solid var(--border); border-radius: 14px; box-shadow: 3px 3px 0 var(--border);
+    font-family: 'Fredoka', sans-serif; font-size: 28px; font-weight: 600; cursor: pointer; user-select: none;
+    transition: transform .12s, background .15s, box-shadow .12s;
+  }
+  .tuile .frac { font-size: 25px; }
+  .tuile:active { transform: translate(1px, 1px); }
+  .tuile.choisie { background: var(--purple-light); border-color: var(--purple); color: var(--purple); transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--purple); }
+  .tuile.faux { background: var(--red-light); border-color: var(--red); color: var(--red); animation: secoue .45s; }
+  .tuile.juste { background: var(--green-light); border-color: var(--green); color: var(--green); animation: rebond .4s; }
+  .tuile.part { opacity: 0; transform: scale(.6); transition: all .35s; }
+  .tuile.indice { animation: clignote .7s 4; }
+  .tuile.intrus { background: #F1F1F4; border-style: dashed; color: var(--muted); cursor: default; box-shadow: none; flex-direction: column; gap: 2px; }
+  .tuile.intrus small { font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; }
+  .tuile:disabled { cursor: default; }
+  @keyframes secoue { 0%,100% { transform: translateX(0); } 20% { transform: translateX(-6px); } 40% { transform: translateX(6px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(4px); } }
+  @keyframes rebond { 50% { transform: scale(1.08); } }
+  @keyframes clignote { 50% { background: var(--amber-light); border-color: var(--amber); color: var(--amber); } }
+
+  /* ----- Familles trouvées ----- */
+  .trouvees { margin-top: 14px; text-align: left; }
+  .trouvees h3 { font-family: 'Fredoka', sans-serif; font-size: 16px; font-weight: 700; color: var(--green); margin-bottom: 6px; }
+  .trouvees .vide { font-size: 14px; font-weight: 700; color: var(--muted); }
+  .liste-fam { display: grid; gap: 6px; }
+  .fam-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+    background: var(--green-light); border: 2px solid var(--border); border-radius: 12px; padding: 5px 12px;
+  }
+  .fam-row.nouvelle { animation: rebond .4s; }
+  .egalite { display: flex; align-items: center; gap: 8px; font-family: 'Fredoka', sans-serif; font-size: 20px; font-weight: 600; color: var(--green); }
+  .egalite .frac { font-size: 17px; }
+  .egalite .frac > span:first-child { border-bottom-width: 2px; }
+  .egalite .eg { color: var(--text); }
+  .jauge { position: relative; width: 150px; height: 16px; border: 2px solid var(--border); border-radius: 5px; background: #fff; overflow: hidden; }
+  .jauge .rempli { position: absolute; inset: 0 auto 0 0; background: var(--green); }
+  .jauge .grad { position: absolute; inset: 0; background: repeating-linear-gradient(to right, transparent 0, transparent calc(10% - 1px), rgba(26,26,46,.35) calc(10% - 1px), rgba(26,26,46,.35) 10%); }
+
+  /* ----- Messages ----- */
+  .message { margin-top: 14px; border: 2.5px solid var(--border); border-radius: 12px; padding: 8px 12px; font-size: 15px; font-weight: 700; line-height: 1.45; display: none; text-align: left; }
+  .message.visible { display: block; }
+  .message.indice { background: var(--amber-light); }
+  .message.bravo { background: var(--green-light); }
+  .message.correction { background: var(--blue-light); }
+  .message .frac { font-size: 15px; vertical-align: middle; margin: 0 1px; }
+  .message .frac > span:first-child { border-bottom-width: 2px; }
+
+  .actions { display: flex; justify-content: center; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+  .btn {
+    border: 3px solid var(--border); border-radius: 12px; padding: 9px 22px; font-family: 'Fredoka', sans-serif; font-size: 17px; font-weight: 700;
+    cursor: pointer; box-shadow: 4px 4px 0 var(--border); background: var(--purple); color: #fff;
+  }
+  .btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--border); }
+  .btn.vert { background: var(--green); }
+  .btn.blanc { background: var(--surface); color: var(--text); }
+  .btn[hidden] { display: none; }
+
+  /* ----- Accueil : choix du niveau ----- */
+  .titre-accueil { text-align: center; margin: 6px 0 14px; }
+  .titre-accueil h1 { font-family: 'Fredoka', sans-serif; font-size: 28px; font-weight: 700; color: var(--purple); }
+  .titre-accueil p { font-size: 15px; font-weight: 700; color: var(--muted); margin-top: 4px; }
+  .exemple { display: inline-flex; align-items: center; gap: 10px; margin-top: 10px; background: var(--surface); border: 2.5px solid var(--border); border-radius: 12px; padding: 6px 14px; box-shadow: 3px 3px 0 var(--border); font-family: 'Fredoka', sans-serif; font-size: 22px; font-weight: 600; }
+  .exemple .frac { font-size: 18px; }
+  .exemple .frac > span:first-child { border-bottom-width: 2px; }
+  .niveaux { display: grid; gap: 12px; }
+  .niveau {
+    display: flex; align-items: center; gap: 14px; text-align: left; width: 100%;
+    background: var(--surface); border: 3px solid var(--border); border-radius: 16px; padding: 12px 14px; box-shadow: 4px 4px 0 var(--border); cursor: pointer;
+  }
+  .niveau:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--border); }
+  .niveau .num { flex: 0 0 auto; width: 50px; height: 50px; border-radius: 12px; border: 2.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 26px; }
+  .niveau:nth-child(1) .num { background: var(--green-light); }
+  .niveau:nth-child(2) .num { background: var(--blue-light); }
+  .niveau:nth-child(3) .num { background: var(--amber-light); }
+  .niveau h2 { font-family: 'Fredoka', sans-serif; font-size: 19px; font-weight: 700; }
+  .niveau p { font-size: 14px; font-weight: 700; color: var(--muted); }
+  .niveau .rec { font-size: 12px; font-weight: 800; color: var(--green); margin-top: 2px; }
+
+  /* ----- Score ----- */
+  .score-card { background: var(--surface); border: 3px solid var(--border); border-radius: 18px; padding: 14px; box-shadow: 4px 4px 0 var(--border); text-align: center; max-width: 620px; margin: 0 auto; }
+  .score-emoji { font-size: 40px; }
+  .score-title { font-family: 'Fredoka', sans-serif; font-size: 22px; font-weight: 700; }
+  .score-val { font-family: 'Fredoka', sans-serif; font-size: 30px; font-weight: 700; color: var(--purple); }
+  .score-msg { font-size: 14px; font-weight: 700; color: var(--muted); margin: 4px 0 6px; }
+  .record { display: inline-block; font-size: 12px; font-weight: 800; color: var(--green); background: var(--green-light); border: 1.5px solid var(--green); border-radius: 99px; padding: 1px 9px; margin-bottom: 10px; }
+  .score-list { text-align: left; display: grid; gap: 5px; max-height: 340px; overflow-y: auto; }
+  .score-manche { font-family: 'Fredoka', sans-serif; font-size: 15px; font-weight: 700; color: var(--purple); margin-top: 6px; display: flex; justify-content: space-between; }
+  .score-manche span { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800; color: var(--muted); }
+  .confetti { position: fixed; top: -12px; border-radius: 2px; animation: tombe linear forwards; z-index: 50; pointer-events: none; }
+  @keyframes tombe { to { transform: translateY(105vh) rotate(540deg); } }
+
+  @media (max-width: 480px) {
+    body { padding: 10px; }
+    .grille { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .tuile { min-height: 72px; font-size: 24px; }
+    .tuile .frac { font-size: 22px; }
+    .jauge { width: 110px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ===== Écran 0 : choix du niveau ===== -->
+  <div id="ecran-accueil" class="ecran actif">
+    <div class="titre-accueil">
+      <h1>🧩 Les familles de nombres</h1>
+      <p>Un même nombre peut s'écrire de trois façons. Retrouve les familles !</p>
+      <div class="exemple"><span class="frac"><span>1</span><span>2</span></span> = 0,5 = 50&nbsp;%</div>
+    </div>
+    <div class="niveaux" id="niveaux"></div>
+  </div>
+
+  <!-- ===== Écran 1 : jeu ===== -->
+  <div id="ecran-jeu" class="ecran">
+    <div class="info-card">
+      <div class="gauche"><p id="titre-jeu">🧩 Niveau 1</p></div>
+      <div class="dots" id="dots"></div>
+      <div class="droite">
+        <button class="btn-mini aide" id="btn-rappel" onclick="basculerRappel()">💡 Rappel</button>
+        <p id="compteur">0 / 4</p>
+      </div>
+    </div>
+
+    <div class="rappel" id="rappel">
+      Un <b>pourcentage</b>, c'est une fraction sur 100 : 25&nbsp;% = <span class="frac"><span>25</span><span>100</span></span> = 0,25.<br>
+      <b>Décimal → pourcentage</b> : on multiplie par 100. 0,4 → 40&nbsp;% &nbsp;·&nbsp; 0,07 → 7&nbsp;%.<br>
+      <b>Fraction → décimal</b> : on cherche une fraction égale sur 10 ou sur 100, ou on divise le numérateur par le dénominateur :
+      <span class="frac"><span>3</span><span>4</span></span> = <span class="frac"><span>75</span><span>100</span></span> = 0,75 &nbsp;·&nbsp; <span class="frac"><span>2</span><span>5</span></span> = 2 ÷ 5 = 0,4.
+    </div>
+
+    <div class="calc-card">
+      <div class="consigne" id="consigne">Touche les <b>3 étiquettes</b> qui ont la même valeur.</div>
+      <div class="grille" id="grille"></div>
+      <div class="message" id="message"></div>
+      <div class="actions">
+        <button class="btn vert" id="btn-suivant" onclick="mancheSuivante()" hidden>Manche suivante →</button>
+      </div>
+      <div class="trouvees">
+        <h3>✅ Familles trouvées</h3>
+        <div class="liste-fam" id="liste-fam"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Écran 2 : score ===== -->
+  <div id="ecran-score" class="ecran">
+    <div class="score-card">
+      <div class="score-emoji" id="final-emoji">🏆</div>
+      <div class="score-title" id="final-title">Bravo !</div>
+      <div class="score-val" id="final-score">12 / 12</div>
+      <div class="score-msg" id="final-msg"></div>
+      <div id="final-record"></div>
+      <div class="score-list" id="final-details"></div>
+      <div class="actions">
+        <button class="btn" onclick="lancer(niveau)">Rejouer ce niveau</button>
+        <button class="btn blanc" onclick="accueil()">Changer de niveau</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   Les familles de nombres — fraction = nombre décimal = pourcentage
+   Une série = 3 manches de 4 familles (12 familles).
+   L'élève touche 3 étiquettes : si elles ont la même valeur, la famille
+   se range dans « Familles trouvées » avec une jauge graduée en dixièmes.
+   Score : 12 points au départ, chaque erreur coûte 1 point. Pas de bouton
+   « Montre-moi » (décision de Jérémy : l'élève cliquerait sans réfléchir).
+   Niveau 1 : les 16 fractions repères à connaître (liste REPERES)
+   Niveau 2 : fractions déguisées (2/5, 6/8, 3/20…) mêlées aux repères + 2 intrus par manche
+   Les 12 familles d'une série sont toutes différentes : aucune fraction ne revient
+   d'une manche à l'autre. La 1re manche évite aussi la dernière manche de la série précédente.
+   Les valeurs sont stockées en millièmes (entiers) pour éviter les arrondis.
+   ========================================================= */
+const ID_ACTIVITE = 'num_familles_nombres';
+const NB_MANCHES = 3, NB_FAMILLES = 4;
+const CLE_RECORD = 'lcml_familles_nombres_records';
+
+const NIVEAUX = {
+  1: { emoji: '🎯', titre: 'Les repères', desc: '1/2, 1/4, 1/8, 2/5, 3/10, 1/20… les fractions à connaître par cœur.' },
+  2: { emoji: '🕵️', titre: 'Fractions déguisées', desc: '6/8, 4/10, 3/20, 9/25… et des intrus cachés dans la grille.' },
+};
+
+let niveau = 1, serie = [], manche = 0, familles = [], tuiles = [], selection = [], trouvees = [];
+let erreurs = 0, erreursManche = 0, historique = [], verrou = false, sauve = false, rappelOuvert = false;
+
+/* ---------- Outils ---------- */
+const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const choisir = arr => arr[rnd(0, arr.length - 1)];
+const melange = arr => { const t = arr.slice(); for (let i = t.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [t[i], t[j]] = [t[j], t[i]]; } return t; };
+const fracHTML = (n, d) => `<span class="frac"><span>${n}</span><span>${d}</span></span>`;
+
+// v en millièmes → « 0,25 », « 1 », « 2,5 »
+function ecrireDec(v) {
+  const e = Math.floor(v / 1000), r = v % 1000;
+  if (r === 0) return String(e);
+  return e + ',' + String(r).padStart(3, '0').replace(/0+$/, '');
+}
+// v en millièmes → « 25 % », « 2,5 % »
+function ecrirePct(v) {
+  const e = Math.floor(v / 10), r = v % 10;
+  return (r === 0 ? e : e + ',' + r) + ' %';
+}
+const valFrac = (n, d) => n * 1000 / d;
+
+/* ---------- Banques ---------- */
+const REPERES = [[1, 2], [1, 4], [3, 4], [1, 5], [2, 5], [3, 5], [4, 5], [1, 10], [3, 10], [7, 10], [9, 10], [1, 20], [1, 100], [1, 50], [1, 8], [3, 8]];
+// Niveau 2 : [valeur en millièmes, fractions « déguisées » possibles]
+const DEGUISEES = [
+  [500, [[2, 4], [3, 6], [4, 8], [10, 20]]],
+  [250, [[2, 8], [5, 20], [3, 12]]],
+  [750, [[6, 8], [15, 20], [9, 12]]],
+  [200, [[2, 10], [4, 20], [10, 50]]],
+  [400, [[2, 5], [4, 10], [8, 20]]],
+  [600, [[3, 5], [6, 10], [12, 20]]],
+  [800, [[4, 5], [8, 10], [16, 20]]],
+  [150, [[3, 20], [6, 40]]],
+  [350, [[7, 20]]],
+  [50,  [[1, 20], [5, 100]]],
+  [40,  [[1, 25], [4, 100]]],
+  [360, [[9, 25], [18, 50]]],
+  [120, [[3, 25], [6, 50]]],
+  [1000, [[4, 4], [5, 5], [10, 10]]],
+];
+
+/* ---------- Génération de la série ---------- */
+// Banque du niveau 2 : fractions déguisées + repères, regroupées par valeur
+function banqueNiveau2() {
+  const parValeur = new Map(DEGUISEES.map(([v, fr]) => [v, fr.slice()]));
+  REPERES.forEach(([n, d]) => { const v = valFrac(n, d); if (!parValeur.has(v)) parValeur.set(v, []); parValeur.get(v).push([n, d]); });
+  return [...parValeur.entries()];
+}
+const cleDerniere = () => 'lcml_familles_nombres_derniere_' + niveau;
+
+// 12 valeurs toutes différentes, réparties en 3 manches de 4
+function genererSerie() {
+  let derniere = [];
+  try { derniere = JSON.parse(localStorage.getItem(cleDerniere()) || '[]'); } catch (e) {}
+  const banque = niveau === 1
+    ? REPERES.map(([n, d]) => [valFrac(n, d), [[n, d]]])
+    : banqueNiveau2();
+  // Les valeurs de la dernière manche jouée passent en fin de liste (évite une répétition d'affilée)
+  const ordre = melange(banque).sort((a, b) => derniere.includes(a[0]) - derniere.includes(b[0]));
+  const choix = ordre.slice(0, NB_MANCHES * NB_FAMILLES).map(([v, fr]) => { const [n, d] = choisir(fr); return { n, d, v }; });
+  const serie = [];
+  for (let m = 0; m < NB_MANCHES; m++) serie.push(choix.slice(m * NB_FAMILLES, (m + 1) * NB_FAMILLES));
+  return serie;
+}
+function memoriserDerniereManche() {
+  try { localStorage.setItem(cleDerniere(), JSON.stringify(familles.map(f => f.v))); } catch (e) {}
+}
+
+// Intrus du niveau 3 : erreurs classiques construites à partir des familles de la grille
+function genererIntrus(fam) {
+  const valeurs = new Set(fam.map(f => f.v));
+  const cands = [];
+  fam.forEach(f => {
+    if (f.n < 10 && f.d < 10) cands.push({ type: 'dec', v: f.n * 1000 + f.d * 100 });   // 2/5 → « 2,5 »
+    if (f.v >= 100 && f.v % 100 === 0) cands.push({ type: 'dec', v: f.v / 10 });          // 0,5 → « 0,05 »
+    if (f.v >= 100 && f.v % 100 === 0 && f.v < 1000) cands.push({ type: 'pct', v: f.v / 10 }); // 50 % → « 5 % »
+    if (f.v < 100) { cands.push({ type: 'pct', v: f.v * 10 }); cands.push({ type: 'dec', v: f.v * 10 }); } // 0,04 → « 40 % », « 0,4 »
+  });
+  // Erreurs de secours, utilisées seulement s'il en manque : 15 % → « 1,5 » ou « 1,5 % »
+  const secours = [];
+  fam.forEach(f => {
+    if (f.v < 1000) secours.push({ type: 'dec', v: f.v * 10 });
+    if (f.v % 10 === 0) secours.push({ type: 'pct', v: f.v / 10 });
+  });
+  const choisis = [], vusV = new Set();
+  for (const c of [...melange(cands), ...melange(secours)]) {
+    if (valeurs.has(c.v) || vusV.has(c.v)) continue;
+    vusV.add(c.v); choisis.push(c);
+    if (choisis.length === 2) break;
+  }
+  return choisis;
+}
+
+function genererManche() {
+  familles = serie[manche];
+  tuiles = [];
+  familles.forEach((f, i) => {
+    tuiles.push({ fam: i, type: 'frac', v: f.v, html: fracHTML(f.n, f.d) });
+    tuiles.push({ fam: i, type: 'dec', v: f.v, html: ecrireDec(f.v) });
+    tuiles.push({ fam: i, type: 'pct', v: f.v, html: ecrirePct(f.v) });
+  });
+  if (niveau === 2) genererIntrus(familles).forEach(c => {
+    tuiles.push({ fam: -1, type: c.type, v: c.v, html: c.type === 'dec' ? ecrireDec(c.v) : ecrirePct(c.v) });
+  });
+  tuiles = melange(tuiles).map((t, id) => ({ ...t, id, trouvee: false }));
+  selection = []; trouvees = []; erreursManche = 0; verrou = false;
+}
+
+/* ---------- Records (sur l'appareil) ---------- */
+function lireRecords() { try { return JSON.parse(localStorage.getItem(CLE_RECORD) || '{}'); } catch (e) { return {}; } }
+function ecrireRecord(niv, s) { try { const r = lireRecords(); if (r[niv] === undefined || s > r[niv]) { r[niv] = s; localStorage.setItem(CLE_RECORD, JSON.stringify(r)); } } catch (e) {} }
+
+/* ---------- Écrans ---------- */
+function ecran(id) { document.querySelectorAll('.ecran').forEach(e => e.classList.toggle('actif', e.id === id)); window.scrollTo(0, 0); }
+
+function accueil() {
+  const rec = lireRecords(), total = NB_MANCHES * NB_FAMILLES;
+  document.getElementById('niveaux').innerHTML = Object.entries(NIVEAUX).map(([k, n]) => `
+    <button class="niveau" onclick="lancer(${k})">
+      <span class="num">${n.emoji}</span>
+      <span><h2>Niveau ${k} — ${n.titre}</h2><p>${n.desc}</p>${rec[k] !== undefined ? `<div class="rec">⭐ Meilleur score : ${rec[k]} / ${total}</div>` : ''}</span>
+    </button>`).join('');
+  ecran('ecran-accueil');
+}
+
+function lancer(niv) {
+  niveau = Number(niv); manche = 0; erreurs = 0; historique = []; sauve = false;
+  serie = genererSerie();
+  document.getElementById('titre-jeu').textContent = `${NIVEAUX[niveau].emoji} Niveau ${niveau} — ${NIVEAUX[niveau].titre}`;
+  document.getElementById('consigne').innerHTML = niveau === 2
+    ? 'Touche les <b>3 étiquettes</b> qui ont la même valeur. Attention, <b>2 intrus</b> se cachent dans la grille !'
+    : 'Touche les <b>3 étiquettes</b> qui ont la même valeur.';
+  ecran('ecran-jeu');
+  nouvelleManche();
+}
+
+function nouvelleManche() {
+  genererManche();
+  cacherMessage();
+  document.getElementById('btn-suivant').hidden = true;
+  dessinerGrille();
+  dessinerTrouvees();
+  majInfo();
+}
+
+function mancheSuivante() {
+  manche++;
+  if (manche >= NB_MANCHES) afficherScore(); else nouvelleManche();
+}
+
+function basculerRappel() {
+  rappelOuvert = !rappelOuvert;
+  document.getElementById('rappel').classList.toggle('visible', rappelOuvert);
+  document.getElementById('btn-rappel').classList.toggle('ouverte', rappelOuvert);
+}
+
+/* ---------- Affichage ---------- */
+function majInfo() {
+  const d = document.getElementById('dots');
+  d.innerHTML = '';
+  for (let i = 0; i < NB_MANCHES; i++) {
+    const s = document.createElement('div');
+    s.className = 'dot';
+    if (i < historique.length) s.classList.add(historique[i].erreurs === 0 ? 'correct' : historique[i].erreurs <= 2 ? 'corrige' : 'incorrect');
+    else if (i === manche) s.classList.add('current');
+    d.appendChild(s);
+  }
+  document.getElementById('compteur').textContent = `Manche ${manche + 1} · ${trouvees.length} / ${NB_FAMILLES}`;
+}
+
+function dessinerGrille() {
+  const g = document.getElementById('grille');
+  g.innerHTML = '';
+  tuiles.filter(t => !t.trouvee).forEach(t => {
+    const b = document.createElement('button');
+    b.className = 'tuile';
+    b.id = 'tuile-' + t.id;
+    b.innerHTML = t.html;
+    b.onclick = () => toucher(t.id);
+    g.appendChild(b);
+  });
+}
+
+function ligneFamille(f, nouvelle) {
+  return `<div class="fam-row${nouvelle ? ' nouvelle' : ''}">
+    <span class="egalite">${fracHTML(f.n, f.d)}<span class="eg">=</span>${ecrireDec(f.v)}<span class="eg">=</span>${ecrirePct(f.v)}</span>
+    <span class="jauge" title="${ecrirePct(f.v)}"><span class="rempli" style="width:${Math.min(100, f.v / 10)}%"></span><span class="grad"></span></span>
+  </div>`;
+}
+
+function dessinerTrouvees() {
+  const l = document.getElementById('liste-fam');
+  l.innerHTML = trouvees.length ? trouvees.map((i, k) => ligneFamille(familles[i], k === trouvees.length - 1)).join('') : '<p class="vide">Aucune pour l\'instant.</p>';
+}
+
+function message(type, html) { const m = document.getElementById('message'); m.className = 'message visible ' + type; m.innerHTML = html; }
+function cacherMessage() { document.getElementById('message').className = 'message'; }
+
+/* ---------- Jeu ---------- */
+function toucher(id) {
+  if (verrou) return;
+  const t = tuiles[id];
+  if (t.trouvee) return;
+  const b = document.getElementById('tuile-' + id);
+  const pos = selection.indexOf(id);
+  if (pos >= 0) { selection.splice(pos, 1); b.classList.remove('choisie'); return; }
+  selection.push(id);
+  b.classList.add('choisie');
+  if (selection.length === 3) { verrou = true; setTimeout(verifier, 250); }
+}
+
+function verifier() {
+  const sel = selection.map(id => tuiles[id]);
+  const boutons = selection.map(id => document.getElementById('tuile-' + id));
+  const juste = sel[0].fam >= 0 && sel.every(t => t.fam === sel[0].fam);
+
+  if (juste) {
+    const f = sel[0].fam;
+    boutons.forEach(b => { b.classList.remove('choisie'); b.classList.add('juste'); });
+    setTimeout(() => {
+      boutons.forEach(b => b.classList.add('part'));
+      setTimeout(() => {
+        sel.forEach(t => t.trouvee = true);
+        trouvees.push(f);
+        selection = []; verrou = false;
+        dessinerGrille(); dessinerTrouvees(); majInfo();
+        if (trouvees.length === NB_FAMILLES) finManche();
+        else message('bravo', `✅ Bravo ! ${fracHTML(familles[f].n, familles[f].d)} = ${ecrireDec(familles[f].v)} = ${ecrirePct(familles[f].v)}`);
+      }, 350);
+    }, 450);
+    return;
+  }
+
+  erreurs++; erreursManche++;
+  // Deux étiquettes vont-elles ensemble ?
+  const paire = sel.some((a, i) => sel.some((b, j) => i < j && a.fam >= 0 && a.fam === b.fam));
+  message('indice', paire
+    ? '🤔 Deux de ces étiquettes vont ensemble, mais pas la troisième. Laquelle est de trop ?'
+    : '🤔 Ces trois nombres n\'ont pas la même valeur. Essaie de les écrire tous de la même façon (par exemple en nombre décimal).');
+  boutons.forEach(b => { b.classList.remove('choisie'); b.classList.add('faux'); });
+  setTimeout(() => {
+    boutons.forEach(b => b.classList.remove('faux'));
+    selection = []; verrou = false;
+  }, 700);
+}
+
+function finManche() {
+  verrou = true;
+  memoriserDerniereManche();
+  historique.push({ familles: trouvees.map(i => familles[i]), erreurs: erreursManche });
+  let html = erreursManche === 0 ? '🌟 Manche parfaite : toutes les familles sans erreur !' : `👍 Manche terminée avec ${erreursManche} erreur${erreursManche > 1 ? 's' : ''}.`;
+  const intrus = tuiles.filter(t => t.fam === -1);
+  if (intrus.length) {
+    intrus.forEach(t => {
+      const b = document.getElementById('tuile-' + t.id);
+      if (b) { b.classList.add('intrus'); b.disabled = true; b.innerHTML = t.html + '<small>intrus</small>'; }
+    });
+    html += `<br>🕵️ Les intrus : ${intrus.map(t => `<b>${t.html}</b>`).join(' et ')} n'ont pas de famille dans la grille.`;
+  }
+  message(erreursManche === 0 ? 'bravo' : 'correction', html);
+  const s = document.getElementById('btn-suivant');
+  s.textContent = manche === NB_MANCHES - 1 ? 'Voir mon score →' : 'Manche suivante →';
+  s.hidden = false;
+  majInfo();
+  s.focus({ preventScroll: true });
+}
+
+/* ---------- Score final ---------- */
+function afficherScore() {
+  ecran('ecran-score');
+  const total = NB_MANCHES * NB_FAMILLES, score = Math.max(0, total - erreurs), pct = Math.round(score / total * 100);
+  const ancien = lireRecords()[niveau];
+  ecrireRecord(niveau, score);
+  document.getElementById('final-score').textContent = `${score} / ${total}`;
+  const em = document.getElementById('final-emoji'), ti = document.getElementById('final-title'), msg = document.getElementById('final-msg');
+  const txtErr = erreurs === 0 ? 'aucune erreur' : `${erreurs} erreur${erreurs > 1 ? 's' : ''}`;
+  if (score === total) { em.textContent = '🏆'; ti.textContent = 'Sans faute !'; msg.textContent = 'Tu passes d\'une écriture à l\'autre comme un pro.'; confettis(); }
+  else if (pct >= 70) { em.textContent = '⭐'; ti.textContent = 'Très bien !'; msg.textContent = `12 familles trouvées, ${txtErr}.`; }
+  else if (pct >= 50) { em.textContent = '👍'; ti.textContent = 'Pas mal !'; msg.textContent = `12 familles trouvées, ${txtErr}. Ouvre le 💡 Rappel avant de rejouer.`; }
+  else { em.textContent = '💪'; ti.textContent = 'Il faut encore t\'entrainer'; msg.textContent = `${txtErr}. Astuce : écris chaque nombre en nombre décimal pour les comparer.`; }
+  const rec = Math.max(score, ancien ?? 0);
+  document.getElementById('final-record').innerHTML = `<span class="record">⭐ Meilleur score : ${rec} / ${total}${ancien !== undefined && score > ancien ? ' — nouveau record !' : ''}</span>`;
+
+  if (!sauve && window.parent && window.parent !== window && typeof window.parent.saveResult === 'function') {
+    sauve = true;
+    try {
+      window.parent.saveResult({
+        activity: ID_ACTIVITE,
+        bookTitle: `Les familles de nombres — Niveau ${niveau}`,
+        score, total, pct,
+        date: new Date().toLocaleDateString('fr-BE'),
+        time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+      });
+    } catch (e) { console.warn('Erreur sauvegarde', e); }
+  }
+
+  document.getElementById('final-details').innerHTML = historique.map((h, i) => `
+    <div class="score-manche">Manche ${i + 1} <span>${h.erreurs === 0 ? '✅ sans erreur' : (h.erreurs <= 2 ? '🟠 ' : '❌ ') + h.erreurs + ' erreur' + (h.erreurs > 1 ? 's' : '')}</span></div>
+    ${h.familles.map(f => ligneFamille(f)).join('')}`).join('');
+}
+
+function confettis() {
+  const cols = ['#5B4FCF', '#1A9E75', '#D94F3D', '#C97B1A', '#1A6FA0', '#C7C2F5'];
+  for (let i = 0; i < 70; i++) {
+    const c = document.createElement('div'); c.className = 'confetti';
+    const t = 6 + Math.random() * 7;
+    Object.assign(c.style, { left: Math.random() * 100 + 'vw', width: t + 'px', height: t + 'px', background: cols[i % cols.length], animationDelay: Math.random() * 1.2 + 's', animationDuration: 1.6 + Math.random() * 1.8 + 's' });
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 4500);
+  }
+}
+
+accueil();
+</script>
+</body>
+</html>
