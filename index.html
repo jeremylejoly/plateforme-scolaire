@@ -35554,6 +35554,9 @@ window.teacherPreviewReturn = null;
 let gestionActivitiesSearch = '';
 let gestionActivitiesFilter = 'all'; // 'all' | 'active' | 'locked'
 let gestionActivitiesCollapsed = {};
+// Accordéon (24/11/2026) : matières et rubriques fermées par défaut, on ouvre ce qu'on veut voir
+let gestionActivitiesOpenCats = {};
+let gestionActivitiesOpenSubs = {};
 
 function getActivitiesMasterRegistry() {
   const registry = JSON.parse(JSON.stringify(PLAN_CATALOGUE));
@@ -35671,6 +35674,8 @@ function resetGestionActivitiesView() {
   gestionActivitiesSearch = '';
   gestionActivitiesFilter = 'all';
   gestionActivitiesCollapsed = {};
+  gestionActivitiesOpenCats = {};
+  gestionActivitiesOpenSubs = {};
   gestionActivitiesClsShown = null;
 }
 window.resetGestionActivitiesView = resetGestionActivitiesView;
@@ -35681,7 +35686,11 @@ function setGestionActivitiesFilter(f) {
 }
 
 function toggleGestionActivitiesCategory(catKey) {
-  gestionActivitiesCollapsed[catKey] = !gestionActivitiesCollapsed[catKey];
+  gestionActivitiesOpenCats[catKey] = !gestionActivitiesOpenCats[catKey];
+  renderGestionActivities();
+}
+function toggleGestionActivitiesSub(subKey) {
+  gestionActivitiesOpenSubs[subKey] = !gestionActivitiesOpenSubs[subKey];
   renderGestionActivities();
 }
 
@@ -35953,6 +35962,9 @@ let _gactItems = [];
 let _gactCats = [];
 function gactFold(ci) { if (_gactCats[ci] != null) toggleGestionActivitiesCategory(_gactCats[ci]); }
 window.gactFold = gactFold;
+let _gactSubKeys = [];
+function gactSubFold(k) { if (_gactSubKeys[k] != null) toggleGestionActivitiesSub(_gactSubKeys[k]); }
+window.gactSubFold = gactSubFold;
 
 function gactBulkSub(k, makeActive) {
   const sec = _gactSections[k];
@@ -35993,13 +36005,20 @@ const GACT_CSS = `
 .gact-seg button:hover{background:#F1EEE6}
 .gact-seg button.on{background:#5B4FCF;color:#fff}
 .gact-cat{display:flex;flex-direction:column;gap:12px}
-.gact-cat-h{display:flex;align-items:center;gap:12px;padding:6px 2px 0}
+.gact-cat-h{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:#fff;border:2.5px solid #1A1A2E;border-radius:16px;box-shadow:4px 4px 0 #1A1A2E;padding:14px 18px;cursor:pointer;font:inherit;color:inherit}
+.gact-cat-h:hover{background:#F7F5FF}
+.gact-cat-h:focus-visible,.gact-card-h:focus-visible{outline:3px solid #5B4FCF;outline-offset:2px}
+.gact-chev{font-size:16px;width:16px;flex-shrink:0;color:#1A1A2E}
+.gact-cat-h .gact-cat-n{margin-left:auto}
+.gact-subs{display:flex;flex-direction:column;gap:10px;padding-left:22px}
 .gact-cat-h h2{margin:0;font-family:'Fredoka',sans-serif;font-size:22px;font-weight:700}
 .gact-cat-n{font-size:14px;font-weight:700;color:#4A4A5E}
 .gact-fold{margin-left:auto;height:34px;padding:0 12px;border-radius:10px;border:2px solid #1A1A2E;background:#fff;font-family:'Fredoka',sans-serif;font-size:14px;font-weight:600;color:#1A1A2E;cursor:pointer}
 .gact-fold:hover{background:#F1EEE6}
 .gact-card{background:#fff;border:2.5px solid #1A1A2E;border-radius:16px;box-shadow:4px 4px 0 #1A1A2E;overflow:hidden}
-.gact-card-h{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;border-bottom:2px solid #1A1A2E}
+.gact-card-h{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;cursor:pointer}
+.gact-card-h:hover{filter:brightness(.97)}
+.gact-card.open .gact-card-h{border-bottom:2px solid #1A1A2E}
 .gact-card-h h3{margin:0;font-family:'Fredoka',sans-serif;font-size:17px;font-weight:600;color:#1A1A2E}
 .gact-pill{font-size:13px;font-weight:800;padding:2px 9px;border-radius:999px;background:#fff;border:2px solid #1A1A2E}
 .gact-mini{width:90px;height:8px;border-radius:999px;background:#E9E5DA;border:1.5px solid #1A1A2E;overflow:hidden}
@@ -36159,36 +36178,45 @@ function _renderGestionActivitiesInner(container) {
   // Liste
   let html = '';
   _gactCats = cats.map(c => c.name);
+  _gactSubKeys = [];
   cats.forEach((cat, ci) => {
     if (!cat.subs.length) return;
     const th = _gactTheme(cat.name);
-    const collapsed = !query && !!gestionActivitiesCollapsed[cat.name];
+    // Recherche en cours : tout est ouvert pour voir directement les résultats
+    const collapsed = !query && !gestionActivitiesOpenCats[cat.name];
     html += `
-      <section class="gact-cat">
-        <div class="gact-cat-h">
+      <section class="gact-cat${collapsed ? ' closed' : ''}">
+        <button type="button" class="gact-cat-h" aria-expanded="${!collapsed}" onclick="gactFold(${ci})">
+          <span class="gact-chev" aria-hidden="true">${collapsed ? '▸' : '▾'}</span>
           <h2 style="color:${th.color};">${_gactEsc(cat.name)}</h2>
-          <span class="gact-cat-n">${cat.vis} / ${cat.total} visibles</span>
-          <button type="button" class="gact-fold" aria-expanded="${!collapsed}" onclick="gactFold(${ci})">${collapsed ? '▸ Déplier' : '▾ Replier'}</button>
-        </div>`;
+          <span class="gact-cat-n">${cat.subs.length} rubrique${cat.subs.length > 1 ? 's' : ''} · ${cat.vis} / ${cat.total} visibles</span>
+        </button>`;
     if (!collapsed) {
+      html += `<div class="gact-subs">`;
       cat.subs.forEach(sub => {
         const sp = sub.total ? Math.round(100 * sub.vis / sub.total) : 0;
+        const subKey = cat.name + '||' + sub.name;
+        const sk = _gactSubKeys.push(subKey) - 1;
+        const subOpen = !!query || !!gestionActivitiesOpenSubs[subKey];
         html += `
-        <div class="gact-card">
-          <div class="gact-card-h" style="background:${th.tint};">
-            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <div class="gact-card${subOpen ? ' open' : ''}">
+          <div class="gact-card-h" style="background:${th.tint};" role="button" tabindex="0" aria-expanded="${subOpen}"
+               onclick="gactSubFold(${sk})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();gactSubFold(${sk});}">
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;min-width:0;">
+              <span class="gact-chev" aria-hidden="true">${subOpen ? '▾' : '▸'}</span>
               <h3>${_gactEsc(sub.name)}</h3>
               <span class="gact-pill">${sub.vis} / ${sub.total}</span>
               <span class="gact-mini" aria-hidden="true"><i style="width:${sp}%"></i></span>
             </div>
-            <div style="display:flex;gap:8px;">
+            <div style="display:flex;gap:8px;" onclick="event.stopPropagation()" onkeydown="event.stopPropagation()">
               <button type="button" class="gact-bulk show" onclick="gactBulkSub(${sub.k}, true)">Tout montrer</button>
               <button type="button" class="gact-bulk hide" onclick="gactBulkSub(${sub.k}, false)">Tout masquer</button>
             </div>
           </div>
-          <div class="gact-grid">${sub.rows.join('')}</div>
+          ${subOpen ? `<div class="gact-grid">${sub.rows.join('')}</div>` : ''}
         </div>`;
       });
+      html += `</div>`;
     }
     html += `</section>`;
   });
