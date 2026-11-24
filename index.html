@@ -10315,6 +10315,24 @@ async function syncFromFirebase(){
         localStorage.setItem('lq_locked_activities_' + currentClass, JSON.stringify(locked));
         if (currentClass === 'lejoly') localStorage.setItem('lq_locked_activities', JSON.stringify(locked));
       }
+      // v10 (24/11/2026) : l'enquête « Le Mystère de la bibliothèque » (4 chapitres) est masquée par défaut.
+      const BIBLIO_NEW_IDS = ['jeu_enquete_bibliotheque'];
+      if (state.role === 'teacher' && !localStorage.getItem('lq_migrated_new_locked_v10_' + currentClass)) {
+        const currentArr = JSON.parse(localStorage.getItem('lq_locked_activities_' + currentClass) || JSON.stringify(locked));
+        const mergedArray = Array.from(new Set([...currentArr, ...BIBLIO_NEW_IDS]));
+        localStorage.setItem('lq_locked_activities_' + currentClass, JSON.stringify(mergedArray));
+        if (currentClass === 'lejoly') localStorage.setItem('lq_locked_activities', JSON.stringify(mergedArray));
+        await window.FB_saveLockedActivities(currentClass, mergedArray);
+        localStorage.setItem('lq_migrated_new_locked_v10_' + currentClass, 'true');
+        console.log(`🛡️ Le Mystère de la bibliothèque a été masqué par défaut pour ${currentClass}.`);
+      } else {
+        if (state.role !== 'teacher' && !localStorage.getItem('lq_student_synced_v10_' + currentClass)) {
+          BIBLIO_NEW_IDS.forEach(id => { if (!locked.includes(id)) locked.push(id); });
+          localStorage.setItem('lq_student_synced_v10_' + currentClass, 'true');
+        }
+        localStorage.setItem('lq_locked_activities_' + currentClass, JSON.stringify(locked));
+        if (currentClass === 'lejoly') localStorage.setItem('lq_locked_activities', JSON.stringify(locked));
+      }
     } else {
       // Pas encore dans Firebase → on pousse les valeurs locales
       const localLocked = getLockedActivities(currentClass);
@@ -11559,6 +11577,7 @@ const ACTIVITY_PARENTS = {
   // --- FRANCAIS ---
   'recits_express': 'francais-lecture',
   'jeu_enquete': 'francais-lecture',
+  'jeu_enquete_bibliotheque': 'francais-lecture',
   'jeu_enquete_beffroi': 'francais-lecture',
   'jeu_enquete_villa': 'francais-lecture',
   'jeu_enquete_belgique': 'francais-lecture',
@@ -22314,6 +22333,7 @@ function renderLectureNarrativeMenu(){
 }
 // ===== LECTURE : ENQUÊTES DONT TU ES LE HÉROS (pages à la racine du site) =====
 const LECTURE_ENQUETES = [
+    {id:'jeu_enquete_bibliotheque', file:'enquete_bibliotheque.html', label:"Le Mystère de la bibliothèque (4 chapitres, niveaux 1 à 3)", icon:'📚', desc:"Lecture — Une grande enquête en 4 chapitres : chaque chapitre se débloque quand le précédent est résolu"},
     {id:'jeu_enquete', file:'enquete_chouette.html', label:"La Chouette d'or a disparu ! (niveau 1)", icon:'🦉', desc:"Pour débuter : une courte enquête à l'école"},
     {id:'jeu_enquete_carnet', file:'enquete_carnet.html', label:'Le Carnet perdu (niveau 1)', icon:'📓', desc:"Géographie (6e) — Continents, zones, climats, population"},
     {id:'jeu_enquete_temps', file:'enquete_temps.html', label:'Le Voyage dans le temps (niveau 1)', icon:'⏳', desc:"Histoire (5e) — Du Paléolithique au Néolithique"},
@@ -34371,6 +34391,7 @@ const PLAN_CATALOGUE = [
     { id:'dial_marche', label:'Une affaire en or !', icon:'🏪', screen:'screen-dial-marche', fn:'renderDialMarche' },
   ]},
   { cat: '📖 Français', sub: '🕵️ Lecture — Enquêtes dont tu es le héros', items: [
+    { id:'jeu_enquete_bibliotheque', label:"Le Mystère de la bibliothèque (4 chapitres, niveaux 1 à 3)", icon:'📚', screen:'screen-fiche-viewer', fn:"() => openEnquete('enquete_bibliotheque.html', 'Le Mystère de la bibliothèque', 'screen-plan-travail-student')" },
     { id:'jeu_enquete', label:"La Chouette d'or a disparu ! (niveau 1)", icon:'🦉', screen:'screen-fiche-viewer', fn:"() => openEnquete('enquete_chouette.html', 'La Chouette d\\'or a disparu !', 'screen-plan-travail-student')" },
     { id:'jeu_enquete_carnet', label:"Le Carnet perdu (niveau 1)", icon:'📓', screen:'screen-fiche-viewer', fn:"() => openEnquete('enquete_carnet.html', 'Le Carnet perdu', 'screen-plan-travail-student')" },
     { id:'jeu_enquete_temps', label:"Le Voyage dans le temps (niveau 1)", icon:'⏳', screen:'screen-fiche-viewer', fn:"() => openEnquete('enquete_temps.html', 'Le Voyage dans le temps', 'screen-plan-travail-student')" },
@@ -37186,7 +37207,7 @@ function updateHomePlanCard() {
 // Activités qui n'envoient jamais de score : « faites » dès qu'elles sont ouvertes depuis le plan
 // Enquêtes « dont tu es le héros » : pas de score, mais cochées seulement quand l'élève atteint la fin gagnante
 // (l'enquête appelle window.parent.ptEnqueteFinie(id)). Ouvertes sans être résolues → « Commencé ».
-const PLAN_END_SIGNAL_IDS = new Set(['jeu_enquete', 'jeu_enquete_beffroi', 'jeu_enquete_villa', 'jeu_enquete_belgique', 'jeu_enquete_cross', 'jeu_enquete_lampe', 'jeu_enquete_colomb', 'jeu_enquete_carnet', 'jeu_enquete_paie', 'jeu_enquete_fantome', 'jeu_enquete_temps', 'jeu_enquete_etang', 'jeu_enquete_lune', 'jeu_enquete_empereur']);
+const PLAN_END_SIGNAL_IDS = new Set(['jeu_enquete_bibliotheque', 'jeu_enquete', 'jeu_enquete_beffroi', 'jeu_enquete_villa', 'jeu_enquete_belgique', 'jeu_enquete_cross', 'jeu_enquete_lampe', 'jeu_enquete_colomb', 'jeu_enquete_carnet', 'jeu_enquete_paie', 'jeu_enquete_fantome', 'jeu_enquete_temps', 'jeu_enquete_etang', 'jeu_enquete_lune', 'jeu_enquete_empereur']);
 const PLAN_NO_SCORE_IDS = new Set([
   'kim_histoire', 'fiche_frise', 'hist_grandes_periodes', 'hist_temps_modernes', 'hist_contemporaine',
   'fiche_respiratoire', 'fiche_digestif', 'fiche_circulatoire', 'fiche_lune', 'fiche_classification', 'fiche_cycle_eau',

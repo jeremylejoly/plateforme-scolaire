@@ -1,0 +1,2334 @@
+<!DOCTYPE html>
+<!-- © 2026 Jérémy Lejoly — LCML. Reproduction interdite sans autorisation. -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Le Mystère de la bibliothèque — Plateforme LCML</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+  :root {
+    --purple: #5B4FCF; --purple-light: #EEF0FF; --purple-mid: #C7C2F5;
+    --green: #1A9E75; --green-light: #E2F5EE;
+    --red: #D94F3D; --red-light: #FDECEA;
+    --amber: #F59E0B; --amber-dark: #C97B1A; --amber-light: #FEF3E2;
+    --blue: #1A6FA0; --blue-light: #E2F0FA;
+    --parchment: #F3FBF6;
+    --bg: #FDFBF7; --surface: #FFFFFF; --surface-alt: #F4F1EB;
+    --text: #1A1A2E; --muted: #6B7080; --border: #1A1A2E;
+    --shadow: 4px 4px 0 var(--border); --shadow-sm: 2px 2px 0 var(--border);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; }
+  body { padding: 16px; }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1, h2, h3, .fred { font-family: 'Fredoka', 'Inter', sans-serif; }
+  button { font: inherit; color: inherit; cursor: pointer; touch-action: manipulation; }
+
+  .topbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .topbar .title { flex: 1; min-width: 180px; font-family: 'Fredoka'; font-weight: 700; font-size: 1.25rem; }
+  .btn { border: 2px solid var(--border); border-radius: 12px; background: var(--surface); padding: 10px 14px; min-height: 48px; font-weight: 600; box-shadow: var(--shadow-sm); }
+  .btn:active { transform: translate(2px,2px); box-shadow: none; }
+  .btn.primary { background: var(--purple); color: #fff; }
+  .btn.amber { background: var(--amber-light); }
+  .btn .count { display: inline-block; min-width: 22px; padding: 0 6px; margin-left: 4px; border-radius: 999px; background: var(--purple); color: #fff; font-size: .85rem; }
+
+  .card { background: var(--surface); border: 2px solid var(--border); border-radius: 20px; box-shadow: var(--shadow); padding: 22px; }
+  .story.card { background: var(--parchment); }
+
+  .hero { text-align: center; }
+  .hero .owl { font-size: 4.5rem; line-height: 1; }
+  .hero h1 { font-size: 2rem; margin: 10px 0 6px; }
+  .hero p { line-height: 1.55; font-size: 1.05rem; }
+  .rules { text-align: left; background: var(--surface-alt); border-radius: 14px; padding: 14px 18px; margin: 16px 0; line-height: 1.5; }
+  .rules li { margin: 4px 0; }
+  .endings { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 12px 0 18px; }
+  .ending-chip { border: 2px solid var(--border); border-radius: 999px; padding: 6px 12px; font-size: .9rem; background: var(--surface-alt); color: var(--muted); }
+  .ending-chip.found { color: var(--text); background: var(--green-light); }
+  .ending-chip.found.win { background: #FFE9A8; }
+  .start-btns { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+  .para-num { display: inline-flex; align-items: center; justify-content: center; width: 58px; height: 58px; border-radius: 50%; flex-shrink: 0;
+    background: var(--purple); color: #fff; font-family: 'Fredoka'; font-weight: 700; font-size: 1.6rem; border: 2px solid var(--border); box-shadow: var(--shadow-sm); }
+  .para-head { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  .para-head h2 { margin: 0; font-size: 1.35rem; }
+  .story p { font-size: 1.12rem; line-height: 1.7; margin: 0 0 14px; }
+  .story .speech { font-style: italic; }
+  .doc { font-family: 'Fredoka'; background: #FFFBEA; border: 2px solid var(--border); border-radius: 6px; padding: 14px 18px; margin: 0 0 14px; font-size: 1.1rem; line-height: 1.8; }
+  .vocab { background: var(--surface); border-left: 5px solid var(--amber-dark); border-radius: 8px; padding: 8px 12px; margin: 0 0 14px; font-size: .98rem; line-height: 1.5; }
+
+  .clue-found { background: var(--blue-light); border: 2px solid var(--blue); border-radius: 12px; padding: 10px 14px; margin: 4px 0 12px; font-size: 1rem; line-height: 1.45; }
+  .clue-found b { color: var(--blue); }
+  .obj-found { background: var(--green-light); border: 2px solid var(--green); border-radius: 12px; padding: 10px 14px; margin: 4px 0 12px; font-size: 1rem; line-height: 1.45; }
+
+  .choices { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+  .choices .prompt { font-weight: 700; font-family: 'Fredoka'; font-size: 1.1rem; margin: 6px 0 2px; }
+  .choice { display: flex; align-items: center; gap: 12px; text-align: left; width: 100%; border: 2px solid var(--border); border-radius: 14px;
+    background: var(--purple-light); padding: 12px 14px; min-height: 56px; font-size: 1.05rem; font-weight: 600; box-shadow: var(--shadow-sm); }
+  .choice:active { transform: translate(2px,2px); box-shadow: none; }
+  .choice .go { margin-left: auto; flex-shrink: 0; font-family: 'Fredoka'; font-size: .95rem; background: var(--surface); border: 2px solid var(--border); border-radius: 999px; padding: 2px 10px; white-space: nowrap; }
+  .choice.accuse { background: var(--red-light); }
+  .choice.skip { background: var(--surface-alt); }
+  .choice.obj { background: var(--green-light); }
+
+  .enigme { border: 2px solid var(--border); border-radius: 16px; background: var(--amber-light); padding: 16px; margin: 6px 0 16px; }
+  .enigme h3 { margin: 0 0 8px; font-size: 1.15rem; }
+  .enigme .q { font-size: 1.05rem; line-height: 1.55; margin: 0 0 12px; font-weight: 600; }
+  .answer-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+  .answer-row label { font-weight: 600; min-width: 140px; }
+  .answer-row input { width: 120px; font-size: 1.4rem; font-family: 'Fredoka'; text-align: center; padding: 8px; border: 2px solid var(--border); border-radius: 10px; background: #fff; }
+  .answer-row .unit { font-family: 'Fredoka'; font-size: 1.2rem; font-weight: 600; }
+  .qcm { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  .qcm button { text-align: left; border: 2px solid var(--border); border-radius: 12px; background: #fff; padding: 10px 14px; min-height: 52px; font-size: 1.02rem; font-weight: 500; }
+  .qcm button.sel { background: var(--purple); color: #fff; }
+  .qcm button.good { background: var(--green); color: #fff; }
+  .qcm.done button:not(.sel) { opacity: .45; }
+  .classify { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  .cl-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; border: 2px solid var(--border); border-radius: 12px; background: #fff; padding: 8px 10px; }
+  .cl-row .cl-label { flex: 1 1 200px; font-weight: 500; line-height: 1.35; }
+  .cl-row .cl-btns { display: flex; flex-wrap: wrap; gap: 6px; }
+  .cl-row .cl-btns button { border: 2px solid var(--border); border-radius: 10px; background: #fff; padding: 8px 12px; min-height: 44px; font-size: .98rem; font-weight: 600; }
+  .cl-row .cl-btns button.sel { background: var(--purple); color: #fff; }
+  .cl-row.missing { border-color: var(--amber-dark); background: var(--amber-light); }
+  .classify.done .cl-btns button.sel { background: var(--green); }
+  .classify.done .cl-btns button:not(.sel) { opacity: .45; }
+  .order { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  .order button { display: flex; align-items: center; gap: 10px; text-align: left; border: 2px solid var(--border); border-radius: 12px; background: #fff; padding: 8px 12px; min-height: 52px; font-size: 1.02rem; font-weight: 500; }
+  .order button .rank { flex: 0 0 34px; height: 34px; border-radius: 50%; border: 2px dashed var(--purple-mid); display: flex; align-items: center; justify-content: center; font-family: 'Fredoka'; font-weight: 700; font-size: 1.1rem; }
+  .order button.sel .rank { background: var(--purple); border: 2px solid var(--purple); color: #fff; }
+  .order.done button .rank { background: var(--green); border-color: var(--green); }
+  .order-tools { margin: -2px 0 10px; }
+  .sym { width: 120px; height: 60px; display: block; }
+  .sym line, .sym circle, .schema line, .schema circle, .schema polyline { stroke: #1A1A2E; stroke-width: 2.5; }
+  .sym circle[r="2.5"], .schema circle[r="2.5"] { fill: #1A1A2E; }
+  .sym .plus, .schema .plus { font: 700 14px 'Inter', sans-serif; fill: #1A1A2E; stroke: none; }
+  .sym .m { font: 700 15px 'Inter', sans-serif; fill: #1A1A2E; stroke: none; }
+  .schema-box { text-align: center; }
+  .schema { width: 100%; max-width: 360px; }
+  .schema .cap { font: 500 13px 'Inter', sans-serif; fill: #555; stroke: none; }
+  .schema .q { font: 700 16px 'Inter', sans-serif; fill: #C97B1A; stroke: none; }
+  .circuit-svg { display: block; width: 100%; max-width: 420px; margin: 0 auto 6px; }
+  .circuit-svg .w { stroke: #1A1A2E; stroke-width: 4; fill: none; }
+  .circuit-svg .sw { cursor: pointer; }
+  .circuit-svg .sw-hit { fill: transparent; }
+  .circuit-svg .lbl { font: 600 14px 'Inter', sans-serif; fill: #1A1A2E; }
+  .circuit-svg .bulb { fill: #EEE; stroke: #1A1A2E; stroke-width: 3; }
+  .circuit-svg.lit .bulb { fill: #FFD84D; }
+  .circuit-svg .rays { display: none; stroke: #F59E0B; stroke-width: 3; }
+  .circuit-svg.lit .rays { display: inline; }
+  .mats { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+  .mats button { border: 2px solid var(--border); border-radius: 12px; background: #fff; padding: 8px 12px; min-height: 48px; font-size: 1rem; font-weight: 600; }
+  .mats button.sel { background: var(--purple); color: #fff; }
+  .nest .n1 { fill: #EAF6EE; stroke: #1A1A2E; stroke-width: 2; }
+  .nest .n2 { fill: #D3EEDC; stroke: #1A1A2E; stroke-width: 1.5; }
+  .nest .n3 { fill: #FFF7D6; stroke: #1A1A2E; stroke-width: 1.5; }
+  .nest .nt { font: 700 14px 'Inter', sans-serif; fill: #1A1A2E; }
+  .nest .ns { font: 600 12.5px 'Inter', sans-serif; fill: #1A1A2E; }
+  .nest .nx { font: 600 11px 'Inter', sans-serif; fill: #1A1A2E; }
+  .nest .nl { font: 700 26px 'Fredoka', sans-serif; fill: #5B4FCF; }
+  .schema.nest { max-width: 560px; min-width: 500px; }
+  .nest-scroll { overflow-x: auto; }
+  .grid-wrap { overflow-x: auto; margin-bottom: 10px; }
+  table.grid { border-collapse: collapse; width: 100%; background: #fff; }
+  table.grid th, table.grid td { border: 2px solid var(--border); padding: 4px; text-align: center; }
+  table.grid th { font-size: .8rem; font-weight: 700; line-height: 1.15; }
+  @media (max-width: 480px) { table.grid th { font-size: .64rem; } table.grid th, table.grid td { padding: 1px; } table.grid td.rl { font-size: .78rem; padding-left: 4px; } table.grid button { min-width: 26px; } }
+  table.grid td.rl { text-align: left; font-weight: 600; padding-left: 6px; font-size: .9rem; }
+  table.grid button { width: 100%; min-width: 36px; min-height: 44px; border: none; background: #fff; font-size: 1.4rem; font-weight: 700; color: var(--green); }
+  table.grid button.on { background: var(--green-light); }
+  .grid-done table.grid button { pointer-events: none; }
+  .globe { display: block; width: 100%; max-width: 540px; margin: 0 auto 10px; touch-action: manipulation; }
+  .globe .band { cursor: pointer; }
+  .globe .band rect { fill: #DCEFFB; stroke: none; }
+  .globe .band.alt rect { fill: #F4FAFF; }
+  .globe .band.sel rect { fill: var(--purple); }
+  .globe.done .band.sel rect { fill: var(--green); }
+  .globe .line { stroke: #1A1A2E; stroke-width: 1.5; }
+  .globe .line.eq { stroke-width: 2.5; }
+  .globe .lbl { font-family: 'Inter', sans-serif; font-size: 15px; fill: #1A1A2E; }
+  .globe .pole { font-family: 'Fredoka', sans-serif; font-size: 15px; font-weight: 700; fill: #1A1A2E; }
+  .feedback { margin-top: 12px; padding: 10px 14px; border-radius: 10px; line-height: 1.5; font-size: 1rem; }
+  .feedback.ok { background: var(--green-light); border: 2px solid var(--green); }
+  .feedback.ko { background: var(--red-light); border: 2px solid var(--red); }
+  .feedback.info { background: var(--surface); border: 2px solid var(--amber-dark); }
+
+  .proofs { list-style: none; padding: 0; margin: 0 0 14px; }
+  .proofs li { background: var(--surface); border: 2px solid var(--border); border-radius: 10px; padding: 8px 12px; margin-bottom: 8px; line-height: 1.45; }
+
+  .ending-box { text-align: center; border: 2px solid var(--border); border-radius: 16px; padding: 16px; margin: 10px 0 14px; }
+  .ending-box.win { background: #FFE9A8; }
+  .ending-box.half { background: var(--blue-light); }
+  .ending-box.lose { background: var(--red-light); }
+  .ending-box .big { font-size: 2.6rem; }
+  .ending-box h3 { margin: 6px 0; font-size: 1.3rem; }
+  .ending-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+
+  /* ---- Images : énigme « touche l'indice » et documents sur fond d'image ---- */
+  .spot, .parch { position: relative; margin: 0 auto 14px; max-width: min(100%, 78vh); }
+  .spot img, .parch img { display: block; width: 100%; height: auto; border-radius: 12px; border: 2px solid var(--border); }
+  .spot { cursor: crosshair; touch-action: manipulation; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+  .spot-mark { position: absolute; width: 44px; height: 44px; margin: -22px 0 0 -22px; border: 4px solid var(--purple); border-radius: 50%; box-shadow: 0 0 0 3px #fff, 0 2px 8px rgba(0,0,0,.4); display: none; pointer-events: none; }
+  .spot-mark.on { display: block; }
+  .spot.done .spot-mark { border-color: var(--green); }
+  .spot-help { margin: -6px 0 10px; text-align: center; font-size: .9rem; }
+  .parch { container-type: inline-size; cursor: zoom-in; }
+  .parch-txt { position: absolute; display: flex; flex-direction: column; color: #3B2412; line-height: 1.3; }
+  .latin { font-family: 'Uncial Antiqua', Georgia, serif; }
+  .imprime { font-family: 'IM Fell English', Georgia, serif; color: #2A1C10; line-height: 1.25; }
+  .manuscrit { font-family: 'Caveat', 'Comic Sans MS', cursive; color: #2B2B5E; line-height: 1.15; }
+  .parch.page .parch-txt { left: 24%; top: 21%; width: 62%; height: 58%; font-size: 8cqw; justify-content: flex-start; text-align: left; }
+  .parch .lettrine { position: absolute; left: 3.6%; top: 5%; width: 18.6%; height: 27%; display: flex; align-items: center; justify-content: center; font-family: 'Uncial Antiqua', Georgia, serif; font-size: 15cqw; color: #8B1A1A; text-shadow: 1px 1px 0 #F6DE97; }
+  .parch.feuille .parch-txt { left: 6%; top: 11%; width: 72%; height: 56%; font-size: 5.4cqw; justify-content: center; text-align: center; gap: 1.2cqw; }
+  #zoom { flex-direction: column; gap: 12px; }
+  #zoom .zoom-box { width: min(96vw, 140vh); }
+  #zoom .parch { max-width: none; margin: 0; cursor: default; }
+  .btn.relecture { opacity: .55; cursor: not-allowed; box-shadow: none; }
+  .overlay { position: fixed; inset: 0; background: rgba(26,26,46,.45); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 10; }
+  .overlay.open { display: flex; }
+  .overlay .card { max-width: 560px; width: 100%; max-height: 85vh; overflow: auto; }
+  .carnet-list { list-style: none; padding: 0; margin: 8px 0 14px; }
+  .carnet-list li { border-bottom: 2px dashed var(--purple-mid); padding: 10px 2px; line-height: 1.45; }
+  .muted { color: var(--muted); }
+  .hidden { display: none !important; }
+  @media (max-width: 480px) { body { padding: 10px; } .card { padding: 16px; } .story p { font-size: 1.05rem; } .hero h1 { font-size: 1.6rem; } .answer-row label { min-width: 0; width: 100%; } }
+  /* ---- Ajouts : chapitres, phrases à toucher, mot à écrire ---- */
+  .chapitres { display: flex; flex-direction: column; gap: 10px; margin: 14px 0 6px; text-align: left; }
+  .chap { display: flex; align-items: center; gap: 12px; border: 2px solid var(--border); border-radius: 14px; background: var(--surface); padding: 10px 12px; box-shadow: var(--shadow-sm); }
+  .chap .num { flex: 0 0 46px; height: 46px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Fredoka'; font-weight: 700; font-size: 1.3rem; background: var(--purple-light); }
+  .chap.fini .num { background: var(--green); color: #fff; }
+  .chap.verrou { background: var(--surface-alt); color: var(--muted); box-shadow: none; }
+  .chap.verrou .num { background: var(--surface-alt); }
+  .chap .info { flex: 1; min-width: 0; }
+  .chap .info b { font-family: 'Fredoka'; font-size: 1.08rem; }
+  .chap .info .muted { font-size: .9rem; }
+  .chap .btn { white-space: nowrap; }
+  .passage { background: #fff; border: 2px solid var(--border); border-radius: 12px; padding: 10px 14px; margin-bottom: 10px; font-size: 1.05rem; line-height: 1.75; }
+  .passage .ph { cursor: pointer; border-radius: 6px; padding: 1px 2px; background: #FFF6D6; box-shadow: inset 0 -2px 0 #E8C766; }
+  .passage .ph.sel { background: var(--purple); color: #fff; box-shadow: none; }
+  .passage.done .ph { cursor: default; background: none; box-shadow: none; }
+  .passage.done .ph.sel { background: var(--green); color: #fff; }
+  .passage.dialogue .ph { display: block; margin: 2px 0; }
+  .mot-input { width: 220px; font-size: 1.3rem; font-family: 'Fredoka'; text-align: center; padding: 8px; border: 2px solid var(--border); border-radius: 10px; background: #fff; text-transform: uppercase; letter-spacing: 2px; }
+  .doc h4 { margin: 0 0 6px; font-size: 1.15rem; text-align: center; }
+  .doc ol, .doc ul { margin: 4px 0; padding-left: 22px; }
+  .doc.affiche { background: #FFF; border-width: 3px; font-family: 'Inter'; font-size: 1rem; line-height: 1.6; }
+  .doc.fiche { background: #FFFDF3; font-family: 'Caveat', 'Comic Sans MS', cursive; font-size: 1.35rem; line-height: 1.5; color: #2B2B5E; }
+  .next-chap { background: var(--purple-light); border: 2px dashed var(--purple); border-radius: 14px; padding: 12px 14px; margin: 0 0 12px; line-height: 1.5; }
+  .prev-row { margin: -6px 0 10px; }
+  .prev-btn { min-height: 40px; padding: 6px 12px; font-size: .95rem; background: var(--surface-alt); }
+  .choice.vu { background: #E7F3EC; color: #3E5A4B; }
+  .choice .vu-tag { margin-left: auto; font-size: .82rem; font-weight: 700; color: var(--green); white-space: nowrap; }
+  .choice .vu-tag + .go { margin-left: 8px; }
+  .heure-row { display: flex; align-items: center; gap: 8px; }
+  .heure-input { width: 72px !important; text-align: center; font-size: 1.4rem; font-family: 'Fredoka'; }
+  .heure-h { font-family: 'Fredoka'; font-size: 1.5rem; font-weight: 700; }
+  .parch.registre .parch-txt { font-family: 'Caveat', cursive; color: #3B2412; font-size: 2.55cqw; line-height: 1.22; justify-content: flex-start; text-align: left; gap: .6cqw; }
+  .parch.registre .gauche { left: 12%; top: 12%; width: 34%; height: 76%; }
+  .parch.registre .droite { left: 54%; top: 12%; width: 34%; height: 76%; }
+  .parch.carte .parch-txt { left: 15%; top: 26%; width: 58%; height: 58%; font-family: 'Caveat', cursive; color: #5B2E8C; font-size: 3.5cqw; line-height: 1.3; justify-content: center; text-align: center; }
+  .carnet-chap { font-family: 'Fredoka'; font-weight: 600; color: var(--purple); margin: 12px 0 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section id="screen-title" class="card hero">
+    <div class="owl">📚</div>
+    <h1>Le Mystère de la bibliothèque</h1>
+    <p class="muted fred">Une enquête en 4 chapitres dont tu es le héros ou l'héroïne</p>
+    <div class="rules">
+      <ul>
+        <li>🔎 Ici, ton meilleur outil, c'est <b>la lecture</b> : les indices se cachent dans les textes, les témoignages et les documents.</li>
+        <li>🔐 Pour avancer, il faut <b>réussir chaque énigme</b>. Si tu te trompes, relis : un indice t'aidera.</li>
+        <li>📒 Les indices sont notés dans ton <b>carnet</b>. Garde-les en mémoire : ils pourront servir plus tard !</li>
+        <li>🔓 Un chapitre se débloque quand tu as <b>résolu le chapitre précédent</b>.</li>
+        <li>💾 Ta partie est <b>sauvegardée</b> : tu peux la reprendre plus tard, même sur une autre tablette.</li>
+      </ul>
+    </div>
+    <div class="chapitres" id="chapitres"></div>
+  </section>
+
+  <section id="screen-story" class="hidden">
+    <div class="topbar">
+      <div class="title" id="story-title">📚 Le Mystère de la bibliothèque</div>
+      <button class="btn amber" id="btn-carnet">📒 Carnet <span class="count" id="clue-count">0</span></button>
+      <button class="btn" id="btn-menu">⟲ Chapitres</button>
+    </div>
+    <article class="card story" id="story"></article>
+  </section>
+</div>
+
+<div class="overlay" id="carnet">
+  <div class="card">
+    <h2 style="margin:0 0 4px">🎒 Mon sac</h2>
+    <ul class="carnet-list" id="sac-list"></ul>
+    <h2 style="margin:0 0 4px">📒 Mes indices</h2>
+    <ul class="carnet-list" id="carnet-list"></ul>
+    <div id="carnet-avant"></div>
+    <button class="btn primary" id="btn-carnet-close" style="width:100%">Fermer le carnet</button>
+  </div>
+</div>
+
+<div class="overlay" id="zoom">
+  <div class="zoom-box" id="zoom-box"></div>
+  <button class="btn primary" id="btn-zoom-close">✕ Fermer</button>
+</div>
+<script src="lcml_jeux_sync.js"></script>
+<script>
+(function () {
+  'use strict';
+  const CLUES = {}, OBJECTS = {}, S = {}, CHAPITRES = [];
+  // Images : '../assets/enquetes/' pour la copie locale (Exercices (local)/), 'assets/enquetes/' dans le site.
+  const IMG = 'assets/enquetes/';
+  const sansBalises = h => h.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().replace(/"/g, '&quot;');
+  // Carte de La Plume (texte écrit par-dessus l'image, agrandissable)
+  const carte = html => `<div class='parch carte zoomable' role='img' aria-label="Carte de La Plume : ${sansBalises(html)}"><img src='${IMG}bibliotheque_carte_plume.webp' alt=''><span class='parch-txt'>${html}</span></div>`;
+  // Pages du registre de Jean de la Plume (page de gauche, page de droite)
+  const registre = (g, d) => `<div class='parch registre zoomable' role='img' aria-label="Registre de Jean de la Plume : ${sansBalises(g + ' ' + d)}"><img src='${IMG}bibliotheque_registre.webp' alt=''><span class='parch-txt gauche'>${g}</span><span class='parch-txt droite'>${d}</span></div>`;
+  /* =====================================================================
+     CHAPITRE 1 — LA VITRINE VIDE (niveau 1)
+     ===================================================================== */
+  Object.assign(CLUES, {
+    c1_cle:        "La clé de la vitrine est rangée dans le tiroir du bureau d'accueil. Ce matin, quelqu'un l'a prise, puis remise en vitesse.",
+    c1_accueilVide:"De 11 h à 12 h, Mme Verbeke rangeait les livres rendus dans le bureau du fond : l'accueil est resté vide.",
+    c1_dragon:     "La couverture des Contes de la Plume est rouge, avec un dragon doré. Dans la vitrine, le livre était ouvert : on ne voyait pas la couverture.",
+    c1_heure:      "À 10 h 30, Victor a nettoyé la vitrine : le livre était encore là. Il a donc disparu entre 10 h 30 et midi.",
+    c1_alibiVictor:"De 11 h à 12 h 30, Victor réparait un tuyau au sous-sol. Mme Verbeke l'a entendu taper sur les tuyaux tout ce temps.",
+    c1_laine:      "Un petit fil de laine jaune était accroché à la serrure de la vitrine.",
+    c1_temoin:     "Vers 11 h 15, Mme Lambert a vu un pompon jaune dépasser derrière le bureau d'accueil, là où est rangée la clé : quelqu'un de si petit qu'on ne voyait même pas sa tête.",
+    c1_alibiLambert:"Mme Lambert tricote avec de la laine verte. Elle a mal aux genoux et ne quitte presque jamais son fauteuil.",
+    c1_alibiClara: "Clara, 10 ans, porte une écharpe en laine jaune. De 11 h à midi, elle collait des étiquettes avec Mme Verbeke dans le bureau du fond. Elle est grande : elle dépasse le bureau d'accueil de toute la tête.",
+    c1_bonnet:     "Lucien porte un bonnet à pompon jaune… et il manque un bout de laine à son pompon.",
+    c1_cabane:     "Sous un coussin bleu, au fond de la cabane du coin des enfants, dépasse le coin d'un vieux livre rouge au bord doré.",
+    c1_trahi:      "Lucien dit qu'il n'a jamais vu le livre, mais il sait que sa couverture est rouge avec un dragon doré."
+  });
+
+  CHAPITRES.push({
+    n: 1, titre: "La vitrine vide", niveau: 1, pret: true,
+    resume: "Le livre le plus précieux de la bibliothèque a disparu de sa vitrine.",
+    first: 'c1_debut',
+    preuves: ['c1_heure', 'c1_accueilVide', 'c1_cle', 'c1_temoin', 'c1_laine', 'c1_bonnet', 'c1_trahi', 'c1_cabane'],
+    endings: [
+      { id: 'c1_fin',        label: "📕 Le livre retrouvé" },
+      { id: 'c1_moitie',     label: "🤔 Pas tout à fait" },
+      { id: 'c1_sansPreuve', label: "😶 Sans preuve" },
+      { id: 'c1_finVictor',  label: "🧹 L'agent d'entretien" },
+      { id: 'c1_finLambert', label: "🧶 La tricoteuse" },
+      { id: 'c1_finClara',   label: "🧣 L'écharpe jaune" }
+    ]
+  });
+
+  Object.assign(S, {
+    c1_debut: { title: "Un mercredi pas comme les autres",
+      text: [
+        "Montrival, un mercredi de novembre. Comme chaque semaine, tu pousses la porte de la bibliothèque communale à 13 h 30. Tu y donnes un coup de main à Mme Verbeke, la bibliothécaire : tu ranges les livres rendus, tu colles des étiquettes et, parfois, tu lis une histoire aux plus petits.",
+        "Mais aujourd'hui, Mme Verbeke t'attend dans le hall, toute pâle. <span class='speech'>« Le livre de la vitrine a disparu ! <i>Les Contes de la Plume</i>, le livre le plus précieux de la bibliothèque ! »</span>",
+        "<span class='speech'>« Il a été écrit en 1898 par Jean de la Plume, l'écrivain qui a fondé notre bibliothèque. Il n'en reste plus que trois dans le monde ! Lis l'affiche à côté de la vitrine : tu vas comprendre pourquoi personne ne devait l'emporter. »</span>",
+        "<div class='doc affiche'><h4>📚 Règlement de la bibliothèque de Montrival</h4><ol>" +
+          "<li>La bibliothèque est ouverte le mercredi de 9 h à 12 h et de 13 h 30 à 17 h, et le samedi de 9 h à 12 h.</li>" +
+          "<li>Chaque lecteur peut emprunter 3 livres pendant 3 semaines.</li>" +
+          "<li>Les dictionnaires et les encyclopédies se lisent sur place.</li>" +
+          "<li>Les livres anciens de la vitrine ne sortent jamais de la bibliothèque. Pour les regarder, demandez à la bibliothécaire.</li>" +
+          "<li>On parle à voix basse et on ne mange pas entre les rayons.</li></ol></div>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "📜 Le règlement",
+        question: "D'après le règlement, que faut-il faire pour regarder un livre de la vitrine ?",
+        options: [
+          "L'emprunter pendant trois semaines, comme les autres livres",
+          "Venir le samedi matin, quand il y a moins de monde",
+          "Le demander à la bibliothécaire",
+          "Rien : personne n'a le droit de le regarder"
+        ],
+        answer: 2,
+        hint: "Relis la règle numéro 4 de l'affiche, jusqu'au bout.",
+        success: "Exact ! Les livres de la vitrine ne sortent jamais de la bibliothèque. Pour les regarder, il faut le demander à Mme Verbeke. Celui qui a pris le livre n'en avait donc pas le droit !",
+        to: 'c1_debutOk'
+      }
+    },
+
+    c1_debutOk: { title: "L'enquête commence",
+      text: [
+        "Mme Verbeke se tord les mains. <span class='speech'>« Ce matin, quatre personnes sont venues : Victor, notre agent d'entretien ; Mme Lambert, qui vient lire ici tous les jours ; et deux enfants pour l'heure du conte, le petit Lucien, 8 ans, et Clara, 10 ans. Ils sont tous revenus cet après-midi. »</span>",
+        "<span class='speech'>« À 16 h 30, je les réunirai dans la salle de lecture. Tu me diras alors qui a pris le livre… et tu me donneras tes preuves ! »</span>"
+      ],
+      prompt: "",
+      choices: [ { label: "Commencer l'enquête dans le hall", to: 'c1_hall' } ]
+    },
+
+    c1_hall: { title: "Le hall",
+      text: [
+        "Le hall de la bibliothèque est une grande pièce au plafond très haut. À droite, il y a le bureau d'accueil. Au fond, la vitrine. Un escalier descend au sous-sol, où sont rangées les réserves. Près de la fenêtre, une grande table sert aux dessins et aux devoirs. À gauche, on entre dans la salle de lecture et, plus loin, dans le coin des enfants, avec sa cabane en bois et ses gros coussins."
+      ],
+      prompt: "Où vas-tu ?",
+      choices: [
+        { label: "🗂️ Le bureau d'accueil, pour parler à Mme Verbeke", to: 'c1_accueil' },
+        { label: "🔍 La vitrine", to: 'c1_vitrine' },
+        { label: "🛋️ La salle de lecture, où se trouve Mme Lambert", to: 'c1_lecture' },
+        { label: "🔧 Le sous-sol, où travaille Victor", to: 'c1_sousSol' },
+        { label: "🎨 La table de dessin, où se trouve Clara", to: 'c1_clara' },
+        { label: "🧸 Le coin des enfants, où lit Lucien", to: 'c1_enfants', requires: 'c1_dragon' },
+        { label: "🧸 Le coin des enfants, où lit Lucien", to: 'c1_enfantsTot', requiresNot: 'c1_dragon' },
+        { label: "16 h 30 : je présente mes conclusions à Mme Verbeke", to: 'c1_soir', accuse: true }
+      ]
+    },
+
+    c1_accueil: { title: "Au bureau d'accueil",
+      text: [
+        "Mme Verbeke s'assied derrière son bureau et te raconte sa matinée.",
+        "<span class='speech'>« À 10 h, j'ai lu une histoire aux enfants dans le coin des enfants : c'est l'heure du conte, elle dure une heure. Mais avant cela, à 9 h, j'avais ouvert la bibliothèque, comme d'habitude. Et à 12 h, au moment de fermer, j'ai vu que la vitrine était vide ! »</span>",
+        "<span class='speech'>« Ah, j'oubliais : juste après l'heure du conte, je suis allée dans le bureau du fond pour ranger les livres rendus. J'y suis restée jusqu'à midi. Pendant ce temps-là, il n'y avait personne à l'accueil. »</span>"
+      ],
+      enigme: { kind: 'order',
+        title: "🕘 La matinée de Mme Verbeke",
+        question: "Remets la matinée de Mme Verbeke dans l'ordre : touche les évènements du premier au dernier.",
+        items: [
+          "L'heure du conte commence.",
+          "Mme Verbeke voit que la vitrine est vide.",
+          "Mme Verbeke ouvre la bibliothèque.",
+          "Mme Verbeke range les livres rendus dans le bureau du fond."
+        ],
+        answer: [2, 0, 3, 1],
+        incomplete: "Touche les <b>4</b> évènements, du premier au dernier, avant de valider.",
+        hint: "Relis ce que dit Mme Verbeke et cherche l'heure de chaque évènement. Attention : elle ne les raconte pas dans l'ordre !",
+        success: "Bravo ! À 9 h, elle ouvre la bibliothèque. À 10 h, c'est l'heure du conte. À 11 h, elle va ranger les livres au fond, et l'accueil reste vide. À 12 h, elle découvre la vitrine vide.",
+        to: 'c1_accueilOk'
+      }
+    },
+
+    c1_accueilOk: { title: "Le tiroir et la photo",
+      text: [
+        "Mme Verbeke ouvre le tiroir de son bureau. <span class='speech'>« La petite clé de la vitrine est toujours rangée ici, dans cette boite en fer. À midi, je l'ai retrouvée dans le tiroir… mais à côté de la boite, pas dedans ! Quelqu'un l'a prise, puis l'a remise en vitesse. »</span>",
+        "Elle te montre ensuite une photo du livre. Sa couverture est rouge, avec un grand dragon doré qui crache des étoiles. <span class='speech'>« Dans la vitrine, le livre était ouvert à la première page. On ne voyait donc pas la couverture. Ce dragon, presque personne ne le connait ! »</span>"
+      ],
+      clues: ['c1_accueilVide', 'c1_cle', 'c1_dragon'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'c1_hall' } ]
+    },
+
+    c1_vitrine: { title: "La vitrine",
+      text: [
+        "La vitrine est une grande boite en verre posée sur un pied en bois. Elle n'est pas cassée : quelqu'un l'a ouverte avec la clé. À l'intérieur, il ne reste qu'un petit pupitre vide."
+      ],
+      enigme: { kind: 'spot',
+        title: "🔍 La vitrine",
+        question: "Observe bien la vitrine. Touche l'endroit où le voleur a laissé un indice, puis valide.",
+        img: IMG + 'bibliotheque_vitrine.webp',
+        alt: "Le hall de la bibliothèque, avec la vitrine vide au milieu",
+        zone: { x1: 0.57, y1: 0.42, x2: 0.65, y2: 0.56 },
+        hint: "Le voleur a ouvert la vitrine avec la clé. Regarde de très près l'endroit où l'on met la clé.",
+        success: "Bien vu ! Un petit fil de laine jaune, tout doux, est resté accroché à la serrure.",
+        to: 'c1_vitrineOk'
+      }
+    },
+
+    c1_vitrineOk: { title: "Le fil jaune",
+      text: [
+        "Tu décroches le fil avec précaution et tu le ranges dans une enveloppe. De la laine jaune… Qui, à la bibliothèque, porte de la laine jaune ?"
+      ],
+      clues: ['c1_laine'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'c1_hall' } ]
+    },
+
+    c1_sousSol: { title: "Au sous-sol",
+      text: [
+        "Au sous-sol, ça sent l'humidité. Victor, l'agent d'entretien, essuie ses mains sur son tablier bleu. Il a l'air fatigué. Tu lui demandes ce qu'il a fait ce matin."
+      ],
+      enigme: { kind: 'phrase',
+        title: "🧹 Le témoignage de Victor",
+        question: "Touche la phrase de Victor qui montre jusqu'à quelle heure, au moins, le livre était encore dans la vitrine. Puis valide.",
+        passage: [
+          "« Ce matin, j'ai commencé par le hall : j'ai lavé le carrelage à 9 h 30. »",
+          "« Ensuite, à 10 h 30, j'ai nettoyé les vitres de la vitrine, et le livre était bien là, ouvert sur son pupitre. »",
+          "« À 11 h, j'ai remarqué de l'eau qui coulait dans l'escalier du sous-sol. »",
+          "« Je suis descendu, et je n'ai plus bougé d'ici jusqu'à midi et demi : ce tuyau m'a donné du fil à retordre ! »",
+          "« D'ailleurs, regarde mes chaussures : elles sont encore toutes mouillées. »"
+        ],
+        dialogue: true,
+        answer: [1],
+        pieges: { 0: "Cette phrase parle du carrelage, pas du livre.",
+                  2: "Cette phrase dit ce que Victor a vu à 11 h, mais elle ne parle pas du livre.",
+                  3: "Cette phrase dit où était Victor, pas où était le livre.",
+                  4: "Cette phrase parle des chaussures de Victor, pas du livre." },
+        hint: "Cherche la phrase où Victor parle du livre et donne une heure.",
+        success: "Oui ! À 10 h 30, le livre était encore dans la vitrine. Il a donc disparu entre 10 h 30 et midi.",
+        to: 'c1_sousSolOk'
+      }
+    },
+
+    c1_sousSolOk: { title: "Le tuyau",
+      text: [
+        "Au même moment, Mme Verbeke passe la tête dans l'escalier : <span class='speech'>« Victor, ton marteau m'a cassé les oreilles toute la fin de la matinée ! Mais merci d'avoir réparé cette fuite. »</span>",
+        "Victor sourit : depuis 11 h, il n'a pas quitté le sous-sol."
+      ],
+      clues: ['c1_heure', 'c1_alibiVictor'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'c1_hall' } ]
+    },
+
+    c1_lecture: { title: "La salle de lecture",
+      text: [
+        "Mme Lambert est assise près de la fenêtre, dans son fauteuil préféré. Elle tricote une grande écharpe verte. Elle pose ses aiguilles et te sourit.",
+        "<span class='speech'>« Ce matin, je suis arrivée à 10 h 30 et je me suis installée ici. De ma place, je vois très bien le bureau d'accueil. Vers 11 h 15, il n'y avait personne à l'accueil. Pourtant, j'ai vu quelque chose bouger derrière le bureau : un pompon jaune qui dépassait à peine. Je ne voyais même pas de tête ! Je me suis dit : tiens, quelqu'un de tout petit qui joue à la bibliothécaire ! Ensuite, je me suis replongée dans mon tricot. Avec mes genoux, je ne me lève presque jamais, tu sais. »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🧶 Ce qu'a vu Mme Lambert",
+        question: "D'après Mme Lambert, qu'a-t-elle vu derrière le bureau d'accueil vers 11 h 15 ?",
+        options: [
+          "Une grande personne avec une écharpe jaune",
+          "Mme Verbeke, qui revenait du bureau du fond",
+          "Un pompon jaune qui dépassait à peine : quelqu'un de tout petit",
+          "Rien du tout : il n'y avait personne à l'accueil"
+        ],
+        answer: 2,
+        hint: "Relis ce que Mme Lambert a vu depuis son fauteuil, vers 11 h 15. Lis bien ses phrases jusqu'au bout : voyait-elle une tête ?",
+        success: "C'est bien ça ! Quelqu'un de si petit qu'on ne voyait pas sa tête est passé derrière le bureau d'accueil… là où est rangée la clé de la vitrine. On ne voyait qu'un pompon jaune.",
+        to: 'c1_lectureOk'
+      }
+    },
+
+    c1_lectureOk: { title: "La laine verte",
+      text: [
+        "Mme Lambert reprend son tricot. Tu regardes sa pelote : la laine est verte, d'un vert bien foncé."
+      ],
+      clues: ['c1_temoin', 'c1_alibiLambert'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'c1_hall' } ]
+    },
+
+    c1_clara: { title: "La table de dessin",
+      text: [
+        "À la grande table, Clara, 10 ans, dessine un château. C'est une grande fille : assise, elle te dépasse presque ! Autour du cou, elle porte une longue écharpe en laine jaune.",
+        "Tu lui demandes ce qu'elle a fait ce matin, après l'heure du conte."
+      ],
+      enigme: { kind: 'phrase',
+        title: "🧣 Le témoignage de Clara",
+        question: "Touche la phrase de Clara qui montre qu'elle ne pouvait pas être à l'accueil vers 11 h 15. Puis valide.",
+        passage: [
+          "« L'heure du conte était super : Mme Verbeke a lu une histoire de pirates. »",
+          "« Après, j'ai voulu rester encore un peu, parce que papa ne venait me chercher qu'à midi. »",
+          "« Alors, de 11 h jusqu'à midi, j'ai aidé Mme Verbeke à coller des étiquettes sur les livres, dans le bureau du fond. »",
+          "« J'adore son bureau : il y a des piles de livres partout ! »",
+          "« Lucien, lui, n'a pas voulu venir : il a dit qu'il avait quelque chose à faire. »"
+        ],
+        dialogue: true,
+        answer: [2],
+        pieges: { 0: "Cette phrase parle de l'heure du conte, qui finit à 11 h. Que fait Clara ensuite ?",
+                  1: "Cette phrase dit qu'elle est restée à la bibliothèque, mais pas où elle était.",
+                  3: "Cette phrase dit qu'elle aime le bureau, mais pas quand elle y était.",
+                  4: "Intéressant… mais cette phrase parle de Lucien, pas de Clara." },
+        hint: "Cherche la phrase où Clara dit où elle était, et à quelle heure.",
+        success: "Exact ! De 11 h à midi, Clara était dans le bureau du fond, avec Mme Verbeke. Elle ne pouvait pas être à l'accueil à 11 h 15.",
+        to: 'c1_claraOk'
+      }
+    },
+
+    c1_claraOk: { title: "Les étiquettes",
+      text: [
+        "Mme Verbeke, qui passe avec une pile de livres, confirme : <span class='speech'>« C'est vrai ! Clara a collé au moins cinquante étiquettes avec moi. Quelle aide précieuse ! »</span>",
+        "Clara reprend son dessin. Son écharpe jaune traine sur la table."
+      ],
+      clues: ['c1_alibiClara'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'c1_hall' } ]
+    },
+
+    c1_enfantsTot: { title: "Le coin des enfants",
+      text: [
+        "Dans le coin des enfants, Lucien lit une bande dessinée dans la cabane. Avant de lui parler, tu te dis qu'il vaudrait mieux en savoir plus sur le livre disparu. Mme Verbeke pourra sans doute t'en dire plus, au bureau d'accueil."
+      ],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'c1_hall' } ]
+    },
+
+    c1_enfants: { title: "Le coin des enfants",
+      text: [
+        "Dans la cabane en bois, Lucien, 8 ans, lit une bande dessinée, assis sur une pile de coussins. Il porte un bonnet à pompon jaune… et il manque un bout de laine à son pompon !",
+        "Tu lui demandes s'il a vu le livre de la vitrine. Il devient tout rouge et répond très vite."
+      ],
+      clues: ['c1_bonnet'],
+      enigme: { kind: 'phrase',
+        title: "🧸 Lucien se trahit",
+        question: "Lucien dit qu'il n'a jamais vu le livre. Touche la phrase où il se trahit : il dit quelque chose qu'il ne pouvait pas savoir sans avoir tenu le livre dans ses mains. Puis valide.",
+        passage: [
+          "« Le livre de la vitrine ? Je ne l'ai jamais vu ! »",
+          "« Ce matin, après l'heure du conte, je suis resté ici à lire jusqu'à ce que maman vienne me chercher. »",
+          "« Je ne suis même pas allé près de l'accueil. »",
+          "« Et puis, il ne m'intéresse pas, ce vieux livre rouge avec son dragon doré ! »",
+          "« Moi, je préfère les BD. »"
+        ],
+        dialogue: true,
+        answer: [3],
+        pieges: { 0: "C'est ce que dit Lucien… mais est-ce vrai ? Cherche la phrase qui le contredit.",
+                  2: "Mme Lambert a vu quelqu'un de tout petit derrière l'accueil… mais cette phrase-ci ne prouve rien toute seule. Cherche ce que Lucien ne pouvait pas savoir.",
+                  1: "Cette phrase dit ce que Lucien prétend avoir fait. Cherche ce qu'il ne pouvait pas savoir.",
+                  4: "Cette phrase dit ce que Lucien aime lire. Cherche ce qu'il ne pouvait pas savoir." },
+        hint: "Repense à ce que Mme Verbeke t'a dit sur la photo : comment était le livre dans la vitrine ? Que ne pouvait-on pas voir ?",
+        success: "Bien vu ! Dans la vitrine, le livre était ouvert : on ne voyait pas sa couverture. Pour savoir qu'elle est rouge avec un dragon doré, Lucien a dû tenir le livre dans ses mains !",
+        to: 'c1_enfantsOk'
+      }
+    },
+
+    c1_enfantsOk: { title: "La cabane",
+      text: [
+        "Lucien se replonge dans sa BD, mais il jette sans arrêt des petits coups d'œil inquiets vers le fond de la cabane. Tu regardes à ton tour…"
+      ],
+      clues: ['c1_trahi'],
+      enigme: { kind: 'spot',
+        title: "🧸 Le fond de la cabane",
+        question: "Observe la cabane. Touche l'endroit où quelque chose est caché, puis valide.",
+        img: IMG + 'bibliotheque_cabane.webp',
+        alt: "La cabane en bois du coin des enfants, remplie de gros coussins",
+        zone: { x1: 0.60, y1: 0.50, x2: 0.71, y2: 0.62 },
+        hint: "Lucien regarde le fond de la cabane. Regarde bien sous les coussins : quelque chose dépasse-t-il ?",
+        success: "Le voilà ! Sous le coussin bleu dépasse le coin d'un vieux livre rouge, au bord doré…",
+        to: 'c1_cabaneOk'
+      }
+    },
+
+    c1_cabaneOk: { title: "Un coin rouge",
+      text: [
+        "Tu ne dis rien pour l'instant. À 16 h 30, ce sera une preuve de plus !"
+      ],
+      clues: ['c1_cabane'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'c1_hall' } ]
+    },
+
+    c1_soir: { title: "16 h 30, dans la salle de lecture",
+      text: [
+        "Mme Verbeke a réuni tout le monde dans la salle de lecture : Victor, Mme Lambert, Clara et Lucien, qui se cache derrière sa maman venue le chercher.",
+        "<span class='speech'>« Alors, qui a pris <i>Les Contes de la Plume</i> ? »</span>"
+      ],
+      prompt: "Qui désignes-tu ?",
+      choices: [
+        { label: "Victor, l'agent d'entretien", to: 'c1_finVictor', accuse: true },
+        { label: "Mme Lambert, la lectrice", to: 'c1_finLambert', accuse: true },
+        { label: "Clara, la fille à l'écharpe jaune", to: 'c1_finClara', accuse: true },
+        { label: "Lucien, le petit garçon", to: 'c1_preuves', accuse: true },
+        { label: "Je n'ai pas fini : je retourne enquêter", to: 'c1_hall' }
+      ]
+    },
+
+    c1_preuves: { title: "Tes preuves",
+      text: [
+        "<span class='speech'>« Lucien ? »</span> demande Mme Verbeke. Le petit garçon enfonce son bonnet jusqu'aux yeux.",
+        "Tu ouvres ton carnet et tu présentes tes indices."
+      ],
+      dynamic: g => listePreuves(g),
+      auto: g => { const n = nbPreuves(g); return n >= 7 ? 'c1_fin' : n >= 3 ? 'c1_moitie' : 'c1_sansPreuve'; },
+      autoLabel: "Voir la réaction de Mme Verbeke"
+    },
+
+    c1_fin: { title: "Le dragon de la cabane",
+      text: [
+        "Lucien fond en larmes. <span class='speech'>« Pardon ! Mon papi m'a dit qu'il y avait un dragon caché dans le livre de la vitrine. Je voulais tellement le voir ! Alors, pendant qu'il n'y avait personne à l'accueil, je me suis faufilé derrière le bureau et j'ai pris la clé dans le tiroir. J'ai ouvert la vitrine et j'ai caché le livre dans la cabane, sous les coussins. Je voulais le remettre, mais il y avait toujours quelqu'un… »</span>",
+        "Sous les coussins, le livre est là, intact. Mme Verbeke serre Lucien dans ses bras : <span class='speech'>« La prochaine fois, demande-moi. On le regardera ensemble ! »</span>",
+        "Mais quand elle ouvre le livre, une vieille enveloppe glisse sur le sol. Sur l'enveloppe, il n'y a rien d'écrit, juste un dessin : une plume. Lucien jure qu'il ne l'a pas ouverte. À l'intérieur, une carte écrite à l'encre violette :",
+        carte("Celui qui sait bien lire<br>trouvera ce que j'ai caché.<br>Le premier secret<br>dort entre les pages.<br>— La Plume"),
+        "Mme Verbeke devient toute blanche. <span class='speech'>« Cette enveloppe n'était pas là samedi ! J'ai feuilleté ce livre page par page… Qui a bien pu la glisser dedans ? »</span>"
+      ],
+      ending: { type: 'win', title: "Bravo, détective ! Grâce à ta lecture attentive, le livre précieux est retrouvé. Mais qui est « La Plume » ? La suite au chapitre 2…" }
+    },
+
+    c1_moitie: { title: "Pas tout à fait",
+      text: [
+        "Lucien baisse les yeux, mais sa maman proteste : <span class='speech'>« Mon fils ? Vous n'avez pas assez de preuves pour dire ça ! »</span> Mme Verbeke hoche la tête : il faut en savoir plus."
+      ],
+      ending: { backTo: 'c1_hall', type: 'half', title: "Tu tiens la bonne piste, mais il te faut plus de preuves. As-tu parlé à tout le monde et bien observé la vitrine ? Retourne enquêter !" }
+    },
+
+    c1_sansPreuve: { title: "Sans preuve",
+      text: [
+        "<span class='speech'>« Accuser un enfant sans aucune preuve ? Ce n'est pas juste »</span>, dit Mme Verbeke."
+      ],
+      ending: { backTo: 'c1_hall', type: 'lose', title: "Ton idée est peut-être bonne, mais il faut des preuves. Interroge tous les témoins et observe bien la vitrine !" }
+    },
+
+    c1_finVictor: { title: "Une erreur",
+      text: [
+        "<span class='speech'>« C'est Victor ! »</span>",
+        "Victor ouvre de grands yeux : <span class='speech'>« Moi ? J'étais au sous-sol avec mon tuyau, de 11 h jusqu'à midi et demi ! »</span> Mme Verbeke confirme : elle l'a entendu taper sur les tuyaux pendant toute la fin de la matinée."
+      ],
+      ending: { backTo: 'c1_hall', type: 'lose', title: "Victor était au sous-sol quand le livre a disparu. Relis bien les heures !" }
+    },
+
+    c1_finClara: { title: "Une erreur",
+      text: [
+        "<span class='speech'>« C'est Clara ! Elle a une écharpe en laine jaune, comme le fil de la vitrine ! »</span>",
+        "Clara éclate en sanglots. Mme Verbeke la prend par l'épaule : <span class='speech'>« Clara était avec moi dans le bureau du fond, de 11 h à midi. Et regarde comme elle est grande : derrière le bureau d'accueil, on verrait toute sa tête ! »</span>"
+      ],
+      ending: { backTo: 'c1_hall', type: 'lose', title: "Beaucoup de choses sont jaunes ! Relis bien où était Clara à 11 h 15, et ce que Mme Lambert a vraiment vu derrière le bureau." }
+    },
+
+    c1_finLambert: { title: "Une erreur",
+      text: [
+        "<span class='speech'>« C'est Mme Lambert ! Elle tricote, et il y avait de la laine sur la vitrine ! »</span>",
+        "Mme Lambert sort sa pelote : elle est verte. Le fil de la vitrine, lui, est jaune. <span class='speech'>« Et puis, avec mes genoux, je ne quitte pas mon fauteuil ! »</span>"
+      ],
+      ending: { backTo: 'c1_hall', type: 'lose', title: "Le fil de la vitrine n'est pas de la même couleur que la laine de Mme Lambert. Cherche qui porte de la laine jaune !" }
+    }
+  });
+  /* =====================================================================
+     CHAPITRE 2 — LE MESSAGE DE LA PLUME (niveau 1-2)
+     ===================================================================== */
+  Object.assign(CLUES, {
+    c2_darcq:     "Le promoteur Hector Darcq veut démolir la bibliothèque pour construire des appartements. Le conseil communal votera dans trois semaines.",
+    c2_atlas:     "Le poème de La Plume, caché entre deux pages des Contes, désigne l'atlas de la salle de lecture.",
+    c2_cotes:     "À la page de la Belgique, La Plume a laissé trois cotes : 398.2 GRI, 598 CHO et 914.93 BEL.",
+    c2_homme:     "Un homme en manteau gris regardait par-dessus ton épaule quand tu as ouvert l'atlas. Il est parti très vite en faisant tomber une carte de visite.",
+    c2_message:   "Le message de La Plume, en six morceaux : « Le deuxième secret se cache dans le registre que Jean de la Plume a commencé en 1902, l'année où il a offert ce bâtiment à la ville. Ce registre ne sort des archives qu'une seule fois par an. »",
+    c2_mensonge:  "L'homme au manteau gris a dit qu'il venait pour des romans policiers. Mais il n'est jamais allé au rayon des romans : il est allé tout droit à l'atlas et l'a photographié.",
+    c2_registre:  "L'homme au manteau gris a demandé à Victor où étaient les archives… et si « le grand cahier du fondateur », le registre de 1902, y était rangé.",
+    c2_fouille:   "Juste avant ton arrivée, M. Félicien a vu l'homme au manteau gris sortir tous les livres du rayon 900 et les remettre n'importe comment.",
+    c2_adresse:   "L'homme s'appelle Bastien Morel. Sur sa fiche d'inscription, il a écrit l'adresse de l'agence de M. Darcq : 12, rue du Commerce.",
+    c2_felicien:  "M. Félicien, l'ancien bibliothécaire, fait ses mots croisés avec un vieux stylo à plume, à l'encre violette."
+  });
+
+  CHAPITRES.push({
+    n: 2, titre: "Le message de La Plume", niveau: "1-2", pret: true,
+    resume: "Suis les énigmes de La Plume… avant l'homme au manteau gris.",
+    first: 'c2_debut',
+    preuves: ['c2_homme', 'c2_mensonge', 'c2_registre', 'c2_fouille', 'c2_adresse'],
+    endings: [
+      { id: 'c2_fin',           label: "🪶 Le message trouvé" },
+      { id: 'c2_pasFini',       label: "🧩 Message incomplet" },
+      { id: 'c2_moitie',        label: "🤔 Pas tout à fait" },
+      { id: 'c2_sansPreuve',    label: "😶 Sans preuve" },
+      { id: 'c2_finLecteur',    label: "🗺️ Le passionné d'atlas" },
+      { id: 'c2_finJournaliste',label: "📰 Le journaliste" }
+    ]
+  });
+
+  Object.assign(S, {
+    c2_debut: { title: "Une mauvaise nouvelle",
+      text: [
+        "Le mercredi suivant, quand tu arrives à la bibliothèque, Mme Verbeke a les yeux rouges. Elle te tend le journal du jour.",
+        "<div class='doc affiche'><h4>📰 Le Courrier de Montrival</h4><b>La bibliothèque bientôt démolie ?</b><br>" +
+          "Le promoteur immobilier Hector Darcq veut acheter le vieux bâtiment de la bibliothèque, place du Marché. Il voudrait le démolir pour construire un immeuble de vingt appartements, avec un parking. " +
+          "« Ce bâtiment coute cher à la commune : le toit fuit et le chauffage est très vieux », explique-t-il. Les livres seraient alors rangés dans deux petites salles de l'école communale. " +
+          "Le conseil communal votera dans trois semaines. Mme Verbeke, la bibliothécaire, est inquiète : « Jean de la Plume a donné ce bâtiment à la ville en 1902 pour qu'il reste une bibliothèque pour toujours. »</div>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "📰 L'article",
+        question: "D'après l'article, que veut faire M. Darcq du bâtiment de la bibliothèque ?",
+        options: [
+          "Le réparer pour agrandir la bibliothèque",
+          "Le démolir pour construire des appartements",
+          "Le transformer en école communale",
+          "Le louer à la commune pendant vingt ans"
+        ],
+        answer: 1,
+        hint: "Relis la deuxième phrase de l'article : que voudrait-il faire du bâtiment, et pour construire quoi ?",
+        success: "C'est ça. M. Darcq veut démolir la bibliothèque pour construire un immeuble d'appartements. Il ne reste que trois semaines pour la sauver !",
+        to: 'c2_debutOk'
+      }
+    },
+
+    c2_debutOk: { title: "La carte de La Plume",
+      text: [
+        "Mme Verbeke sort de son tiroir la carte trouvée la semaine dernière, écrite à l'encre violette : <i>« Celui qui sait bien lire trouvera ce que j'ai caché. Le premier secret dort entre les pages. »</i>",
+        "<span class='speech'>« Et si ce secret pouvait sauver notre bibliothèque ? Cherche ! À 17 h, tu me raconteras tout ce que tu as trouvé. »</span>"
+      ],
+      clues: ['c2_darcq'],
+      prompt: "",
+      choices: [ { label: "Commencer à chercher", to: 'c2_hall' } ]
+    },
+
+    c2_hall: { title: "Dans la bibliothèque",
+      text: [
+        "La bibliothèque est calme. Au bureau d'accueil, Mme Verbeke enregistre les livres rendus. Dans la salle de lecture, Mme Lambert tricote près de la fenêtre, et un vieux monsieur fait des mots croisés à la table des journaux : c'est M. Félicien, qui était bibliothécaire ici avant Mme Verbeke. Au fond du couloir, Victor repeint la porte des archives."
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "📕 Examiner Les Contes de la Plume, « entre les pages »", to: 'c2_livre' },
+        { label: "🗺️ Ouvrir l'atlas de la salle de lecture", to: 'c2_atlas', requires: 'c2_atlas' },
+        { label: "📚 Chercher les trois livres dans les rayons", to: 'c2_rayons', requires: 'c2_cotes' },
+        { label: "🧶 Demander à Mme Lambert si elle a vu l'homme au manteau gris", to: 'c2_lambert', requires: 'c2_homme' },
+        { label: "✒️ Parler à M. Félicien", to: 'c2_felicien', requires: 'c2_homme' },
+        { label: "🖌️ Aller voir Victor, près des archives", to: 'c2_victor', requires: 'c2_mensonge' },
+        { label: "🗂️ Montrer la carte de visite à Mme Verbeke", to: 'c2_accueil', requires: 'c2_registre' },
+        { label: "17 h : je raconte tout à Mme Verbeke", to: 'c2_soir', accuse: true, requires: 'c2_homme' }
+      ]
+    },
+
+    c2_livre: { title: "Entre les pages",
+      text: [
+        "Mme Verbeke pose délicatement <i>Les Contes de la Plume</i> sur le bureau. Vous tournez les pages une à une. Au milieu du conte du dragon, deux pages sont un peu collées. Entre elles, quelqu'un a glissé une feuille très fine, couverte d'une écriture violette.",
+        "<div class='doc fiche'>Au fond de la salle de lecture, je dors sur une étagère.<br>Tous les lecteurs me feuillettent pour voyager sur la Terre.<br>Les pays, les fleuves, les montagnes, je les montre en couleurs.<br>Avec moi, tu peux faire le tour du monde en moins d'une heure.<br>Si tu cherches la suite, ouvre-moi à la page de notre pays.<br><br>— La Plume 🪶</div>"
+      ],
+      enigme: { kind: 'mot',
+        title: "🪶 Le poème de La Plume",
+        question: "La Plume a caché dans son poème le nom d'un livre de la bibliothèque. Quel est ce livre ? Écris son nom.",
+        answers: ['atlas', 'un atlas', "l'atlas", 'le grand atlas'],
+        hint: "Il y a deux façons de trouver : chercher de quel livre parle le poème… ou lire la première lettre de chaque ligne, de haut en bas.",
+        success: "Bravo ! Un livre qui montre les pays, les fleuves et les montagnes en couleurs : c'est un ATLAS. Et regarde : les premières lettres des lignes forment A-T-L-A-S !",
+        to: 'c2_livreOk'
+      }
+    },
+
+    c2_livreOk: { title: "Direction la salle de lecture",
+      text: [
+        "Mme Verbeke sourit : <span class='speech'>« Le grand atlas est sur la dernière étagère de la salle de lecture, au fond. Il est là depuis toujours ! »</span>"
+      ],
+      clues: ['c2_atlas'],
+      prompt: "",
+      choices: [ { label: "Retourner dans la bibliothèque", to: 'c2_hall' } ]
+    },
+
+    c2_atlas: { title: "Le grand atlas",
+      text: [
+        "Tout au fond de la salle de lecture, tu tires de l'étagère un énorme livre à la couverture bleue. Tu relis la dernière ligne du poème : <i>« Si tu cherches la suite, ouvre-moi à la page de notre pays. »</i> Tu ouvres le sommaire.",
+        "<div class='doc affiche'><h4>🗺️ Grand atlas du monde — Sommaire</h4><ul style='list-style:none;padding-left:0'>" +
+          "<li>Le monde et ses continents ........ page 4</li>" +
+          "<li>L'Europe ........ page 12</li>" +
+          "<li>La France ........ page 18</li>" +
+          "<li>La Belgique ........ page 24</li>" +
+          "<li>Le grand-duché de Luxembourg ........ page 28</li>" +
+          "<li>Les Pays-Bas ........ page 30</li>" +
+          "<li>L'Allemagne ........ page 36</li>" +
+          "<li>L'Afrique ........ page 44</li></ul></div>"
+      ],
+      enigme: { kind: 'number',
+        title: "🗺️ La bonne page",
+        question: "La bibliothèque de Montrival se trouve dans la province de Namur. À quelle page faut-il ouvrir l'atlas ?",
+        answer: 24, unit: '',
+        hint: "« Notre pays », c'est le pays où se trouve la province de Namur. Cherche le nom de ce pays dans le sommaire. Attention : une province et un pays, ce n'est pas la même chose !",
+        success: "Exact : page 24, la page de la Belgique. La province de Namur est en Belgique. Attention au piège : le grand-duché de Luxembourg est un autre pays, et la Belgique a aussi une province qui s'appelle Luxembourg !",
+        to: 'c2_atlasOk'
+      }
+    },
+
+    c2_atlasOk: { title: "L'homme au manteau gris",
+      text: [
+        "À la page 24, celle de la Belgique, une petite carte est glissée contre la reliure. Toujours la même écriture violette :",
+        carte("Trois livres, six morceaux<br>de mon message.<br>Pour les trouver, suis leur cote :<br>398.2 GRI — 598 CHO — 914.93 BEL<br>— La Plume"),
+        "Soudain, tu sens quelqu'un derrière toi. Un homme en manteau gris regarde par-dessus ton épaule ! Quand tu te retournes, il marmonne <span class='speech'>« Pardon… »</span> et s'en va très vite. En partant, il fait tomber une petite carte de visite. Tu la ramasses.",
+        "<div class='doc affiche' style='text-align:center'><b>AGENCE IMMOBILIÈRE DARCQ</b><br>Hector Darcq, directeur<br>12, rue du Commerce — Montrival</div>"
+      ],
+      clues: ['c2_cotes', 'c2_homme'],
+      prompt: "",
+      choices: [ { label: "Retourner dans la bibliothèque", to: 'c2_hall' } ]
+    },
+
+    c2_rayons: { title: "Les rayons",
+      text: [
+        "Pour retrouver un livre dans une bibliothèque, on lit sa <b>cote</b> : c'est l'étiquette collée sur son dos. Les nombres disent dans quel rayon il est rangé, et les trois lettres donnent le début du nom de l'auteur ou du sujet. Sur le mur, un grand panneau montre le plan des rayons.",
+        "<div class='doc affiche'><h4>🧭 Plan des rayons</h4><ul style='list-style:none;padding-left:0'>" +
+          "<li><b>000 à 299</b> : dictionnaires, encyclopédies, religions</li>" +
+          "<li><b>300 à 399</b> : la société, les métiers… et les contes (398)</li>" +
+          "<li><b>500 à 599</b> : les sciences, les plantes et les animaux</li>" +
+          "<li><b>700 à 799</b> : les arts, les sports et les jeux</li>" +
+          "<li><b>900 à 999</b> : l'histoire, la géographie et les voyages</li>" +
+          "<li><b>R</b> : les romans</li></ul></div>",
+        "<div class='vocab'>📚 Une <b>cote</b> : l'étiquette qui dit où un livre est rangé dans la bibliothèque.</div>"
+      ],
+      enigme: { kind: 'classify',
+        title: "🧭 Où sont les trois livres ?",
+        question: "Lis le plan des rayons. Dans quel rayon se trouve chaque livre ?",
+        categories: ["Contes", "Sciences et animaux", "Arts et sports", "Histoire et géographie", "Romans"],
+        items: [
+          { label: "598 CHO", answer: 1 },
+          { label: "914.93 BEL", answer: 3 },
+          { label: "398.2 GRI", answer: 0 }
+        ],
+        hint: "Regarde seulement le nombre de chaque cote, puis cherche sur le plan entre quels nombres il se trouve. Attention : 398, c'est un rayon bien précis !",
+        success: "Parfait ! 398.2 est au rayon des contes, 598 au rayon des sciences et des animaux, et 914.93 au rayon histoire et géographie.",
+        to: 'c2_rayon900'
+      }
+    },
+
+    c2_rayon900: { title: "Le rayon 900",
+      text: [
+        "Tu trouves vite le recueil des contes de Grimm (398.2 GRI) et le livre sur les chouettes (598 CHO) : dans chacun, deux bandes de papier écrites à l'encre violette sont glissées entre les pages.",
+        "Mais au rayon 900, c'est le désordre : les livres sont penchés, couchés, mélangés, comme si quelqu'un avait tout fouillé avant toi… Où est passé le guide de la Belgique ?"
+      ],
+      enigme: { kind: 'spot',
+        title: "📚 Le rayon en désordre",
+        question: "Observe le rayon 900. Touche l'endroit où dépasse un indice de La Plume, puis valide.",
+        img: IMG + 'bibliotheque_rayon900.webp',
+        alt: "Un rayonnage de bibliothèque en désordre",
+        zone: { x1: 0.67, y1: 0.39, x2: 0.74, y2: 0.56 },
+        hint: "Les messages de La Plume sont écrits à l'encre violette, sur du papier clair. Regarde bien entre les livres de l'étagère du milieu.",
+        success: "Le voilà ! Une bande de papier clair, avec un trait violet, dépasse d'un livre bleu : c'est le guide de la Belgique (914.93 BEL).",
+        to: 'c2_rayonsOk'
+      }
+    },
+
+    c2_rayonsOk: { title: "Six morceaux",
+      text: [
+        "Dans le guide de la Belgique, tu trouves les deux dernières bandes de papier. Ça fait six morceaux en tout ! Tu les étales sur une table."
+      ],
+      enigme: { kind: 'order',
+        title: "🧩 Le message en morceaux",
+        question: "Remets les six morceaux dans l'ordre pour former un message qui a du sens. Attention : le message contient deux phrases !",
+        items: [
+          "qu'une seule fois par an.",
+          "dans le registre que Jean de la Plume",
+          "l'année où il a offert ce bâtiment à la ville.",
+          "Le deuxième secret se cache",
+          "Ce registre ne sort des archives",
+          "a commencé en 1902,"
+        ],
+        answer: [3, 1, 5, 2, 4, 0],
+        incomplete: "Touche les <b>6</b> morceaux, dans l'ordre du message, avant de valider.",
+        hint: "Deux morceaux commencent par une majuscule : laquelle des deux phrases annonce le secret ? Ensuite, chaque morceau doit continuer le précédent. Relis le message en entier, à voix basse, pour vérifier qu'il a du sens.",
+        success: "Bravo ! « Le deuxième secret se cache dans le registre que Jean de la Plume a commencé en 1902, l'année où il a offert ce bâtiment à la ville. Ce registre ne sort des archives qu'une seule fois par an. »",
+        to: 'c2_message'
+      }
+    },
+
+    c2_message: { title: "Le registre de 1902",
+      text: [
+        "Tu recopies soigneusement le message dans ton carnet. Un registre, c'est un grand cahier où l'on note des informations importantes. Il est donc rangé dans les archives… Mais quand en sort-il ?"
+      ],
+      clues: ['c2_message'],
+      prompt: "",
+      choices: [ { label: "Retourner dans la bibliothèque", to: 'c2_hall' } ]
+    },
+
+    c2_lambert: { title: "Ce qu'a vu Mme Lambert",
+      text: [
+        "Tu demandes à Mme Lambert si elle a remarqué l'homme au manteau gris. Elle pose son tricot."
+      ],
+      enigme: { kind: 'phrase',
+        title: "🧶 Le témoignage de Mme Lambert",
+        question: "Touche la phrase qui montre que l'homme n'est pas venu pour les romans policiers. Puis valide.",
+        passage: [
+          "« Oh oui, je l'ai vu ! Il est arrivé vers 14 h. »",
+          "« Il a dit à Mme Verbeke qu'il voulait s'inscrire pour emprunter des romans policiers. »",
+          "« Mais il n'a même pas regardé le rayon des romans : il est allé tout droit vers l'atlas, et il a photographié chaque page avec son téléphone. »",
+          "« Ensuite, il est parti vers le couloir des archives. »",
+          "« Il avait l'air très pressé, ce monsieur. »"
+        ],
+        dialogue: true,
+        answer: [2],
+        pieges: { 1: "Cette phrase dit ce que l'homme a RACONTÉ. Cherche ce qu'il a vraiment FAIT.",
+                  0: "Cette phrase dit seulement quand il est arrivé.",
+                  3: "Cette phrase dit où il est allé ensuite, mais pas qu'il a menti sur les romans.",
+                  4: "Être pressé, ce n'est pas une preuve qu'il a menti." },
+        hint: "Compare ce que l'homme a dit qu'il venait faire avec ce que Mme Lambert l'a vu faire.",
+        success: "Bien vu ! Il disait venir pour des romans policiers, mais il ne s'est jamais approché du rayon des romans : il cherchait l'atlas.",
+        to: 'c2_lambertOk'
+      }
+    },
+
+    c2_lambertOk: { title: "Le tricot",
+      text: [
+        "<span class='speech'>« Je l'ai trouvé bizarre, ce monsieur »</span>, ajoute Mme Lambert en reprenant ses aiguilles."
+      ],
+      clues: ['c2_mensonge'],
+      prompt: "",
+      choices: [ { label: "Retourner dans la bibliothèque", to: 'c2_hall' } ]
+    },
+
+    c2_felicien: { title: "M. Félicien",
+      text: [
+        "M. Félicien a au moins quatre-vingts ans. Il remplit sa grille de mots croisés avec un vieux stylo à plume qui laisse de jolies lettres violettes. Il lève les yeux vers toi et sourit.",
+        "<span class='speech'>« Jean de la Plume ? Il adorait les énigmes, tu sais. Il disait toujours : un bon lecteur lit aussi entre les lignes. »</span>"
+      ],
+      clues: ['c2_felicien'],
+      prompt: "",
+      choices: [
+        { label: "Lui demander s'il a vu l'homme au manteau gris", to: 'c2_felicienVu', requires: 'c2_homme' },
+        { label: "Retourner dans la bibliothèque", to: 'c2_hall' }
+      ]
+    },
+
+    c2_felicienVu: { title: "Le rayon 900",
+      text: [
+        "M. Félicien repose son stylo violet. <span class='speech'>« Ah, celui-là ! Juste avant que tu arrives, il a sorti tous les livres du rayon 900, un par un, et il les a remis n'importe comment. Très impoli pour les livres ! Moi, je ne bouge pas de cette table de tout l'après-midi, mais j'ai de bons yeux. »</span>"
+      ],
+      clues: ['c2_fouille'],
+      prompt: "",
+      choices: [ { label: "Retourner dans la bibliothèque", to: 'c2_hall' } ]
+    },
+
+    c2_victor: { title: "Près des archives",
+      text: [
+        "Victor pose son pinceau. <span class='speech'>« Le monsieur au manteau gris ? Il est venu me voir il y a une heure. Il m'a demandé si c'était bien ici, les archives. Puis il a voulu savoir si « le grand cahier du fondateur » était rangé derrière cette porte : celui que le fondateur a commencé l'année où il a donné le bâtiment à la ville. Je lui ai dit que la porte est toujours fermée à clé et que seule Mme Verbeke a la clé. Il a eu l'air très déçu. »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🖌️ La question de l'homme",
+        question: "D'après ce que raconte Victor, quel objet l'homme au manteau gris cherchait-il ?",
+        options: [
+          "Le registre de Jean de la Plume, commencé en 1902",
+          "Les Contes de la Plume, le livre écrit en 1898",
+          "Un vieux journal de 1902 sur la bibliothèque",
+          "Le grand atlas de la salle de lecture"
+        ],
+        answer: 0,
+        hint: "Un registre, c'est un grand cahier. Et en quelle année Jean de la Plume a-t-il donné le bâtiment à la ville ? Relis l'article du journal.",
+        success: "Oui ! « Le grand cahier du fondateur », commencé l'année où il a donné le bâtiment à la ville (1902, d'après le journal) : c'est le registre de Jean de la Plume… exactement celui du message de La Plume !",
+        to: 'c2_victorOk'
+      }
+    },
+
+    c2_victorOk: { title: "La porte fermée",
+      text: [
+        "Victor reprend son pinceau. <span class='speech'>« Des archives, des registres… Je me demande bien ce qu'il cherche, celui-là. »</span>"
+      ],
+      clues: ['c2_registre'],
+      prompt: "",
+      choices: [ { label: "Retourner dans la bibliothèque", to: 'c2_hall' } ]
+    },
+
+    c2_accueil: { title: "La fiche d'inscription",
+      text: [
+        "Tu montres la carte de visite à Mme Verbeke. Elle fronce les sourcils et sort une fiche de son tiroir. <span class='speech'>« Cet homme s'est inscrit cet après-midi. Voici la fiche qu'il a remplie. »</span>",
+        "<div class='doc fiche'>FICHE D'INSCRIPTION<br>Nom : MOREL<br>Prénom : Bastien<br>Adresse : 12, rue du Commerce, Montrival<br>Métier : employé de bureau<br>Livres préférés : romans policiers</div>",
+        "<div class='doc affiche' style='text-align:center'><b>AGENCE IMMOBILIÈRE DARCQ</b><br>Hector Darcq, directeur<br>12, rue du Commerce — Montrival</div>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🗂️ Deux documents",
+        question: "Compare la fiche d'inscription et la carte de visite. Qu'ont-elles en commun ?",
+        options: [
+          "Le même nom de famille",
+          "Le même métier",
+          "La même adresse",
+          "Les mêmes livres préférés"
+        ],
+        answer: 2,
+        hint: "Lis les deux documents ligne par ligne et cherche une information qui est écrite exactement de la même façon sur les deux.",
+        success: "Exactement ! Bastien Morel a écrit l'adresse de l'agence de M. Darcq : 12, rue du Commerce. Il travaille sans doute pour lui !",
+        to: 'c2_accueilOk'
+      }
+    },
+
+    c2_accueilOk: { title: "Bastien Morel",
+      text: [
+        "Mme Verbeke serre la fiche dans sa main. <span class='speech'>« Employé de bureau… à l'agence Darcq ! »</span>"
+      ],
+      clues: ['c2_adresse'],
+      prompt: "",
+      choices: [ { label: "Retourner dans la bibliothèque", to: 'c2_hall' } ]
+    },
+
+    c2_soir: { title: "17 h, au bureau d'accueil",
+      text: [
+        "Mme Verbeke t'attend au bureau d'accueil. <span class='speech'>« Alors ? Qu'as-tu trouvé ? Et surtout : qui est cet homme au manteau gris, et que cherche-t-il ? »</span>"
+      ],
+      prompt: "Que lui réponds-tu ?",
+      choices: [
+        { label: "C'est un simple lecteur, passionné de cartes et d'atlas", to: 'c2_finLecteur', accuse: true },
+        { label: "C'est un journaliste du Courrier de Montrival, qui prépare un article", to: 'c2_finJournaliste', accuse: true },
+        { label: "Il travaille pour M. Darcq et cherche le secret de La Plume", to: 'c2_preuves', accuse: true },
+        { label: "Je n'ai pas fini : je retourne chercher", to: 'c2_hall' }
+      ]
+    },
+
+    c2_preuves: { title: "Tes preuves",
+      text: [
+        "<span class='speech'>« Pour M. Darcq ? »</span> Mme Verbeke devient toute pâle. <span class='speech'>« Montre-moi ce que tu as trouvé. »</span>"
+      ],
+      dynamic: g => listePreuves(g) + (g.clues.indexOf('c2_message') !== -1 ? "<p>Et tu lui montres le message de La Plume, enfin complet.</p>" : "<p>Mais le message de La Plume, tu ne l'as pas encore reconstitué…</p>"),
+      auto: g => { const n = nbPreuves(g), m = g.clues.indexOf('c2_message') !== -1;
+        return n >= 4 && m ? 'c2_fin' : n >= 4 ? 'c2_pasFini' : n >= 2 ? 'c2_moitie' : 'c2_sansPreuve'; },
+      autoLabel: "Voir la réaction de Mme Verbeke"
+    },
+
+    c2_fin: { title: "Le deuxième secret",
+      text: [
+        "Mme Verbeke s'assied lentement. <span class='speech'>« Si M. Darcq envoie quelqu'un chercher le secret de La Plume, c'est que ce secret peut l'empêcher de démolir la bibliothèque ! »</span>",
+        "Elle relit le message de La Plume. <span class='speech'>« Le registre de 1902 est dans les archives, sous clé. Il n'en sort qu'une seule fois par an : pour la Nuit de la lecture, où on l'expose dans la grande salle. Et la Nuit de la lecture, c'est samedi en huit… »</span>",
+        "À ce moment, Victor arrive en courant, un pinceau à la main : <span class='speech'>« Madame Verbeke ! Le monsieur au manteau gris vient de s'inscrire à la Nuit de la lecture ! »</span>"
+      ],
+      ending: { type: 'win', title: "Bravo ! Tu as suivi les énigmes de La Plume et démasqué Bastien Morel. Mais il sera là pendant la Nuit de la lecture… La suite au chapitre 3 !" }
+    },
+
+    c2_pasFini: { title: "Il manque le message",
+      text: [
+        "<span class='speech'>« Tes preuves contre cet homme sont solides »</span>, dit Mme Verbeke. <span class='speech'>« Mais qu'est-ce qu'il cherche exactement ? Il faut d'abord trouver le message de La Plume ! »</span>"
+      ],
+      ending: { backTo: 'c2_hall', type: 'half', title: "Tu sais qui est l'homme au manteau gris, mais le message de La Plume n'est pas complet. Retrouve les trois livres !" }
+    },
+
+    c2_moitie: { title: "Pas tout à fait",
+      text: [
+        "<span class='speech'>« C'est possible… mais c'est une accusation grave »</span>, dit Mme Verbeke. <span class='speech'>« Il me faut plus de preuves. »</span>"
+      ],
+      ending: { backTo: 'c2_hall', type: 'half', title: "Tu tiens la bonne piste, mais il te faut plus de preuves. Interroge tous ceux qui ont vu cet homme !" }
+    },
+
+    c2_sansPreuve: { title: "Sans preuve",
+      text: [
+        "<span class='speech'>« Tu as peut-être raison, mais sans preuve, je ne peux rien faire »</span>, soupire Mme Verbeke."
+      ],
+      ending: { backTo: 'c2_hall', type: 'lose', title: "Il faut des preuves ! Qui a vu l'homme au manteau gris ? Qu'a-t-il fait, qu'a-t-il demandé ?" }
+    },
+
+    c2_finLecteur: { title: "Une erreur",
+      text: [
+        "<span class='speech'>« Un simple lecteur ? »</span> Mme Verbeke secoue la tête. <span class='speech'>« Un simple lecteur ne photographie pas toutes les pages d'un atlas, et il ne demande pas où sont rangées les archives ! »</span>"
+      ],
+      ending: { backTo: 'c2_hall', type: 'lose', title: "Cet homme ne s'intéresse pas vraiment aux cartes. Relis la carte de visite qu'il a fait tomber !" }
+    },
+
+    c2_finJournaliste: { title: "Une erreur",
+      text: [
+        "<span class='speech'>« Un journaliste ? »</span> Mme Verbeke appelle le Courrier de Montrival. Personne là-bas ne connait d'homme au manteau gris."
+      ],
+      ending: { backTo: 'c2_hall', type: 'lose', title: "Ce n'est pas un journaliste. Compare plutôt sa fiche d'inscription avec la carte de visite qu'il a fait tomber !" }
+    }
+  });
+  /* =====================================================================
+     CHAPITRE 3 — LA NUIT DE LA LECTURE (niveau 2)
+     ===================================================================== */
+  Object.assign(CLUES, {
+    c3_vitrine:    "La vitrine a été forcée avec un outil pendant l'alarme. La porte du jardin, au fond de la salle de lecture, est entrouverte.",
+    c3_diversion:  "C'est Bastien Morel qui a crié « Au feu ! ». Mais il ne courait pas : il regardait sa montre en souriant. Ce n'était qu'une ruse pour vider la salle de lecture.",
+    c3_absent:     "D'après la liste de Victor, deux personnes n'étaient pas dans le coin des enfants à 21 h 10 : Mme Lambert et M. Paul Dupuis.",
+    c3_lambert:    "Mme Lambert a vu le voleur : une grande silhouette avec un chapeau, une longue écharpe à carreaux rouges et une grosse bague dorée. Il est parti vers la porte du jardin avec un gros paquet.",
+    c3_echarpe:    "Dans le jardin, accrochée aux épines d'un rosier, une longue écharpe à carreaux rouges, comme celle du voleur… Et M. Dupuis a justement perdu la sienne ce soir.",
+    c3_declaration:"M. Dupuis affirme qu'il habite à Namur, qu'il est venu avec le bus de 18 h et qu'il était dans le coin des enfants pendant l'alarme. Il a perdu son écharpe ce soir.",
+    c3_initiales:  "M. Dupuis s'appelle Paul, mais sa bague dorée porte les lettres H. D.",
+    c3_entree:     "Dans le registre des entrées, M. Dupuis a signé à 18 h 05. Il a écrit qu'il habite à Montrival, pas à Namur.",
+    c3_adresse:    "M. Dupuis a écrit l'adresse de l'agence Darcq, 12, rue du Commerce… la même que Bastien Morel.",
+    c3_bus:        "M. Dupuis dit être venu de Namur avec le bus de 18 h. Ce bus arrive à 18 h 42, mais il a signé le registre des entrées à 18 h 05 : il ment.",
+    c3_felicien:   "M. Félicien a pris soin du registre pendant quarante ans. Jean de la Plume y gardait toujours le plus important pour la dernière page."
+  });
+
+  CHAPITRES.push({
+    n: 3, titre: "La nuit de la lecture", niveau: 2, pret: true,
+    resume: "Pendant la soirée, le précieux registre de 1902 disparait.",
+    first: 'c3_debut',
+    preuves: ['c3_absent', 'c3_lambert', 'c3_echarpe', 'c3_initiales', 'c3_adresse', 'c3_bus'],
+    endings: [
+      { id: 'c3_fin',         label: "📜 Le registre retrouvé" },
+      { id: 'c3_moitie',      label: "🤔 Pas tout à fait" },
+      { id: 'c3_sansPreuve',  label: "😶 Sans preuve" },
+      { id: 'c3_finBastien',  label: "🧥 Le complice" },
+      { id: 'c3_finLambert',  label: "🧶 La seule témoin" },
+      { id: 'c3_finRoussel',  label: "🎭 La conteuse" }
+    ]
+  });
+
+  Object.assign(S, {
+    c3_debut: { title: "Samedi soir",
+      text: [
+        "Le grand soir est arrivé ! À 18 h, la bibliothèque de Montrival brille de mille lumières. Des guirlandes pendent au plafond, et une odeur de chocolat chaud flotte dans le hall. À l'entrée, chaque participant signe le registre des entrées. Mme Verbeke te tend le programme.",
+        "<div class='doc affiche'><h4>🌙 Nuit de la lecture</h4><ul style='list-style:none;padding-left:0'>" +
+          "<li><b>18 h 00</b> — Accueil des participants. Signez le registre des entrées !</li>" +
+          "<li><b>18 h 30</b> — Lectures à voix haute (salle de lecture)</li>" +
+          "<li><b>19 h 30</b> — Pique-nique tiré du sac (hall). Boissons offertes par la bibliothèque.</li>" +
+          "<li><b>20 h 30</b> — Présentation du registre de 1902 par Mme Verbeke (salle de lecture)</li>" +
+          "<li><b>21 h 00</b> — Contes avec Mme Roussel, conteuse (coin des enfants)</li>" +
+          "<li><b>22 h 00</b> — Grand quiz des livres (salle de lecture)</li>" +
+          "<li><b>23 h 00</b> — Fin de la soirée. À l'année prochaine !</li></ul></div>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🌙 Le programme",
+        question: "Sur le programme, on lit « Pique-nique tiré du sac ». Qu'est-ce que cela veut dire ?",
+        options: [
+          "La bibliothèque offre le repas à tout le monde",
+          "On mange dehors, dans le jardin de la bibliothèque",
+          "Chacun apporte son propre repas",
+          "On tire au sort ceux qui apporteront le repas"
+        ],
+        answer: 2,
+        hint: "« Tiré du sac » : d'où sort-on la nourriture ? Et relis bien la fin de la ligne : qu'est-ce qui est offert par la bibliothèque, exactement ?",
+        success: "Exact ! Un pique-nique « tiré du sac », c'est un repas que chacun apporte dans son sac. La bibliothèque, elle, n'offre que les boissons.",
+        to: 'c3_soiree'
+      }
+    },
+
+    c3_soiree: { title: "Au feu !",
+      text: [
+        "La soirée est merveilleuse. À 20 h 30, dans la salle de lecture, Mme Verbeke présente le registre de 1902 : un gros cahier relié de cuir brun, posé dans la vitrine, celle des <i>Contes de la Plume</i>. Elle ferme la vitrine à clé et glisse la clé dans sa poche. Tout le monde l'applaudit.",
+        "Tu reconnais beaucoup de monde : Mme Lambert dans son fauteuil, M. Félicien, Lucien et Clara, Mme Roussel la conteuse… et Bastien Morel, dans son manteau gris. Au fond, un grand monsieur avec un chapeau et une longue écharpe regarde la vitrine sans bouger.",
+        "À 21 h 05, un cri traverse la bibliothèque : <span class='speech'>« Au feu ! Ça sent le brûlé ! »</span> Victor demande à tout le monde d'aller dans le coin des enfants, près de la sortie de secours, et court vers la petite cuisine. Fausse alerte : seuls de vieux papiers fumaient dans une poubelle en métal.",
+        "À 21 h 15, quand tout le monde revient dans la salle de lecture, Mme Verbeke pousse un cri. La vitrine est ouverte… et le registre a disparu !",
+        "Mme Verbeke ferme la porte d'entrée à clé. <span class='speech'>« Personne ne sort ! Avant 22 h, il faut savoir qui a pris le registre. Je compte sur toi ! »</span>"
+      ],
+      prompt: "",
+      choices: [ { label: "Commencer l'enquête", to: 'c3_hall' } ]
+    },
+
+    c3_hall: { title: "La bibliothèque, porte fermée",
+      text: [
+        "Les guirlandes clignotent toujours, mais plus personne ne rit. Les participants chuchotent par petits groupes dans le hall."
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "🔍 Examiner la vitrine", to: 'c3_vitrine' },
+        { label: "🧸 Demander à Lucien ce qu'il a vu pendant l'alarme", to: 'c3_enfants' },
+        { label: "📋 Demander à Victor qui était dans le coin des enfants", to: 'c3_liste', requires: 'c3_diversion' },
+        { label: "✒️ Parler à M. Félicien", to: 'c3_felicien', requires: 'c3_vitrine' },
+        { label: "🧶 Interroger Mme Lambert, restée dans la salle de lecture", to: 'c3_lambert', requires: 'c3_absent' },
+        { label: "🎩 Interroger M. Dupuis", to: 'c3_dupuis', requires: 'c3_absent' },
+        { label: "🌹 Fouiller le jardin", to: 'c3_jardin', requires: 'c3_lambert' },
+        { label: "🗂️ Lire le registre des entrées, à l'accueil", to: 'c3_entrees', requires: 'c3_initiales' },
+        { label: "🚌 Lire l'horaire du bus affiché à l'accueil", to: 'c3_bus', requires: 'c3_entree' },
+        { label: "22 h : je présente mes conclusions à Mme Verbeke", to: 'c3_soir', accuse: true, requires: 'c3_absent' }
+      ]
+    },
+
+    c3_vitrine: { title: "La vitrine forcée",
+      text: [
+        "Cette fois, personne n'a utilisé la clé : la serrure de la vitrine est tordue, comme si on l'avait forcée avec un tournevis. Sur le pupitre, il ne reste que la petite étiquette « Registre de Jean de la Plume, 1902 ».",
+        "Au fond de la salle de lecture, la porte qui donne sur le jardin est entrouverte. Un courant d'air glacé fait voler les pages des journaux."
+      ],
+      clues: ['c3_vitrine'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'c3_hall' } ]
+    },
+
+    c3_enfants: { title: "Ce qu'a vu Lucien",
+      text: [
+        "Lucien, enroulé dans une couverture, a encore les yeux tout ronds. Il te raconte l'alarme."
+      ],
+      enigme: { kind: 'phrase',
+        title: "🧸 L'alarme",
+        question: "Touche la phrase qui montre que la personne qui a crié « Au feu ! » n'avait pas vraiment peur. Puis valide.",
+        passage: [
+          "« C'est le monsieur au manteau gris qui a crié : Au feu ! Ça sent le brûlé ! »",
+          "« Tout le monde a couru vers le coin des enfants, comme Victor l'a demandé. »",
+          "« Mais lui, il ne courait pas du tout : il regardait sa montre en souriant. »",
+          "« Victor a trouvé seulement des vieux papiers qui fumaient dans la poubelle de la cuisine. »",
+          "« Moi, j'ai eu très, très peur ! »"
+        ],
+        dialogue: true,
+        answer: [2],
+        pieges: { 0: "Cette phrase dit QUI a crié, mais pas comment il se comportait.",
+                  1: "Cette phrase parle de tout le monde, pas de celui qui a crié.",
+                  3: "Cette phrase montre que c'était une fausse alerte… mais pas comment se comportait celui qui a crié.",
+                  4: "Cette phrase parle de Lucien, pas de celui qui a crié." },
+        hint: "Quand on a vraiment peur d'un incendie, que fait-on ? Cherche la phrase où celui qui a crié fait tout autre chose.",
+        success: "Bien vu ! Quelqu'un qui croit à un incendie ne reste pas à sourire en regardant sa montre. Bastien Morel savait qu'il n'y avait pas de feu : son cri était une ruse pour vider la salle de lecture !",
+        to: 'c3_enfantsOk'
+      }
+    },
+
+    c3_enfantsOk: { title: "Une ruse",
+      text: [
+        "Bastien Morel, assis dans un coin du hall, fait semblant de lire un journal. Mais qui a profité de la salle vide ? Victor a fait l'appel pendant l'alarme : il saura qui était là."
+      ],
+      clues: ['c3_diversion'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'c3_hall' } ]
+    },
+
+    c3_liste: { title: "La liste de Victor",
+      text: [
+        "Victor sort une feuille de sa poche. <span class='speech'>« En cas d'alarme, je dois vérifier que tout le monde est en sécurité. J'ai pris la liste des inscrits et j'ai coché les présents dans le coin des enfants, à 21 h 10. »</span>",
+        "<div class='doc fiche'>Nuit de la lecture — liste des inscrits<br>Mme Verbeke ✓ — Victor ✓<br>Mme Roussel ✓ — M. Félicien ✓<br>Bastien Morel ✓ — Lucien ✓<br>Clara ✓ — Paul Dupuis<br>Mme Lambert (dans son fauteuil : ses genoux !)<br>Toi ✓</div>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "📋 Qui manquait ?",
+        question: "D'après la liste de Victor, qui n'était PAS dans le coin des enfants à 21 h 10 ? Coche toutes les personnes absentes.",
+        multi: true,
+        options: [ "Bastien Morel", "Mme Lambert", "M. Félicien", "Paul Dupuis", "Mme Roussel", "Clara" ],
+        answer: [1, 3],
+        hint: "Victor a coché ✓ les personnes présentes. Lis la liste nom par nom et cherche ceux qui n'ont pas de ✓. Attention, il peut y en avoir plusieurs !",
+        success: "C'est ça. Mme Lambert est restée dans la salle de lecture, à cause de ses genoux. Et Paul Dupuis n'a pas été coché : où était-il ?",
+        to: 'c3_listeOk'
+      }
+    },
+
+    c3_listeOk: { title: "Deux absents",
+      text: [
+        "Victor fronce les sourcils. <span class='speech'>« Paul Dupuis… c'est le grand monsieur, là-bas, près des étagères. Je ne l'ai pas vu dans le coin des enfants. »</span>"
+      ],
+      clues: ['c3_absent'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'c3_hall' } ]
+    },
+
+    c3_lambert: { title: "La seule témoin",
+      text: [
+        "Mme Lambert est toute tremblante dans son fauteuil. <span class='speech'>« J'ai tout vu… enfin, presque tout. »</span>"
+      ],
+      enigme: { kind: 'phrase',
+        title: "🧶 Le témoignage de Mme Lambert",
+        question: "Touche les 2 phrases qui décrivent le mieux le voleur, celles qui pourraient aider à le reconnaitre. Puis valide.",
+        passage: [
+          "« Je n'ai pas bougé de mon fauteuil, avec mes genoux, tu penses ! »",
+          "« Je n'avais pas mes lunettes, alors tout était un peu flou. »",
+          "« J'ai vu une grande silhouette avec un chapeau ouvrir la vitrine avec un outil. »",
+          "« Autour de son cou, il y avait une longue écharpe à carreaux rouges, et à sa main, une grosse bague dorée qui brillait sous la lampe. »",
+          "« Ensuite, la silhouette est partie vers la porte du jardin, avec un gros paquet sous le bras. »",
+          "« Quand tout le monde est revenu, j'ai tout de suite crié ! »"
+        ],
+        dialogue: true,
+        need: 2,
+        answer: [2, 3],
+        pieges: { 0: "Cette phrase parle de Mme Lambert, pas du voleur.",
+                  1: "Cette phrase explique pourquoi Mme Lambert voyait mal, mais elle ne décrit pas le voleur.",
+                  4: "Cette phrase dit où le voleur est allé, mais pas à quoi il ressemble.",
+                  5: "Cette phrase parle de Mme Lambert, pas du voleur." },
+        hint: "Pour reconnaitre quelqu'un, il faut savoir à quoi il ressemble : sa taille, ses vêtements, ses bijoux… Cherche les 2 phrases qui en parlent.",
+        success: "Parfait ! Le voleur est grand, il porte un chapeau, une longue écharpe à carreaux rouges et une grosse bague dorée. Et il est parti vers le jardin !",
+        to: 'c3_lambertOk'
+      }
+    },
+
+    c3_lambertOk: { title: "Vers le jardin",
+      text: [
+        "<span class='speech'>« Il est parti par la porte du jardin, et il est revenu quelques minutes plus tard, sans son paquet. Mais avec tous ces gens, je ne sais plus qui c'était ! »</span>"
+      ],
+      clues: ['c3_lambert'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'c3_hall' } ]
+    },
+
+    c3_jardin: { title: "Le jardin",
+      text: [
+        "Avec une lampe de poche, tu sors dans le petit jardin de la bibliothèque. Il fait très froid. Sur la pelouse mouillée, de grandes traces de pas mènent à la petite grille qui donne sur la rue du Jardin, où quelques voitures sont garées.",
+        "Mme Lambert a vu le voleur partir par ici. A-t-il laissé quelque chose derrière lui ?"
+      ],
+      enigme: { kind: 'spot',
+        title: "🌹 Le jardin",
+        question: "Observe le jardin. Touche l'endroit où le voleur a perdu quelque chose, puis valide.",
+        img: IMG + 'bibliotheque_jardin.webp',
+        alt: "Le jardin de la bibliothèque, la nuit, avec des traces de pas dans l'herbe",
+        zone: { x1: 0.05, y1: 0.52, x2: 0.27, y2: 0.87 },
+        hint: "Repense à la description du voleur par Mme Lambert : que portait-il autour du cou ? Regarde sous la fenêtre.",
+        success: "Bien vu ! Une longue écharpe à carreaux rouges est accrochée aux épines du rosier, sous la fenêtre. Le voleur a dû la perdre en passant.",
+        to: 'c3_jardinOk'
+      }
+    },
+
+    c3_jardinOk: { title: "L'écharpe à carreaux",
+      text: [
+        "Tu décroches doucement l'écharpe des épines. Elle est encore toute froide. Quelqu'un, ce soir, a dû rentrer sans elle…"
+      ],
+      clues: ['c3_echarpe'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'c3_hall' } ]
+    },
+
+    c3_dupuis: { title: "M. Dupuis",
+      text: [
+        "Le grand monsieur se tient près des étagères. Il n'a plus de chapeau, et il frissonne, le cou nu. <span class='speech'>« Je m'appelle Paul Dupuis. J'habite à Namur, je suis venu ce soir avec le bus de 18 h. Pendant l'alarme, j'étais dans le coin des enfants, comme tout le monde. Quel malheur, ce vol ! Et en plus, j'ai perdu mon écharpe… »</span>",
+        "Pendant qu'il parle, il se frotte les mains pour les réchauffer. À son doigt brille une grosse chevalière dorée, une bague avec deux lettres gravées : <b>H. D.</b>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🎩 La bague",
+        question: "Qu'y a-t-il d'étrange avec la bague de M. Dupuis ?",
+        options: [
+          "Elle est dorée, alors qu'il dit qu'il a froid",
+          "Il la porte au mauvais doigt",
+          "Elle a la forme d'une plume, comme les messages de La Plume",
+          "Les lettres gravées ne sont pas les premières lettres de son nom"
+        ],
+        answer: 3,
+        hint: "Une chevalière porte souvent les initiales de son propriétaire : la première lettre du prénom et la première lettre du nom. Quelles seraient les initiales de Paul Dupuis ?",
+        success: "Bien vu ! Paul Dupuis, ce serait P. D. Mais la bague porte H. D. Qui, dans cette histoire, a un prénom qui commence par H et un nom qui commence par D ? Garde ça en tête…",
+        to: 'c3_dupuisOk'
+      }
+    },
+
+    c3_dupuisOk: { title: "Un drôle de monsieur",
+      text: [
+        "M. Dupuis remarque ton regard et cache vite sa main dans sa poche. <span class='speech'>« Bon, si tu permets, je vais m'asseoir. »</span>"
+      ],
+      clues: ['c3_declaration', 'c3_initiales'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'c3_hall' } ]
+    },
+
+    c3_entrees: { title: "Le registre des entrées",
+      text: [
+        "À l'accueil, le registre des entrées est ouvert. Chaque participant a écrit son heure d'arrivée, son nom et son adresse.",
+        "<div class='doc fiche'>18 h 02 — Mme Lambert — 3, rue des Tilleuls, Montrival<br>18 h 05 — Paul Dupuis — 12, rue du Commerce, Montrival<br>18 h 10 — Bastien Morel — 12, rue du Commerce, Montrival<br>18 h 15 — M. Félicien — 1, place du Marché, Montrival<br>18 h 20 — Mme Roussel, conteuse — Dinant</div>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🗂️ Une adresse connue",
+        question: "Regarde la ligne de Paul Dupuis. Où as-tu déjà vu son adresse ?",
+        options: [
+          "Dans le règlement de la bibliothèque, au chapitre 1",
+          "Sur la carte de visite de l'agence Darcq, au chapitre 2",
+          "Dans l'article du Courrier de Montrival, au chapitre 2",
+          "Sur la carte de La Plume trouvée dans les Contes, au chapitre 1"
+        ],
+        answer: 1,
+        hint: "Ouvre ton carnet et regarde les souvenirs du chapitre 2 : une adresse y est notée.",
+        success: "Exact ! 12, rue du Commerce, c'est l'adresse de l'agence de M. Darcq… celle que Bastien Morel avait aussi écrite. Et regarde encore la ligne de M. Dupuis : il a écrit qu'il habite à Montrival, et il est arrivé à 18 h 05 !",
+        to: 'c3_entreesOk'
+      }
+    },
+
+    c3_entreesOk: { title: "Montrival ou Namur ?",
+      text: [
+        "Tu recopies la ligne dans ton carnet. M. Dupuis t'a dit qu'il habitait à Namur et qu'il était venu en bus… À l'accueil, justement, l'horaire du bus est affiché au mur."
+      ],
+      clues: ['c3_adresse', 'c3_entree'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'c3_hall' } ]
+    },
+
+    c3_bus: { title: "L'horaire du bus",
+      text: [
+        "<div class='doc affiche'><h4>🚌 Ligne 42 : Namur → Montrival</h4><table style='width:100%;border-collapse:collapse;text-align:center'>" +
+          "<tr><td style='text-align:left'><b>Départ de Namur</b></td><td>17 h 10</td><td>18 h 00</td><td>19 h 00</td><td>20 h 00</td></tr>" +
+          "<tr><td style='text-align:left'><b>Arrivée à Montrival</b></td><td>17 h 52</td><td>18 h 42</td><td>19 h 42</td><td>20 h 42</td></tr></table></div>",
+        "Tu relis ton carnet : M. Dupuis dit qu'il est venu de Namur avec le bus de 18 h."
+      ],
+      enigme: { kind: 'qcm',
+        title: "🚌 Le bus de 18 h",
+        question: "Compare l'horaire du bus et le registre des entrées. M. Dupuis a-t-il pu venir avec le bus de 18 h ?",
+        options: [
+          "Oui : il a signé à 18 h 05, juste après l'arrivée de ce bus",
+          "Oui : le bus de 17 h 10 arrive à Montrival à 18 h 05",
+          "Non : ce bus arrive à 18 h 42, mais il a signé à 18 h 05",
+          "On ne peut pas savoir : l'horaire ne parle pas de Montrival"
+        ],
+        answer: 2,
+        hint: "Le bus de 18 h, c'est celui qui part de Namur à 18 h. Lis dans le tableau à quelle heure il arrive à Montrival, puis compare avec l'heure écrite dans le registre des entrées.",
+        success: "Exactement ! Le bus de 18 h n'arrive à Montrival qu'à 18 h 42. Or M. Dupuis a signé à 18 h 05. Il n'est pas venu en bus de Namur : il ment !",
+        to: 'c3_busOk'
+      }
+    },
+
+    c3_busOk: { title: "Un mensonge de plus",
+      text: [
+        "M. Dupuis ne vient pas de Namur, il n'était pas dans le coin des enfants pendant l'alarme… Qui est-il vraiment ?"
+      ],
+      clues: ['c3_bus'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'c3_hall' } ]
+    },
+
+    c3_felicien: { title: "M. Félicien",
+      text: [
+        "M. Félicien est assis, tout pâle, son stylo violet serré dans la main. <span class='speech'>« Ce registre… J'en ai pris soin pendant quarante ans, tu sais. Jean de la Plume y notait tout : les livres achetés, les nouveaux lecteurs, les travaux du bâtiment. Et il gardait toujours le plus important pour la dernière page. »</span>",
+        "Il te regarde par-dessus ses lunettes. <span class='speech'>« Retrouve-le. C'est très important. Plus important que tu ne le crois. »</span>"
+      ],
+      clues: ['c3_felicien'],
+      prompt: "",
+      choices: [ { label: "Retourner dans le hall", to: 'c3_hall' } ]
+    },
+
+    c3_soir: { title: "22 h, dans la salle de lecture",
+      text: [
+        "Mme Verbeke a réuni tout le monde dans la salle de lecture. Le silence est total. <span class='speech'>« Alors ? Qui a pris le registre de Jean de la Plume ? »</span>"
+      ],
+      prompt: "Qui désignes-tu ?",
+      choices: [
+        { label: "Bastien Morel, l'homme au manteau gris", to: 'c3_finBastien', accuse: true },
+        { label: "Mme Lambert, restée seule dans la salle", to: 'c3_finLambert', accuse: true },
+        { label: "Mme Roussel, la conteuse", to: 'c3_finRoussel', accuse: true },
+        { label: "M. Paul Dupuis, le grand monsieur", to: 'c3_preuves', accuse: true },
+        { label: "Je n'ai pas fini : je retourne enquêter", to: 'c3_hall' }
+      ]
+    },
+
+    c3_preuves: { title: "Tes preuves",
+      text: [
+        "<span class='speech'>« Moi ? »</span> M. Dupuis éclate de rire. <span class='speech'>« Je suis un simple lecteur ! »</span> Tu ouvres ton carnet."
+      ],
+      dynamic: g => listePreuves(g),
+      auto: g => { const n = nbPreuves(g); return n >= 5 ? 'c3_fin' : n >= 3 ? 'c3_moitie' : 'c3_sansPreuve'; },
+      autoLabel: "Voir la réaction de Mme Verbeke"
+    },
+
+    c3_fin: { title: "Les initiales H. D.",
+      text: [
+        "Plus tu présentes de preuves, plus M. Dupuis devient pâle. Soudain, il se précipite vers la porte du jardin… mais l'agent de quartier, que Mme Verbeke avait appelé, l'attend dehors.",
+        "Mme Verbeke le regarde en face. <span class='speech'>« Une bague H. D., l'adresse de l'agence Darcq… Je vous reconnais maintenant, malgré votre chapeau : vous êtes Hector Darcq ! Votre photo était dans le journal ! »</span>",
+        "Dans sa voiture, garée rue du Jardin, on retrouve le registre de 1902, enveloppé dans un sac. Bastien Morel baisse la tête : <span class='speech'>« C'est M. Darcq qui m'a demandé de crier au feu… »</span>",
+        "Mme Verbeke ouvre le registre à la dernière page. Sous des lignes jaunies, écrites par Jean de la Plume lui-même, une phrase est soulignée deux fois :",
+        registre("<i>… et ainsi s'achève l'année 1902.</i>", "Mon testament dort à l'abri,<br>là où veille le dragon.<br><br>— Jean de la Plume, 1902"),
+        "Et entre les deux dernières pages, une petite carte toute neuve, à l'encre violette :",
+        carte("Plus qu'un secret.<br>Le conseil communal<br>vote lundi soir.<br>Fais vite !<br>— La Plume")
+      ],
+      ending: { type: 'win', title: "Bravo, détective ! Tu as démasqué Hector Darcq et retrouvé le registre. Mais où est le testament de Jean de la Plume ? La suite au chapitre 4 !" }
+    },
+
+    c3_moitie: { title: "Pas tout à fait",
+      text: [
+        "<span class='speech'>« Ce sont des soupçons »</span>, dit Mme Verbeke, <span class='speech'>« mais je ne peux pas encore appeler la police. Il me faut plus de preuves ! »</span>"
+      ],
+      ending: { backTo: 'c3_hall', type: 'half', title: "Tu tiens la bonne piste, mais il te faut plus de preuves contre M. Dupuis. As-tu tout vérifié : le jardin, le registre des entrées, l'horaire du bus ?" }
+    },
+
+    c3_sansPreuve: { title: "Sans preuve",
+      text: [
+        "<span class='speech'>« Accuser un participant sans preuve ? Impossible »</span>, soupire Mme Verbeke."
+      ],
+      ending: { backTo: 'c3_hall', type: 'lose', title: "Il faut des preuves ! Qui manquait pendant l'alarme ? Qui a vu le voleur ?" }
+    },
+
+    c3_finBastien: { title: "Le complice",
+      text: [
+        "<span class='speech'>« C'est Bastien Morel ! C'est lui qui a crié au feu ! »</span>",
+        "Victor montre sa liste : <span class='speech'>« Il était coché dans le coin des enfants à 21 h 10. Il n'a pas pu ouvrir la vitrine. »</span> Bastien Morel sourit. Il a crié au feu, oui… mais ce n'est pas lui qui a pris le registre."
+      ],
+      ending: { backTo: 'c3_hall', type: 'half', title: "Bastien Morel est un complice : il a vidé la salle de lecture. Mais qui a ouvert la vitrine pendant ce temps-là ?" }
+    },
+
+    c3_finLambert: { title: "Une erreur",
+      text: [
+        "<span class='speech'>« C'est Mme Lambert ! Elle était seule dans la salle ! »</span>",
+        "Mme Lambert soulève sa couverture : <span class='speech'>« Avec mes genoux, je ne peux même pas me lever sans aide ! Et c'est moi qui ai donné l'alerte. »</span>"
+      ],
+      ending: { backTo: 'c3_hall', type: 'lose', title: "Mme Lambert est la seule témoin du vol : écoute-la plutôt que de l'accuser !" }
+    },
+
+    c3_finRoussel: { title: "Une erreur",
+      text: [
+        "<span class='speech'>« C'est Mme Roussel, la conteuse ! »</span>",
+        "Mme Roussel ouvre de grands yeux. Victor montre sa liste : elle était cochée dans le coin des enfants, au milieu des petits, pendant toute l'alarme."
+      ],
+      ending: { backTo: 'c3_hall', type: 'lose', title: "Mme Roussel était avec les enfants pendant l'alarme. Relis bien la liste de Victor !" }
+    }
+  });
+  /* =====================================================================
+     CHAPITRE 4 — LE TESTAMENT DE JEAN DE LA PLUME (niveau 3)
+     ===================================================================== */
+  Object.assign(CLUES, {
+    c4_heure:    "Le conseil communal parlera de la vente de la bibliothèque vers 20 h 40.",
+    c4_dragons:  "Dans l'enquête, le dragon est sur la couverture des Contes de la Plume et dans le conte où était caché le poème. Mais ce livre a déjà été feuilleté page par page : le testament n'y est pas.",
+    c4_cachette: "D'après le registre, en 1901, le maçon a laissé une brique creuse sous les pattes du dragon de pierre de la cheminée, dans la salle de lecture.",
+    c4_portrait: "D'après sa carte, La Plume a veillé sur la bibliothèque pendant quarante ans, aime les mots croisés et écrit à l'encre violette.",
+    c4_cles:     "M. Félicien a gardé un double de chaque clé de la bibliothèque (vitrine et archives comprises) quand il est parti à la retraite.",
+    c4_lambert:  "Le mardi soir avant la disparition du livre, Mme Lambert a vu un vieux monsieur avec une canne, une enveloppe à la main, dans la bibliothèque fermée.",
+    c4_canne:    "M. Félicien ne sort jamais sans sa canne à pommeau d'argent.",
+    c4_grille:   "La grille de mots croisés de M. Félicien est remplie à l'encre violette et signée d'un petit dessin de plume."
+  });
+
+  CHAPITRES.push({
+    n: 4, titre: "Le testament de Jean de la Plume", niveau: 3, pret: true,
+    resume: "Ce soir, le conseil communal vote. Il faut retrouver le testament… et découvrir qui est La Plume.",
+    first: 'c4_debut',
+    preuves: ['c4_portrait', 'c4_cles', 'c4_lambert', 'c4_canne', 'c4_grille'],
+    endings: [
+      { id: 'c4_fin',         label: "🏛️ La bibliothèque sauvée" },
+      { id: 'c4_moitie',      label: "🤔 Pas tout à fait" },
+      { id: 'c4_sansPreuve',  label: "😶 Sans preuve" },
+      { id: 'c4_finVerbeke',  label: "📚 La bibliothécaire" },
+      { id: 'c4_finVictor',   label: "🔑 Le trousseau de Victor" },
+      { id: 'c4_finLambert',  label: "🧶 La lectrice fidèle" }
+    ]
+  });
+
+  Object.assign(S, {
+    c4_debut: { title: "Lundi, 16 h",
+      text: [
+        "Lundi, après l'école, tu cours à la bibliothèque. Mme Verbeke t'attend avec le registre de 1902 serré contre elle.",
+        "<span class='speech'>« Hector Darcq a été arrêté pour le vol, mais sa société n'a pas retiré son offre. La commune a besoin d'argent : le conseil communal vote ce soir la vente de la bibliothèque ! Regarde la convocation. »</span>",
+        "<div class='doc affiche'><h4>🏛️ Conseil communal de Montrival</h4>Lundi, à 20 h, à la maison communale.<br><b>Ordre du jour :</b><ol>" +
+          "<li>Approbation du compte rendu de la dernière séance</li>" +
+          "<li>Réparation des trottoirs de la rue de la Gare</li>" +
+          "<li>Vente du bâtiment de la bibliothèque, place du Marché</li>" +
+          "<li>Divers</li></ol><i>Chaque point dure environ 20 minutes.</i></div>"
+      ],
+      enigme: { kind: 'heure',
+        title: "🏛️ L'ordre du jour",
+        question: "Vers quelle heure le conseil commencera-t-il à parler de la bibliothèque ? Écris l'heure.",
+        answer: { h: 20, m: 40 },
+        hint: "La séance commence à 20 h. Compte combien de points passent AVANT celui de la bibliothèque, et combien de temps dure chacun.",
+        success: "Exact ! Les points 1 et 2 durent 20 minutes chacun : le conseil parlera de la bibliothèque vers 20 h 40. Il reste un peu plus de quatre heures pour trouver le testament !",
+        to: 'c4_debutOk'
+      }
+    },
+
+    c4_debutOk: { title: "Une course contre la montre",
+      text: [
+        "Mme Verbeke pose le registre sur la table de la salle de lecture et l'ouvre à la dernière page : <i>« Mon testament dort à l'abri, là où veille le dragon. — Jean de la Plume, 1902 »</i>.",
+        "<span class='speech'>« Si nous retrouvons ce testament avant 20 h 40, nous pouvons encore sauver la bibliothèque ! »</span>"
+      ],
+      clues: ['c4_heure'],
+      prompt: "",
+      choices: [ { label: "Se mettre au travail", to: 'c4_hall' } ]
+    },
+
+    c4_hall: { title: "La salle de lecture",
+      text: [
+        "Il fait déjà sombre dehors. Dans la salle de lecture, Mme Lambert tricote près de la fenêtre, Victor range des chaises, et M. Félicien a laissé sa grille de mots croisés sur la table des journaux. Au fond, une immense étagère couvre tout le mur."
+      ],
+      prompt: "Que fais-tu ?",
+      choices: [
+        { label: "🐉 Réfléchir : où as-tu déjà vu un dragon ?", to: 'c4_dragon' },
+        { label: "📜 Lire les pages du registre sur la construction du bâtiment", to: 'c4_travaux', requires: 'c4_dragons' },
+        { label: "🔧 Déplacer la grande étagère avec Victor", to: 'c4_cheminee', requires: 'c4_cachette' },
+        { label: "🔑 Demander à Victor qui a les clés de la bibliothèque", to: 'c4_victor', requires: 'c4_portrait' },
+        { label: "🧶 Parler à Mme Lambert", to: 'c4_lambert', requires: 'c4_portrait' },
+        { label: "✒️ Regarder la table de M. Félicien", to: 'c4_felicien', requires: 'c4_portrait' },
+        { label: "20 h 15, devant la maison communale : je dis qui est La Plume", to: 'c4_soir', accuse: true, requires: 'c4_portrait' }
+      ]
+    },
+
+    c4_dragon: { title: "Là où veille le dragon",
+      text: [
+        "Un dragon… Tu fermes les yeux et tu repenses à toute ton enquête, depuis le premier mercredi. Tu peux aussi ouvrir ton carnet : les souvenirs des chapitres précédents y sont notés."
+      ],
+      enigme: { kind: 'qcm', multi: true,
+        title: "🐉 Les dragons de l'enquête",
+        question: "Depuis le début de l'enquête, où as-tu déjà rencontré un dragon ? Coche toutes les bonnes réponses.",
+        options: [
+          "Sur la carte de visite de l'agence Darcq",
+          "Sur la couverture des Contes de la Plume",
+          "Sur le bonnet de Lucien",
+          "Dans le conte où était caché le poème de La Plume",
+          "Sur la bague de M. Dupuis",
+          "Sur le programme de la Nuit de la lecture"
+        ],
+        answer: [1, 3],
+        hint: "Pense au chapitre 1 : comment est la couverture du livre de la vitrine ? Puis au chapitre 2 : au milieu de quel conte le poème était-il caché ?",
+        success: "Bravo, quelle mémoire ! Le dragon doré de la couverture, et le conte du dragon où le poème était caché. Mais Mme Verbeke secoue la tête : « Ce livre, nous l'avons feuilleté page par page. Le testament n'y est pas. Il doit y avoir un autre dragon… Au début du registre, Jean de la Plume a peut-être parlé de la construction du bâtiment ? »",
+        to: 'c4_dragonOk'
+      }
+    },
+
+    c4_dragonOk: { title: "Un autre dragon",
+      text: [
+        "Mme Verbeke feuillette le registre. <span class='speech'>« Voilà ! Les premières pages racontent les travaux du bâtiment, de 1900 à 1902. »</span>"
+      ],
+      clues: ['c4_dragons'],
+      prompt: "",
+      choices: [ { label: "Retourner dans la salle de lecture", to: 'c4_hall' } ]
+    },
+
+    c4_travaux: { title: "La construction du bâtiment",
+      text: [
+        "Les pages sont jaunies, l'écriture de Jean de la Plume est penchée et élégante. Au début du registre, il a raconté la construction du bâtiment.",
+        registre(
+          "<b>Pour ne pas oublier, voici comment ce bâtiment a été construit.</b><br>" +
+          "Mars 1900 — Les maçons posent la première pierre.<br>" +
+          "Novembre 1900 — Le toit est terminé, juste avant l'hiver.<br>" +
+          "Mai 1901 — Le sculpteur Martin termine la cheminée de la salle de lecture : un dragon de pierre veille au-dessus du feu.",
+          "Juin 1901 — À ma demande, le maçon laisse une brique creuse sous les pattes du dragon. Personne ne doit le savoir.<br>" +
+          "Mars 1902 — On pose sur le toit une girouette en forme de plume.<br>" +
+          "8 juin 1902 — Les travaux sont finis. J'offre ce bâtiment à la ville de Montrival."),
+        "<p class='muted' style='text-align:center;margin-top:-6px'>Touche le registre pour l'agrandir.</p>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "📜 La cachette",
+        question: "D'après ces pages du registre, où se trouve sans doute la cachette du testament ?",
+        options: [
+          "Sous la girouette en forme de plume, sur le toit",
+          "Dans une brique creuse, sous le dragon de la cheminée",
+          "Sous le pupitre de la vitrine, dans le hall",
+          "Entre les pages des Contes de la Plume"
+        ],
+        answer: 1,
+        hint: "Relis la phrase du testament : « là où VEILLE le dragon ». Quelle ligne du registre parle d'un dragon qui veille ? Et quelle ligne parle d'une cachette secrète ?",
+        success: "Exactement ! Un dragon de pierre veille au-dessus de la cheminée, et une brique creuse a été laissée sous ses pattes. Mais… il n'y a pas de cheminée dans la salle de lecture ! À moins que…",
+        to: 'c4_travauxOk'
+      }
+    },
+
+    c4_travauxOk: { title: "La cheminée disparue",
+      text: [
+        "Mme Verbeke se tape sur le front. <span class='speech'>« Bien sûr ! Il y avait une vieille cheminée, mais on l'a cachée derrière la grande étagère, il y a cinquante ans. Plus personne ne s'en souvient ! »</span>"
+      ],
+      clues: ['c4_cachette'],
+      prompt: "",
+      choices: [ { label: "Retourner dans la salle de lecture", to: 'c4_hall' } ]
+    },
+
+    c4_cheminee: { title: "Le dragon de pierre",
+      text: [
+        "Victor vide l'étagère avec toi, livre après livre, puis la fait glisser en grinçant. Derrière, couverte de poussière et de toiles d'araignée, apparait une grande cheminée. Au-dessus, un dragon de pierre ouvre ses ailes."
+      ],
+      enigme: { kind: 'spot',
+        title: "🐉 La brique creuse",
+        question: "Le testament dort « là où veille le dragon ». Touche la brique qui cache sans doute la cachette, puis valide.",
+        img: IMG + 'bibliotheque_cheminee.webp',
+        alt: "Une vieille cheminée en pierre avec un dragon sculpté, derrière une étagère déplacée",
+        zone: { x1: 0.48, y1: 0.27, x2: 0.58, y2: 0.38 },
+        hint: "Relis le registre : la brique creuse est SOUS LES PATTES du dragon. Cherche une brique qui n'est pas tout à fait comme les autres.",
+        success: "C'est elle ! Juste sous les pattes du dragon, cette brique est plus claire que les autres, et un peu décalée.",
+        to: 'c4_boite'
+      }
+    },
+
+    c4_boite: { title: "La boite en fer",
+      text: [
+        "Tu tapes doucement sur la brique : elle sonne creux. Victor la retire. Dans le trou, il y a une boite en fer rouillée. Ton cœur bat très fort… Tu l'ouvres : elle est vide ! Il n'y a qu'une carte, écrite à l'encre violette.",
+        "<div class='doc fiche'>Tu as trouvé ma cachette… mais le testament n'y est plus :<br>je l'ai mis à l'abri depuis longtemps.<br>Pour le récupérer, dis-moi qui je suis.<br><br>J'ai veillé sur ces livres pendant quarante hivers.<br>J'aime les mots qui se croisent<br>et ceux qui se cachent au début des lignes.<br>Mes lettres ont la couleur des violettes.<br><br>Rendez-vous ce soir, à 20 h 15, devant la maison communale.<br>— La Plume 🪶</div>"
+      ],
+      enigme: { kind: 'qcm', multi: true,
+        title: "🪶 Le portrait de La Plume",
+        question: "D'après cette carte, que sait-on de La Plume ? Coche toutes les bonnes réponses.",
+        options: [
+          "La Plume travaille pour M. Darcq.",
+          "La Plume a pris soin de la bibliothèque pendant quarante ans.",
+          "La Plume habite à Namur.",
+          "La Plume aime les mots croisés.",
+          "La Plume est un enfant de l'école.",
+          "La Plume écrit à l'encre violette."
+        ],
+        answer: [1, 3, 5],
+        hint: "La Plume parle en images. « Quarante hivers », c'est combien de temps ? Des « mots qui se croisent », ça te fait penser à quel jeu ? Et de quelle couleur sont les violettes ?",
+        success: "Bien lu ! La Plume a pris soin des livres pendant quarante ans, aime les mots croisés (et les acrostiches, comme le poème du chapitre 2 !) et écrit à l'encre violette. Qui, dans cette histoire, ressemble à ce portrait ?",
+        to: 'c4_chemineeOk'
+      }
+    },
+
+    c4_chemineeOk: { title: "Qui est La Plume ?",
+      text: [
+        "Victor se gratte la tête. <span class='speech'>« Quarante ans à la bibliothèque… Ça ne fait pas beaucoup de monde, ça ! »</span> Il est 19 h. Il te reste un peu de temps pour rassembler tes preuves avant le rendez-vous."
+      ],
+      clues: ['c4_portrait'],
+      prompt: "",
+      choices: [ { label: "Retourner dans la salle de lecture", to: 'c4_hall' } ]
+    },
+
+    c4_victor: { title: "Les clés",
+      text: [
+        "Tu demandes à Victor qui peut ouvrir la vitrine et la porte des archives. Il secoue son gros trousseau."
+      ],
+      enigme: { kind: 'phrase',
+        title: "🔑 Le trousseau",
+        question: "Touche la phrase qui montre qu'une autre personne que Mme Verbeke peut ouvrir la vitrine et les archives. Puis valide.",
+        passage: [
+          "« Des clés ? J'en ai tout un trousseau, regarde ! »",
+          "« Mais je n'ai pas celle de la vitrine, ni celle des archives : seule Mme Verbeke les a. »",
+          "« Enfin… normalement. »",
+          "« Quand M. Félicien est parti à la retraite, on n'a jamais changé les serrures, et il m'a dit un jour, en riant, qu'il avait gardé un double de chaque clé en souvenir. »",
+          "« Moi, je ne touche jamais aux livres anciens : j'ai bien trop peur de les abimer ! »"
+        ],
+        dialogue: true,
+        answer: [3],
+        pieges: { 0: "Victor a beaucoup de clés… mais lesquelles ? Continue à lire.",
+                  1: "Cette phrase dit que seule Mme Verbeke a ces clés. Mais Victor ajoute quelque chose juste après…",
+                  2: "« Normalement »… Victor n'en est donc pas sûr. Lis la phrase suivante !",
+                  4: "Cette phrase parle de Victor et des livres, pas des clés." },
+        hint: "Victor commence par dire une chose… puis il hésite. Cherche la phrase où il parle d'une autre personne qui aurait des clés.",
+        success: "Oui ! M. Félicien a gardé un double de chaque clé. Il pouvait donc ouvrir la vitrine pour glisser une carte dans les Contes… et la porte des archives pour en glisser une dans le registre !",
+        to: 'c4_victorOk'
+      }
+    },
+
+    c4_victorOk: { title: "Un double de chaque clé",
+      text: [
+        "Victor écarquille les yeux. <span class='speech'>« Ah ben ça alors… Tu crois que… ? »</span>"
+      ],
+      clues: ['c4_cles'],
+      prompt: "",
+      choices: [ { label: "Retourner dans la salle de lecture", to: 'c4_hall' } ]
+    },
+
+    c4_lambert: { title: "Un mardi soir",
+      text: [
+        "Mme Lambert pose ses aiguilles. <span class='speech'>« Tu cherches La Plume ? Attends… La semaine où le livre de la vitrine a disparu, le mardi soir, vers 21 h, je promenais mon chien, tout doucement, devant la bibliothèque. Elle était fermée, tout était noir… sauf une petite lumière près de la vitrine. Par la fenêtre, j'ai vu un vieux monsieur qui marchait avec une canne. Il tenait une enveloppe. Je me suis dit que je rêvais ! »</span>"
+      ],
+      enigme: { kind: 'qcm',
+        title: "🧶 Le bon moment",
+        question: "Au chapitre 1, Mme Verbeke a dit que l'enveloppe de La Plume n'était pas dans les Contes le samedi. Le livre a disparu le mercredi. Pourquoi ce que Mme Lambert a vu est-il si important ?",
+        options: [
+          "Ce mardi soir, c'est le soir où le registre a été volé.",
+          "Ce mardi soir, la bibliothèque était ouverte pour la Nuit de la lecture.",
+          "Ce mardi soir, c'est entre le samedi et le mercredi : c'est sans doute là que l'enveloppe a été glissée dans le livre.",
+          "Ce mardi soir, c'est le jour où le conseil communal vote."
+        ],
+        answer: 2,
+        hint: "Mets les jours dans l'ordre : samedi (pas d'enveloppe), mardi (ce qu'a vu Mme Lambert), mercredi (le livre disparait, avec l'enveloppe dedans). Et vérifie dans ton carnet quel jour avaient lieu la Nuit de la lecture et le conseil communal.",
+        success: "Exactement ! Samedi, pas d'enveloppe. Mercredi, l'enveloppe est dans le livre. Mardi soir, un vieux monsieur à canne, une enveloppe à la main, était dans la bibliothèque fermée près de la vitrine : c'était La Plume !",
+        to: 'c4_lambertOk'
+      }
+    },
+
+    c4_lambertOk: { title: "Le vieux monsieur à la canne",
+      text: [
+        "<span class='speech'>« Sans mes lunettes, je n'ai pas vu son visage »</span>, ajoute Mme Lambert. <span class='speech'>« Mais il avait une jolie canne qui brillait. »</span>"
+      ],
+      clues: ['c4_lambert'],
+      prompt: "",
+      choices: [ { label: "Retourner dans la salle de lecture", to: 'c4_hall' } ]
+    },
+
+    c4_felicien: { title: "La table de M. Félicien",
+      text: [
+        "M. Félicien est déjà parti. <span class='speech'>« Il est allé à la maison communale, pour le conseil »</span>, dit Mme Verbeke. <span class='speech'>« Avec sa canne à pommeau d'argent, bien sûr : il ne sort jamais sans elle. »</span>",
+        "Sur la table des journaux, il a laissé sa grille de mots croisés, entièrement remplie.",
+        "<div class='doc fiche' style='color:#6B3FA0'>MOTS CROISÉS du Courrier de Montrival — grille n° 412<br>Horizontalement : 1. On l'emprunte à la bibliothèque → LIVRE<br>2. Elle sert à écrire, ou elle vient d'un oiseau → PLUME<br>3. Grand cahier où l'on note tout → REGISTRE<br><br>Grille terminée en 12 minutes ! 🪶</div>",
+        "Toute la grille est écrite à l'encre violette."
+      ],
+      enigme: { kind: 'qcm', multi: true,
+        title: "✒️ La grille",
+        question: "Quels détails de cette grille ressemblent aux messages de La Plume ? Coche toutes les bonnes réponses.",
+        options: [
+          "Le nom du journal",
+          "L'encre violette",
+          "Le numéro de la grille",
+          "Le petit dessin de plume à la fin",
+          "Le temps : 12 minutes",
+          "Le mot LIVRE"
+        ],
+        answer: [1, 3],
+        hint: "Repense aux cartes de La Plume : de quelle couleur étaient-elles écrites ? Et comment étaient-elles toujours signées ?",
+        success: "Bien vu ! L'encre violette et la petite plume dessinée à la fin, comme sur toutes les cartes de La Plume.",
+        to: 'c4_felicienOk'
+      }
+    },
+
+    c4_felicienOk: { title: "Une canne à pommeau d'argent",
+      text: [
+        "Tu ranges la grille dans ton carnet. Il est temps de filer à la maison communale…"
+      ],
+      clues: ['c4_canne', 'c4_grille'],
+      prompt: "",
+      choices: [ { label: "Retourner dans la salle de lecture", to: 'c4_hall' } ]
+    },
+
+    c4_soir: { title: "20 h 15, devant la maison communale",
+      text: [
+        "Devant la maison communale, éclairée par les réverbères, plusieurs personnes attendent le début du conseil : Mme Verbeke, Victor, Mme Lambert… et M. Félicien, appuyé sur sa canne.",
+        "Tu prends une grande inspiration. Celui ou celle qui a écrit les cartes est ici. Il faut dire qui est La Plume."
+      ],
+      prompt: "Qui est La Plume ?",
+      choices: [
+        { label: "Mme Verbeke, la bibliothécaire", to: 'c4_finVerbeke', accuse: true },
+        { label: "Victor, l'agent d'entretien", to: 'c4_finVictor', accuse: true },
+        { label: "Mme Lambert, la lectrice fidèle", to: 'c4_finLambert', accuse: true },
+        { label: "M. Félicien, l'ancien bibliothécaire", to: 'c4_preuves', accuse: true },
+        { label: "Je n'ai pas fini : je retourne à la bibliothèque", to: 'c4_hall' }
+      ]
+    },
+
+    c4_preuves: { title: "Tes preuves",
+      text: [
+        "M. Félicien lève un sourcil, l'air amusé. <span class='speech'>« Moi ? Et pourquoi donc ? »</span> Tu ouvres ton carnet."
+      ],
+      dynamic: g => listePreuves(g),
+      auto: g => { const n = nbPreuves(g); return n >= 4 ? 'c4_revelation' : n >= 2 ? 'c4_moitie' : 'c4_sansPreuve'; },
+      autoLabel: "Voir la réaction de M. Félicien"
+    },
+
+    c4_revelation: { title: "La Plume",
+      text: [
+        "M. Félicien sourit, et ses yeux brillent. <span class='speech'>« Bravo. Oui, La Plume, c'est moi. »</span>",
+        "<span class='speech'>« Il y a trente ans, en rangeant le registre, j'ai lu la phrase du dragon et les pages des travaux. Un soir, j'ai vidé l'étagère, j'ai trouvé la brique creuse… et le testament. Je l'ai gardé chez moi, bien à l'abri. Quand Darcq a voulu acheter la bibliothèque, j'ai compris qu'il chercherait à le faire disparaitre. Moi, je suis trop vieux pour me battre seul. Il me fallait quelqu'un de courageux… et qui sache bien lire. Alors j'ai semé mes énigmes. »</span>",
+        "Il sort de sa veste une enveloppe jaunie et te la tend. À l'intérieur, une feuille couverte de l'écriture penchée de Jean de la Plume.",
+        "<div class='doc fiche' style='color:#3B2412'>Moi, Jean de la Plume, écrivain, je donne à la ville de Montrival le bâtiment de la place du Marché.<br>Je le donne à une seule condition : qu'il reste pour toujours une bibliothèque, ouverte à tous, et d'abord aux enfants.<br>Si un jour la ville veut le vendre, le démolir ou en faire autre chose qu'une bibliothèque, ce don sera annulé et le bâtiment reviendra à l'école communale, pour qu'elle en fasse… une bibliothèque.<br>Fait à Montrival, le 8 juin 1902.</div>",
+        "20 h 40. Dans la salle du conseil, le bourgmestre annonce : <span class='speech'>« Point 3 : la vente du bâtiment de la bibliothèque. »</span> Mme Verbeke te pousse doucement vers l'avant. C'est à toi de lire le testament."
+      ],
+      enigme: { kind: 'phrase',
+        title: "🏛️ Devant le conseil communal",
+        question: "Pour empêcher la vente, quelle phrase du testament dois-tu lire au conseil ? Touche-la, puis valide.",
+        passage: [
+          "Moi, Jean de la Plume, écrivain, je donne à la ville de Montrival le bâtiment de la place du Marché.",
+          "Je le donne à une seule condition : qu'il reste pour toujours une bibliothèque, ouverte à tous, et d'abord aux enfants.",
+          "Si un jour la ville veut le vendre, le démolir ou en faire autre chose qu'une bibliothèque, ce don sera annulé et le bâtiment reviendra à l'école communale, pour qu'elle en fasse… une bibliothèque.",
+          "Fait à Montrival, le 8 juin 1902."
+        ],
+        dialogue: true,
+        answer: [2],
+        pieges: { 0: "Cette phrase dit que Jean de la Plume a donné le bâtiment, mais pas ce qui se passe si on le vend.",
+                  1: "Cette phrase donne la condition… mais que se passe-t-il si la ville ne la respecte pas ? Lis la suite !",
+                  3: "Cette phrase donne seulement le lieu et la date." },
+        hint: "Le conseil veut VENDRE le bâtiment. Cherche la phrase qui dit ce qui arrive si la ville le vend.",
+        success: "C'est la bonne ! Si la commune vend le bâtiment, elle le perd aussitôt, et il devient… une bibliothèque de l'école. La vente n'a plus aucun sens !",
+        to: 'c4_fin'
+      }
+    },
+
+    c4_fin: { title: "La bibliothèque sauvée",
+      text: [
+        "Tu lis la phrase d'une voix claire. Dans la salle, un grand silence… puis le bourgmestre retire ses lunettes. <span class='speech'>« Si nous vendons ce bâtiment, nous le perdons. Le point 3 est retiré de l'ordre du jour. La bibliothèque restera une bibliothèque ! »</span>",
+        "Toute la salle applaudit. Mme Verbeke pleure de joie, Victor lance son béret en l'air, et Mme Lambert agite son tricot comme un drapeau.",
+        "Le mercredi suivant, une fête est organisée à la bibliothèque. Le testament est exposé dans la vitrine, à côté des <i>Contes de la Plume</i>. Lucien a enfin le droit de regarder le dragon de la couverture, autant qu'il veut. Et M. Félicien te remet une petite carte, écrite à l'encre violette :",
+        carte("Pour toi, qui sais si bien lire :<br>une carte de lecteur à vie,<br>et toute ma reconnaissance.<br>— La Plume")
+      ],
+      ending: { type: 'win', title: "Bravo, détective ! Grâce à toi, la bibliothèque de Montrival est sauvée. Tu as résolu tout le Mystère de la bibliothèque : tu sais vraiment bien lire !" }
+    },
+
+    c4_moitie: { title: "Pas tout à fait",
+      text: [
+        "M. Félicien hausse les épaules. <span class='speech'>« Ce sont des idées, pas des preuves. »</span> Et il croise les bras."
+      ],
+      ending: { backTo: 'c4_hall', type: 'half', title: "Tu tiens la bonne piste, mais il te faut plus de preuves. As-tu parlé à Victor et à Mme Lambert ? Regardé la table de M. Félicien ?" }
+    },
+
+    c4_sansPreuve: { title: "Sans preuve",
+      text: [
+        "<span class='speech'>« Moi, La Plume ? Quelle drôle d'idée ! »</span>, sourit M. Félicien."
+      ],
+      ending: { backTo: 'c4_hall', type: 'lose', title: "Il te faut des preuves ! Qui a les clés ? Qui a été vu avec une enveloppe ? Qui écrit à l'encre violette ?" }
+    },
+
+    c4_finVerbeke: { title: "Une erreur",
+      text: [
+        "<span class='speech'>« C'est vous, Mme Verbeke ! »</span>",
+        "Mme Verbeke éclate de rire. <span class='speech'>« Moi ? J'ai été aussi surprise que toi à chaque carte ! Et je ne travaille ici que depuis dix ans, pas quarante. »</span>"
+      ],
+      ending: { backTo: 'c4_hall', type: 'lose', title: "Mme Verbeke ne travaille à la bibliothèque que depuis dix ans. Relis le portrait de La Plume !" }
+    },
+
+    c4_finVictor: { title: "Une erreur",
+      text: [
+        "<span class='speech'>« C'est Victor, avec son trousseau de clés ! »</span>",
+        "Victor sort de sa poche un gros crayon de menuisier. <span class='speech'>« Moi, je n'écris qu'avec ça ! Et les mots croisés, très peu pour moi ! »</span>"
+      ],
+      ending: { backTo: 'c4_hall', type: 'lose', title: "Victor n'a pas les clés de la vitrine et des archives, et il n'écrit pas à l'encre violette. Qui a gardé un double des clés ?" }
+    },
+
+    c4_finLambert: { title: "Une erreur",
+      text: [
+        "<span class='speech'>« C'est Mme Lambert ! Elle est toujours là ! »</span>",
+        "Mme Lambert lève son tricot. <span class='speech'>« Moi, je tricote, je ne fais pas de mots croisés ! Et c'est moi qui ai vu le vieux monsieur à la canne, tu te souviens ? »</span>"
+      ],
+      ending: { backTo: 'c4_hall', type: 'lose', title: "Mme Lambert est une témoin, pas La Plume. Repense au vieux monsieur qu'elle a vu, et à sa canne…" }
+    }
+  });
+  /* Chapitres à venir (pas encore écrits) */
+  [[2, "Le message de La Plume", "1-2"], [3, "La nuit de la lecture", 2], [4, "Le testament de Jean de la Plume", 3]].forEach(([n, titre, niveau]) => {
+    if (!CHAPITRES.some(c => c.n === n)) CHAPITRES.push({ n, titre, niveau, pret: false, resume: '', first: null, preuves: [], endings: [] });
+  });
+  CHAPITRES.sort((a, b) => a.n - b.n);
+
+  /* =====================================================================
+     MOTEUR — repris des enquêtes LCML (enquete_empereur.html), adapté :
+     - 4 chapitres ; un chapitre se débloque quand le précédent est résolu ;
+     - partie en cours ET chapitres résolus gardés par élève, sur l'appareil
+       ET en ligne (lcml_jeux_sync.js) : on reprend sur n'importe quelle tablette ;
+     - pas de temps de blocage après une erreur (décision de Jérémy, 23/11/2026) ;
+     - nouvelles énigmes : « phrase » (toucher la bonne phrase) et « mot » (écrire un mot).
+     Côté enseignant : seulement le signal « enquête finie » (fin gagnante du chapitre 4).
+     ===================================================================== */
+  const GAME_ID = 'jeu_enquete_bibliotheque';
+  const chap = n => CHAPITRES.find(c => c.n === n);
+  const chapOf = id => { const m = /^c(\d+)_/.exec(id); return m ? parseInt(m[1], 10) : 0; };
+
+  /* Numéros des paragraphes, mélangés comme dans un vrai livre-jeu, chapitre par chapitre (toujours les mêmes). */
+  CHAPITRES.forEach(c => {
+    const ids = Object.keys(S).filter(k => chapOf(k) === c.n && k !== c.first);
+    let seed = 1898 + c.n;
+    const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+    const nums = ids.map((_, i) => i + 2);
+    for (let i = nums.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [nums[i], nums[j]] = [nums[j], nums[i]]; }
+    if (S[c.first]) S[c.first].n = 1;
+    ids.forEach((k, i) => { S[k].n = nums[i]; });
+  });
+
+  /* ----- Sauvegarde ----- */
+  function who() {
+    try {
+      const st = window.parent && window.parent !== window && window.parent.state;
+      if (st && st.student) return '_' + (st.studentCls || '') + '_' + st.student;
+    } catch (e) {}
+    return '';
+  }
+  const KEY = () => 'lcml_enquete_bibliotheque' + who();
+  function readJSON(k, def) { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? def : v; } catch (e) { return def; } }
+  function writeJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  const asList = x => Array.isArray(x) ? x : (x && typeof x === 'object' ? Object.values(x) : []);
+
+  /* Progression : { finis:[1,2], fins:[ids], carnets:{1:[...]} , courant:{ch,at,clues,objects,history,solved,t} | null } */
+  function clean(p) {
+    p = p || {};
+    const out = { finis: asList(p.finis).map(Number).filter(n => chap(n)), fins: asList(p.fins).filter(id => S[id]), carnets: {}, courant: null };
+    Object.keys(p.carnets || {}).forEach(k => { out.carnets[k] = asList(p.carnets[k]).filter(c => CLUES[c]); });
+    const c = p.courant;
+    // « Aucune partie en cours » est gardé avec sa date ({vide:true,t}) : sinon, à la fusion,
+    // une ancienne partie déjà terminée reviendrait.
+    if (c && c.vide) out.courant = { vide: true, t: Number(c.t) || 0 };
+    else if (c && S[c.at] && !S[c.at].ending) {
+      out.courant = { ch: chapOf(c.at), at: c.at, clues: asList(c.clues).filter(x => CLUES[x]), objects: asList(c.objects).filter(x => OBJECTS[x]),
+        history: asList(c.history).filter(x => S[x]), solved: Object.assign({}, c.solved || {}), t: Number(c.t) || 0,
+        vus: asList(c.vus).filter(x => S[x]) };
+    }
+    return out;
+  }
+  // Fusion de deux sauvegardes (tablette / en ligne) : on garde tout ce qui a été résolu,
+  // et la partie en cours la plus récente (sauf si son chapitre est déjà résolu).
+  function merge(a, b) {
+    a = clean(a); b = clean(b);
+    const out = { finis: [], fins: [], carnets: {}, courant: null };
+    out.finis = Array.from(new Set(a.finis.concat(b.finis))).sort();
+    out.fins = Array.from(new Set(a.fins.concat(b.fins)));
+    Object.keys(a.carnets).concat(Object.keys(b.carnets)).forEach(k => {
+      out.carnets[k] = Array.from(new Set((a.carnets[k] || []).concat(b.carnets[k] || [])));
+    });
+    const ca = a.courant, cb = b.courant;
+    let c = ca && cb ? (cb.t > ca.t ? cb : ca) : (ca || cb);
+    out.courant = c || null;
+    return out;
+  }
+  const sync = window.LCMLSync ? LCMLSync.create({ game: GAME_ID, key: KEY, merge: merge,
+    onChange: () => { prog = clean(readJSON(KEY(), null)); if (!$('screen-title').classList.contains('hidden')) renderTitle(); } }) : null;
+
+  let prog = clean(readJSON(KEY(), null));
+  function save() {
+    // On fusionne avec ce qui est déjà enregistré (une synchronisation a pu arriver entre-temps).
+    prog = merge(readJSON(KEY(), null), prog);
+    writeJSON(KEY(), prog);
+    if (sync) sync.push();
+  }
+  const unlocked = n => n === 1 || prog.finis.indexOf(n - 1) !== -1;
+  const enCours = () => (prog.courant && !prog.courant.vide) ? prog.courant : null;
+
+  /* ----- État de la partie ----- */
+  let game = null;     // = prog.courant pendant le jeu
+  const $ = (id) => document.getElementById(id);
+  const story = $('story');
+  let spotSel = null, errors = 0, solvedNow = false, orderSeq = [];
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+  function has(x) { return game.clues.indexOf(x) !== -1 || game.objects.indexOf(x) !== -1; }
+  function nbPreuves(g) { return chap(g.ch).preuves.filter(c => g.clues.indexOf(c) !== -1).length; }
+  function listePreuves(g) {
+    const list = chap(g.ch).preuves.filter(c => g.clues.indexOf(c) !== -1);
+    if (!list.length) return "<p><b>Tu n'as aucune preuve…</b></p>";
+    return "<p>Tu présentes <b>" + list.length + " preuve" + (list.length > 1 ? "s" : "") + "</b> :</p><ul class='proofs'>" + list.map(c => "<li>🔎 " + CLUES[c] + "</li>").join('') + "</ul>";
+  }
+
+  /* ----- Écran des chapitres ----- */
+  function renderTitle() {
+    prog = clean(readJSON(KEY(), null));
+    const cur = enCours();
+    $('chapitres').innerHTML = CHAPITRES.map(c => {
+      const fini = prog.finis.indexOf(c.n) !== -1, open = unlocked(c.n) && c.pret, enCours = cur && cur.ch === c.n;
+      const fins = c.endings.filter(e => prog.fins.indexOf(e.id) !== -1).length;
+      let etat, btn = '';
+      if (!c.pret) etat = "🕐 Bientôt disponible";
+      else if (!unlocked(c.n)) etat = "🔒 Résous d'abord le chapitre " + (c.n - 1) + " pour le débloquer.";
+      else if (fini) etat = "✅ Résolu";
+      else etat = c.resume;
+      if (open) {
+        if (enCours) btn = `<button class="btn primary" data-act="resume" data-ch="${c.n}">▶ Reprendre</button>`;
+        else if (cur && !enCours) btn = '';
+        else btn = `<button class="btn ${fini ? '' : 'primary'}" data-act="start" data-ch="${c.n}">${fini ? '🔄 Rejouer' : '▶ Commencer'}</button>`;
+      }
+      const autre = open && cur && !enCours ? `<div class="muted">Termine d'abord le chapitre ${cur.ch}, en cours.</div>` : '';
+      return `<div class="chap ${fini ? 'fini' : ''} ${open ? '' : 'verrou'}"><span class="num">${fini ? '✓' : c.n}</span>
+        <div class="info"><b>Chapitre ${c.n} — ${c.titre}</b> <span class="muted">(niveau ${c.niveau})</span><div class="muted">${etat}</div>${autre}</div>${btn}</div>`;
+    }).join('') + (cur ? `<div class="muted" style="text-align:center">Tu peux aussi <button class="btn" data-act="abandon" style="min-height:36px;padding:4px 10px">recommencer le chapitre ${cur.ch} depuis le début</button></div>` : '');
+    $('screen-title').classList.remove('hidden');
+    $('screen-story').classList.add('hidden');
+  }
+  function showStory() {
+    $('screen-title').classList.add('hidden'); $('screen-story').classList.remove('hidden');
+    $('story-title').textContent = '📚 Chapitre ' + game.ch + ' — ' + chap(game.ch).titre;
+  }
+  function startChapter(n) {
+    game = { ch: n, at: chap(n).first, clues: [], objects: [], history: [], solved: {}, t: Date.now(), vus: [] };
+    prog.courant = game;
+    showStory(); goTo(game.at, { noHistory: true });
+  }
+
+  function goTo(id, opts) {
+    opts = opts || {};
+    if (!opts.noHistory && game.at !== id) game.history.push(game.at);
+    game.at = id;
+    if (!game.vus) game.vus = [];
+    if (game.vus.indexOf(id) === -1) game.vus.push(id);
+    errors = 0; solvedNow = false; orderSeq = []; spotSel = null;
+    const p = S[id];
+    const freshClues = [], freshObjs = [];
+    if (!opts.resume) {
+      (p.clues || []).forEach(c => { if (game.clues.indexOf(c) === -1) { game.clues.push(c); freshClues.push(c); } });
+      (p.objects || []).forEach(o => { if (game.objects.indexOf(o) === -1) { game.objects.push(o); freshObjs.push(o); } });
+    }
+    game.t = Date.now();
+    let newEnding = false;
+    if (p.ending) {
+      newEnding = prog.fins.indexOf(id) === -1;
+      if (newEnding) prog.fins.push(id);
+      if (p.ending.type === 'win') {
+        if (prog.finis.indexOf(game.ch) === -1) prog.finis.push(game.ch);
+        prog.carnets[game.ch] = game.clues.slice();
+        prog.courant = { vide: true, t: Date.now() };
+      } else {
+        // Fin ratée : la partie continue (retour à l'enquête), on garde le paragraphe d'où l'on repartira.
+        prog.courant = Object.assign({}, game, { at: p.ending.backTo || chap(game.ch).first });
+      }
+    } else prog.courant = game;
+    save();
+    renderPara(p, freshClues, freshObjs, newEnding);
+    updateCount();
+    window.scrollTo(0, 0);
+  }
+
+  function renderPara(p, freshClues, freshObjs, newEnding) {
+    // Retour à la page précédente (lu trop vite, mauvais bouton, reprise le lendemain) : on remonte le chemin
+    // déjà parcouru. Les énigmes déjà réussies restent réussies ; aucune n'est sautée.
+    const prev = !p.ending && pagePrecedente(false);
+    let html = prev ? `<div class="prev-row"><button class="btn prev-btn" data-act="prev">← Page précédente</button></div>` : '';
+    // Pas de numéro de paragraphe ni de « Va au … » (décision de Jérémy, 23/11/2026) : sur écran, cela n'a pas de sens.
+    html += `<div class="para-head"><h2>${p.title}</h2></div>`;
+    if (p.before) html += p.before(game);
+    html += p.text.map(t => /^<div/.test(t) ? t : `<p>${t}</p>`).join('');
+    if (p.dynamic) html += p.dynamic(game);
+    freshObjs.forEach(o => { html += `<div class="obj-found">🎒 <b>Objet ajouté à ton sac :</b> ${OBJECTS[o]}</div>`; });
+    freshClues.forEach(c => { html += `<div class="clue-found">📒 <b>Nouvel indice noté dans ton carnet :</b> ${CLUES[c]}</div>`; });
+
+    if (p.enigme) {
+      if (game.solved[game.at]) {
+        html += `<div class="feedback ok" style="margin-bottom:12px">✅ Tu as déjà résolu cette énigme.</div>`;
+        html += `<div class="choices">${choiceBtn({ label: "Continuer", to: p.enigme.to })}</div>`;
+      } else {
+        html += renderEnigme(p.enigme);
+        html += `<div class="choices" id="after-enigme"></div>`;
+      }
+    } else if (p.auto) {
+      html += `<div class="choices">${choiceBtn({ label: p.autoLabel || "Continuer", to: p.auto(game) })}</div>`;
+    } else if (p.ending) {
+      const c = chap(game.ch), win = p.ending.type === 'win';
+      const icon = win ? '🏆' : p.ending.type === 'half' ? '🤔' : '❌';
+      const label = win ? 'Chapitre résolu !' : p.ending.type === 'half' ? 'Fin à moitié réussie' : 'Fin ratée';
+      const found = c.endings.filter(e => prog.fins.indexOf(e.id) !== -1).length;
+      html += `<div class="ending-box ${p.ending.type}"><div class="big">${icon}</div><h3>${label}</h3><p style="margin:6px 0 4px">${p.ending.title}</p></div>`;
+      const next = chap(game.ch + 1);
+      if (win && next) html += `<div class="next-chap">🔓 <b>Chapitre ${next.n} débloqué : ${next.titre}</b>${next.pret ? '' : '<br><span class="muted">Il arrive bientôt !</span>'}</div>`;
+      html += `<div class="ending-actions">`;
+      if (!win) html += `<button class="btn primary" data-act="backTo" data-target="${p.ending.backTo || c.first}">↩ Retourner enquêter</button>`;
+      if (win && next && next.pret) html += `<button class="btn primary" data-act="start" data-ch="${next.n}">▶ Chapitre ${next.n}</button>`;
+      html += `<button class="btn" data-act="menu">📚 Les chapitres</button></div>`;
+      // Enseignant : seulement « enquête finie », à la fin gagnante du dernier chapitre. Aucun score.
+      if (win && !next) { try { if (window.parent && window.parent !== window && typeof window.parent.ptEnqueteFinie === 'function') window.parent.ptEnqueteFinie(GAME_ID); } catch (e) {} }
+      if (win && typeof confetti === 'function') setTimeout(() => { try { confetti({ particleCount: 150, spread: 80, origin: { y: .6 } }); } catch (e) {} }, 250);
+    } else {
+      const list = p.choices.filter(c => (!c.requires || has(c.requires)) && (!c.requiresNot || !has(c.requiresNot)));
+      html += `<div class="choices">${p.prompt ? `<div class="prompt">${p.prompt}</div>` : ''}${list.map(choiceBtn).join('')}</div>`;
+    }
+    story.innerHTML = html;
+  }
+
+  // Dernière page « lisible » du chemin (on saute les pages de calcul automatique, comme « Tes preuves »).
+  function pagePrecedente(retirer) {
+    const h = game.history;
+    let i = h.length - 1;
+    while (i >= 0 && (!S[h[i]] || S[h[i]].auto || S[h[i]].ending)) i--;
+    if (i < 0) return null;
+    const id = h[i];
+    if (retirer) game.history = h.slice(0, i);
+    return id;
+  }
+
+  // Page déjà lue (demande de Jérémy) : le bouton est coloré, pour ne pas relire 3 fois la même page.
+  // On ne marque pas les pages « carrefour » (le hall, la réunion finale), où l'on revient sans cesse.
+  const estCarrefour = id => S[id] && S[id].choices && S[id].choices.length >= 3;
+  function choiceBtn(c) {
+    const vu = !c.accuse && game && game.vus && game.vus.indexOf(c.to) !== -1 && !estCarrefour(c.to);
+    const cls = (c.accuse ? 'accuse' : (c.cls || '')) + (vu ? ' vu' : '');
+    return `<button class="choice ${cls}" data-to="${c.to}">${c.accuse ? '⚖️ ' : ''}${esc(c.label)}${vu ? '<span class="vu-tag">✓ déjà lu</span>' : ''}<span class="go">➜</span></button>`;
+  }
+
+  const inputAttrs = 'type="text" inputmode="numeric" pattern="[0-9]*" maxlength="5" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"';
+  function renderEnigme(e) {
+    let h = `<div class="enigme" id="enigme"><h3>${e.title}</h3><p class="q">${e.question}</p>`;
+    if (e.kind === 'number') {
+      h += `<div class="answer-row"><input id="ans-0" ${inputAttrs} aria-label="Réponse">${e.unit ? `<span class="unit">${e.unit}</span>` : ''}</div>`;
+    } else if (e.kind === 'numbers') {
+      e.fields.forEach((f, i) => { h += `<div class="answer-row"><label for="ans-${i}">${f.label}</label><input id="ans-${i}" ${inputAttrs}></div>`; });
+    } else if (e.kind === 'heure') {
+      const a2 = 'type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"';
+      h += `<div class="answer-row heure-row"><input id="ans-0" class="heure-input" ${a2} aria-label="Heures"><span class="heure-h">h</span><input id="ans-1" class="heure-input" ${a2} aria-label="Minutes"></div>`;
+    } else if (e.kind === 'mot') {
+      h += `<div class="answer-row"><input id="ans-0" class="mot-input" type="text" maxlength="30" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="Réponse"></div>`;
+    } else if (e.kind === 'qcm') {
+      if (e.multi) h += `<p class="muted" style="margin:-4px 0 8px">Plusieurs réponses possibles : touche <b>toutes</b> les bonnes.</p>`;
+      h += `<div class="qcm${e.multi ? ' multi' : ''}">` + e.options.map((o, i) => `<button type="button" data-opt="${i}">${o}</button>`).join('') + `</div>`;
+    } else if (e.kind === 'phrase') {
+      h += `<div class="passage${e.dialogue ? ' dialogue' : ''}">` + e.passage.map((t, i) => `<span class="ph" role="button" tabindex="0" data-ph="${i}">${t}</span>`).join(e.dialogue ? '' : ' ') + `</div>`;
+      if ((e.need || 1) > 1) h += `<p class="muted" style="margin:-4px 0 8px">Touche <b>${e.need}</b> phrases.</p>`;
+    } else if (e.kind === 'grid') {
+      h += `<div class="grid-wrap"><table class="grid"><thead><tr><th></th>` + e.cols.map(c => `<th>${c}</th>`).join('') + `</tr></thead><tbody>` +
+        e.rows.map((r, i) => `<tr><td class="rl">${r.label}</td>` + e.cols.map((c, k) => `<td><button type="button" data-gr="${i},${k}" aria-label="${r.label} : ${c}" aria-pressed="false"></button></td>`).join('') + `</tr>`).join('') +
+        `</tbody></table></div>`;
+    } else if (e.kind === 'order') {
+      h += `<div class="order">` + e.items.map((it, i) => `<button type="button" data-ord="${i}"><span class="rank"></span><span>${it}</span></button>`).join('') + `</div>`;
+      h += `<div class="order-tools"><button class="btn" type="button" data-act="ordreset">↺ Tout effacer</button></div>`;
+    } else if (e.kind === 'classify') {
+      h += `<div class="classify">` + e.items.map((it, i) => `<div class="cl-row" data-row="${i}"><span class="cl-label">${it.label}</span><span class="cl-btns">` +
+        e.categories.map((c, k) => `<button type="button" data-cl="${k}">${c}</button>`).join('') + `</span></div>`).join('') + `</div>`;
+    } else if (e.kind === 'spot') {
+      h += `<div class="spot"><img src="${e.img}" alt="${esc(e.alt || '')}" draggable="false"><span class="spot-mark"></span></div><p class="muted spot-help">Touche l'image : un cercle apparait. Tu peux le déplacer en touchant ailleurs.</p>`;
+    }
+    h += `<button class="btn primary" data-act="check">Valider</button><div id="enigme-fb"></div></div>`;
+    return h;
+  }
+
+  const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]/g, '');
+
+  function checkEnigme() {
+    if (solvedNow) return;
+    const e = S[game.at].enigme, fb = $('enigme-fb');
+    let ok = false, said = '', special = '';
+    if (e.kind === 'number' || e.kind === 'numbers') {
+      const answers = e.kind === 'number' ? [e.answer] : e.fields.map(f => f.answer);
+      const vals = answers.map((_, i) => ($('ans-' + i).value || '').replace(/\D/g, ''));
+      if (vals.some(v => !v)) { fb.innerHTML = `<div class="feedback info">${answers.length > 1 ? 'Complète <b>toutes</b> les cases' : 'Écris un nombre'} avant de valider.</div>`; return; }
+      ok = vals.every((v, i) => parseInt(v, 10) === answers[i]);
+      said = ` Tu as écrit ${vals.join(' et ')}.`;
+    } else if (e.kind === 'heure') {
+      const hh = ($('ans-0').value || '').replace(/\D/g, ''), mm = ($('ans-1').value || '').replace(/\D/g, '');
+      if (!hh || !mm) { fb.innerHTML = `<div class="feedback info">Écris les heures <b>et</b> les minutes avant de valider.</div>`; return; }
+      ok = parseInt(hh, 10) === e.answer.h && parseInt(mm, 10) === e.answer.m;
+      said = ` Tu as écrit ${parseInt(hh, 10)} h ${String(parseInt(mm, 10)).padStart(2, '0')}.`;
+    } else if (e.kind === 'mot') {
+      const v = norm($('ans-0').value);
+      if (!v) { fb.innerHTML = `<div class="feedback info">Écris ta réponse avant de valider.</div>`; return; }
+      ok = e.answers.some(a => norm(a) === v);
+    } else if (e.kind === 'qcm' && e.multi) {
+      const sel = Array.from(story.querySelectorAll('.qcm button.sel')).map(b => parseInt(b.getAttribute('data-opt'), 10));
+      if (!sel.length) { fb.innerHTML = `<div class="feedback info">Touche au moins une réponse avant de valider.</div>`; return; }
+      const manque = e.answer.filter(i => sel.indexOf(i) === -1).length, trop = sel.filter(i => e.answer.indexOf(i) === -1).length;
+      ok = !manque && !trop;
+      // Message général (valable pour toutes les questions) + nombre de réponses cochées, pour repérer une case oubliée hors de l'écran.
+      said = ' Tu as coché ' + sel.length + ' réponse' + (sel.length > 1 ? 's' : '') + '. ' +
+        (trop ? 'Au moins une de tes réponses n\'est pas bonne.' : 'Il manque au moins une bonne réponse.');
+    } else if (e.kind === 'qcm') {
+      const sel = story.querySelector('.qcm button.sel');
+      if (!sel) { fb.innerHTML = `<div class="feedback info">Choisis une réponse avant de valider.</div>`; return; }
+      ok = parseInt(sel.getAttribute('data-opt'), 10) === e.answer;
+    } else if (e.kind === 'phrase') {
+      const need = e.need || 1;
+      const sel = Array.from(story.querySelectorAll('.passage .ph.sel')).map(s => parseInt(s.dataset.ph, 10));
+      if (sel.length !== need) { fb.innerHTML = `<div class="feedback info">${need === 1 ? 'Touche <b>une</b> phrase du texte' : 'Touche <b>' + need + '</b> phrases du texte'} avant de valider.</div>`; return; }
+      ok = sel.every(i => e.answer.indexOf(i) !== -1);
+      const piege = sel.find(i => e.answer.indexOf(i) === -1 && e.pieges && e.pieges[i]);
+      if (!ok && piege !== undefined) special = e.pieges[piege];
+    } else if (e.kind === 'grid') {
+      let wrong = 0;
+      e.rows.forEach((r, i) => r.answer.forEach((v, k) => { const b = story.querySelector(`[data-gr="${i},${k}"]`); if ((b.classList.contains('on') ? 1 : 0) !== v) wrong++; }));
+      ok = wrong === 0;
+      said = wrong ? (wrong === 1 ? ' Une case n\'est pas juste.' : ' ' + wrong + ' cases ne sont pas justes.') : '';
+    } else if (e.kind === 'order') {
+      if (orderSeq.length < e.items.length) { fb.innerHTML = `<div class="feedback info">${e.incomplete || 'Touche <b>tous</b> les éléments dans l\'ordre avant de valider.'}</div>`; return; }
+      ok = orderSeq.every((v, i) => v === e.answer[i]);
+    } else if (e.kind === 'classify') {
+      const rows = Array.from(story.querySelectorAll('.cl-row'));
+      const picks = rows.map(r => { const b = r.querySelector('button.sel'); return b ? parseInt(b.getAttribute('data-cl'), 10) : -1; });
+      rows.forEach((r, i) => r.classList.toggle('missing', picks[i] === -1));
+      const left = picks.filter(v => v === -1).length;
+      if (left) { fb.innerHTML = `<div class="feedback info">Il reste ${left === 1 ? '<b>1 ligne</b>' : '<b>' + left + ' lignes</b>'} sans réponse : touche un bouton sur chaque ligne avant de valider.</div>`; return; }
+      const wrong = picks.filter((v, i) => v !== e.items[i].answer).length;
+      ok = wrong === 0;
+      said = wrong ? (wrong === 1 ? ' Une ligne est mal classée.' : ' ' + wrong + ' lignes sont mal classées.') : '';
+    } else if (e.kind === 'spot') {
+      if (!spotSel) { fb.innerHTML = `<div class="feedback info">Touche d'abord l'endroit de l'image où tu vois un indice, puis valide.</div>`; return; }
+      const z = e.zone;
+      ok = spotSel.x >= z.x1 && spotSel.x <= z.x2 && spotSel.y >= z.y1 && spotSel.y <= z.y2;
+    }
+
+    if (ok) {
+      solvedNow = true;
+      game.solved[game.at] = true;
+      prog.courant = game; save();
+      story.querySelectorAll('#enigme input').forEach(i => { i.readOnly = true; });
+      const q = story.querySelector('.qcm'); if (q) { q.classList.add('done'); q.querySelectorAll('.sel').forEach(b => b.classList.add('good')); }
+      const ps = story.querySelector('.passage'); if (ps) ps.classList.add('done');
+      const cl = story.querySelector('.classify'); if (cl) cl.classList.add('done');
+      const spd = story.querySelector('.spot'); if (spd) spd.classList.add('done');
+      const gw = story.querySelector('.grid-wrap'); if (gw) gw.classList.add('grid-done');
+      const od = story.querySelector('.order'); if (od) { od.classList.add('done'); const rt = story.querySelector('[data-act="ordreset"]'); if (rt) rt.remove(); }
+      story.querySelector('[data-act="check"]').remove();
+      fb.innerHTML = `<div class="feedback ok">✅ ${e.success}</div>`;
+      $('after-enigme').innerHTML = choiceBtn({ label: "Continuer l'enquête", to: e.to });
+      return;
+    }
+    errors++;
+    const aide = errors >= 2 ? `💡 <b>Indice :</b> ${e.hint}` : `📖 Relis bien le texte et la question : la réponse s'y trouve. Prends ton temps !`;
+    fb.innerHTML = `<div class="feedback ko">❌ Ce n'est pas ça.${esc(said)}${special ? '<br>🤔 ' + special : ''}<br>${aide}</div>`;
+  }
+
+  function paintOrder() {
+    story.querySelectorAll('.order button').forEach(b => {
+      const pos = orderSeq.indexOf(parseInt(b.dataset.ord, 10));
+      b.classList.toggle('sel', pos !== -1);
+      b.querySelector('.rank').textContent = pos === -1 ? '' : pos + 1;
+    });
+    const fb = $('enigme-fb'); if (fb && fb.querySelector('.feedback.info')) fb.innerHTML = '';
+  }
+
+  function updateCount() { $('clue-count').textContent = game ? game.clues.length + game.objects.length : 0; }
+  function openCarnet() {
+    $('sac-list').innerHTML = game.objects.length ? game.objects.map(o => `<li>${OBJECTS[o]}</li>`).join('') : `<li class="muted">Ton sac est vide.</li>`;
+    $('carnet-list').innerHTML = game.clues.length ? game.clues.map(c => `<li>🔎 ${CLUES[c]}</li>`).join('') : `<li class="muted">Aucun indice pour l'instant. Mène l'enquête !</li>`;
+    // Souvenirs des chapitres déjà résolus : ils pourront servir plus tard.
+    const avant = CHAPITRES.filter(c => c.n < game.ch && (prog.carnets[c.n] || []).length);
+    $('carnet-avant').innerHTML = avant.map(c => `<div class="carnet-chap">📖 Souvenirs du chapitre ${c.n} — ${c.titre}</div><ul class="carnet-list">` +
+      prog.carnets[c.n].map(k => `<li>🔎 ${CLUES[k]}</li>`).join('') + `</ul>`).join('');
+    $('carnet').classList.add('open');
+  }
+
+  story.addEventListener('click', (ev) => {
+    const sp = ev.target.closest && ev.target.closest('.spot');
+    if (sp) {
+      if (solvedNow) return;
+      const r = sp.querySelector('img').getBoundingClientRect();
+      if (!r.width || !r.height) return;
+      spotSel = { x: Math.min(1, Math.max(0, (ev.clientX - r.left) / r.width)), y: Math.min(1, Math.max(0, (ev.clientY - r.top) / r.height)) };
+      const mk = sp.querySelector('.spot-mark');
+      mk.style.left = (spotSel.x * 100) + '%'; mk.style.top = (spotSel.y * 100) + '%'; mk.classList.add('on');
+      const fb = $('enigme-fb'); if (fb && fb.querySelector('.feedback.info')) fb.innerHTML = '';
+      return;
+    }
+    const ph = ev.target.closest && ev.target.closest('.passage .ph');
+    if (ph) {
+      if (solvedNow) return;
+      const e = S[game.at].enigme, need = e.need || 1;
+      if (need === 1) story.querySelectorAll('.passage .ph').forEach(s => s.classList.toggle('sel', s === ph));
+      else ph.classList.toggle('sel');
+      const fb = $('enigme-fb'); if (fb && fb.querySelector('.feedback.info')) fb.innerHTML = '';
+      return;
+    }
+    const zm = ev.target.closest && ev.target.closest('.zoomable');
+    if (zm) { $('zoom-box').innerHTML = zm.outerHTML; $('zoom').classList.add('open'); return; }
+    const t = ev.target.closest('button');
+    if (!t) return;
+    if (t.dataset.to) { goTo(t.dataset.to); return; }
+    if (t.dataset.gr !== undefined) {
+      if (solvedNow) return;
+      const on = !t.classList.contains('on');
+      t.classList.toggle('on', on); t.textContent = on ? '✓' : ''; t.setAttribute('aria-pressed', on ? 'true' : 'false');
+      return;
+    }
+    if (t.dataset.ord !== undefined) {
+      if (solvedNow) return;
+      const k = parseInt(t.dataset.ord, 10), pos = orderSeq.indexOf(k);
+      if (pos === -1) orderSeq.push(k); else orderSeq = orderSeq.slice(0, pos);
+      paintOrder();
+      return;
+    }
+    if (t.dataset.cl !== undefined) {
+      if (solvedNow) return;
+      const row = t.closest('.cl-row');
+      row.querySelectorAll('button').forEach(b => b.classList.toggle('sel', b === t));
+      row.classList.remove('missing');
+      return;
+    }
+    if (t.dataset.opt !== undefined) {
+      if (solvedNow) return;
+      if (t.parentNode.classList.contains('multi')) t.classList.toggle('sel');
+      else t.parentNode.querySelectorAll('button').forEach(b => b.classList.toggle('sel', b === t));
+      return;
+    }
+    const act = t.dataset.act;
+    if (act === 'check') checkEnigme();
+    else if (act === 'ordreset') { if (!solvedNow) { orderSeq = []; paintOrder(); } }
+    else if (act === 'menu') renderTitle();
+    else if (act === 'backTo') goTo(t.dataset.target, { noHistory: true });
+    else if (act === 'prev') { const id = pagePrecedente(true); if (id) goTo(id, { noHistory: true }); }
+    else if (act === 'start') startChapter(parseInt(t.dataset.ch, 10));
+  });
+  story.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Enter' && ev.target.tagName === 'INPUT') { ev.preventDefault(); checkEnigme(); }
+    if ((ev.key === 'Enter' || ev.key === ' ') && ev.target.classList && ev.target.classList.contains('ph')) { ev.preventDefault(); ev.target.click(); }
+  });
+
+  $('chapitres').parentNode.addEventListener('click', (ev) => {
+    const t = ev.target.closest('button'); if (!t || !t.dataset.act) return;
+    if (t.dataset.act === 'start') startChapter(parseInt(t.dataset.ch, 10));
+    else if (t.dataset.act === 'resume') {
+      game = enCours(); if (!game) { renderTitle(); return; }
+      showStory(); goTo(game.at, { noHistory: true, resume: true });
+    } else if (t.dataset.act === 'abandon') {
+      const c = enCours(); if (c) startChapter(c.ch);
+    }
+  });
+  $('btn-menu').addEventListener('click', renderTitle);
+  $('btn-carnet').addEventListener('click', openCarnet);
+  $('btn-carnet-close').addEventListener('click', () => $('carnet').classList.remove('open'));
+  $('zoom').addEventListener('click', () => { $('zoom').classList.remove('open'); $('zoom-box').innerHTML = ''; });
+  $('carnet').addEventListener('click', (ev) => { if (ev.target.id === 'carnet') $('carnet').classList.remove('open'); });
+  window.lcmlOnLeave = () => { $('carnet').classList.remove('open'); renderTitle(); };
+
+  window.__enquete = { S, CLUES, CHAPITRES, goTo, get game() { return game; }, get prog() { return prog; }, merge, startChapter };
+  renderTitle();
+})();
+</script>
+<script src="lcml_copyright.js"></script>
+</body>
+</html>
