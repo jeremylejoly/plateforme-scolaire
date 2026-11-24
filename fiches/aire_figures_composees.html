@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<!-- © 2026 Jérémy Lejoly — LCML. Reproduction interdite sans autorisation. -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Le Découpeur de figures</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  /* Charte LCML : fond crème, contours #1A1A2E, ombres décalées, Fredoka + Nunito */
+  :root {
+    --purple: #5B4FCF; --purple-light: #EEF0FF; --purple-mid: #C7C2F5;
+    --green: #1A9E75; --green-light: #E2F5EE;
+    --red: #D94F3D; --red-light: #FDECEA;
+    --amber: #C97B1A; --amber-light: #FEF3E2;
+    --blue: #1A6FA0; --blue-light: #E2F0FA;
+    --correction: #1f5fbf;
+    --bg: #FDFBF7; --surface: #FFFFFF;
+    --text: #1A1A2E; --muted: #6B7080; --border: #1A1A2E;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); }
+  body { font-family: 'Nunito', sans-serif; color: var(--text); padding: 12px 16px 16px; -webkit-font-smoothing: antialiased; }
+  button { font-family: inherit; touch-action: manipulation; color: var(--text); }
+  .container { max-width: 860px; margin: 0 auto; }
+
+  /* ----- En-tête ----- */
+  header {
+    text-align: center; background: var(--blue-light); border: 3px solid var(--border); border-radius: 18px;
+    padding: 8px 14px; margin-bottom: 12px; box-shadow: 4px 4px 0 var(--border);
+  }
+  h1 { font-family: 'Fredoka', sans-serif; font-size: 22px; font-weight: 700; line-height: 1.2; }
+  .subtitle { font-size: 13px; color: var(--muted); font-weight: 700; }
+
+  /* ----- Choix du niveau (comme le Code Secret) ----- */
+  .niveaux { display: grid; grid-template-columns: 1fr; gap: 14px; max-width: 720px; margin: 4px auto 0; }
+  @media (min-width: 600px) { .niveaux { grid-template-columns: 1fr 1fr; } }
+  .carte-niveau {
+    background: var(--surface); border: 3px solid var(--border); border-radius: 16px; padding: 12px 14px;
+    text-align: left; cursor: pointer; box-shadow: 4px 4px 0 var(--border); display: flex; gap: 12px; align-items: center;
+    transition: transform .12s, box-shadow .12s;
+  }
+  .carte-niveau:hover { transform: translate(-1px, -1px); box-shadow: 5px 5px 0 var(--border); }
+  .carte-niveau:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--border); }
+  .badge-niv {
+    flex: 0 0 50px; height: 50px; border-radius: 12px; border: 2.5px solid var(--border); box-shadow: 2px 2px 0 var(--border);
+    display: flex; align-items: center; justify-content: center; font-family: 'Fredoka', sans-serif; font-size: 24px; font-weight: 700; color: #fff;
+  }
+  .carte-niveau h2 { font-family: 'Fredoka', sans-serif; font-size: 17px; font-weight: 700; color: var(--purple); margin-bottom: 2px; }
+  .carte-niveau p { font-size: 13px; color: var(--muted); font-weight: 700; line-height: 1.35; }
+  .record { display: inline-block; font-size: 12px; font-weight: 800; color: var(--green); background: var(--green-light); border: 1.5px solid var(--green); border-radius: 99px; padding: 1px 9px; margin-top: 5px; }
+
+  /* ----- Barre d'info ----- */
+  .info-card {
+    background: var(--blue-light); border: 3px solid var(--border); border-radius: 16px; padding: 6px 10px; margin-bottom: 12px;
+    display: flex; justify-content: space-between; align-items: center; gap: 8px; box-shadow: 4px 4px 0 var(--border);
+  }
+  .info-card p { font-family: 'Fredoka', sans-serif; font-size: 16px; color: var(--blue); font-weight: 700; white-space: nowrap; }
+  .btn-mini {
+    border: 2px solid var(--border); background: var(--surface); border-radius: 8px; padding: 5px 10px; font-size: 13px; font-weight: 800;
+    cursor: pointer; white-space: nowrap; box-shadow: 2px 2px 0 var(--border);
+  }
+  .btn-mini:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--border); }
+  .btn-mini.calc { background: var(--amber-light); }
+  .btn-mini.calc.ouverte { background: var(--amber); color: #fff; }
+  .dots { display: flex; gap: 6px; }
+  .dot { width: 13px; height: 13px; border-radius: 50%; background: #D1D5DB; border: 1.5px solid var(--border); transition: all .3s; }
+  .dot.current { background: var(--purple); transform: scale(1.2); }
+  .dot.correct { background: var(--green); }
+  .dot.incorrect { background: var(--red); }
+  .gauche, .droite { display: flex; align-items: center; gap: 8px; }
+
+  .main { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media (min-width: 640px) { .main { grid-template-columns: 1.15fr 1fr; align-items: start; } }
+
+  .shape-card {
+    background: var(--surface); border: 3px solid var(--border); border-radius: 18px; padding: 8px;
+    box-shadow: 4px 4px 0 var(--border); display: flex; flex-direction: column; align-items: center;
+  }
+  .shape-svg { width: 100%; max-width: 420px; height: auto; display: block; }
+  .legende { font-size: 12px; color: var(--muted); font-weight: 700; text-align: center; min-height: 16px; }
+
+  .step-card { background: var(--surface); border: 3px solid var(--border); border-radius: 18px; padding: 12px 14px; box-shadow: 4px 4px 0 var(--border); }
+  .step-title {
+    font-family: 'Fredoka', sans-serif; font-size: 17px; font-weight: 700; text-align: center; line-height: 1.35; margin-bottom: 12px;
+    background: var(--amber-light); border: 2.5px solid var(--border); border-radius: 12px; padding: 8px 10px; box-shadow: 2px 2px 0 var(--border);
+  }
+  .attention { display: block; font-size: 13px; color: var(--amber); font-family: 'Nunito', sans-serif; font-weight: 800; margin-top: 2px; }
+  .input-zone { display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .answer-input {
+    width: 170px; height: 46px; border: 3px solid var(--border); border-radius: 12px; text-align: center; font-size: 22px; font-weight: 800;
+    font-family: 'Nunito', sans-serif; color: var(--text); background: var(--bg); outline: none; box-shadow: 2px 2px 0 var(--border);
+  }
+  .answer-input.correct { background: var(--green-light); color: var(--green); }
+  .answer-input.incorrect { background: var(--red-light); color: var(--red); }
+  .answer-unit { font-family: 'Fredoka', sans-serif; font-size: 22px; font-weight: 700; color: var(--text); }
+
+  .keypad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-width: 300px; margin: 0 auto; }
+  .key {
+    height: 42px; border: 2.5px solid var(--border); background: var(--surface); border-radius: 10px; font-size: 18px; font-weight: 800;
+    cursor: pointer; box-shadow: 2px 2px 0 var(--border); font-family: 'Fredoka', sans-serif;
+  }
+  .key:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--border); }
+  .key.action { background: var(--red-light); color: var(--red); }
+  .key.submit { background: var(--green); color: #fff; grid-column: span 4; font-size: 17px; }
+  .message { font-size: 13px; font-weight: 800; color: var(--red); text-align: center; min-height: 18px; margin-top: 6px; }
+
+  .feedback-box { padding: 10px 12px; border-radius: 12px; font-size: 13.5px; line-height: 1.45; font-weight: 600; display: none; border: 2.5px solid var(--border); box-shadow: 2px 2px 0 var(--border); }
+  .feedback-box.correct { display: block; background: var(--green-light); color: var(--green); }
+  .feedback-box.incorrect { display: block; background: var(--red-light); color: var(--red); }
+  .feedback-box .bonne { color: var(--correction); }
+  .feedback-box .ligne { display: block; margin-top: 3px; color: var(--text); font-weight: 600; }
+  .feedback-box .piece { display: inline-block; min-width: 20px; text-align: center; border-radius: 6px; border: 1.5px solid var(--border); font-weight: 900; color: #fff; padding: 0 5px; margin-right: 3px; }
+  .feedback-box .autre { display: block; margin-top: 6px; font-size: 12.5px; color: var(--muted); font-style: italic; }
+
+  .btn-next {
+    width: 100%; padding: 11px; background: var(--purple); color: #fff; border: 3px solid var(--border); border-radius: 12px;
+    font-size: 16px; font-weight: 700; cursor: pointer; font-family: 'Fredoka', sans-serif; margin-top: 12px; box-shadow: 3px 3px 0 var(--border);
+  }
+  .btn-next:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--border); }
+  .btn-next.secondaire { background: var(--surface); color: var(--text); }
+
+  /* ----- Score ----- */
+  .score-card { display: none; background: var(--surface); border: 3px solid var(--border); border-radius: 20px; padding: 16px; text-align: center; box-shadow: 6px 6px 0 var(--border); max-width: 560px; margin: 0 auto; }
+  .score-emoji { font-size: 42px; }
+  .score-title { font-family: 'Fredoka', sans-serif; font-size: 22px; font-weight: 700; }
+  .score-num { font-family: 'Fredoka', sans-serif; font-size: 32px; font-weight: 700; color: var(--purple); margin: 2px 0 4px; }
+  .congrats { font-size: 14px; color: var(--muted); margin-bottom: 10px; line-height: 1.45; font-weight: 600; }
+  .score-details { text-align: left; border: 2.5px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .score-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; font-size: 13.5px; border-bottom: 1.5px solid #E5E1D8; gap: 8px; }
+  .score-row:last-child { border-bottom: none; }
+  .tag { font-size: 12px; font-weight: 800; padding: 2px 8px; border-radius: 99px; white-space: nowrap; border: 1.5px solid currentColor; }
+  .tag.ok { background: var(--green-light); color: var(--green); }
+  .tag.ko { background: var(--red-light); color: var(--red); }
+  .tag .bonne { color: var(--correction); }
+  .boutons-fin { display: flex; gap: 10px; }
+
+  /* ----- Calculatrice ----- */
+  .calculatrice {
+    position: fixed; left: 14px; bottom: 14px; z-index: 40; width: 236px; display: none; touch-action: none;
+    background: var(--purple-light); border: 3px solid var(--border); border-radius: 18px; padding: 10px; box-shadow: 5px 5px 0 var(--border);
+  }
+  .calculatrice.ouverte { display: block; }
+  .calc-haut { cursor: grab; user-select: none; -webkit-user-select: none; display: flex; justify-content: space-between; align-items: center; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 15px; margin-bottom: 8px; }
+  .calc-fermer { background: var(--red-light); color: var(--red); border: 2px solid var(--border); border-radius: 8px; width: 30px; height: 28px; font-size: 14px; font-weight: 900; cursor: pointer; box-shadow: 1.5px 1.5px 0 var(--border); }
+  .calc-ecran { background: #fff; border: 2.5px solid var(--border); border-radius: 10px; padding: 5px 9px; text-align: right; margin-bottom: 9px; min-height: 58px; }
+  .calc-expr { font-size: 13px; color: var(--muted); font-weight: 700; min-height: 17px; word-break: break-all; }
+  .calc-res { font-family: 'Fredoka', sans-serif; font-size: 26px; font-weight: 700; color: var(--text); word-break: break-all; line-height: 1.2; }
+  .calc-touches { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .ck { height: 38px; border: 2px solid var(--border); border-radius: 9px; background: #fff; font-size: 18px; font-weight: 700; cursor: pointer; box-shadow: 2px 2px 0 var(--border); font-family: 'Fredoka', sans-serif; }
+  .ck:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--border); }
+  .ck.op { background: var(--amber-light); color: var(--amber); }
+  .ck.eg { background: var(--green); color: #fff; }
+  .ck.ef { background: var(--red-light); color: var(--red); }
+
+  .confetti { position: fixed; top: -12px; z-index: 50; border-radius: 2px; animation: tombe linear forwards; pointer-events: none; }
+  @keyframes tombe { to { transform: translateY(105vh) rotate(540deg); } }
+
+  /* ----- Formules ----- */
+  .btn-mini.formules { background: var(--green-light); }
+  .btn-mini.formules.ouverte { background: var(--green); color: #fff; }
+  .panneau-formules {
+    display: none; background: var(--green-light); border: 3px solid var(--border); border-radius: 16px; padding: 8px 12px; margin-bottom: 12px;
+    box-shadow: 4px 4px 0 var(--border); gap: 4px 18px; grid-template-columns: 1fr;
+  }
+  @media (min-width: 640px) { .panneau-formules { grid-template-columns: 1fr 1fr; } }
+  .panneau-formules.ouvert { display: grid; }
+  .formule { font-size: 14px; font-weight: 700; }
+  .f-nom { display: inline-block; min-width: 128px; font-family: 'Fredoka', sans-serif; font-weight: 700; color: var(--green); }
+  .feedback-box .indice { display: block; margin: 6px 0 4px; padding: 5px 8px; border-radius: 8px; background: var(--amber-light); color: var(--amber); font-weight: 800; border: 1.5px solid var(--amber); }
+  @media (max-width: 520px) { .info-card { flex-wrap: wrap; } .btn-mini.formules, .btn-mini.calc { font-size: 12px; padding: 5px 7px; } }
+  /* ----- Ajouts du Découpeur ----- */
+  .shape-svg { max-width: 460px; }
+  .shape-svg .point { cursor: pointer; }
+  .shape-svg .flash { animation: clignote .35s ease-in-out 3; }
+  @keyframes clignote { 50% { opacity: .15; } }
+  .pastille { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border); color: #fff; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 13px; vertical-align: middle; padding: 0 3px; }
+  .etape-label { font-family: 'Fredoka', sans-serif; font-size: 16px; font-weight: 600; text-align: center; margin-bottom: 10px; line-height: 1.4; }
+  .num-etape { display: block; font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 900; color: var(--purple); text-transform: uppercase; letter-spacing: .5px; }
+  .recap { display: none; border: 2.5px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 12px; background: var(--bg); }
+  .recap-titre { padding: 7px 10px; font-size: 13.5px; font-weight: 800; background: var(--green-light); color: var(--green); border-bottom: 1.5px solid #E5E1D8; line-height: 1.6; }
+  .recap-titre.aide { background: var(--amber-light); color: var(--amber); }
+  .recap-titre:last-child { border-bottom: none; }
+  .recap-ligne { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 5px 10px; font-size: 13.5px; font-weight: 700; border-bottom: 1.5px solid #E5E1D8; }
+  .recap-ligne:last-child { border-bottom: none; }
+  .zone-decoupe { text-align: center; }
+  .outils { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 4px 0 10px; }
+  .btn-outil { border: 2.5px solid var(--border); background: var(--surface); border-radius: 10px; padding: 8px 12px; font-size: 14px; font-weight: 800; cursor: pointer; box-shadow: 2px 2px 0 var(--border); }
+  .btn-outil:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--border); }
+  .btn-outil.aide { background: var(--amber-light); }
+  .msg-decoupe { font-size: 14px; font-weight: 700; line-height: 1.45; padding: 9px 11px; border-radius: 12px; border: 2.5px solid var(--border); background: var(--purple-light); box-shadow: 2px 2px 0 var(--border); }
+  .msg-decoupe.ok { background: var(--green-light); color: var(--green); }
+  .msg-decoupe.ko { background: var(--red-light); color: var(--red); }
+  /* Zone de travail (niveau 4) : simple pense-bête, rien n'est vérifié */
+  .zone-travail { display: none; margin-top: 14px; background: var(--surface); border: 3px solid var(--border); border-radius: 18px; padding: 10px 12px; box-shadow: 4px 4px 0 var(--border); }
+  .zone-travail.visible { display: block; }
+  .zt-haut { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .zt-titre { font-family: 'Fredoka', sans-serif; font-size: 16px; font-weight: 700; }
+  .zt-titre small { font-family: 'Nunito', sans-serif; font-size: 12.5px; font-weight: 700; color: var(--muted); margin-left: 6px; }
+  .zt-texte {
+    width: 100%; min-height: 120px; resize: vertical; border: 2.5px dashed var(--purple-mid); border-radius: 12px; padding: 8px 10px;
+    font-family: 'Nunito', sans-serif; font-size: 17px; font-weight: 700; line-height: 26px; color: var(--text); outline: none;
+    background: repeating-linear-gradient(var(--bg), var(--bg) 25px, #E2DDD2 25px, #E2DDD2 26px) 0 8px; background-attachment: local;
+  }
+  .zt-texte:focus { border-color: var(--purple); }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>✂️ Le Découpeur de figures</h1>
+    <div class="subtitle" id="sous-titre">Aire des figures composées</div>
+  </header>
+
+  <!-- ===== ÉCRAN 1 : choix du niveau ===== -->
+  <div id="ecran-niveaux">
+    <div class="niveaux" id="liste-niveaux"></div>
+  </div>
+
+  <!-- ===== ÉCRAN 2 : exercice ===== -->
+  <div id="exercice-zone" style="display:none">
+    <div class="info-card">
+      <div class="gauche">
+        <button class="btn-mini" id="btn-retour">← Niveaux</button>
+        <p id="info-numero">Question 1/5</p>
+      </div>
+      <div class="droite">
+        <div class="dots" id="dots-progress"></div>
+        <button class="btn-mini formules" id="btn-formules">📘 Formules</button>
+        <button class="btn-mini calc" id="btn-calc">🧮 Calculatrice</button>
+      </div>
+    </div>
+
+    <div class="panneau-formules" id="panneau-formules">
+      <div class="formule"><span class="f-nom">Carré</span> côté × côté</div>
+      <div class="formule"><span class="f-nom">Rectangle</span> longueur × largeur</div>
+      <div class="formule"><span class="f-nom">Triangle</span> base × hauteur ÷ 2</div>
+      <div class="formule"><span class="f-nom">Parallélogramme</span> base × hauteur</div>
+      <div class="formule"><span class="f-nom">Losange</span> (grande diagonale × petite diagonale) ÷ 2</div>
+      <div class="formule"><span class="f-nom">Trapèze</span> (grande base + petite base) × hauteur ÷ 2</div>
+    </div>
+
+    <div class="main">
+      <div class="shape-card">
+        <svg id="shape-svg" class="shape-svg" viewBox="0 0 360 290" role="img" aria-label="Figure de la question"></svg>
+        <div class="legende" id="legende"></div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-title" id="question-text"></div>
+        <div class="zone-decoupe" id="zone-decoupe" style="display:none">
+          <div class="outils">
+            <button class="btn-outil" id="btn-effacer">↩️ Effacer mes traits</button>
+            <button class="btn-outil aide" id="btn-montre">🆘 Montre-moi</button>
+          </div>
+          <div class="msg-decoupe" id="msg-decoupe"></div>
+        </div>
+        <div class="recap" id="recap"></div>
+        <div id="zone-reponse">
+          <div class="etape-label" id="etape-label"></div>
+          <div class="input-zone">
+            <input type="text" class="answer-input" id="answer-input" readonly inputmode="none" placeholder="Réponse" aria-label="Ta réponse"/>
+            <span class="answer-unit" id="answer-unit">cm²</span>
+          </div>
+          <div class="keypad" id="keypad">
+            <button class="key" data-k="1">1</button><button class="key" data-k="2">2</button><button class="key" data-k="3">3</button><button class="key action" data-k="del" aria-label="Effacer un chiffre">⌫</button>
+            <button class="key" data-k="4">4</button><button class="key" data-k="5">5</button><button class="key" data-k="6">6</button><button class="key action" data-k="clear" aria-label="Tout effacer">C</button>
+            <button class="key" data-k="7">7</button><button class="key" data-k="8">8</button><button class="key" data-k="9">9</button><button class="key" data-k="0">0</button>
+            <button class="key submit" data-k="ok">Valider</button>
+          </div>
+          <div class="message" id="message"></div>
+        </div>
+        <div class="feedback-box" id="feedback-box"></div>
+        <button class="btn-next" id="btn-next" style="display:none">Étape suivante ➡️</button>
+      </div>
+    </div>
+
+    <div class="zone-travail" id="zone-travail">
+      <div class="zt-haut">
+        <div class="zt-titre">📝 Zone de travail <small>Écris tes calculs ici pour t'aider. Rien n'est corrigé.</small></div>
+        <button class="btn-mini" id="zt-effacer">🧽 Effacer</button>
+      </div>
+      <textarea class="zt-texte" id="zt-texte" spellcheck="false" autocomplete="off" placeholder="Par exemple : A = 4 × 9 = 36…"></textarea>
+    </div>
+  </div>
+
+  <!-- ===== ÉCRAN 3 : score ===== -->
+  <div class="score-card" id="score-screen">
+    <div class="score-emoji" id="final-emoji">🏆</div>
+    <div class="score-title" id="final-title">Excellent travail !</div>
+    <div class="score-num" id="final-score">5 / 5</div>
+    <div class="congrats" id="congrats-msg"></div>
+    <div class="score-details" id="final-details"></div>
+    <div class="boutons-fin">
+      <button class="btn-next" id="btn-restart">🔄 Recommencer ce niveau</button>
+      <button class="btn-next secondaire" id="btn-autre">Choisir un niveau</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Calculatrice ===== -->
+<div class="calculatrice" id="calculatrice" aria-label="Calculatrice">
+  <div class="calc-haut" id="calc-haut"><span>✥ 🧮 Calculatrice</span><button class="calc-fermer" id="calc-fermer" aria-label="Fermer la calculatrice">✕</button></div>
+  <div class="calc-ecran"><div class="calc-expr" id="calc-expr"></div><div class="calc-res" id="calc-res">0</div></div>
+  <div class="calc-touches" id="calc-touches">
+    <button class="ck ef" data-c="C">C</button><button class="ck ef" data-c="del">⌫</button><button class="ck op" data-c="÷">÷</button><button class="ck op" data-c="×">×</button>
+    <button class="ck" data-c="7">7</button><button class="ck" data-c="8">8</button><button class="ck" data-c="9">9</button><button class="ck op" data-c="−">−</button>
+    <button class="ck" data-c="4">4</button><button class="ck" data-c="5">5</button><button class="ck" data-c="6">6</button><button class="ck op" data-c="+">+</button>
+    <button class="ck" data-c="1">1</button><button class="ck" data-c="2">2</button><button class="ck" data-c="3">3</button><button class="ck eg" data-c="=" style="grid-row: span 2; height: auto">=</button>
+    <button class="ck" data-c="0" style="grid-column: span 2">0</button><button class="ck" data-c=",">,</button>
+  </div>
+</div>
+
+<script>
+// ===================== SONS =====================
+let audioCtx = null;
+function playSound(type) {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    const t = audioCtx.currentTime;
+    if (type === 'success') {
+      [523.25, 659.25, 783.99].forEach((f, i) => osc.frequency.setValueAtTime(f, t + i * 0.1));
+      gain.gain.setValueAtTime(0.12, t); gain.gain.exponentialRampToValueAtTime(0.005, t + 0.4); osc.start(); osc.stop(t + 0.4);
+    } else if (type === 'error') {
+      osc.frequency.setValueAtTime(220, t); osc.frequency.setValueAtTime(147, t + 0.15);
+      gain.gain.setValueAtTime(0.14, t); gain.gain.exponentialRampToValueAtTime(0.005, t + 0.4); osc.start(); osc.stop(t + 0.4);
+    } else {
+      osc.frequency.setValueAtTime(580, t); gain.gain.setValueAtTime(0.04, t); gain.gain.exponentialRampToValueAtTime(0.005, t + 0.07); osc.start(); osc.stop(t + 0.07);
+    }
+  } catch (e) { /* pas de son */ }
+}
+// ===================== OUTILS =====================
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+const fr = n => String(n).replace('.', ',');
+const mille = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); // 24000 → « 24 000 »
+const hyp = (a, b) => Math.sqrt(a * a + b * b);
+const r1 = v => Math.round(v * 10) / 10;
+const fmt = v => fr(r1(v));
+const entier = v => Math.abs(v - Math.round(v)) < 1e-9;
+const eqPt = (a, b) => Math.abs(a[0] - b[0]) < 1e-6 && Math.abs(a[1] - b[1]) < 1e-6;
+function aireSignee(p) { let s = 0; for (let i = 0; i < p.length; i++) { const [x1, y1] = p[i], [x2, y2] = p[(i + 1) % p.length]; s += x1 * y2 - x2 * y1; } return s / 2; }
+const aireLacet = p => Math.abs(aireSignee(p));
+const aireForme = f => aireLacet(f[0]) - f.slice(1).reduce((s, p) => s + aireLacet(p), 0);
+function centroide(P) {
+  let a = 0, cx = 0, cy = 0;
+  for (let i = 0; i < P.length; i++) { const [x1, y1] = P[i], [x2, y2] = P[(i + 1) % P.length], c = x1 * y2 - x2 * y1; a += c; cx += (x1 + x2) * c; cy += (y1 + y2) * c; }
+  a /= 2; return [cx / (6 * a), cy / (6 * a)];
+}
+// Point dans la figure (règle pair-impair : les trous comptent comme dehors)
+function dedans(pt, polys) {
+  let c = false;
+  polys.forEach(P => { for (let i = 0, j = P.length - 1; i < P.length; j = i++) { const [xi, yi] = P[i], [xj, yj] = P[j]; if ((yi > pt[1]) !== (yj > pt[1]) && pt[0] < (xj - xi) * (pt[1] - yi) / (yj - yi) + xi) c = !c; } });
+  return c;
+}
+function distSeg(p, a, b) { const dx = b[0] - a[0], dy = b[1] - a[1], l2 = dx * dx + dy * dy; let t = l2 ? ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / l2 : 0; t = Math.max(0, Math.min(1, t)); return Math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy); }
+const surBord = (pt, polys) => polys.some(P => P.some((a, i) => distSeg(pt, a, P[(i + 1) % P.length]) < 1e-6));
+// Applique une transformation à tous les points d'une figure (sauf aux dimensions des pièces)
+function mapPts(o, f) {
+  if (Array.isArray(o)) { if (o.length === 2 && typeof o[0] === 'number' && typeof o[1] === 'number') return f(o); return o.map(x => mapPts(x, f)); }
+  if (o && typeof o === 'object') { const r = {}; for (const k in o) r[k] = k === 'dims' ? o[k] : mapPts(o[k], f); return r; }
+  return o;
+}
+function miroir(fig) { const r = mapPts(fig, ([x, y]) => [-x, y]); r.segs.forEach(g => { if (g.ln) g.ln = -g.ln; }); return r; }
+
+// ===================== PIÈCES =====================
+const NOMS = { rect: 'rectangle', carre: 'carré', tri: 'triangle', trap: 'trapèze', para: 'parallélogramme', los: 'losange' };
+const rect = (poly, L, l, note) => ({ poly, t: 'rect', dims: [L, l], note });
+const carre = (poly, c, note) => ({ poly, t: 'carre', dims: [c], note });
+const tri = (poly, b, h, note) => ({ poly, t: 'tri', dims: [b, h], note });
+const trap = (poly, B, b, h, note) => ({ poly, t: 'trap', dims: [B, b, h], note });
+const para = (poly, b, h, note) => ({ poly, t: 'para', dims: [b, h], note });
+const los = (poly, D, d, note) => ({ poly, t: 'los', dims: [D, d], note });
+const lettre = (pc, p) => { pc.lettre = p; return pc; };  // position de la lettre si le centre est encombré
+const res = (n, u) => `<strong>${mille(n)} ${u}²</strong>`;
+
+function calculPiece(pc, u) {
+  const [a, b, c] = pc.dims;
+  let aire, f, err;
+  switch (pc.t) {
+    case 'rect': aire = a * b; f = `longueur × largeur = ${a} × ${b} = ${res(aire, u)}`;
+      err = [{ v: 2 * (a + b), m: `Tu as calculé le périmètre. Pour l'aire du rectangle : longueur × largeur.` },
+             { v: a + b, m: `Tu as additionné. Pour l'aire du rectangle, on multiplie longueur × largeur.` }]; break;
+    case 'carre': aire = a * a; f = `côté × côté = ${a} × ${a} = ${res(aire, u)}`;
+      err = [{ v: 4 * a, m: `Tu as calculé le périmètre. Pour l'aire du carré : côté × côté.` },
+             { v: 2 * a, m: `Tu as additionné. Pour l'aire du carré, on multiplie côté × côté.` }]; break;
+    case 'tri': aire = a * b / 2; f = `base × hauteur ÷ 2 = ${a} × ${b} ÷ 2 = ${mille(a * b)} ÷ 2 = ${res(aire, u)}`;
+      err = [{ v: a * b, m: `Tu as oublié de diviser par 2 : l'aire du triangle, c'est base × hauteur ÷ 2.` },
+             { v: a + b, m: `Tu as additionné. Pour le triangle : base × hauteur ÷ 2.` }]; break;
+    case 'trap': aire = (a + b) * c / 2; f = `(grande base + petite base) × hauteur ÷ 2 = (${a} + ${b}) × ${c} ÷ 2 = ${a + b} × ${c} ÷ 2 = ${mille((a + b) * c)} ÷ 2 = ${res(aire, u)}`;
+      err = [{ v: (a + b) * c, m: `Tu as oublié de diviser par 2 : (grande base + petite base) × hauteur ÷ 2.` },
+             { v: a * c, m: `Tu n'as pris que la grande base. Il faut additionner les deux bases avant de multiplier.` },
+             { v: a * c / 2, m: `Tu n'as pris que la grande base. Il faut additionner les deux bases avant de multiplier.` },
+             { v: a * b, m: `Tu as multiplié les deux bases. Il faut les additionner, puis multiplier par la hauteur et diviser par 2.` }]; break;
+    case 'para': aire = a * b; f = `base × hauteur = ${a} × ${b} = ${res(aire, u)}`;
+      err = [{ v: a * b / 2, m: `Pas de ÷ 2 pour le parallélogramme : son aire, c'est base × hauteur.` },
+             { v: a + b, m: `Tu as additionné. L'aire du parallélogramme, c'est base × hauteur.` }]; break;
+    case 'los': aire = a * b / 2; f = `(grande diagonale × petite diagonale) ÷ 2 = (${a} × ${b}) ÷ 2 = ${mille(a * b)} ÷ 2 = ${res(aire, u)}`;
+      err = [{ v: a * b, m: `Tu as oublié de diviser par 2 : (grande diagonale × petite diagonale) ÷ 2.` },
+             { v: a + b, m: `Tu as additionné les diagonales. Il faut les multiplier, puis diviser par 2.` }]; break;
+  }
+  return { aire, f, err };
+}
+
+// ===================== BANQUE DES FIGURES =====================
+/* Une figure :
+   forme  : [contour, trou1, trou2…] (sommets ; x vers la droite, y vers le bas)
+   segs   : mesures écrites {p, q, v, k:'s' (côté) | 'd' (pointillés), inutile?, ln? (côté de l'étiquette), lt? (position 0 à 1)}
+   angles : angles droits ajoutés à la main {V, A, B} (ceux des coins de la figure sont dessinés tout seuls)
+   ticks  : petits traits « même longueur » {p, q}
+   pts    : points supplémentaires où l'on peut commencer ou finir un trait (niveau 2), en plus des sommets
+   decs   : découpages possibles (addition) {cuts:[[p, q]…], pieces:[…]} ; le premier est celui montré au niveau 1
+   grand / enleves : grande figure et parties enlevées (soustraction) */
+// BANQUE-DEBUT
+const BANQUE = [
+  // ---------- Addition ----------
+  { id: 'L', titre: 'La figure en L', kind: 'add', u: 'cm',
+    forme: [[[0, 0], [4, 0], [4, 5], [10, 5], [10, 9], [0, 9]]],
+    segs: [{ p: [0, 0], q: [4, 0], v: 4, k: 's' }, { p: [0, 0], q: [0, 9], v: 9, k: 's' }, { p: [0, 9], q: [10, 9], v: 10, k: 's' }, { p: [10, 5], q: [10, 9], v: 4, k: 's' }],
+    pts: [[4, 9], [0, 5], [7, 9]],
+    decs: [
+      { cuts: [[[4, 5], [4, 9]]], pieces: [rect([[0, 0], [4, 0], [4, 9], [0, 9]], 9, 4), rect([[4, 5], [10, 5], [10, 9], [4, 9]], 6, 4, 'Longueur : 10 − 4 = 6 cm')] },
+      { cuts: [[[0, 5], [4, 5]]], pieces: [rect([[0, 0], [4, 0], [4, 5], [0, 5]], 5, 4, 'Longueur : 9 − 4 = 5 cm'), rect([[0, 5], [10, 5], [10, 9], [0, 9]], 10, 4)] }] },
+
+  { id: 'maison', titre: 'La maison', kind: 'add', u: 'm',
+    forme: [[[0, 4], [4, 0], [8, 4], [8, 10], [0, 10]]],
+    segs: [{ p: [0, 10], q: [8, 10], v: 8, k: 's' }, { p: [8, 4], q: [8, 10], v: 6, k: 's' }, { p: [4, 0], q: [4, 4], v: 4, k: 'd', ln: 1, lt: 0.62 },
+           { p: [0, 4], q: [4, 0], v: hyp(4, 4), k: 's', inutile: true }],
+    angles: [{ V: [4, 4], A: [4, 0], B: [5, 4] }],
+    ticks: [{ p: [0, 4], q: [4, 0] }, { p: [4, 0], q: [8, 4] }],
+    pts: [[4, 10]],
+    decs: [
+      { cuts: [[[0, 4], [8, 4]]], pieces: [lettre(tri([[0, 4], [4, 0], [8, 4]], 8, 4), [5.7, 2.9]), rect([[0, 4], [8, 4], [8, 10], [0, 10]], 8, 6)] },
+      { cuts: [[[4, 0], [4, 10]]], pieces: [trap([[0, 4], [4, 0], [4, 10], [0, 10]], 10, 6, 4, 'Grande base : 4 + 6 = 10 m ; petite base : 6 m ; hauteur : 8 ÷ 2 = 4 m'),
+                                             trap([[4, 0], [8, 4], [8, 10], [4, 10]], 10, 6, 4, 'Même trapèze que la pièce A, retourné')] }] },
+
+  { id: 'trapara', titre: 'Trapèze et parallélogramme', kind: 'add', u: 'cm',
+    forme: [[[5, 3], [13, 3], [10, 6], [12, 10], [0, 10], [2, 6]]],
+    segs: [{ p: [5, 3], q: [13, 3], v: 8, k: 's' }, { p: [0, 10], q: [12, 10], v: 12, k: 's' },
+           { p: [10, 3], q: [10, 6], v: 3, k: 'd', ln: 1 }, { p: [10, 6], q: [10, 10], v: 4, k: 'd', ln: 1 },
+           { p: [2, 6], q: [5, 3], v: hyp(3, 3), k: 's', inutile: true }, { p: [0, 10], q: [2, 6], v: hyp(2, 4), k: 's', inutile: true }],
+    angles: [{ V: [10, 3], A: [10, 6], B: [9, 3] }, { V: [10, 10], A: [10, 6], B: [9, 10] }],
+    ticks: [{ p: [0, 10], q: [2, 6] }, { p: [12, 10], q: [10, 6] }],
+    decs: [
+      { cuts: [[[2, 6], [10, 6]]], pieces: [para([[5, 3], [13, 3], [10, 6], [2, 6]], 8, 3), trap([[2, 6], [10, 6], [12, 10], [0, 10]], 12, 8, 4, 'Petite base : 8 cm (même longueur que le côté d\'en face du parallélogramme)')] }] },
+
+  { id: 'losrect', titre: 'Losange et rectangle', kind: 'add', u: 'cm',
+    forme: [[[0, 3], [4, 0], [8, 3], [14, 11], [10, 14], [4, 6]]],
+    segs: [{ p: [0, 3], q: [8, 3], v: 8, k: 'd', ln: 1, lt: 0.3 }, { p: [4, 0], q: [4, 6], v: 6, k: 'd', ln: -1, lt: 0.78 },
+           { p: [8, 3], q: [14, 11], v: 10, k: 's' }, { p: [14, 11], q: [10, 14], v: 5, k: 's' }],
+    angles: [{ V: [4, 3], A: [8, 3], B: [4, 0] }],
+    ticks: [{ p: [0, 3], q: [4, 0] }, { p: [4, 0], q: [8, 3] }, { p: [0, 3], q: [4, 6] }],
+    decs: [
+      { cuts: [[[8, 3], [4, 6]]], pieces: [lettre(los([[0, 3], [4, 0], [8, 3], [4, 6]], 8, 6), [5.3, 1.9]), rect([[8, 3], [14, 11], [10, 14], [4, 6]], 10, 5)] }] },
+
+  { id: 'bateau', titre: 'Le bateau', kind: 'add', u: 'dm',
+    forme: [[[3, 2], [9, 2], [9, 5], [12, 5], [10, 9], [2, 9], [0, 5], [3, 5]]],
+    segs: [{ p: [3, 2], q: [9, 2], v: 6, k: 's' }, { p: [9, 2], q: [9, 5], v: 3, k: 's', lt: 0.3 }, { p: [0, 5], q: [3, 5], v: 3, k: 's', lt: 0.3 }, { p: [9, 5], q: [12, 5], v: 3, k: 's', lt: 0.7 },
+           { p: [2, 9], q: [10, 9], v: 8, k: 's' }, { p: [10, 5], q: [10, 9], v: 4, k: 'd', ln: 1 }, { p: [10, 9], q: [12, 5], v: hyp(2, 4), k: 's', inutile: true }],
+    angles: [{ V: [10, 9], A: [10, 5], B: [9, 9] }],
+    ticks: [{ p: [0, 5], q: [2, 9] }, { p: [12, 5], q: [10, 9] }],
+    decs: [
+      { cuts: [[[3, 5], [9, 5]]], pieces: [rect([[3, 2], [9, 2], [9, 5], [3, 5]], 6, 3), trap([[0, 5], [3, 5], [9, 5], [12, 5], [10, 9], [2, 9]], 12, 8, 4, 'Grande base : 3 + 6 + 3 = 12 dm')] }] },
+
+  { id: 'rectpara', titre: 'Rectangle et parallélogramme', kind: 'add', u: 'cm',
+    forme: [[[0, 0], [8, 0], [11, 2], [11, 7], [8, 5], [0, 5]]],
+    segs: [{ p: [0, 0], q: [8, 0], v: 8, k: 's' }, { p: [0, 0], q: [0, 5], v: 5, k: 's' }, { p: [8, 2], q: [11, 2], v: 3, k: 'd', ln: -1 },
+           { p: [8, 5], q: [11, 7], v: hyp(3, 2), k: 's', inutile: true }],
+    angles: [{ V: [11, 2], A: [8, 2], B: [11, 7] }],
+    decs: [
+      { cuts: [[[8, 0], [8, 5]]], pieces: [rect([[0, 0], [8, 0], [8, 5], [0, 5]], 8, 5), para([[8, 0], [11, 2], [11, 7], [8, 5]], 5, 3, 'Base : 5 cm (c\'est aussi la largeur du rectangle)')] }] },
+
+  { id: 'fleche', titre: 'La flèche', kind: 'add', u: 'm',
+    forme: [[[0, 2], [10, 2], [10, 0], [14, 4], [10, 8], [10, 6], [0, 6]]],
+    segs: [{ p: [0, 2], q: [10, 2], v: 10, k: 's' }, { p: [0, 2], q: [0, 6], v: 4, k: 's' }, { p: [10, 0], q: [10, 2], v: 2, k: 's' }, { p: [10, 6], q: [10, 8], v: 2, k: 's' },
+           { p: [10, 4], q: [14, 4], v: 4, k: 'd', ln: 1, lt: 0.6 }, { p: [10, 8], q: [14, 4], v: hyp(4, 4), k: 's', inutile: true }],
+    decs: [
+      { cuts: [[[10, 2], [10, 6]]], pieces: [rect([[0, 2], [10, 2], [10, 6], [0, 6]], 10, 4), lettre(tri([[10, 0], [14, 4], [10, 8], [10, 6], [10, 2]], 8, 4, 'Base : 2 + 4 + 2 = 8 m'), [11.1, 2.5])] }] },
+
+  { id: 'escalier', titre: 'L\'escalier', kind: 'add', u: 'cm',
+    forme: [[[0, 0], [3, 0], [3, 3], [6, 3], [6, 6], [9, 6], [9, 9], [0, 9]]],
+    segs: [{ p: [0, 0], q: [3, 0], v: 3, k: 's' }, { p: [9, 6], q: [9, 9], v: 3, k: 's' }, { p: [0, 9], q: [9, 9], v: 9, k: 's' }, { p: [0, 0], q: [0, 9], v: 9, k: 's' }],
+    ticks: [{ p: [0, 0], q: [3, 0] }, { p: [3, 0], q: [3, 3] }, { p: [3, 3], q: [6, 3] }, { p: [6, 3], q: [6, 6] }, { p: [6, 6], q: [9, 6] }, { p: [9, 6], q: [9, 9] }],
+    pts: [[3, 9], [6, 9], [0, 3], [0, 6]],
+    decs: [
+      { cuts: [[[3, 3], [3, 9]], [[6, 6], [6, 9]]], pieces: [rect([[0, 0], [3, 0], [3, 9], [0, 9]], 9, 3), rect([[3, 3], [6, 3], [6, 9], [3, 9]], 6, 3, 'Longueur : 9 − 3 = 6 cm'), carre([[6, 6], [9, 6], [9, 9], [6, 9]], 3)] },
+      { cuts: [[[0, 3], [3, 3]], [[0, 6], [6, 6]]], pieces: [carre([[0, 0], [3, 0], [3, 3], [0, 3]], 3), rect([[0, 3], [6, 3], [6, 6], [0, 6]], 6, 3, 'Longueur : 3 + 3 = 6 cm'), rect([[0, 6], [9, 6], [9, 9], [0, 9]], 9, 3)] },
+      { cuts: [[[0, 3], [3, 3]], [[6, 6], [6, 9]]], pieces: [carre([[0, 0], [3, 0], [3, 3], [0, 3]], 3), carre([[0, 3], [6, 3], [6, 9], [0, 9]], 6, 'Côté : 3 + 3 = 6 cm'), carre([[6, 6], [9, 6], [9, 9], [6, 9]], 3)] }] },
+
+  { id: 'T', titre: 'Le T', kind: 'add', u: 'm',
+    forme: [[[0, 0], [12, 0], [12, 3], [8, 3], [8, 9], [4, 9], [4, 3], [0, 3]]],
+    segs: [{ p: [0, 0], q: [12, 0], v: 12, k: 's' }, { p: [0, 0], q: [0, 3], v: 3, k: 's' }, { p: [0, 3], q: [4, 3], v: 4, k: 's' },
+           { p: [4, 9], q: [8, 9], v: 4, k: 's' }, { p: [8, 3], q: [8, 9], v: 6, k: 's' }],
+    pts: [[4, 0], [8, 0]],
+    decs: [
+      { cuts: [[[4, 3], [8, 3]]], pieces: [rect([[0, 0], [12, 0], [12, 3], [8, 3], [4, 3], [0, 3]], 12, 3), rect([[4, 3], [8, 3], [8, 9], [4, 9]], 6, 4)] },
+      { cuts: [[[4, 0], [4, 3]], [[8, 0], [8, 3]]], pieces: [rect([[0, 0], [4, 0], [4, 3], [0, 3]], 4, 3), rect([[4, 0], [8, 0], [8, 9], [4, 9]], 9, 4, 'Longueur : 3 + 6 = 9 m'), rect([[8, 0], [12, 0], [12, 3], [8, 3]], 4, 3, 'Longueur : 12 − 4 − 4 = 4 m')] }] },
+
+  { id: 'chevron', titre: 'Le chevron', kind: 'add', u: 'dm',
+    forme: [[[0, 0], [4, 0], [7, 4], [4, 8], [0, 8], [3, 4]]],
+    segs: [{ p: [0, 0], q: [4, 0], v: 4, k: 's' }, { p: [0, 8], q: [4, 8], v: 4, k: 's' }, { p: [4, 0], q: [4, 4], v: 4, k: 'd', ln: -1, lt: 0.35 }, { p: [4, 4], q: [4, 8], v: 4, k: 'd', ln: -1, lt: 0.65 }],
+    angles: [{ V: [4, 0], A: [4, 4], B: [3, 0] }, { V: [4, 8], A: [4, 4], B: [3, 8] }],
+    decs: [
+      { cuts: [[[3, 4], [7, 4]]], pieces: [lettre(para([[0, 0], [4, 0], [7, 4], [3, 4]], 4, 4), [2.4, 1.6]), lettre(para([[3, 4], [7, 4], [4, 8], [0, 8]], 4, 4), [2.4, 6.4])] }] },
+
+  { id: 'hexa', titre: 'L\'hexagone', kind: 'add', u: 'cm',
+    forme: [[[0, 3], [4, 0], [12, 0], [16, 3], [12, 6], [4, 6]]],
+    segs: [{ p: [4, 0], q: [12, 0], v: 8, k: 's' }, { p: [0, 3], q: [16, 3], v: 16, k: 'd', ln: 1, lt: 0.44 }, { p: [8, 0], q: [8, 6], v: 6, k: 'd', ln: -1, lt: 0.22 },
+           { p: [0, 3], q: [4, 0], v: 5, k: 's', inutile: true }],
+    ticks: [{ p: [0, 3], q: [4, 0] }, { p: [12, 0], q: [16, 3] }, { p: [16, 3], q: [12, 6] }, { p: [4, 6], q: [0, 3] }],
+    decs: [
+      { cuts: [[[4, 0], [4, 6]], [[12, 0], [12, 6]]], pieces: [lettre(tri([[0, 3], [4, 0], [4, 6]], 6, 4, 'Base : 6 cm ; hauteur : (16 − 8) ÷ 2 = 4 cm'), [2.9, 1.9]), lettre(rect([[4, 0], [12, 0], [12, 6], [4, 6]], 8, 6), [10.3, 4.6]), lettre(tri([[12, 0], [16, 3], [12, 6]], 6, 4, 'Même triangle que la pièce A'), [13.1, 1.9])] },
+      { cuts: [[[0, 3], [16, 3]]], pieces: [lettre(trap([[0, 3], [4, 0], [12, 0], [16, 3]], 16, 8, 3, 'Hauteur : 6 ÷ 2 = 3 cm'), [11, 1.5]), lettre(trap([[0, 3], [16, 3], [12, 6], [4, 6]], 16, 8, 3, 'Même trapèze que la pièce A, retourné'), [11, 4.5])] }] },
+
+  // ---------- Soustraction ----------
+  { id: 'cadre', titre: 'Le cadre', kind: 'sous', u: 'cm',
+    forme: [[[0, 0], [12, 0], [12, 9], [0, 9]], [[2, 2], [10, 2], [10, 7], [2, 7]]],
+    segs: [{ p: [0, 0], q: [12, 0], v: 12, k: 's' }, { p: [0, 0], q: [0, 9], v: 9, k: 's' }, { p: [2, 2], q: [10, 2], v: 8, k: 's' }, { p: [2, 2], q: [2, 7], v: 5, k: 's' }],
+    grand: rect([[0, 0], [12, 0], [12, 9], [0, 9]], 12, 9), nomGrand: 'du grand rectangle',
+    enleves: [rect([[2, 2], [10, 2], [10, 7], [2, 7]], 8, 5)], nomEnleve: 'du rectangle enlevé' },
+
+  { id: 'enveloppe', titre: 'L\'enveloppe', kind: 'sous', u: 'm',
+    forme: [[[0, 0], [2, 0], [5, 3], [8, 0], [10, 0], [10, 6], [0, 6]]],
+    segs: [{ p: [0, 6], q: [10, 6], v: 10, k: 's' }, { p: [10, 0], q: [10, 6], v: 6, k: 's' }, { p: [2, 0], q: [8, 0], v: 6, k: 'd', ln: -1 }, { p: [5, 0], q: [5, 3], v: 3, k: 'd', ln: 1, lt: 0.4 }],
+    angles: [{ V: [5, 0], A: [5, 3], B: [6, 0] }],
+    grand: rect([[0, 0], [10, 0], [10, 6], [0, 6]], 10, 6), nomGrand: 'du grand rectangle',
+    enleves: [tri([[2, 0], [8, 0], [5, 3]], 6, 3)], nomEnleve: 'du triangle enlevé' },
+
+  { id: 'fenetre', titre: 'La fenêtre en losange', kind: 'sous', u: 'dm',
+    forme: [[[0, 0], [10, 0], [10, 10], [0, 10]], [[1, 5], [5, 3], [9, 5], [5, 7]]],
+    segs: [{ p: [0, 10], q: [10, 10], v: 10, k: 's' }, { p: [1, 5], q: [9, 5], v: 8, k: 'd', ln: 1, lt: 0.25 }, { p: [5, 3], q: [5, 7], v: 4, k: 'd', ln: -1, lt: 0.8 }],
+    angles: [{ V: [5, 5], A: [8, 5], B: [5, 3] }],
+    ticks: [{ p: [0, 0], q: [10, 0] }, { p: [10, 0], q: [10, 10] }, { p: [10, 10], q: [0, 10] }, { p: [0, 10], q: [0, 0] }],
+    grand: carre([[0, 0], [10, 0], [10, 10], [0, 10]], 10), nomGrand: 'du grand carré',
+    enleves: [los([[1, 5], [5, 3], [9, 5], [5, 7]], 8, 4)], nomEnleve: 'du losange enlevé' },
+
+  { id: 'croix', titre: 'La croix', kind: 'sous', u: 'cm',
+    forme: [[[2, 0], [10, 0], [10, 2], [12, 2], [12, 6], [10, 6], [10, 8], [2, 8], [2, 6], [0, 6], [0, 2], [2, 2]]],
+    segs: [{ p: [2, 0], q: [10, 0], v: 8, k: 's' }, { p: [0, 2], q: [0, 6], v: 4, k: 's' }, { p: [0, 6], q: [2, 6], v: 2, k: 's' }, { p: [2, 0], q: [2, 2], v: 2, k: 's' }],
+    grand: rect([[0, 0], [12, 0], [12, 8], [0, 8]], 12, 8, 'Longueur : 2 + 8 + 2 = 12 cm ; largeur : 2 + 4 + 2 = 8 cm'), nomGrand: 'du grand rectangle',
+    enleves: [carre([[0, 0], [2, 0], [2, 2], [0, 2]], 2), carre([[10, 0], [12, 0], [12, 2], [10, 2]], 2), carre([[10, 6], [12, 6], [12, 8], [10, 8]], 2), carre([[0, 6], [2, 6], [2, 8], [0, 8]], 2)],
+    nomEnleve: 'des 4 petits carrés enlevés' },
+
+  { id: 'garage', titre: 'Le garage', kind: 'sous', u: 'm',
+    forme: [[[3, 0], [11, 0], [14, 6], [9, 6], [9, 3], [5, 3], [5, 6], [0, 6]]],
+    segs: [{ p: [3, 0], q: [11, 0], v: 8, k: 's' }, { p: [0, 6], q: [5, 6], v: 5, k: 's' }, { p: [9, 6], q: [14, 6], v: 5, k: 's' },
+           { p: [5, 3], q: [9, 3], v: 4, k: 's', lt: 0.4 }, { p: [9, 3], q: [9, 6], v: 3, k: 's', lt: 0.72 }, { p: [3, 0], q: [3, 6], v: 6, k: 'd', ln: -1, lt: 0.4 },
+           { p: [11, 0], q: [14, 6], v: hyp(3, 6), k: 's', inutile: true }],
+    angles: [{ V: [3, 6], A: [3, 0], B: [4, 6] }],
+    ticks: [{ p: [0, 6], q: [3, 0] }, { p: [11, 0], q: [14, 6] }],
+    grand: trap([[3, 0], [11, 0], [14, 6], [0, 6]], 14, 8, 6, 'Grande base : 5 + 4 + 5 = 14 m'), nomGrand: 'du grand trapèze',
+    enleves: [rect([[5, 3], [9, 3], [9, 6], [5, 6]], 4, 3)], nomEnleve: 'de la porte (rectangle enlevé)' },
+
+  { id: 'troupara', titre: 'Le trou en parallélogramme', kind: 'sous', u: 'cm',
+    forme: [[[0, 0], [10, 0], [10, 7], [0, 7]], [[3, 2], [7, 2], [8, 5], [4, 5]]],
+    segs: [{ p: [0, 7], q: [10, 7], v: 10, k: 's' }, { p: [10, 0], q: [10, 7], v: 7, k: 's' }, { p: [3, 2], q: [7, 2], v: 4, k: 's' },
+           { p: [7, 2], q: [7, 5], v: 3, k: 'd', ln: 1 }],
+    angles: [{ V: [7, 5], A: [7, 2], B: [6, 5] }],
+    grand: rect([[0, 0], [10, 0], [10, 7], [0, 7]], 10, 7), nomGrand: 'du grand rectangle',
+    enleves: [para([[3, 2], [7, 2], [8, 5], [4, 5]], 4, 3)], nomEnleve: 'du parallélogramme enlevé' },
+
+  { id: 'coin', titre: 'Le coin coupé', kind: 'sous', u: 'dm',
+    forme: [[[0, 0], [5, 0], [9, 3], [9, 8], [0, 8]]],
+    segs: [{ p: [0, 0], q: [5, 0], v: 5, k: 's' }, { p: [9, 3], q: [9, 8], v: 5, k: 's' }, { p: [0, 8], q: [9, 8], v: 9, k: 's' }, { p: [0, 0], q: [0, 8], v: 8, k: 's' },
+           { p: [5, 0], q: [9, 3], v: 5, k: 's', inutile: true }],
+    grand: rect([[0, 0], [9, 0], [9, 8], [0, 8]], 9, 8), nomGrand: 'du grand rectangle',
+    enleves: [tri([[5, 0], [9, 0], [9, 3]], 4, 3, 'Base : 9 − 5 = 4 dm ; hauteur : 8 − 5 = 3 dm')], nomEnleve: 'du triangle enlevé' }
+];
+// BANQUE-FIN
+
+// Points où l'on peut tracer un trait : sommets du contour + points ajoutés
+function pointsDe(fig) {
+  const L = [];
+  fig.forme[0].concat(fig.pts || []).forEach(p => { if (!L.some(x => eqPt(x, p))) L.push(p); });
+  return L;
+}
+const idxPt = (L, p) => L.findIndex(x => eqPt(x, p));
+const cle = (i, j) => i < j ? i + '-' + j : j + '-' + i;
+
+// Vérification de la banque (console) : aires entières, découpages justes, mesures exactes
+function verifierBanque() {
+  const E = [];
+  BANQUE.forEach(f => {
+    const A = aireForme(f.forme);
+    if (!entier(A)) E.push(`${f.id} : aire non entière ${A}`);
+    f.segs.forEach(g => { const l = Math.hypot(g.q[0] - g.p[0], g.q[1] - g.p[1]); if (Math.abs(l - g.v) > 0.051) E.push(`${f.id} : mesure ${g.v} ≠ ${l.toFixed(2)}`); });
+    const chk = pc => { const c = calculPiece(pc, f.u); if (Math.abs(c.aire - aireLacet(pc.poly)) > 1e-6) E.push(`${f.id} : pièce ${pc.t} ${c.aire} ≠ ${aireLacet(pc.poly)}`); if (!entier(c.aire)) E.push(`${f.id} : pièce non entière`); return c.aire; };
+    if (f.kind === 'add') {
+      const P = pointsDe(f);
+      f.decs.forEach((d, n) => {
+        const s = d.pieces.reduce((t, pc) => t + chk(pc), 0);
+        if (Math.abs(s - A) > 1e-6) E.push(`${f.id} découpage ${n + 1} : ${s} ≠ ${A}`);
+        d.cuts.forEach(c => c.forEach(p => { if (idxPt(P, p) < 0) E.push(`${f.id} : point de coupe ${p} absent`); }));
+      });
+    } else {
+      const G = chk(f.grand), S = f.enleves.reduce((t, pc) => t + chk(pc), 0);
+      if (Math.abs(G - S - A) > 1e-6) E.push(`${f.id} : ${G} − ${S} ≠ ${A}`);
+    }
+  });
+  if (E.length) console.error('Banque :', E); else console.log('Banque vérifiée : ' + BANQUE.length + ' figures OK');
+  return E;
+}
+
+// ===================== NIVEAUX =====================
+const ADD = BANQUE.filter(f => f.kind === 'add').map(f => f.id), SOUS = BANQUE.filter(f => f.kind === 'sous').map(f => f.id);
+const MULTI = ['escalier', 'T', 'hexa'];
+const NIVEAUX = [
+  { n: 1, couleur: '#1A9E75', titre: 'Découpage montré', desc: 'La figure est déjà découpée : calcule l\'aire de chaque pièce, puis additionne.', quotas: [[ADD, 5]] },
+  { n: 2, couleur: '#1A6FA0', titre: 'À toi de découper', desc: 'Trace toi-même les traits pour faire apparaitre des figures que tu connais.', quotas: [[MULTI, 1], [ADD, 4]] },
+  { n: 3, couleur: '#C97B1A', titre: 'Enlever une partie', desc: 'Aire de la grande figure − aire de la partie enlevée.', quotas: [[SOUS, 5]] },
+  { n: 4, couleur: '#5B4FCF', titre: 'Le grand défi', desc: 'Une seule réponse : à toi de trouver la méthode (découper ou enlever) !', quotas: [[ADD, 3], [SOUS, 2]] }
+];
+const PAR_SERIE = 5;
+const LETTRES = ['A', 'B', 'C', 'D'];
+const COUL = [{ f: '#D6E8F8', d: '#1A6FA0' }, { f: '#FCE6C8', d: '#C97B1A' }, { f: '#D3F0E3', d: '#1A9E75' }, { f: '#E6E2FB', d: '#5B4FCF' }];
+const pastille = (i, txt) => `<span class="pastille" style="background:${COUL[i].d}">${txt || LETTRES[i]}</span>`;
+const Nom = t => NOMS[t][0].toUpperCase() + NOMS[t].slice(1);
+
+// Étapes de calcul d'un découpage (addition)
+function etapesAddition(q, dec) {
+  const u = q.u, et = [], aires = [];
+  dec.pieces.forEach((pc, i) => {
+    const c = calculPiece(pc, u); aires.push(c.aire);
+    const lignes = []; if (pc.note) lignes.push(pc.note); lignes.push(`${Nom(pc.t)} : ${c.f}`);
+    et.push({ label: `Aire de la pièce ${pastille(i)} : un <strong>${NOMS[pc.t]}</strong>`, court: `${pastille(i)} ${Nom(pc.t)}`, correct: c.aire, lignes, err: c.err, focus: i });
+  });
+  const tot = aires.reduce((a, b) => a + b, 0);
+  et.push({ label: `Aire totale de la figure<span class="attention">Additionne les aires des pièces.</span>`, court: 'Aire totale', correct: tot, focus: -1,
+    lignes: [`${dec.pieces.map((_, i) => LETTRES[i]).join(' + ')} = ${aires.map(mille).join(' + ')} = ${res(tot, u)}`],
+    err: aires.length > 1 ? aires.map(a => ({ v: a, m: `Tu n'as compté qu'une seule pièce. Additionne les aires de toutes les pièces.` })) : [] });
+  return et;
+}
+// Étapes d'une soustraction
+function etapesSoustraction(q) {
+  const u = q.u, G = calculPiece(q.grand, u), cs = q.enleves.map(pc => calculPiece(pc, u));
+  const S = cs.reduce((t, c) => t + c.aire, 0), R = G.aire - S, pl = q.enleves.length > 1;
+  const lG = []; if (q.grand.note) lG.push(q.grand.note); lG.push(`${Nom(q.grand.t)} : ${G.f}`);
+  const lE = [];
+  if (pl && q.enleves.every(pc => pc.t === q.enleves[0].t && pc.dims.join() === q.enleves[0].dims.join())) {
+    lE.push(`Un ${NOMS[q.enleves[0].t]} : ${cs[0].f}`, `${q.enleves.length} ${NOMS[q.enleves[0].t]}s : ${q.enleves.length} × ${cs[0].aire} = ${res(S, u)}`);
+  } else q.enleves.forEach((pc, i) => { if (pc.note) lE.push(pc.note); lE.push(`${Nom(pc.t)} : ${cs[i].f}`); });
+  const errE = [].concat(...cs.map(c => c.err)); if (pl) errE.push({ v: cs[0].aire, m: `Tu n'as compté qu'une seule partie enlevée. Il y en a ${q.enleves.length} !` });
+  return [
+    { label: `Aire ${q.nomGrand}<span class="attention">Le contour en pointillés orange.</span>`, court: `Grande figure (${NOMS[q.grand.t]})`, correct: G.aire, lignes: lG, err: G.err, focus: 'grand' },
+    { label: `Aire ${q.nomEnleve}<span class="attention">La partie hachurée${pl ? 's' : ''}.</span>`, court: pl ? 'Parties enlevées' : 'Partie enlevée', correct: S, lignes: lE, err: errE, focus: 'enleve' },
+    { label: `Aire de la figure colorée`, court: 'Figure colorée', correct: R, focus: -1,
+      lignes: [`Grande figure − partie enlevée = ${mille(G.aire)} − ${mille(S)} = ${res(R, u)}`],
+      err: [{ v: G.aire + S, m: `Tu as additionné. Ici, on enlève : aire de la grande figure − aire de la partie enlevée.` }, { v: G.aire, m: `Tu as oublié d'enlever la partie hachurée.` }] }
+  ];
+}
+
+function construire(base, niveau) {
+  const q = Math.random() < 0.5 ? miroir(base) : JSON.parse(JSON.stringify(base));
+  q.niveau = niveau; q.aire = aireForme(q.forme); q.parfait = true; q.coupes = []; q.sel = null;
+  if (q.kind === 'add') { q.P = pointsDe(q); q.decs.forEach(d => { d.keys = d.cuts.map(([a, b]) => cle(idxPt(q.P, a), idxPt(q.P, b))); }); }
+  if (niveau === 1) { q.dec = q.decs[0]; q.etapes = etapesAddition(q, q.dec); }
+  else if (niveau === 2) { q.dec = null; q.etapes = null; }
+  else if (niveau === 3) q.etapes = etapesSoustraction(q);
+  else {
+    // Une seule réponse : la correction montre une méthode complète
+    const et = q.kind === 'add' ? etapesAddition(q, q.decs[0]) : etapesSoustraction(q);
+    const lignes = [];
+    if (q.kind === 'add') {
+      lignes.push(`On découpe la figure en ${q.decs[0].pieces.length} pièces :`);
+      et.slice(0, -1).forEach(e => { e.lignes.forEach((l, k) => lignes.push((k === e.lignes.length - 1 ? `${e.court} → ` : '') + l.replace(/^[^:]+ : (?=longueur|côté|base|\(grande)/, ''))); });
+      lignes.push(`Aire totale : ${et[et.length - 1].lignes[0]}`);
+      if (q.decs.length > 1) lignes.push(`<span class="autre">On pouvait aussi découper autrement : le résultat est le même !</span>`);
+      if (q.id === 'L' || q.id === 'T' || q.id === 'escalier') lignes.push(`<span class="autre">On pouvait aussi compléter la figure en un grand rectangle et enlever ce qui manque.</span>`);
+    } else {
+      lignes.push(`On complète la figure en une grande figure, puis on enlève ce qui manque :`);
+      et[0].lignes.forEach((l, k) => lignes.push((k === et[0].lignes.length - 1 ? 'Grande figure → ' : '') + l)); et[1].lignes.forEach((l, k) => lignes.push((k === 0 ? 'Partie enlevée → ' : '') + l)); lignes.push(et[2].lignes[0]);
+    }
+    const err = (et[et.length - 1].err || []).slice();
+    if (q.kind === 'add') et.slice(0, -1).forEach(e => err.push({ v: e.correct, m: `Tu n'as calculé qu'une partie de la figure. Découpe-la et additionne les aires de toutes les pièces.` }));
+    q.etapes = [{ label: `Aire de la figure colorée`, court: 'Aire de la figure', correct: q.aire, lignes, err, focus: -1 }];
+  }
+  return q;
+}
+
+const dernierTirage = {};
+function genererSerie(niv) {
+  const deja = dernierTirage[niv] || [], choix = [];
+  NIVEAUX[niv - 1].quotas.forEach(([ids, nb]) => {
+    const libres = ids.filter(id => !choix.includes(id));
+    const ordre = shuffle(libres.filter(id => !deja.includes(id))).concat(shuffle(libres.filter(id => deja.includes(id))));
+    choix.push(...ordre.slice(0, nb));
+  });
+  dernierTirage[niv] = choix;
+  return shuffle(choix.slice()).map(id => construire(BANQUE.find(f => f.id === id), niv));
+}
+
+// ===================== DESSIN =====================
+const NS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs, parent) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+const VB = { w: 360, h: 290, marge: 50 };
+const VERT = '#1A9E75', GRIS = '#9CA3AF', NOIR = '#1A1A2E', VIOLET = '#5B4FCF', ORANGE = '#C97B1A', ROUGE = '#D94F3D';
+function uvec(b, a) { const dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy) || 1; return [dx / l, dy / l]; }
+const chemin = polys => polys.map(P => 'M' + P.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' L') + ' Z').join(' ');
+
+/* o = { pieces, coupes, sous, focus, points, sel, flash, corr } */
+function dessiner(q, o) {
+  const svg = document.getElementById('shape-svg');
+  svg.innerHTML = '';
+  el('defs', {}, svg).innerHTML = `<pattern id="hach" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="7" fill="#FDECEA"/><line x1="0" y1="0" x2="0" y2="7" stroke="${ROUGE}" stroke-width="2.2"/></pattern>`
+    + [['fl-n', NOIR], ['fl-g', GRIS]].map(([id, c]) => `<marker id="${id}" viewBox="0 0 10 10" refX="9.5" refY="5" markerWidth="7" markerHeight="7" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,1 L10,5 L0,9 z" fill="${c}"/></marker>`).join('');
+  const tous = q.forme[0].concat(q.grand ? q.grand.poly : []);
+  const xs = tous.map(p => p[0]), ys = tous.map(p => p[1]);
+  const minX = Math.min(...xs), minY = Math.min(...ys), W = Math.max(...xs) - minX, H = Math.max(...ys) - minY;
+  const dW = VB.w - 2 * VB.marge, dH = VB.h - 2 * VB.marge;
+  const s = Math.min(dW / W, dH / H, 26);
+  const ox = VB.marge + (dW - W * s) / 2, oy = VB.marge + (dH - H * s) / 2;
+  const S = ([x, y]) => [ox + (x - minX) * s, oy + (y - minY) * s];
+  const SP = P => P.map(S);
+  q._S = S;
+  const formeS = q.forme.map(SP);
+
+  // Grande figure en pointillés et parties enlevées hachurées (soustraction)
+  if (o.sous) {
+    q.enleves.forEach(pc => el('path', { d: chemin([SP(pc.poly)]), fill: 'url(#hach)', stroke: o.focus === 'enleve' ? VIOLET : ROUGE, 'stroke-width': o.focus === 'enleve' ? 3 : 1.5, 'stroke-linejoin': 'round' }, svg));
+  }
+  // Figure
+  el('path', { d: chemin(formeS), fill: o.corr ? '#E2F0FA' : '#EEF0FF', 'fill-rule': 'evenodd', stroke: 'none' }, svg);
+  // Pièces colorées
+  if (o.pieces) o.pieces.forEach((pc, i) => el('path', { d: chemin([SP(pc.poly)]), fill: COUL[i].f, stroke: 'none' }, svg));
+  if (o.sous) el('path', { d: chemin([SP(q.grand.poly)]), fill: 'none', stroke: o.focus === 'grand' ? VIOLET : ORANGE, 'stroke-width': o.focus === 'grand' ? 3.5 : 2.5, 'stroke-dasharray': '7,5', 'stroke-linejoin': 'round' }, svg);
+  el('path', { d: chemin(formeS), fill: 'none', stroke: NOIR, 'stroke-width': 3, 'stroke-linejoin': 'round' }, svg);
+  // Traits de découpe
+  (o.coupes || []).forEach(([a, b]) => { const A = S(a), B = S(b); el('line', { x1: A[0], y1: A[1], x2: B[0], y2: B[1], stroke: NOIR, 'stroke-width': 2.6, 'stroke-dasharray': '9,5', 'stroke-linecap': 'round' }, svg); });
+  if (o.flash) { const A = S(o.flash[0]), B = S(o.flash[1]); el('line', { x1: A[0], y1: A[1], x2: B[0], y2: B[1], stroke: ROUGE, 'stroke-width': 3.5, 'stroke-linecap': 'round', class: 'flash' }, svg); }
+  // Pièce en cours de calcul
+  if (o.pieces && typeof o.focus === 'number' && o.focus >= 0) el('path', { d: chemin([SP(o.pieces[o.focus].poly)]), fill: 'none', stroke: VIOLET, 'stroke-width': 4, 'stroke-linejoin': 'round', opacity: 0.85 }, svg);
+  // Hauteurs et diagonales
+  q.segs.filter(g => g.k === 'd').forEach(g => {
+    const a = S(g.p), b = S(g.q);
+    el('line', { x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: o.corr && g.inutile ? GRIS : VIOLET, 'stroke-width': 2, 'stroke-dasharray': '5,4' }, svg);
+  });
+  // Angles droits : coins de la figure + angles ajoutés
+  const ang = (q.angles || []).slice();
+  const P0 = q.forme[0], sg0 = Math.sign(aireSignee(P0));
+  P0.forEach((V, i) => {
+    const A = P0[(i + 1) % P0.length], B = P0[(i + P0.length - 1) % P0.length];
+    const u = [A[0] - V[0], A[1] - V[1]], w = [B[0] - V[0], B[1] - V[1]];
+    const dot = u[0] * w[0] + u[1] * w[1], cr = (V[0] - B[0]) * (A[1] - V[1]) - (V[1] - B[1]) * (A[0] - V[0]);
+    if (Math.abs(dot) < 1e-9 && Math.sign(cr) === sg0) ang.push({ V, A, B });
+  });
+  ang.forEach(an => {
+    const V = S(an.V), u = uvec(S(an.A), V), w = uvec(S(an.B), V), k = 9;
+    const p1 = [V[0] + u[0] * k, V[1] + u[1] * k], p2 = [p1[0] + w[0] * k, p1[1] + w[1] * k], p3 = [V[0] + w[0] * k, V[1] + w[1] * k];
+    el('path', { d: `M${p1[0].toFixed(1)},${p1[1].toFixed(1)} L${p2[0].toFixed(1)},${p2[1].toFixed(1)} L${p3[0].toFixed(1)},${p3[1].toFixed(1)}`, fill: 'none', stroke: NOIR, 'stroke-width': 1.5 }, svg);
+  });
+  // Côtés de même longueur
+  (q.ticks || []).forEach(t => {
+    const a = S(t.p), b = S(t.q), d = uvec(b, a), n = [-d[1], d[0]], M = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+    el('line', { x1: M[0] + n[0] * 6, y1: M[1] + n[1] * 6, x2: M[0] - n[0] * 6, y2: M[1] - n[1] * 6, stroke: NOIR, 'stroke-width': 2 }, svg);
+  });
+  // Lettres des pièces
+  if (o.pieces) o.pieces.forEach((pc, i) => {
+    const C = S(pc.lettre || centroide(pc.poly));
+    el('circle', { cx: C[0], cy: C[1], r: 12, fill: COUL[i].d, stroke: NOIR, 'stroke-width': 2 }, svg);
+    el('text', { x: C[0], y: C[1] + 5.5, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 700, fill: '#fff', 'font-family': 'Fredoka, sans-serif' }, svg).textContent = LETTRES[i];
+  });
+  // Mesures
+  q.segs.forEach(g => {
+    const a = S(g.p), b = S(g.q), d = uvec(b, a), n = [-d[1], d[0]], t = g.lt !== undefined ? g.lt : 0.5;
+    const M = [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+    let sg;
+    if (g.k === 's') {
+      const Mr = [g.p[0] + (g.q[0] - g.p[0]) * t, g.p[1] + (g.q[1] - g.p[1]) * t], dr = uvec(g.q, g.p), nr = [-dr[1], dr[0]];
+      sg = dedans([Mr[0] + nr[0] * 0.05, Mr[1] + nr[1] * 0.05], q.forme) ? -1 : 1;  // étiquette du côté extérieur
+    } else sg = g.ln || 1;
+    const nx = n[0] * sg, ny = n[1] * sg, off = g.k === 's' ? 19 : 8;
+    // Côté mesuré : ligne de cote avec deux flèches, qui montre exactement où commence et où finit la mesure
+    if (g.k === 's') {
+      const gris = o.corr && g.inutile, cc = gris ? GRIS : NOIR, dc = 10;
+      [a, b].forEach(P => el('line', { x1: P[0] + nx * 3, y1: P[1] + ny * 3, x2: P[0] + nx * (dc + 4), y2: P[1] + ny * (dc + 4), stroke: cc, 'stroke-width': 1.2 }, svg));
+      el('line', { x1: a[0] + nx * dc, y1: a[1] + ny * dc, x2: b[0] + nx * dc, y2: b[1] + ny * dc, stroke: cc, 'stroke-width': 1.4, 'marker-start': `url(#${gris ? 'fl-g' : 'fl-n'})`, 'marker-end': `url(#${gris ? 'fl-g' : 'fl-n'})` }, svg);
+    }
+    const x = M[0] + nx * off, y = M[1] + ny * off + 4.5 + ny * 5;
+    const anc = nx > 0.4 ? 'start' : nx < -0.4 ? 'end' : 'middle';
+    const col = o.corr && g.inutile ? GRIS : (g.k === 'd' ? VIOLET : NOIR);
+    el('text', { x: x.toFixed(1), y: y.toFixed(1), 'text-anchor': anc, 'font-size': 13.5, 'font-weight': 900, fill: col, 'font-family': 'Nunito, sans-serif', stroke: '#fff', 'stroke-width': 3.5, 'paint-order': 'stroke', 'stroke-linejoin': 'round' }, svg)
+      .textContent = `${fmt(g.v)} ${q.u}`;
+  });
+  // Points à toucher (niveau 2)
+  if (o.points) q.P.forEach((p, i) => {
+    const A = S(p), choisi = o.sel === i;
+    el('circle', { cx: A[0], cy: A[1], r: choisi ? 9 : 6.5, fill: choisi ? VIOLET : '#fff', stroke: choisi ? NOIR : VIOLET, 'stroke-width': choisi ? 2.5 : 2.5, class: 'point' }, svg);
+  });
+}
+
+// ===================== DÉROULEMENT =====================
+let niveau = 1, questions = [], idx = 0, score = 0, etape = 0, phase = 'calcul', aRepondu = false, reponses = [], saved = false;
+const $ = id => document.getElementById(id);
+const ecran = id => ['ecran-niveaux', 'exercice-zone', 'score-screen'].forEach(e => { $(e).style.display = e === id ? 'block' : 'none'; });
+
+function lireRecords() { try { return JSON.parse(localStorage.getItem('lcml_aire_composees_records') || '{}'); } catch (e) { return {}; } }
+function ecrireRecord(n, s) { try { const r = lireRecords(); if (!(r[n] >= s)) { r[n] = s; localStorage.setItem('lcml_aire_composees_records', JSON.stringify(r)); } } catch (e) { } }
+
+function afficherNiveaux() {
+  fermerCalc(); fermerFormules();
+  $('sous-titre').textContent = 'Aire des figures composées — choisis ton niveau';
+  const rec = lireRecords(), box = $('liste-niveaux');
+  box.innerHTML = '';
+  NIVEAUX.forEach(nv => {
+    const b = document.createElement('button');
+    b.className = 'carte-niveau';
+    b.innerHTML = `<div class="badge-niv" style="background:${nv.couleur}">${nv.n}</div><div><h2>Niveau ${nv.n} — ${nv.titre}</h2><p>${nv.desc}</p>${rec[nv.n] !== undefined ? `<div class="record">Meilleur score : ${rec[nv.n]} / ${PAR_SERIE}</div>` : ''}</div>`;
+    b.addEventListener('click', () => { playSound('click'); demarrer(nv.n); });
+    box.appendChild(b);
+  });
+  ecran('ecran-niveaux');
+}
+
+function demarrer(n) {
+  niveau = n; questions = genererSerie(n);
+  idx = 0; score = 0; reponses = []; saved = false;
+  $('sous-titre').textContent = `Niveau ${n} — ${NIVEAUX[n - 1].titre}`;
+  const dots = $('dots-progress'); dots.innerHTML = '';
+  questions.forEach(() => { const d = document.createElement('div'); d.className = 'dot'; dots.appendChild(d); });
+  ecran('exercice-zone');
+  chargerQuestion();
+}
+
+const qc = () => questions[idx];
+function vueFigure(corrFinale) {
+  const q = qc(), e = q.etapes && q.etapes[etape];
+  const focus = phase === 'calcul' && e && !corrFinale ? e.focus : -1;
+  if (niveau === 1) return dessiner(q, { pieces: q.dec.pieces, coupes: q.dec.cuts, focus });
+  if (niveau === 2) {
+    if (phase === 'decoupe') return dessiner(q, { coupes: q.coupes.map(k => k.split('-').map(i => q.P[+i])), points: true, sel: q.sel, flash: q.flash });
+    return dessiner(q, { pieces: q.dec.pieces, coupes: q.dec.cuts, focus });
+  }
+  if (niveau === 3) return dessiner(q, { sous: true, focus });
+  // Niveau 4 : figure seule, puis une méthode dans la correction
+  if (!corrFinale) return dessiner(q, {});
+  return q.kind === 'add' ? dessiner(q, { pieces: q.decs[0].pieces, coupes: q.decs[0].cuts, corr: true }) : dessiner(q, { sous: true, corr: true });
+}
+
+function chargerQuestion() {
+  const q = qc();
+  etape = 0; aRepondu = false;
+  phase = niveau === 2 ? 'decoupe' : 'calcul';
+  $('info-numero').textContent = `Question ${idx + 1}/${questions.length}`;
+  // Zone de travail : seulement au niveau 4, vidée à chaque nouvelle figure
+  $('zone-travail').classList.toggle('visible', niveau === 4);
+  $('zt-texte').value = '';
+  const consignes = {
+    1: `Cette figure est découpée en pièces. Calcule l'aire de chaque pièce, puis l'aire totale.`,
+    2: `✂️ Découpe la figure en pièces dont tu connais la formule.`,
+    3: `On a enlevé une partie d'une grande figure. Calcule l'aire de la figure colorée.`,
+    4: `Calcule l'aire de la figure colorée.<span class="attention">À toi de trouver la méthode : découper ou enlever !</span>`
+  };
+  $('question-text').innerHTML = consignes[niveau];
+  $('recap').innerHTML = ''; $('recap').style.display = 'none';
+  $('feedback-box').className = 'feedback-box'; $('feedback-box').innerHTML = '';
+  $('btn-next').style.display = 'none';
+  $('legende').textContent = niveau === 3 ? 'En pointillés orange : la grande figure. Hachuré : la partie enlevée.' : 'Attention : certaines mesures ne servent pas, d\'autres se trouvent en calculant !';
+  const dots = $('dots-progress').children;
+  for (const d of dots) d.classList.remove('current');
+  dots[idx].classList.add('current');
+  if (phase === 'decoupe') {
+    q.coupes = []; q.sel = null; q.flash = null;
+    $('zone-decoupe').style.display = 'block'; $('zone-reponse').style.display = 'none';
+    $('msg-decoupe').className = 'msg-decoupe'; $('msg-decoupe').innerHTML = 'Touche un point, puis un autre : un trait apparait. Tu peux tracer plusieurs traits.';
+    $('legende').textContent = 'Les points violets : c\'est là que tes traits peuvent commencer et finir.';
+    vueFigure();
+  } else { $('zone-decoupe').style.display = 'none'; afficherEtape(); }
+}
+
+function afficherEtape() {
+  const q = qc(), e = q.etapes[etape];
+  aRepondu = false;
+  $('etape-label').innerHTML = (q.etapes.length > 1 ? `<span class="num-etape">Étape ${etape + 1}/${q.etapes.length}</span>` : '') + e.label;
+  $('answer-unit').textContent = q.u + '²';
+  const input = $('answer-input'); input.value = ''; input.className = 'answer-input';
+  $('zone-reponse').style.display = 'block';
+  $('message').textContent = '';
+  $('feedback-box').className = 'feedback-box'; $('feedback-box').innerHTML = '';
+  $('btn-next').style.display = 'none';
+  vueFigure();
+}
+
+// ----- Découpage (niveau 2) -----
+function toucherPoint(i) {
+  const q = qc();
+  if (phase !== 'decoupe') return;
+  playSound('click');
+  if (q.sel === null) { q.sel = i; q.flash = null; return vueFigure(); }
+  if (q.sel === i) { q.sel = null; return vueFigure(); }
+  const a = q.P[q.sel], b = q.P[i], k = cle(q.sel, i);
+  q.sel = null;
+  if (q.coupes.includes(k)) return vueFigure();
+  const msg = $('msg-decoupe');
+  const mil = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+  if (surBord(mil, q.forme)) return refuser([a, b], `Ce trait est sur le bord de la figure : il ne la découpe pas.`);
+  if (!dedans(mil, q.forme)) return refuser([a, b], `Ce trait sort de la figure. Trace-le à l'intérieur.`);
+  const nouv = q.coupes.concat(k);
+  const compat = q.decs.filter(d => nouv.every(c => d.keys.includes(c)));
+  if (!compat.length) return refuser([a, b], `Avec ce trait, tu n'obtiens pas des figures dont tu connais la formule. Essaie un autre trait !`);
+  q.coupes = nouv; q.flash = null;
+  const fini = compat.find(d => d.keys.length === nouv.length);
+  if (fini) return decoupageReussi(fini, false);
+  msg.className = 'msg-decoupe ok'; msg.innerHTML = `👍 Bon début ! Une des parties n'est pas encore une figure connue : trace un autre trait.`;
+  vueFigure();
+}
+function refuser(seg, texte) {
+  const q = qc();
+  playSound('error');
+  q.flash = seg;
+  $('msg-decoupe').className = 'msg-decoupe ko'; $('msg-decoupe').innerHTML = texte;
+  vueFigure();
+  clearTimeout(q.tFlash); q.tFlash = setTimeout(() => { if (q === qc() && phase === 'decoupe') { q.flash = null; vueFigure(); } }, 1100);
+}
+function decoupageReussi(dec, aide) {
+  const q = qc();
+  q.dec = dec; q.etapes = etapesAddition(q, dec);
+  q.aideUtilisee = aide;
+  if (aide) q.parfait = false; else playSound('success');
+  phase = 'calcul';
+  $('zone-decoupe').style.display = 'none';
+  const liste = dec.pieces.map((pc, i) => `${pastille(i)} un ${NOMS[pc.t]}`).join(', ');
+  $('recap').style.display = 'block';
+  $('recap').innerHTML = `<div class="recap-titre ${aide ? 'aide' : ''}">${aide ? '🆘 Voici un découpage possible.' : '✂️ Bien découpé !'} Tu obtiens : ${liste}.</div>`;
+  $('question-text').innerHTML = `Calcule l'aire de chaque pièce, puis l'aire totale.`;
+  $('legende').textContent = 'Attention : certaines mesures ne servent pas, d\'autres se trouvent en calculant !';
+  afficherEtape();
+}
+
+// ----- Réponses -----
+function touche(k) {
+  if (aRepondu || phase !== 'calcul') return;
+  const input = $('answer-input');
+  $('message').textContent = '';
+  if (k === 'ok') return valider();
+  playSound('click');
+  if (k === 'del') input.value = input.value.replace(/\s/g, '').slice(0, -1);
+  else if (k === 'clear') input.value = '';
+  else { const v = input.value.replace(/\s/g, ''); if (v.length < 7) input.value = (v === '0' ? '' : v) + k; }
+  input.value = mille(input.value.replace(/\s/g, ''));
+}
+
+function valider() {
+  if (aRepondu) return;
+  const input = $('answer-input'), brut = input.value.replace(/\s/g, '');
+  if (!/^\d+$/.test(brut)) { $('message').textContent = 'Écris ta réponse avant de valider.'; return; }
+  aRepondu = true;
+  const q = qc(), e = q.etapes[etape], val = parseInt(brut, 10), ok = val === e.correct, u = q.u;
+  if (!ok) q.parfait = false;
+  playSound(ok ? 'success' : 'error');
+  input.classList.add(ok ? 'correct' : 'incorrect');
+  $('zone-reponse').style.display = 'none';
+  // Petit résumé des étapes déjà faites
+  if (q.etapes.length > 1) {
+    $('recap').style.display = 'block';
+    $('recap').insertAdjacentHTML('beforeend', `<div class="recap-ligne"><span>${e.court}</span><span class="tag ${ok ? 'ok' : 'ko'}">${ok ? '✅ ' + mille(e.correct) + ' ' + u + '²' : '❌ ' + mille(brut) + ' → <span class="bonne">' + mille(e.correct) + ' ' + u + '²</span>'}</span></div>`);
+  }
+  let aide = '';
+  if (!ok) { const er = (e.err || []).find(x => entier(x.v) && Math.round(x.v) === val); if (er) aide = `<span class="indice">💡 ${er.m}</span>`; }
+  const fb = $('feedback-box');
+  fb.className = 'feedback-box ' + (ok ? 'correct' : 'incorrect');
+  fb.innerHTML = (ok ? `<strong>Bravo !</strong> ${mille(brut)} ${u}², c'est juste.` : `<strong>Oups !</strong> Tu as écrit ${mille(brut)} ${u}². La bonne réponse est <strong class="bonne">${mille(e.correct)} ${u}²</strong>.`)
+    + aide + e.lignes.map(l => l.startsWith('<span class="autre"') ? l : `<span class="ligne">${l}</span>`).join('');
+  const derniere = etape === q.etapes.length - 1;
+  if (derniere) {
+    const dot = $('dots-progress').children[idx];
+    if (q.parfait) { score++; dot.classList.add('correct'); } else dot.classList.add('incorrect');
+    const justes = q.etapes.length > 1 ? $('recap').querySelectorAll('.recap-ligne .tag.ok').length : (ok ? 1 : 0);
+    reponses.push({ n: idx + 1, titre: q.titre, ok: q.parfait, aide: !!q.aideUtilisee, justes, nb: q.etapes.length, total: q.aire, saisi: brut, u });
+    if (niveau === 4) { $('legende').innerHTML = q.kind === 'add' ? 'Une façon de découper la figure.' : 'La grande figure (pointillés orange) et la partie enlevée (hachurée).'; vueFigure(true); }
+    else vueFigure(true);
+  }
+  const btn = $('btn-next');
+  btn.textContent = !derniere ? 'Étape suivante ➡️' : (idx + 1 < questions.length ? 'Question suivante ➡️' : 'Voir mon score 🏁');
+  btn.style.display = 'block';
+}
+
+function suivante() {
+  if (!aRepondu) return;
+  playSound('click');
+  const q = qc();
+  if (etape < q.etapes.length - 1) { etape++; return afficherEtape(); }
+  aRepondu = false; idx++;
+  if (idx < questions.length) chargerQuestion(); else afficherScore();
+}
+
+function afficherScore() {
+  fermerCalc(); fermerFormules();
+  ecran('score-screen');
+  const total = questions.length, pct = Math.round(score / total * 100);
+  ecrireRecord(niveau, score);
+  $('final-score').textContent = `${score} / ${total}`;
+  const em = $('final-emoji'), ti = $('final-title'), msg = $('congrats-msg');
+  if (score === total) { em.textContent = '🏆'; ti.textContent = 'Maître Découpeur !'; msg.innerHTML = `<strong>Niveau ${niveau} réussi sans faute !</strong>${niveau < 4 ? ' Essaie le niveau suivant.' : ''}`; confettis(); }
+  else if (score >= 4) { em.textContent = '⭐'; ti.textContent = 'Très bien !'; msg.innerHTML = `<strong>${pct} % de réussite.</strong> Regarde bien l'erreur ci-dessous.`; }
+  else if (score >= 3) { em.textContent = '👍'; ti.textContent = 'Pas mal !'; msg.innerHTML = `<strong>${pct} % de réussite.</strong> Pense aux mesures cachées : parfois, il faut les calculer avant !`; }
+  else { em.textContent = '💪'; ti.textContent = 'Il faut encore t\'entrainer'; msg.innerHTML = `<strong>${pct} % de réussite.</strong> Ouvre le bouton 📘 Formules pendant l'exercice pour t'aider.`; }
+  if (!saved && window.parent && window.parent !== window && typeof window.parent.saveResult === 'function') {
+    saved = true;
+    try { window.parent.saveResult({ activity: 'grandeur_aire_composee', bookTitle: `Le Découpeur de figures — Niveau ${niveau}`, score, total, pct, date: new Date().toLocaleDateString('fr-BE'), time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' }) }); }
+    catch (e) { console.warn('Erreur sauvegarde', e); }
+  }
+  const det = $('final-details'); det.innerHTML = '';
+  reponses.forEach(r => {
+    const row = document.createElement('div'); row.className = 'score-row';
+    let tag;
+    if (r.ok) tag = `<span class="tag ok">✅ ${mille(r.total)} ${r.u}²</span>`;
+    else if (r.aide) tag = `<span class="tag ko">🆘 découpage montré</span>`;
+    else if (r.nb > 1) tag = `<span class="tag ko">❌ ${r.justes} étape${r.justes > 1 ? 's' : ''} juste${r.justes > 1 ? 's' : ''} sur ${r.nb}</span>`;
+    else tag = `<span class="tag ko">❌ ${mille(r.saisi)} → <span class="bonne">${mille(r.total)} ${r.u}²</span></span>`;
+    row.innerHTML = `<span>Q${r.n} : <strong>${r.titre}</strong></span>${tag}`;
+    det.appendChild(row);
+  });
+}
+
+function confettis() {
+  const cols = ['#5B4FCF', '#1A9E75', '#D94F3D', '#C97B1A', '#1A6FA0', '#C7C2F5'];
+  for (let i = 0; i < 70; i++) {
+    const c = document.createElement('div'); c.className = 'confetti';
+    const t = 6 + Math.random() * 7;
+    Object.assign(c.style, { left: Math.random() * 100 + 'vw', width: t + 'px', height: t + 'px', background: cols[i % cols.length], animationDelay: Math.random() * 1.2 + 's', animationDuration: 1.6 + Math.random() * 1.8 + 's' });
+    document.body.appendChild(c); setTimeout(() => c.remove(), 4000);
+  }
+}
+
+// ===================== FORMULES =====================
+function ouvrirFormules() { $('panneau-formules').classList.add('ouvert'); $('btn-formules').classList.add('ouverte'); }
+function fermerFormules() { $('panneau-formules').classList.remove('ouvert'); $('btn-formules').classList.remove('ouverte'); }
+// ===================== CALCULATRICE =====================
+// Respecte les priorités (× et ÷ avant + et −), comme les calculatrices de l'école.
+let calcExpr = '', calcFini = false, calcResultat = 0;
+const OPS = ['+', '−', '×', '÷'];
+function calcAfficher(res) {
+  document.getElementById('calc-expr').textContent = calcFini ? calcExpr + ' =' : '';
+  document.getElementById('calc-res').textContent = res !== undefined ? res : (calcExpr || '0');
+}
+function calcEvaluer(expr) {
+  const tokens = expr.match(/\d+(,\d*)?|[+−×÷]/g);
+  if (!tokens) return null;
+  if (OPS.includes(tokens[tokens.length - 1])) tokens.pop();
+  // Nombre négatif en tête (après un résultat négatif)
+  if (tokens[0] === '−' && tokens.length > 1) { tokens.splice(0, 2, '-' + tokens[1]); }
+  const nums = [], ops = [];
+  for (const t of tokens) { if (OPS.includes(t)) ops.push(t); else nums.push(parseFloat(t.replace(',', '.'))); }
+  if (nums.length !== ops.length + 1 || nums.some(isNaN)) return null;
+  // 1) × et ÷ de gauche à droite
+  const n2 = [nums[0]], o2 = [];
+  for (let i = 0; i < ops.length; i++) {
+    if (ops[i] === '×') n2.push(n2.pop() * nums[i + 1]);
+    else if (ops[i] === '÷') { if (nums[i + 1] === 0) return 'Erreur'; n2.push(n2.pop() / nums[i + 1]); }
+    else { o2.push(ops[i]); n2.push(nums[i + 1]); }
+  }
+  // 2) + et − de gauche à droite
+  let r = n2[0];
+  o2.forEach((o, i) => { r = o === '+' ? r + n2[i + 1] : r - n2[i + 1]; });
+  r = Math.round(r * 1e8) / 1e8;
+  return r;
+}
+function calcTouche(k) {
+  playSound('click');
+  if (k === 'C') { calcExpr = ''; calcFini = false; return calcAfficher(); }
+  if (k === 'del') { if (calcFini) { calcFini = false; calcExpr = ''; } calcExpr = calcExpr.slice(0, -1); return calcAfficher(); }
+  if (k === '=') {
+    if (!calcExpr) return;
+    const r = calcEvaluer(calcExpr);
+    if (r === null) return;
+    calcFini = true;
+    const txt = r === 'Erreur' ? 'Erreur' : mille(fr(r).split(',')[0]).replace('-', '−') + (fr(r).includes(',') ? ',' + fr(r).split(',')[1] : '');
+    calcAfficher(txt);
+    calcResultat = r;
+    return;
+  }
+  if (calcFini) { // on repart du résultat si on tape une opération, sinon d'un nouveau calcul
+    calcFini = false;
+    const r = calcResultat;
+    calcExpr = (OPS.includes(k) && r !== 'Erreur') ? (r < 0 ? '−' + fr(-r) : fr(r)) : '';
+  }
+  const dernier = calcExpr.slice(-1);
+  if (OPS.includes(k)) {
+    if (!calcExpr) return;
+    if (OPS.includes(dernier)) calcExpr = calcExpr.slice(0, -1);
+    if (dernier === ',') calcExpr = calcExpr.slice(0, -1);
+    calcExpr += k;
+  } else if (k === ',') {
+    const nbCourant = calcExpr.split(/[+−×÷]/).pop();
+    if (nbCourant.includes(',')) return;
+    calcExpr += nbCourant === '' ? '0,' : ',';
+  } else {
+    if (calcExpr.replace(/\D/g, '').length > 14) return;
+    calcExpr += k;
+  }
+  calcAfficher();
+}
+function ouvrirCalc() { document.getElementById('calculatrice').classList.add('ouverte'); document.getElementById('btn-calc').classList.add('ouverte'); }
+function fermerCalc() { document.getElementById('calculatrice').classList.remove('ouverte'); document.getElementById('btn-calc').classList.remove('ouverte'); }
+const calcOuverte = () => document.getElementById('calculatrice').classList.contains('ouverte');
+
+// ===================== ÉVÈNEMENTS =====================
+document.getElementById('keypad').addEventListener('pointerdown', e => { const b = e.target.closest('.key'); if (!b) return; e.preventDefault(); touche(b.dataset.k); });
+document.getElementById('calc-touches').addEventListener('pointerdown', e => { const b = e.target.closest('.ck'); if (!b) return; e.preventDefault(); calcTouche(b.dataset.c); });
+document.getElementById('btn-calc').addEventListener('click', () => { playSound('click'); calcOuverte() ? fermerCalc() : ouvrirCalc(); });
+document.getElementById('calc-fermer').addEventListener('click', fermerCalc);
+document.getElementById('btn-formules').addEventListener('click', () => { playSound('click'); document.getElementById('panneau-formules').classList.contains('ouvert') ? fermerFormules() : ouvrirFormules(); });
+// Toucher un point de la figure (niveau 2) : on prend le point le plus proche du doigt
+document.getElementById('shape-svg').addEventListener('pointerdown', e => {
+  if (phase !== 'decoupe') return;
+  const svg = e.currentTarget, pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+  const m = pt.matrixTransform(svg.getScreenCTM().inverse()), q = qc();
+  let best = -1, bd = 24;
+  q.P.forEach((p, i) => { const A = q._S(p), d = Math.hypot(A[0] - m.x, A[1] - m.y); if (d < bd) { bd = d; best = i; } });
+  if (best >= 0) { e.preventDefault(); toucherPoint(best); }
+});
+document.getElementById('btn-effacer').addEventListener('click', () => { const q = qc(); playSound('click'); q.coupes = []; q.sel = null; q.flash = null; $('msg-decoupe').className = 'msg-decoupe'; $('msg-decoupe').innerHTML = 'Traits effacés. Touche un point, puis un autre.'; vueFigure(); });
+document.getElementById('btn-montre').addEventListener('click', () => { const q = qc(); playSound('click'); decoupageReussi(q.decs[0], true); });
+// La calculatrice se déplace en la tirant par sa barre du haut (doigt ou souris)
+(function () {
+  const box = document.getElementById('calculatrice'), barre = document.getElementById('calc-haut');
+  let dx = 0, dy = 0, tire = false;
+  barre.addEventListener('pointerdown', e => {
+    if (e.target.closest('button')) return;
+    const r = box.getBoundingClientRect();
+    dx = e.clientX - r.left; dy = e.clientY - r.top; tire = true;
+    barre.setPointerCapture(e.pointerId); e.preventDefault();
+  });
+  barre.addEventListener('pointermove', e => {
+    if (!tire) return;
+    const x = Math.min(Math.max(0, e.clientX - dx), window.innerWidth - box.offsetWidth);
+    const y = Math.min(Math.max(0, e.clientY - dy), window.innerHeight - box.offsetHeight);
+    Object.assign(box.style, { left: x + 'px', top: y + 'px', bottom: 'auto', right: 'auto' });
+  });
+  const lacher = () => { tire = false; };
+  barre.addEventListener('pointerup', lacher); barre.addEventListener('pointercancel', lacher);
+})();
+document.getElementById('btn-next').addEventListener('click', suivante);
+document.getElementById('btn-retour').addEventListener('click', () => { playSound('click'); afficherNiveaux(); });
+document.getElementById('btn-restart').addEventListener('click', () => { playSound('click'); demarrer(niveau); });
+document.getElementById('btn-autre').addEventListener('click', () => { playSound('click'); afficherNiveaux(); });
+document.getElementById('zt-effacer').addEventListener('click', () => { playSound('click'); $('zt-texte').value = ''; $('zt-texte').focus(); });
+document.addEventListener('keydown', e => {
+  if (document.getElementById('exercice-zone').style.display !== 'block') return;
+  if (e.target.id === 'zt-texte') return;   // on écrit dans la zone de travail : le clavier ne sert pas à la réponse
+  if (calcOuverte()) {
+    const map = { '+': '+', '-': '−', '*': '×', 'x': '×', '/': '÷', ',': ',', '.': ',', 'Enter': '=', '=': '=', 'Backspace': 'del', 'Escape': 'C' };
+    if (e.key >= '0' && e.key <= '9') { e.preventDefault(); calcTouche(e.key); }
+    else if (map[e.key]) { e.preventDefault(); calcTouche(map[e.key]); }
+    return;
+  }
+  if (phase !== 'calcul') return;
+  if (aRepondu) { if (e.key === 'Enter') { e.preventDefault(); suivante(); } return; }
+  if (e.key >= '0' && e.key <= '9') touche(e.key);
+  else if (e.key === 'Backspace') { e.preventDefault(); touche('del'); }
+  else if (e.key === 'Enter') { e.preventDefault(); touche('ok'); }
+});
+window.lcmlOnLeave = function () { afficherNiveaux(); };
+
+verifierBanque();
+afficherNiveaux();
+</script>
+<script src="../lcml_copyright.js"></script>
+</body>
+</html>
