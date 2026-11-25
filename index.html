@@ -3880,6 +3880,18 @@ input[type=text].calc-input.incorrect {
     try { await set(ref(db, 'settings/plan_travail_dates/' + cls), dates); return true; }
     catch(e) { console.warn('Firebase savePlanDates error:', e); return false; }
   };
+  // Exercices prioritaires (25/11/2026) : 'settings/plan_travail_priority/{classe}' = { class: {id: true}, students: {élève: {id: true}} }
+  window.FB_savePlanPriority = async function(cls, prio) {
+    try { await set(ref(db, 'settings/plan_travail_priority/' + cls), prio); return true; }
+    catch(e) { console.warn('Firebase savePlanPriority error:', e); return false; }
+  };
+  // Renvoie les priorités (null si aucune) ou undefined en cas d'erreur
+  window.FB_loadPlanPriority = async function(cls) {
+    try {
+      const snap = await get(ref(db, 'settings/plan_travail_priority/' + cls));
+      return snap.exists() ? snap.val() : null;
+    } catch(e) { console.warn('Firebase loadPlanPriority error:', e); return undefined; }
+  };
   // Renvoie les dates (null si aucune) ou undefined en cas d'erreur
   window.FB_loadPlanDates = async function(cls) {
     try {
@@ -35071,6 +35083,9 @@ let planTravailLoaded = false;
 let studentPlanProgress = {}; // côté élève : {id: horodatage de la coche automatique (ou true = ancien système), __ouvert: {id: horodatage}}
 let planTravailDates = { class: {}, students: {} }; // dates d'assignation
 let planTravailDatesReady = false; // côté enseignant : dates bien chargées depuis Firebase
+// Exercices prioritaires (25/11/2026, choix de Jérémy : les autres sont bloqués tant que les prioritaires ne sont pas finis)
+let planTravailPriority = { class: {}, students: {} };
+let planTravailPriorityReady = false; // côté enseignant : priorités bien chargées depuis Firebase
 
 // --- Sauvegarde/chargement plan enseignant ---
 function savePlanTravail() {
@@ -35094,6 +35109,11 @@ function savePlanTravail() {
   if (planTravailDatesReady && window.FB_savePlanDates) {
     planTravailDates = ptPrunedDates();
     window.FB_savePlanDates(cls, planTravailDates);
+  }
+  // Priorités : jamais réécrites si elles n'ont pas pu être chargées
+  if (planTravailPriorityReady && window.FB_savePlanPriority) {
+    planTravailPriority = ptPrunedPriority();
+    window.FB_savePlanPriority(cls, planTravailPriority);
   }
   ptDirty = false;
 }
@@ -35234,6 +35254,13 @@ function initRealtimeStudentSync() {
     if (typeof ptRefreshStudentPlanIfVisible === 'function') ptRefreshStudentPlanIfVisible();
   }, (err) => console.warn('Realtime plan_travail_dates error:', err));
 
+  // 3 quater. Exercices prioritaires
+  fbStudentListeners.planPrio = window.FB_onValue(window.FB_ref(window.FB_DB, 'settings/plan_travail_priority/' + cls), (snap) => {
+    planTravailPriority = ptNormPriority(snap.exists() ? snap.val() : null);
+    try { localStorage.setItem('lq_plan_prio_' + cls, JSON.stringify(planTravailPriority)); } catch(e) {}
+    if (typeof ptRefreshStudentPlanIfVisible === 'function') ptRefreshStudentPlanIfVisible();
+  }, (err) => console.warn('Realtime plan_travail_priority error:', err));
+
   // 4. Observer pour la progression du plan
   const progressRef = window.FB_ref(window.FB_DB, 'plan_progress/' + cls + '/' + student);
   fbStudentListeners.progress = window.FB_onValue(progressRef, (snap) => {
@@ -35296,6 +35323,7 @@ function loadPlanTravailLocal(targetCls) {
   // Élève : dates d'assignation gardées sur l'appareil (mises à jour par Firebase ensuite)
   if (typeof state !== 'undefined' && state.role !== 'teacher') {
     try { planTravailDates = ptNormDates(JSON.parse(localStorage.getItem('lq_plan_dates_' + cls) || 'null')); } catch(e) {}
+    try { planTravailPriority = ptNormPriority(JSON.parse(localStorage.getItem('lq_plan_prio_' + cls) || 'null')); } catch(e) {}
   }
 }
 
@@ -35365,6 +35393,13 @@ function planNavigateTo(screen, fn) {
 }
 
 function planNavigateToId(itemId) {
+  // Élève : exercice bloqué tant que les prioritaires ne sont pas finis
+  try {
+    if (typeof state !== 'undefined' && state.role !== 'teacher' && state.student && typeof ptStudentPrioState === 'function') {
+      const PS = ptStudentPrioState();
+      if (PS.locked && !PS.prio.has(itemId)) { alert('⭐ Fais d’abord les exercices avec une étoile. Ensuite, celui-ci s’ouvrira.'); return; }
+    }
+  } catch(e) {}
   let foundItem = null;
   const masterCatalogue = (typeof getActivitiesMasterRegistry === 'function') ? getActivitiesMasterRegistry() : PLAN_CATALOGUE;
   for (const cat of masterCatalogue) {
@@ -36357,6 +36392,10 @@ async function _renderPlanTravailInto(el) {
     const fbDates = window.FB_loadPlanDates ? await window.FB_loadPlanDates(cls) : undefined;
     planTravailDatesReady = (fbDates !== undefined);
     planTravailDates = ptNormDates(fbDates || null);
+    // Exercices prioritaires (nœud séparé)
+    const fbPrio = window.FB_loadPlanPriority ? await window.FB_loadPlanPriority(cls) : undefined;
+    planTravailPriorityReady = (fbPrio !== undefined);
+    planTravailPriority = ptNormPriority(fbPrio || null);
     ptDirty = false;
 
     planTravailLoaded = true;
@@ -36539,6 +36578,14 @@ function ptPlanRemove(i) {
   if (ptPlanOpenId === id) ptPlanOpenId = null;
   ptRenderPlanCard();
 }
+function ptPlanTogglePrio(i) {
+  const id = _ptpIds[i]; if (!id) return;
+  if (!planTravailPriorityReady) { alert("Impossible pour le moment : les priorités du plan n'ont pas pu être chargées (connexion ?). Recharge la page et réessaie."); return; }
+  ptSetPrio(planTravailTarget, id, !ptIsPrio(planTravailTarget, id));
+  ptDirty = true;
+  ptRenderPlanCard();
+}
+window.ptPlanTogglePrio = ptPlanTogglePrio;
 function ptPlanToggleWho(i) { const id = _ptpIds[i]; if (!id) return; ptPlanOpenId = (ptPlanOpenId === id) ? null : id; ptRenderPlanCard(); }
 function ptPlanPreview(i, ev) { const id = _ptpIds[i]; if (id) ptTeacherPreviewItem(id, ev); }
 function ptPlanSave() { ptSaveAndNotify(); ptRenderPlanCard(); }
@@ -36560,7 +36607,7 @@ const PTP_CSS = `
 .ptp-btn{height:44px;padding:0 14px;border-radius:12px;border:2.5px solid #1A1A2E;background:#fff;font-family:'Fredoka',sans-serif;font-size:14px;font-weight:600;color:#1A1A2E;cursor:pointer}
 .ptp-btn:hover{background:#F1EEE6}
 .ptp-grp{padding:10px 20px 4px;font-family:'Fredoka',sans-serif;font-size:16px;font-weight:700}
-.ptp-row{display:grid;grid-template-columns:minmax(0,1fr) 200px 254px;gap:12px;align-items:center;padding:7px 14px 7px 20px;min-height:54px;border-top:1px solid #E9E5DA}
+.ptp-row{display:grid;grid-template-columns:minmax(0,1fr) 200px 296px;gap:12px;align-items:center;padding:7px 14px 7px 20px;min-height:54px;border-top:1px solid #E9E5DA}
 .ptp-lbl{display:flex;flex-direction:column;gap:1px;min-width:0}
 .ptp-lbl b{font-size:16px;font-weight:700;color:#1A1A2E;overflow:hidden;text-overflow:ellipsis}
 .ptp-lbl span{font-size:12.5px;font-weight:700;color:#6B6B80}
@@ -36574,6 +36621,13 @@ const PTP_CSS = `
 .ptp-ico{width:36px;height:36px;border-radius:10px;border:2px solid transparent;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
 .ptp-ico:hover{border-color:#1A1A2E;background:#fff}
 .ptp-tools .pt-comment-btn{margin:0}
+.ptp-tools{grid-column:auto}
+.ptp-star{font-size:22px;line-height:1;color:#B9B3A3}
+.ptp-star:hover{color:#C98A0A}
+.ptp-star.on{color:#E0A100}
+.ptp-row.prio{background:#FFF8E1}
+.ptp-grp-prio{color:#8A5A00;background:#FFF1C7;border-top:2px solid #1A1A2E;padding-bottom:8px;display:flex;flex-direction:column;gap:2px}
+.ptp-grp-prio small{font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;color:#6B5A2E}
 .ptp-detail{padding:0 20px 12px;display:flex;flex-direction:column;gap:6px}
 .ptp-line{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
 .ptp-line>em{font-style:normal;font-size:13px;font-weight:800;width:96px;flex-shrink:0}
@@ -36595,8 +36649,10 @@ function ptRenderPlanCard() {
   const cls = (typeof teacherCls !== 'undefined' && teacherCls) ? teacherCls : 'lejoly';
   const isClass = planTravailTarget === 'class';
   const cIdx = ptCatalogueIndex();
-  const ids = _ptpList().filter(id => cIdx[id]).sort((a, b) => cIdx[a].order - cIdx[b].order);
+  const _prioT = id => ptIsPrio(planTravailTarget, id) ? 0 : 1;
+  const ids = _ptpList().filter(id => cIdx[id]).sort((a, b) => _prioT(a) - _prioT(b) || cIdx[a].order - cIdx[b].order);
   _ptpIds = ids;
+  const nPrio = ids.filter(id => _prioT(id) === 0).length;
   const students = getClassStudents(teacherCls).map(s => s.name).sort((a, b) => a.localeCompare(b, 'fr'));
   const scope = isClass ? students : [planTravailTarget];
 
@@ -36621,9 +36677,14 @@ function ptRenderPlanCard() {
   let lastCat = null;
   ids.forEach((id, i) => {
     const e = cIdx[id];
-    if (e.cat !== lastCat) {
+    const isP = _prioT(id) === 0;
+    if (isP && lastCat !== '__prio') {
+      lastCat = '__prio';
+      rowsHtml.push(`<div class="ptp-grp ptp-grp-prio">⭐ À faire en priorité · ${nPrio} exercice${nPrio > 1 ? 's' : ''}<small>Les autres exercices restent bloqués pour l’élève tant que ceux-ci ne sont pas finis.</small></div>`);
+    }
+    if (!isP && e.cat !== lastCat) {
       lastCat = e.cat;
-      const n = ids.filter(x => cIdx[x].cat === e.cat).length;
+      const n = ids.filter(x => cIdx[x].cat === e.cat && _prioT(x) === 1).length;
       rowsHtml.push(`<div class="ptp-grp" style="color:${_ptpColor(e.cat)}">${ptEsc(ptCatParts(e.cat).name)} · ${n} exercice${n > 1 ? 's' : ''}</div>`);
     }
     const dt = _ptpAssignDate(id);
@@ -36653,10 +36714,11 @@ function ptRenderPlanCard() {
     }
     const open = ptPlanOpenId === id;
     rowsHtml.push(`<div>
-      <div class="ptp-row">
+      <div class="ptp-row${isP ? ' prio' : ''}">
         <span class="ptp-lbl"><b title="${ptEsc(e.item.label)}">${e.item.label}</b>${meta ? `<span>${ptEsc(meta)}</span>` : ''}</span>
         ${prog}
         <span class="ptp-tools">
+          <button type="button" class="ptp-ico ptp-star${isP ? ' on' : ''}" aria-pressed="${isP}" title="${isP ? 'Prioritaire — cliquer pour retirer la priorité' : 'Mettre en priorité (à faire avant les autres)'}" aria-label="${isP ? 'Retirer la priorité' : 'Mettre en priorité'} : ${ptEsc(e.item.label)}" onclick="ptPlanTogglePrio(${i})">${isP ? '★' : '☆'}</button>
           ${isClass ? `<button type="button" class="ptp-who-btn${open ? ' on' : ''}" aria-expanded="${open}" onclick="ptPlanToggleWho(${i})">${open ? 'Masquer' : 'Qui ?'}</button>` : ''}
           <button type="button" class="ptp-ico" title="Voir l'activité" aria-label="Voir l'activité ${ptEsc(e.item.label)}" onclick="ptPlanPreview(${i}, event)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#4A4A5E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
           ${ptCommentBtnHtml(id)}
@@ -36670,6 +36732,7 @@ function ptRenderPlanCard() {
   }
 
   const subParts = [ids.length + ' exercice' + (ids.length > 1 ? 's' : '')];
+  if (nPrio) subParts.push(nPrio + ' prioritaire' + (nPrio > 1 ? 's' : ''));
   if (data && isClass && ids.length) subParts.push(allDone + ' élève' + (allDone > 1 ? 's ont' : ' a') + ' tout fini');
   if (!data && ids.length) subParts.push('avancement en cours de chargement…');
   const classN = planTravailAssigned.filter(id => cIdx[id]).length;
@@ -36840,6 +36903,7 @@ function ptToggleCat(catId) {
 function _ptSetChecked(id, checked) {
   const wasChecked = ptIsChecked(id);
   if (wasChecked !== !!checked) { ptDateMark(planTravailTarget, id, !!checked); ptDirty = true; }
+  if (!checked && ptIsPrio(planTravailTarget, id)) ptSetPrio(planTravailTarget, id, false);
   if (planTravailTarget === 'class') {
     if (checked) {
       if (!planTravailAssigned.includes(id)) planTravailAssigned.push(id);
@@ -37276,7 +37340,18 @@ const PE_CSS = `
   #pe-root .pe-main{flex:1 1 100%}
   #pe-root .pe-st{min-width:0;margin-left:auto}
   #pe-root .pe-cont-row{flex-wrap:wrap}
-}`;
+}#pe-root .pe-prio{display:flex;align-items:center;gap:14px;padding:14px 18px;background:#FFF1C7}
+#pe-root .pe-prio h3{margin:0;font-family:'Fredoka',sans-serif;font-size:20px;font-weight:700;color:#1A1A2E}
+#pe-root .pe-prio p{margin:2px 0 0;font-size:16px;font-weight:700;color:#5E4A12}
+#pe-root .pe-prio-star{font-size:40px;line-height:1;color:#E0A100;flex:none}
+#pe-root .pe-star{color:#E0A100}
+#pe-root .pe-row.prio{background:#FFFBEB}
+#pe-root .pe-row.locked{background:#F3F1EC;opacity:.75}
+#pe-root .pe-row.locked .pe-main{cursor:default}
+#pe-root .pe-row.locked .pe-lbl{color:#6B6B80}
+#pe-root .pe-row.locked .pe-ico{filter:grayscale(1)}
+#pe-root .pe-go.lock{display:inline-flex;align-items:center;justify-content:center;background:#E9E5DA;color:#4A4A5E;cursor:not-allowed;font-size:15px}
+`;
 function _peEsc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
 function _peStrip(s) { return String(s || '').replace(/^[^A-Za-zÀ-ÿ0-9]+/, '').trim(); }
 function _peMatOf(cat) {
@@ -37324,14 +37399,18 @@ function renderPlanTravailStudent() {
     });
   }));
 
+  // Exercices prioritaires : tant qu'ils ne sont pas tous finis, les autres sont bloqués
+  const PS = ptStudentPrioState();
+  items.forEach(x => { x.prio = PS.prio.has(x.it.id); x.locked = PS.locked && !x.prio; });
+
   const total = items.length;
   const done = items.filter(x => x.done).length;
   const left = total - done;
-  const startedList = items.filter(x => x.started);
+  const startedList = items.filter(x => x.started && !x.locked);
   const matsPresent = ['fr', 'ma', 'ev', 'ot'].filter(k => items.some(x => x.m === k));
   if (peMat && !matsPresent.includes(peMat)) peMat = '';
 
-  const rank = x => x.started ? 0 : (x.done ? 2 : 1);
+  const rank = x => (PS.locked ? (x.prio ? 0 : 10) : 0) + (x.started ? 0 : (x.done ? 2 : 1));
   const shown = items.filter(x => (!peMat || x.m === peMat) && !(peHideDone && x.done))
     .sort((a, b) => rank(a) - rank(b) || a.n - b.n);
 
@@ -37349,6 +37428,17 @@ function renderPlanTravailStudent() {
       <div class="pe-bar" aria-hidden="true">${bar}</div>
       <div class="pe-legend"><span><i style="background:#1A9E75"></i>fini</span><span><i style="background:#F2C46B"></i>commencé</span><span><i></i>à faire</span></div>
     </section>`;
+
+  if (PS.locked) {
+    const r = PS.total - PS.done;
+    html += `<section class="pe-card pe-prio" aria-label="Exercices prioritaires">
+      <div class="pe-prio-star" aria-hidden="true">★</div>
+      <div>
+        <h3>Commence par ${PS.total > 1 ? 'les exercices' : 'l’exercice'} avec une étoile</h3>
+        <p>${PS.done} sur ${PS.total} fini${PS.done > 1 ? 's' : ''}. ${r > 1 ? `Encore ${r} exercices prioritaires` : 'Encore 1 exercice prioritaire'}, ensuite les autres exercices s’ouvriront.</p>
+      </div>
+    </section>`;
+  }
 
   if (startedList.length) {
     html += `<section class="pe-card pe-cont"><h3>Je continue ce que j’ai commencé</h3>` +
@@ -37387,13 +37477,29 @@ function renderPlanTravailStudent() {
       } else { stTxt = 'Fait'; stCol = '#157F5F'; }
     } else if (x.started) { stTxt = 'Commencé'; stCol = '#8A520C'; }
     const btn = x.done ? ['again', 'Revoir'] : x.started ? ['cont', 'Continuer'] : ['', 'Commencer'];
-    html += `<div class="pe-row${x.done ? ' done' : x.started ? ' started' : ''}">
+    if (x.locked) {
+      html += `<div class="pe-row locked" title="Bloqué : fais d’abord les exercices avec une étoile">
+      <span class="pe-stripe" style="background:${mat.color}" aria-hidden="true"></span>
+      <span class="pe-dot" aria-hidden="true"></span>
+      <span class="pe-main" aria-disabled="true">
+        <span class="pe-ico" aria-hidden="true">${x.it.icon || ''}</span>
+        <span class="pe-txt">
+          <span class="pe-lbl">${_peEsc(x.it.label)}</span>
+          <span class="pe-meta"><span style="color:${mat.color}">${mat.label}</span>${x.sub ? `<span>·</span><span>${_peEsc(x.sub)}</span>` : ''}${x.ind ? '<span class="pe-ind">Juste pour toi</span>' : ''}</span>
+        </span>
+      </span>
+      <span class="pe-st">${stTxt}</span>
+      <span class="pe-go lock" aria-label="Bloqué">🔒 Après ★</span>
+    </div>`;
+      return;
+    }
+    html += `<div class="pe-row${x.done ? ' done' : x.started ? ' started' : ''}${x.prio ? ' prio' : ''}">
       <span class="pe-stripe" style="background:${mat.color}" aria-hidden="true"></span>
       <span class="pe-dot" aria-hidden="true">${x.done ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>' : ''}</span>
       <button type="button" class="pe-main" onclick="planNavigateToId('${id}')">
         <span class="pe-ico" aria-hidden="true">${x.it.icon || ''}</span>
         <span class="pe-txt">
-          <span class="pe-lbl">${_peEsc(x.it.label)}</span>
+          <span class="pe-lbl">${x.prio ? '<span class="pe-star" title="Exercice prioritaire" aria-label="Prioritaire">★</span> ' : ''}${_peEsc(x.it.label)}</span>
           <span class="pe-meta"><span style="color:${mat.color}">${mat.label}</span>${x.sub ? `<span>·</span><span>${_peEsc(x.sub)}</span>` : ''}${x.ind ? '<span class="pe-ind">Juste pour toi</span>' : ''}</span>
         </span>
       </button>
@@ -37541,6 +37647,56 @@ function ptPrunedDates() {
     (planTravailIndividual[n] || []).forEach(id => { if (d.students[n] && d.students[n][id]) m[id] = d.students[n][id]; });
     if (Object.keys(m).length) out.students[n] = m;
   });
+  return out;
+}
+// --- Exercices prioritaires : settings/plan_travail_priority/<classe> = { class: {id: true}, students: {élève: {id: true}} }
+function ptNormPriority(v) {
+  const clean = o => { const r = {}; if (o && typeof o === 'object') Object.keys(o).forEach(k => { if (o[k]) r[k] = true; }); return r; };
+  const out = { class: {}, students: {} };
+  if (v && typeof v === 'object') {
+    out.class = clean(v.class);
+    if (v.students && typeof v.students === 'object') Object.keys(v.students).forEach(n => {
+      const c = clean(v.students[n]); if (Object.keys(c).length) out.students[n] = c;
+    });
+  }
+  return out;
+}
+// Priorités gardées uniquement pour les exercices encore dans le plan correspondant
+function ptPrunedPriority() {
+  const out = { class: {}, students: {} };
+  const p = planTravailPriority || { class: {}, students: {} };
+  planTravailAssigned.forEach(id => { if (p.class[id]) out.class[id] = true; });
+  Object.keys(planTravailIndividual || {}).forEach(n => {
+    const m = {};
+    (planTravailIndividual[n] || []).forEach(id => { if (p.students[n] && p.students[n][id]) m[id] = true; });
+    if (Object.keys(m).length) out.students[n] = m;
+  });
+  return out;
+}
+function ptIsPrio(target, id) {
+  const p = planTravailPriority || { class: {}, students: {} };
+  return target === 'class' ? !!(p.class || {})[id] : !!(((p.students || {})[target] || {})[id]);
+}
+function ptSetPrio(target, id, on) {
+  if (!planTravailPriority) planTravailPriority = { class: {}, students: {} };
+  if (target === 'class') { if (on) planTravailPriority.class[id] = true; else delete planTravailPriority.class[id]; }
+  else {
+    const m = planTravailPriority.students[target] || (planTravailPriority.students[target] = {});
+    if (on) m[id] = true; else delete m[id];
+    if (!Object.keys(m).length) delete planTravailPriority.students[target];
+  }
+}
+// Élève : quels exercices sont prioritaires pour lui et sont-ils tous finis ?
+// → { prio: Set, total, done, locked } ; locked = il reste au moins un prioritaire non fini
+function ptStudentPrioState() {
+  const out = { prio: new Set(), total: 0, done: 0, locked: false };
+  if (typeof state === 'undefined' || !state.student) return out;
+  const L = ptStudentLists();
+  L.classList.forEach(id => { if (ptIsPrio('class', id)) out.prio.add(id); });
+  L.indList.forEach(id => { if (ptIsPrio(state.student, id)) out.prio.add(id); });
+  out.total = out.prio.size;
+  out.prio.forEach(id => { if (ptIsCompleted(ptStudentStatus(id).state)) out.done++; });
+  out.locked = out.done < out.total;
   return out;
 }
 // Date d'assignation la plus récente qui concerne cet élève pour cet exercice (0 = inconnue)
