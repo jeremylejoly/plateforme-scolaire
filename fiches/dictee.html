@@ -309,26 +309,49 @@ function subCost(r, s){
   const a = plain(r), b = plain(s);
   return 1 + 0.9 * (lev(a, b) / Math.max(a.length, b.length, 1));
 }
+/* Mot mal coupé : « grand - mère », « grand mère » ou « l' eau » pour un seul mot de la dictée,
+   ou « parceque » pour deux mots. Les morceaux sont regroupés en UNE erreur (une seule case à corriger,
+   dans laquelle l'élève peut effacer les espaces). Seulement si les lettres sont (presque) les mêmes. */
+const lettres = t => plain(t).replace(/[\s'\-–—]/g, '');
+function mergeCost(seul, liste){
+  if (isPunct(seul)) return Infinity;
+  if (liste.some(t => isPunct(t) && !/^[-–—]$/.test(t)) || isPunct(liste[0]) || isPunct(liste[liste.length - 1])) return Infinity;
+  const a = lettres(seul), b = lettres(liste.join(''));
+  const d = lev(a, b) / Math.max(a.length, b.length, 1);
+  const coupe = /['\-]/.test(seul) || liste.some(t => /^[-–—]$/.test(t)) || a === b;
+  if (!coupe || d > 0.34) return Infinity;
+  return 1 + 0.9 * d;
+}
 /* Aligne le texte de l'élève sur le texte de référence.
-   Chaque opération : ok | sub (mal écrit) | del (oublié) | ins (en trop) */
+   Chaque opération : ok | sub (mal écrit, éventuellement plusieurs morceaux) | del (oublié) | ins (en trop).
+   op.refs / op.stus : les morceaux ; op.ref / op.stu : les mêmes, séparés par des espaces. */
 function align(refT, stuT){
   const n = refT.length, m = stuT.length;
   const D = Array.from({length:n+1}, () => new Float64Array(m+1));
-  for (let i = 0; i <= n; i++) D[i][0] = i;
-  for (let j = 0; j <= m; j++) D[0][j] = j;
-  for (let i = 1; i <= n; i++) for (let j = 1; j <= m; j++)
-    D[i][j] = Math.min(D[i-1][j-1] + subCost(refT[i-1], stuT[j-1]), D[i-1][j] + 1, D[i][j-1] + 1);
-  const ops = []; let i = n, j = m;
-  const eq = (a, b) => Math.abs(a - b) < 1e-9;
-  while (i > 0 || j > 0){
-    if (i > 0 && j > 0 && eq(D[i][j], D[i-1][j-1] + subCost(refT[i-1], stuT[j-1]))){
-      const ok = same(refT[i-1], stuT[j-1]);
-      ops.push({type: ok ? 'ok' : 'sub', ref: refT[i-1], stu: stuT[j-1]}); i--; j--;
-    } else if (i > 0 && eq(D[i][j], D[i-1][j] + 1)){
-      ops.push({type:'del', ref: refT[i-1]}); i--;
-    } else {
-      ops.push({type:'ins', stu: stuT[j-1]}); j--;
+  const B = Array.from({length:n+1}, () => new Array(m+1));   // [di, dj] : d'où l'on vient
+  for (let i = 0; i <= n; i++) { D[i][0] = i; B[i][0] = [1, 0]; }
+  for (let j = 0; j <= m; j++) { D[0][j] = j; B[0][j] = [0, 1]; }
+  for (let i = 1; i <= n; i++) for (let j = 1; j <= m; j++){
+    let best = D[i-1][j-1] + subCost(refT[i-1], stuT[j-1]), from = [1, 1];
+    for (let k = 2; k <= 3; k++){
+      if (j >= k){ const c = D[i-1][j-k] + mergeCost(refT[i-1], stuT.slice(j-k, j)); if (c < best - 1e-9){ best = c; from = [1, k]; } }
+      if (i >= k){ const c = D[i-k][j-1] + mergeCost(stuT[j-1], refT.slice(i-k, i)); if (c < best - 1e-9){ best = c; from = [k, 1]; } }
     }
+    if (D[i-1][j] + 1 < best - 1e-9){ best = D[i-1][j] + 1; from = [1, 0]; }
+    if (D[i][j-1] + 1 < best - 1e-9){ best = D[i][j-1] + 1; from = [0, 1]; }
+    D[i][j] = best; B[i][j] = from;
+  }
+  const ops = []; let i = n, j = m;
+  while (i > 0 || j > 0){
+    const [di, dj] = B[i][j];
+    const refs = refT.slice(i - di, i), stus = stuT.slice(j - dj, j);
+    if (!dj) ops.push({type:'del', ref: refs[0], refs});
+    else if (!di) ops.push({type:'ins', stu: stus[0], stus});
+    else {
+      const ok = refs.length === 1 && stus.length === 1 && same(refs[0], stus[0]);
+      ops.push({type: ok ? 'ok' : 'sub', ref: refs.join(' '), stu: stus.join(' '), refs, stus});
+    }
+    i -= di; j -= dj;
   }
   return ops.reverse();
 }
@@ -337,6 +360,7 @@ function kind(op){
   if (op.type === 'del') return p ? 'ponctuation oubliée' : 'mot oublié';
   if (op.type === 'ins') return p ? 'ponctuation en trop' : 'mot en trop';
   if (p) return 'ponctuation';
+  if ((op.refs || []).length + (op.stus || []).length > 2 && lettres(op.ref) === lettres(op.stu)) return 'mot mal coupé (espace, trait d\'union, apostrophe)';
   if (op.ref.toLowerCase() === op.stu.toLowerCase()) return 'majuscule';
   return 'orthographe';
 }
@@ -508,7 +532,8 @@ $('btn-fix').addEventListener('click', () => {
     const v = $('fix-text').querySelector(`input[data-i="${i}"]`).value;
     if (v.trim()) parts.push(v.trim());
     const toks = tokenize(v);
-    const ok = op.type === 'ins' ? toks.length === 0 : (toks.length === 1 && same(op.ref, toks[0]));
+    const attendu = op.refs || [op.ref];
+    const ok = op.type === 'ins' ? toks.length === 0 : (toks.length === attendu.length && attendu.every((r, k) => same(r, toks[k])));
     fixes.push({ type: op.type, kind: kind(op), ref: op.ref || '', avant: op.stu || '', apres: v.trim(), ok });
   });
   S.texte2 = parts.join(' ');
