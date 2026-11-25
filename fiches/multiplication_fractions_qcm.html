@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<!-- © 2026 Jérémy Lejoly — LCML. Reproduction interdite sans autorisation. -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Multiplication de fractions — QCM</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Inter:wght@300..800&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  /* Habillage identique à l'addition de fractions (exercices d'Opérations du site) */
+  :root {
+    --purple:#5B4FCF; --purple-light:#EEF0FF; --purple-mid:#C7C2F5;
+    --green:#1A9E75; --green-light:#E2F5EE;
+    --red:#D94F3D; --red-light:#FDECEA;
+    --amber:#C97B1A; --amber-light:#FEF3E2;
+    --blue:#1A6FA0; --blue-light:#E2F0FA;
+    --bg:#FDFBF7; --surface:#FFFFFF;
+    --text:#1A1A2E; --muted:#6B7080; --border:#1A1A2E;
+    --r:14px; --rsm:8px;
+    --accent-add:#2ec27e;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { background:var(--bg); }
+  body { font-family:'Inter', sans-serif; color:var(--text); padding:16px; -webkit-font-smoothing:antialiased; }
+  button { font-family:inherit; touch-action:manipulation; }
+  .container { max-width:900px; margin:0 auto; }
+  .ecran { display:none; }
+  .ecran.actif { display:block; }
+
+  .page-title { font-family:'Nunito', sans-serif; font-size:20px; font-weight:900; color:var(--text); margin-bottom:1rem; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .page-title .sous { font-size:14px; font-weight:700; color:var(--muted); }
+  .back-btn { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border:1.5px solid var(--border); border-radius:var(--rsm); background:var(--surface); font-family:'Nunito', sans-serif; font-size:13px; font-weight:700; cursor:pointer; color:var(--muted); transition:all .15s; }
+  .back-btn:hover { background:var(--bg); color:var(--text); }
+  .btn { padding:10px 20px; border:2px solid var(--border); border-radius:var(--rsm); background:var(--surface); font-family:'Fredoka', sans-serif; font-size:14px; font-weight:700; cursor:pointer; color:var(--text); transition:all .2s; box-shadow:2px 2px 0 var(--border); }
+  .btn:hover { background:var(--bg); transform:translate(-1px,-1px); box-shadow:3px 3px 0 var(--border); }
+  .btn:active { transform:translate(1px,1px); box-shadow:1px 1px 0 var(--border); }
+  .btn-primary { background:var(--purple); color:#fff; border-color:var(--purple); }
+  .btn-primary:hover { background:#4a3fb8; }
+  .btn-large { width:100%; font-size:16px; padding:14px; }
+  .btn[hidden] { display:none; }
+
+  /* ----- Accueil ----- */
+  .carte-accueil {
+    background:#fff; border-radius:24px; border:1px solid #e5e7eb; box-shadow:0 1px 3px rgba(0,0,0,.02);
+    padding:1.5rem 1.25rem; text-align:center; max-width:560px; margin:0 auto 1rem;
+  }
+  .badge { width:56px; height:56px; border-radius:16px; display:inline-flex; align-items:center; justify-content:center; margin-bottom:12px; font-family:'Fredoka', sans-serif; font-size:26px; font-weight:700; background:#e7faf0; color:#16895a; }
+  .carte-accueil .sub-title { font-family:'Fredoka', sans-serif; font-size:18px; font-weight:700; color:#1f2937; margin-bottom:6px; }
+  .carte-accueil .sub-desc { font-size:13px; color:#6b7280; line-height:1.5; }
+  .exemples { display:flex; justify-content:center; gap:18px; flex-wrap:wrap; margin-top:14px; }
+  .exemples .ex { display:flex; align-items:center; gap:6px; font-family:'Nunito', sans-serif; font-weight:900; font-size:15px; background:var(--bg); border-radius:12px; padding:6px 10px; }
+  .exemples .frac { font-size:15px; }
+  .exemples .frac > span:first-child { border-bottom-width:2px; }
+  .record { display:inline-block; font-size:12px; font-weight:700; color:var(--green); background:var(--green-light); border-radius:99px; padding:2px 10px; margin-top:14px; }
+  .accueil-actions { max-width:560px; margin:0 auto; }
+
+  /* ----- Barre du haut ----- */
+  .barre-haut { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:1rem; }
+  .barre-haut .gauche, .barre-haut .droite { display:flex; align-items:center; gap:10px; }
+  .compteur { font-family:'Nunito', sans-serif; font-size:15px; font-weight:900; color:var(--muted); }
+  .dots { display:flex; gap:6px; }
+  .dot { width:12px; height:12px; border-radius:50%; background:#e5e7eb; border:1px solid #d1d5db; transition:all .3s; }
+  .dot.current { background:var(--purple); border-color:var(--purple); transform:scale(1.2); }
+  .dot.correct { background:var(--accent-add); border-color:var(--accent-add); }
+  .dot.corrige { background:#ff885c; border-color:#ff885c; }
+  .dot.incorrect { background:var(--red); border-color:var(--red); }
+  .btn-aide { padding:6px 12px; font-size:13px; }
+  .btn-aide.ouverte { background:var(--amber-light); }
+
+  /* ----- Le calcul ----- */
+  .calc-card {
+    background:var(--surface); border:1px solid var(--border); border-left:6px solid var(--accent-add); border-radius:16px;
+    padding:14px 18px 16px; box-shadow:0 4px 10px rgba(0,0,0,.04); text-align:center; transition:all .2s ease;
+  }
+  .calc-card.correct { border-color:var(--green); border-left-color:var(--accent-add); background:#F0FFF8; }
+  .consigne { font-size:14px; font-weight:600; color:var(--muted); margin-bottom:12px; }
+  .ligne { display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; font-family:'Nunito', sans-serif; }
+  .signe { font-size:1.8rem; font-weight:900; color:var(--muted); margin:0 2px; }
+  .signe.op { color:var(--purple); }
+  .entier { font-family:'Nunito', sans-serif; font-size:1.8rem; font-weight:900; }
+  .inconnue { font-family:'Nunito', sans-serif; font-size:1.6rem; font-weight:900; color:#9aa3ad; border:2px dashed #cdeede; background:#f0f7f4; border-radius:12px; padding:4px 16px; }
+  .frac { display:inline-flex; flex-direction:column; align-items:center; font-family:'Nunito', sans-serif; font-size:1.8rem; font-weight:900; line-height:1.15; color:var(--text); vertical-align:middle; }
+  .frac > span { padding:0 4px; min-width:1.2em; text-align:center; }
+  .frac > span:first-child { border-bottom:3px solid currentColor; padding-bottom:2px; }
+  .frac > span:last-child { padding-top:2px; }
+  .mixte { display:inline-flex; align-items:center; gap:3px; vertical-align:middle; }
+  .mixte .e { font-family:'Nunito', sans-serif; font-weight:900; }
+
+  /* ----- Les 4 réponses ----- */
+  .choix { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px; }
+  .rep {
+    position:relative; background:#f0f7f4; border:2px solid #cdeede; border-radius:14px; min-height:96px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; color:var(--text); transition:all .15s;
+  }
+  .rep:hover:not(:disabled) { border-color:var(--purple); background:#fff; transform:translateY(-2px); }
+  .rep .lettre { position:absolute; top:6px; left:9px; font-family:'Fredoka', sans-serif; font-size:12px; font-weight:700; color:#9aa3ad; }
+  .rep .frac, .rep .entier { font-size:1.7rem; }
+  .rep .mixte .e { font-size:1.9rem; }
+  .rep:disabled { cursor:default; }
+  .rep.ok { border-color:var(--green); background:#e7faf0; color:#16895a; }
+  .rep.ko { border-color:var(--red); background:#fdeaec; color:#c43a4c; }
+  .rep.eteint { opacity:.45; }
+
+  /* ----- Messages ----- */
+  .message { margin-top:1rem; padding:10px 14px; border-radius:10px; font-size:14px; font-weight:600; line-height:1.6; display:none; text-align:left; }
+  .message.visible { display:block; }
+  .message.indice { background:#fff7ed; color:#9a3412; }
+  .message.bravo { background:#e7faf0; color:#16895a; }
+  .message.correction { background:var(--blue-light); color:var(--text); }
+  .message small { font-weight:500; }
+  .message .frac { font-size:.95rem; }
+  .message .frac > span:first-child { border-bottom-width:2px; }
+  .message .sol { font-family:'Nunito', sans-serif; font-weight:900; font-size:1.15rem; color:#1f5fbf; display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:6px 0 2px; }
+  .message.bravo .sol { color:#16895a; }
+  .message .sol .frac { font-size:1.15rem; }
+  .message .expl { font-size:14px; }
+  .message hr { border:none; border-top:1px dashed currentColor; opacity:.3; margin:8px 0; }
+
+  /* ----- Dessin d'aide ----- */
+  .dessin { margin-top:1rem; display:none; }
+  .dessin.visible { display:block; }
+  .dessin svg { width:100%; max-width:480px; height:auto; display:block; margin:0 auto; }
+  .dessin .note { font-size:12px; color:var(--muted); margin-top:2px; }
+
+  .actions { margin-top:1rem; }
+
+  /* ----- Score ----- */
+  .exercise-score { background:var(--surface); border:2px solid var(--border); border-radius:var(--r); padding:.6rem 1.25rem; text-align:center; margin-bottom:1rem; }
+  .score-emoji { font-size:26px; line-height:1.1; }
+  .exercise-score-val { font-family:'Nunito', sans-serif; font-size:36px; font-weight:900; }
+  .exercise-score-lbl { font-size:13px; color:var(--muted); }
+  .score-title { font-family:'Fredoka', sans-serif; font-size:19px; font-weight:700; margin-top:2px; }
+  .score-list { display:grid; gap:8px; margin-bottom:1rem; }
+  @media (min-width:640px) { .score-list { grid-template-columns:1fr 1fr; } }
+  .score-row { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:5px 14px; display:flex; align-items:center; justify-content:space-between; gap:8px; box-shadow:0 4px 10px rgba(0,0,0,.04); }
+  .score-row.correct { border-color:var(--green); background:#F0FFF8; }
+  .score-row.corrige { border-color:#ff885c; background:#FFF7F2; }
+  .score-row.incorrect { border-color:var(--red); background:#FFF0F0; }
+  .score-row .sol { font-family:'Nunito', sans-serif; font-weight:900; display:flex; align-items:center; gap:5px; flex-wrap:wrap; font-size:15px; }
+  .score-row .num { font-family:'Fredoka', sans-serif; font-size:12px; font-weight:700; color:var(--muted); min-width:20px; }
+  .score-row .frac { font-size:15px; }
+  .score-row .frac > span:first-child { border-bottom-width:2px; }
+  .tag { white-space:nowrap; font-size:13px; font-weight:700; }
+  .score-actions { display:grid; gap:10px; }
+  .confetti { position:fixed; top:-12px; border-radius:2px; animation:tombe linear forwards; z-index:50; pointer-events:none; }
+  @keyframes tombe { to { transform:translateY(105vh) rotate(540deg); } }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ===== Écran 1 : accueil ===== -->
+  <div id="ecran-accueil" class="ecran actif">
+    <div class="page-title">✖️ Multiplication de fractions <span class="sous">· QCM</span></div>
+    <div class="carte-accueil">
+      <div class="badge">✖️</div>
+      <div class="sub-title">Choisis la bonne réponse</div>
+      <div class="sub-desc">
+        Un nombre entier multiplié par une fraction.<br>
+        Attention : la bonne réponse n'est pas toujours écrite de la même façon.
+        Elle peut être <strong>simplifiée</strong> ou écrite avec les <strong>unités sorties</strong>.
+      </div>
+      <div class="exemples" id="exemples"></div>
+      <div id="record-accueil"></div>
+    </div>
+    <div class="accueil-actions">
+      <button class="btn btn-primary btn-large" onclick="demarrer()">▶ Commencer</button>
+    </div>
+  </div>
+
+  <!-- ===== Écran 2 : questions ===== -->
+  <div id="ecran-jeu" class="ecran">
+    <div class="barre-haut">
+      <div class="gauche">
+        <button class="back-btn" onclick="afficherAccueil()">← Retour</button>
+      </div>
+      <div class="dots" id="dots"></div>
+      <div class="droite">
+        <button class="btn btn-aide" id="btn-dessin" onclick="basculerDessin()">💡 Dessin</button>
+        <span class="compteur" id="compteur">1 / 10</span>
+      </div>
+    </div>
+
+    <div class="calc-card" id="calc-card">
+      <div class="consigne">Choisis la bonne réponse.</div>
+      <div class="ligne" id="ligne"></div>
+      <div class="dessin" id="dessin"></div>
+      <div class="choix" id="choix"></div>
+    </div>
+    <div class="message" id="message"></div>
+    <div class="actions">
+      <button class="btn btn-primary btn-large" id="btn-suivant" onclick="suivant()" hidden>Suivant →</button>
+    </div>
+  </div>
+
+  <!-- ===== Écran 3 : score ===== -->
+  <div id="ecran-score" class="ecran">
+    <div class="page-title">✖️ Multiplication de fractions <span class="sous">· QCM</span></div>
+    <div class="exercise-score">
+      <div class="score-emoji" id="final-emoji">🏆</div>
+      <div class="exercise-score-val" id="final-score">10 / 10</div>
+      <div class="exercise-score-lbl">résultat</div>
+      <div class="score-title" id="final-title">Bravo !</div>
+      <div class="exercise-score-lbl" id="final-msg"></div>
+    </div>
+    <div class="score-list" id="final-details"></div>
+    <div class="score-actions">
+      <button class="btn btn-primary btn-large" onclick="demarrer()">🔄 Nouvelles questions</button>
+      <button class="btn btn-large" onclick="afficherAccueil()">← Retour</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   Multiplication de fractions — QCM (nombre entier × fraction)
+   Banque de 40 calculs, 10 tirés à chaque partie (tout mélangé) :
+     4 « directs »   : la réponse est écrite telle quelle      4 × 2/3 = 8/3
+     3 « unités »    : la réponse est un nombre mixte          4 × 2/3 = 2 2/3
+     3 « simplifiés »: la réponse est simplifiée               5 × 3/20 = 3/4
+   Les 3 mauvaises réponses viennent d'erreurs fréquentes, chacune
+   avec son explication.
+   1 point si juste du premier coup. 1re erreur : explication de
+   l'erreur et 2e essai. 2e erreur : la correction s'affiche.
+   ========================================================= */
+const ID_ACTIVITE = 'num_fractions_multiplication_qcm';
+const CLE_RECORD = 'lcml_mult_frac_qcm_record';
+const NB_PAR_TYPE = { direct: 4, mixte: 3, simplifie: 3 };
+
+// [entier, numérateur, dénominateur]
+const BANQUE = {
+  direct: [
+    [2,1,5], [3,2,7], [4,2,3], [2,4,9], [3,1,4], [5,2,3], [3,3,8],
+    [2,5,7], [4,3,5], [7,1,9], [3,5,7], [5,1,8], [2,7,9]
+  ],
+  mixte: [
+    [4,2,3], [3,3,4], [5,2,3], [2,4,5], [3,2,5], [7,1,2], [5,3,4],
+    [4,4,5], [3,5,8], [6,2,5], [7,2,3], [9,1,4], [5,5,6]
+  ],
+  simplifie: [
+    [5,3,20], [4,3,8], [2,3,10], [3,5,12], [6,2,3], [4,5,6], [2,5,8],
+    [3,1,6], [4,1,10], [8,3,4], [6,1,9], [5,3,10], [2,7,12], [4,3,4]
+  ]
+};
+
+const PARTS = { 2:'demis', 3:'tiers', 4:'quarts', 5:'cinquièmes', 6:'sixièmes', 7:'septièmes', 8:'huitièmes', 9:'neuvièmes', 10:'dixièmes', 12:'douzièmes', 20:'vingtièmes' };
+const nomParts = d => PARTS[d] || ('parts de 1/' + d);
+
+let questions = [], index = 0, score = 0, essais = 0, resultats = [], sauve = false, dessinOuvert = false, fini = false;
+
+/* ---------- Outils ---------- */
+const pgcd = (a, b) => { while (b) { [a, b] = [b, a % b]; } return a; };
+const melange = arr => { const t = arr.slice(); for (let i = t.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [t[i], t[j]] = [t[j], t[i]]; } return t; };
+const fracHTML = (n, d) => `<span class="frac"><span>${n}</span><span>${d}</span></span>`;
+const fois = '<span class="signe op">×</span>', egal = '<span class="signe">=</span>';
+
+// Une réponse : { t:'frac', n, d } | { t:'mixte', e, n, d } | { t:'entier', v }
+const F = (n, d) => ({ t: 'frac', n, d });
+const M = (e, n, d) => ({ t: 'mixte', e, n, d });
+const E = v => ({ t: 'entier', v });
+function valeur(r) {   // [numérateur, dénominateur]
+  if (r.t === 'frac') return [r.n, r.d];
+  if (r.t === 'mixte') return [r.e * r.d + r.n, r.d];
+  return [r.v, 1];
+}
+const memeValeur = (r1, r2) => { const [a, b] = valeur(r1), [c, d] = valeur(r2); return a * d === b * c; };
+const cle = r => r.t === 'frac' ? `${r.n}/${r.d}` : r.t === 'mixte' ? `${r.e} ${r.n}/${r.d}` : `${r.v}`;
+function repHTML(r) {
+  if (r.t === 'frac') return fracHTML(r.n, r.d);
+  if (r.t === 'mixte') return `<span class="mixte"><span class="e">${r.e}</span>${fracHTML(r.n, r.d)}</span>`;
+  return `<span class="entier">${r.v}</span>`;
+}
+
+/* ---------- Mémoire du meilleur score (sur l'appareil) ---------- */
+function lireRecord() { try { const v = localStorage.getItem(CLE_RECORD); return v === null ? null : parseInt(v, 10); } catch (e) { return null; } }
+function ecrireRecord(s) { try { const r = lireRecord(); if (r === null || s > r) localStorage.setItem(CLE_RECORD, String(s)); } catch (e) {} }
+
+/* ---------- Construction d'une question ---------- */
+function bonneReponse(type, n, a, b) {
+  const N = n * a;
+  if (type === 'direct') return F(N, b);
+  if (type === 'mixte') return M(Math.floor(N / b), N % b, b);
+  const g = pgcd(N, b);
+  return b / g === 1 ? E(N / b) : F(N / g, b / g);
+}
+
+// Les erreurs fréquentes, chacune avec son explication
+function erreurs(n, a, b) {
+  const N = n * a, q = Math.floor(N / b), r = N % b, g = pgcd(N, b);
+  const fa = fracHTML(a, b), fN = fracHTML(N, b);
+  const repetition = n <= 4 ? Array(n).fill(fa).join(' + ') : `${fa} + ${fa} + … (${n} fois)`;
+  const E_ = {};
+  E_.lesDeux = { r: F(N, n * b),
+    expl: `Tu as multiplié le numérateur <strong>et</strong> le dénominateur par ${n}. Or ${fracHTML(N, n * b)} est égal à ${fa} : la quantité n'a pas grandi, tu n'as rien multiplié ! Quand on multiplie par un nombre entier, on multiplie <strong>seulement le numérateur</strong> : on prend ${n} fois plus de parts, mais les parts restent des ${nomParts(b)}.` };
+  E_.denominateur = { r: F(a, n * b),
+    expl: `Tu as multiplié le dénominateur par ${n}. Les parts deviennent alors ${n} fois plus petites et le résultat est plus petit que ${fa}. Pourtant, ${n} × ${fa}, c'est ${fa} répété ${n} fois : le résultat doit être <strong>plus grand</strong>. On multiplie <strong>seulement le numérateur</strong>.` };
+  E_.addition = { r: F(n + a, b),
+    expl: `Tu as additionné ${n} + ${a} au lieu de multiplier. ${n} × ${fa}, c'est ${repetition}. On multiplie le numérateur : <strong>${n} × ${a}</strong>.` };
+  E_.colle = { r: M(n, a, b),
+    expl: `${repHTML(M(n, a, b))} est un nombre mixte : il veut dire ${n} <strong>+</strong> ${fa}. Mais ici, c'est une multiplication : ${n} <strong>fois</strong> ${fa}. Commence par calculer ${n} × ${a}.` };
+  if (r > 0 && q >= 1) {
+    E_.unitePlus = { r: M(q + 1, r, b),
+      expl: `Vérifie le nombre d'unités. ${n} × ${fa} = ${fN}. ${q + 1} unités, ce serait ${fracHTML((q + 1) * b, b)} : c'est déjà plus que ${fN} ! Cherche combien de fois ${b} entre dans ${N}.` };
+    if (q >= 2) E_.uniteMoins = { r: M(q - 1, r, b),
+      expl: `Vérifie le nombre d'unités. ${n} × ${fa} = ${fN}. Ta réponse vaut seulement ${fracHTML((q - 1) * b + r, b)} : il manque des ${nomParts(b)}. Cherche combien de fois ${b} entre dans ${N}.` };
+    if (r + 1 < b) E_.reste = { r: M(q, r + 1, b),
+      expl: `Le nombre d'unités est bon, mais vérifie ce qui reste. ${n} × ${fa} = ${fN}. ${q} unité${q > 1 ? 's' : ''}, c'est ${fracHTML(q * b, b)}. Combien de ${nomParts(b)} reste-t-il pour arriver à ${N} ?` };
+  }
+  if (g > 1) {
+    E_.simpHaut = { r: F(N / g, b),
+      expl: `${n} × ${fa} = ${fN}, c'est bien parti. Mais pour simplifier, tu as divisé <strong>seulement le numérateur</strong> par ${g}. Il faut diviser le numérateur <strong>et</strong> le dénominateur par le même nombre, sinon la fraction change de valeur.` };
+    E_.simpBas = { r: b / g === 1 ? E(N) : F(N, b / g),
+      expl: `${n} × ${fa} = ${fN}, c'est bien parti. Mais pour simplifier, tu as divisé <strong>seulement le dénominateur</strong> par ${g}. Il faut diviser le numérateur <strong>et</strong> le dénominateur par le même nombre, sinon la fraction change de valeur.` };
+  }
+  return E_;
+}
+
+// Pour chaque type : les erreurs à montrer en priorité, puis d'autres au hasard
+const PRIORITES = {
+  direct:    { obligatoires: ['lesDeux'],            autres: ['addition', 'denominateur', 'colle'] },
+  mixte:     { obligatoires: ['colle', 'unitePlus'], autres: ['lesDeux', 'addition', 'uniteMoins', 'reste'] },
+  simplifie: { obligatoires: ['simpHaut', 'lesDeux'], autres: ['simpBas', 'addition', 'denominateur'] }
+};
+
+function construireQuestion(type, [n, a, b]) {
+  const bonne = bonneReponse(type, n, a, b);
+  const E_ = erreurs(n, a, b), P = PRIORITES[type];
+  const ordre = P.obligatoires.concat(melange(P.autres), melange(Object.keys(E_)));
+  const fausses = [], vues = new Set([cle(bonne)]);
+  for (const k of ordre) {
+    if (fausses.length === 3) break;
+    const e = E_[k];
+    if (!e || vues.has(cle(e.r)) || memeValeur(e.r, bonne)) continue;
+    vues.add(cle(e.r));
+    fausses.push({ r: e.r, expl: e.expl, bonne: false });
+  }
+  const options = melange([{ r: bonne, bonne: true }].concat(fausses));
+  return { type, n, a, b, bonne, options };
+}
+
+function genererPartie() {
+  const liste = [], dejaVu = new Set();
+  Object.keys(NB_PAR_TYPE).forEach(type => {
+    let pris = 0;
+    for (const item of melange(BANQUE[type])) {
+      if (pris === NB_PAR_TYPE[type]) break;
+      const k = item.join(':');
+      if (dejaVu.has(k)) continue;     // pas deux fois le même calcul dans une partie
+      dejaVu.add(k); pris++;
+      liste.push(construireQuestion(type, item));
+    }
+  });
+  return melange(liste);
+}
+
+/* ---------- Correction complète ---------- */
+function cheminHTML(q) {
+  const { n, a, b, bonne, type } = q, N = n * a;
+  let s = `${n} × ${fracHTML(a, b)} = ${fracHTML(N, b)}`;
+  if (type !== 'direct') s += ` = ${repHTML(bonne)}`;
+  return s;
+}
+function explicationHTML(q) {
+  const { n, a, b, type } = q, N = n * a, qq = Math.floor(N / b), r = N % b, g = pgcd(N, b);
+  let t = `On multiplie <strong>seulement le numérateur</strong> : ${n} × ${a} = ${N}. Les parts restent des ${nomParts(b)}.`;
+  if (type === 'mixte') t += ` Puis on sort les unités : dans ${N}, il y a ${qq} fois ${b} (${qq} × ${b} = ${qq * b}) et il reste ${r}.`;
+  if (type === 'simplifie') t += b / g === 1
+    ? ` Puis on simplifie : ${N} ÷ ${b} = ${N / b}, donc ${fracHTML(N, b)} = ${N / b} unités.`
+    : ` Puis on simplifie : on divise le numérateur <strong>et</strong> le dénominateur par ${g}.`;
+  return t;
+}
+
+/* ---------- Écrans ---------- */
+function ecran(id) { document.querySelectorAll('.ecran').forEach(e => e.classList.toggle('actif', e.id === id)); window.scrollTo(0, 0); }
+
+function afficherAccueil() {
+  fini = true;
+  const ex = [[[4,2,3], F(8,3)], [[4,2,3], M(2,2,3)], [[5,3,20], F(3,4)]];
+  document.getElementById('exemples').innerHTML = ex.map(([[n, a, b], r]) =>
+    `<span class="ex">${n} × ${fracHTML(a, b)} = ${repHTML(r)}</span>`).join('');
+  const rec = lireRecord();
+  document.getElementById('record-accueil').innerHTML = rec !== null ? `<span class="record">⭐ Meilleur score : ${rec} / 10</span>` : '';
+  ecran('ecran-accueil');
+}
+
+function demarrer() {
+  questions = genererPartie(); index = 0; score = 0; resultats = []; sauve = false; fini = false;
+  ecran('ecran-jeu');
+  afficherQuestion();
+}
+
+function majDots() {
+  const box = document.getElementById('dots');
+  box.innerHTML = '';
+  questions.forEach((q, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === index ? ' current' : '') + (resultats[i] ? ' ' + resultats[i].etat : '');
+    box.appendChild(d);
+  });
+  document.getElementById('compteur').textContent = (index + 1) + ' / ' + questions.length;
+}
+
+function afficherQuestion() {
+  const q = questions[index];
+  essais = 0;
+  document.getElementById('ligne').innerHTML =
+    `<span class="entier">${q.n}</span>${fois}${fracHTML(q.a, q.b)}${egal}<span class="inconnue">?</span>`;
+  const box = document.getElementById('choix');
+  box.innerHTML = '';
+  q.options.forEach((o, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'rep';
+    btn.innerHTML = `<span class="lettre">${'ABCD'[i]}</span>${repHTML(o.r)}`;
+    btn.onclick = () => choisir(i);
+    box.appendChild(btn);
+  });
+  const msg = document.getElementById('message');
+  msg.className = 'message'; msg.innerHTML = '';
+  document.getElementById('calc-card').classList.remove('correct');
+  document.getElementById('btn-suivant').hidden = true;
+  dessiner();
+  majDots();
+}
+
+function choisir(i) {
+  const q = questions[index], o = q.options[i];
+  const boutons = [...document.querySelectorAll('#choix .rep')];
+  const msg = document.getElementById('message');
+  if (boutons[i].disabled) return;
+
+  if (o.bonne) {
+    if (essais === 0) score++;
+    resultats[index] = { etat: essais === 0 ? 'correct' : 'corrige', q };
+    boutons[i].classList.add('ok');
+    boutons.forEach((b, k) => { b.disabled = true; if (k !== i && !b.classList.contains('ko')) b.classList.add('eteint'); });
+    document.getElementById('calc-card').classList.add('correct');
+    msg.className = 'message bravo visible';
+    msg.innerHTML = (essais === 0 ? '🎉 Bravo, c\'est juste !' : '👍 C\'est juste maintenant ! (pas de point, mais tu as trouvé ton erreur)')
+      + `<div class="sol">${cheminHTML(q)}</div><div class="expl">${explicationHTML(q)}</div>`;
+    finQuestion();
+    return;
+  }
+
+  essais++;
+  boutons[i].classList.add('ko');
+  boutons[i].disabled = true;
+  if (essais === 1) {
+    msg.className = 'message indice visible';
+    msg.innerHTML = `🤔 ${o.expl}<br><small>Choisis une autre réponse.</small>`;
+  } else {
+    resultats[index] = { etat: 'incorrect', q };
+    const iBonne = q.options.findIndex(x => x.bonne);
+    boutons.forEach((b, k) => { b.disabled = true; if (k === iBonne) b.classList.add('ok'); else if (!b.classList.contains('ko')) b.classList.add('eteint'); });
+    msg.className = 'message correction visible';
+    msg.innerHTML = `❌ ${o.expl}<hr>Voici la correction :<div class="sol">${cheminHTML(q)}</div><div class="expl">${explicationHTML(q)}</div>`;
+    finQuestion();
+  }
+}
+
+function finQuestion() {
+  const s = document.getElementById('btn-suivant');
+  s.hidden = false;
+  s.textContent = index === questions.length - 1 ? 'Voir mon score →' : 'Suivant →';
+  majDots();
+  s.focus({ preventScroll: true });
+}
+
+function suivant() {
+  index++;
+  if (index >= questions.length) afficherScore(); else afficherQuestion();
+}
+
+// Clavier : 1-4 ou A-D pour choisir, Entrée pour passer à la suite
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('ecran-jeu').classList.contains('actif')) return;
+  const k = e.key.toUpperCase(), pos = '1234'.indexOf(k) >= 0 ? '1234'.indexOf(k) : 'ABCD'.indexOf(k);
+  if (pos >= 0 && k.length === 1 && document.getElementById('btn-suivant').hidden) { choisir(pos); e.preventDefault(); }
+});
+
+/* ---------- Dessin d'aide : les parts rangées dans des unités ---------- */
+function basculerDessin() { dessinOuvert = !dessinOuvert; dessiner(); }
+function dessiner() {
+  const box = document.getElementById('dessin'), btn = document.getElementById('btn-dessin');
+  btn.classList.toggle('ouverte', dessinOuvert);
+  box.classList.toggle('visible', dessinOuvert);
+  if (!dessinOuvert || !questions[index]) { box.innerHTML = ''; return; }
+  const { n, a, b } = questions[index], N = n * a, U = Math.max(1, Math.ceil(N / b));
+  const L = 360, H = 26, X = 70, G = 8, w = L / b;
+  const couleurs = ['#5B4FCF', '#2ec27e'];
+  let svg = `<svg viewBox="0 0 ${X + L + 10} ${U * (H + G) + 4}" xmlns="http://www.w3.org/2000/svg" font-family="Nunito, sans-serif">`;
+  for (let u = 0; u < U; u++) {
+    const y = 2 + u * (H + G);
+    const dansUnite = Math.min(b, N - u * b);
+    const etiquette = dansUnite === b ? '1 unité' : `${dansUnite}/${b}`;
+    svg += `<text x="${X - 10}" y="${y + H / 2 + 5}" text-anchor="end" font-size="14" font-weight="900" fill="#1A1A2E">${etiquette}</text>`;
+    for (let i = 0; i < b; i++) {
+      const p = u * b + i, plein = p < N, groupe = Math.floor(p / a);
+      svg += `<rect x="${X + i * w}" y="${y}" width="${w}" height="${H}" fill="${plein ? couleurs[groupe % 2] : '#fff'}" fill-opacity="${plein ? 0.85 : 1}" stroke="#1A1A2E" stroke-width="1.2"/>`;
+    }
+  }
+  svg += `</svg>`;
+  box.innerHTML = svg + `<div class="note">${n} fois ${a}/${b} : chaque couleur est un paquet de ${a} ${nomParts(b)}. On range les parts dans des unités de ${b} ${nomParts(b)}.</div>`;
+}
+
+/* ---------- Score final ---------- */
+function afficherScore() {
+  ecran('ecran-score');
+  const total = questions.length, pct = Math.round(score / total * 100);
+  ecrireRecord(score);
+  document.getElementById('final-score').textContent = `${score} / ${total}`;
+  const em = document.getElementById('final-emoji'), ti = document.getElementById('final-title'), msg = document.getElementById('final-msg');
+  if (score === total) { em.textContent = '🏆'; ti.textContent = 'Sans faute !'; msg.textContent = 'Tu reconnais une bonne réponse même quand elle est écrite autrement.'; confettis(); }
+  else if (pct >= 75) { em.textContent = '⭐'; ti.textContent = 'Très bien !'; msg.textContent = `${pct} % de réussite. Regarde bien tes erreurs ci-dessous.`; }
+  else if (pct >= 50) { em.textContent = '👍'; ti.textContent = 'Pas mal !'; msg.textContent = `${pct} % de réussite. Recommence pour t'améliorer.`; }
+  else { em.textContent = '💪'; ti.textContent = 'Il faut encore t\'entrainer'; msg.textContent = `${pct} % de réussite. Rappel : on multiplie seulement le numérateur, le dénominateur ne change pas.`; }
+
+  if (!sauve && window.parent && window.parent !== window && typeof window.parent.saveResult === 'function') {
+    sauve = true;
+    try {
+      window.parent.saveResult({
+        activity: ID_ACTIVITE,
+        bookTitle: 'Multiplication de fractions — QCM',
+        score, total, pct,
+        date: new Date().toLocaleDateString('fr-BE'),
+        time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+      });
+    } catch (e) { console.warn('Erreur sauvegarde', e); }
+  }
+  const det = document.getElementById('final-details');
+  det.innerHTML = '';
+  resultats.forEach((r, i) => {
+    const row = document.createElement('div');
+    row.className = 'score-row ' + r.etat;
+    const tag = r.etat === 'correct' ? '✅' : r.etat === 'corrige' ? '🟠 2e essai' : '❌';
+    row.innerHTML = `<span class="sol"><span class="num">${i + 1}.</span>${cheminHTML(r.q)}</span><span class="tag">${tag}</span>`;
+    det.appendChild(row);
+  });
+}
+
+function confettis() {
+  const cols = ['#5B4FCF', '#1A9E75', '#D94F3D', '#C97B1A', '#1A6FA0', '#C7C2F5'];
+  for (let i = 0; i < 70; i++) {
+    const c = document.createElement('div'); c.className = 'confetti';
+    const t = 6 + Math.random() * 7;
+    Object.assign(c.style, { left: Math.random() * 100 + 'vw', width: t + 'px', height: t + 'px', background: cols[i % cols.length], animationDelay: Math.random() * 1.2 + 's', animationDuration: 1.6 + Math.random() * 1.8 + 's' });
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 4500);
+  }
+}
+
+// Quitter l'écran dans le site = retour à l'accueil
+window.lcmlOnLeave = function () { afficherAccueil(); };
+afficherAccueil();
+</script>
+<script src="../lcml_copyright.js"></script>
+</body>
+</html>
