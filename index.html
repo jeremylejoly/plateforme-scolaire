@@ -2446,6 +2446,17 @@ input[type=text].calc-input.incorrect {
 }
 .pt-cat-header .pt-toggle { margin-left: auto; font-size: 12px; color: var(--muted); transition: transform .2s; }
 .pt-cat-header.collapsed .pt-toggle { transform: rotate(-90deg); }
+.pt-section { margin-bottom: 8px; }
+.pt-acc-h { display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:10px 14px; border:2px solid var(--border); border-radius:12px; background:var(--surface); cursor:pointer; user-select:none; }
+.pt-acc-h:hover { border-color:var(--purple); background:var(--bg); }
+.pt-acc-h.open { border-color:var(--purple); border-bottom-left-radius:0; border-bottom-right-radius:0; }
+.pt-acc-h:focus-visible { outline:3px solid var(--purple); outline-offset:2px; }
+.pt-acc-chev { width:14px; font-size:14px; color:var(--purple); flex-shrink:0; }
+.pt-acc-name { font-size:15px; font-weight:800; color:var(--text); }
+.pt-acc-bulk { margin-left:auto; display:flex; gap:6px; }
+.pt-acc-bulk button { height:30px; padding:0 10px; border-radius:8px; border:1.5px solid var(--border); background:var(--surface); font-family:inherit; font-size:12.5px; font-weight:700; color:var(--text); cursor:pointer; }
+.pt-acc-bulk button:hover { border-color:var(--purple); color:var(--purple); }
+.pt-sec-body { border:2px solid var(--purple); border-top:none; border-radius:0 0 12px 12px; padding:6px 4px; }
 .pt-sub-header {
   font-size: 12px; font-weight: 700; color: var(--purple);
   text-transform: uppercase; letter-spacing: .06em;
@@ -36518,8 +36529,19 @@ async function _renderPlanTravailInto(el) {
       </div>`;
     cat.groups.forEach(g => {
       html += `<div class="pt-group" data-cat="${cat.key}" data-grp="${g.key}">`;
-      g.sections.forEach(section => {
-        html += `<div class="pt-section"><div class="pt-sub-header">${section.sub}</div>`;
+      g.sections.forEach((section, si) => {
+        const secKey = ptKey(cat.key + '__' + g.key + '__' + si + '__' + section.sub);
+        html += `<div class="pt-section" data-sec="${secKey}">
+          <div class="pt-acc-h" role="button" tabindex="0" aria-expanded="false" onclick="ptToggleSec('${secKey}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();ptToggleSec('${secKey}');}">
+            <span class="pt-acc-chev" aria-hidden="true">▸</span>
+            <span class="pt-acc-name">${section.sub}</span>
+            <span class="pt-nav-count" data-count-sec="${secKey}"></span>
+            <span class="pt-acc-bulk" onclick="event.stopPropagation()" onkeydown="event.stopPropagation()">
+              <button type="button" onclick="ptSecSelectAll('${secKey}', true)" title="Ajouter au plan tous les exercices de cette rubrique">Tout cocher</button>
+              <button type="button" onclick="ptSecSelectAll('${secKey}', false)" title="Retirer du plan tous les exercices de cette rubrique">Tout décocher</button>
+            </span>
+          </div>
+          <div class="pt-sec-body" style="display:none">`;
         section.items.forEach(item => {
           const isMenuEntry = PLAN_MENU_IDS.has(item.id);
           if (isMenuEntry && !ptIsChecked(item.id)) return; // thème entier : affiché seulement s'il est déjà coché
@@ -36535,7 +36557,7 @@ async function _renderPlanTravailInto(el) {
             <button type="button" class="pt-item-preview-btn" onclick="ptTeacherPreviewItem('${item.id}', event)" title="Voir l'activité en direct">👁️ Voir l'activité</button>
           </div>`;
         });
-        html += `</div>`;
+        html += `</div></div>`;
       });
       html += `</div>`;
     });
@@ -36796,6 +36818,24 @@ function _ptRoot() {
   return full || tab;
 }
 
+// Catalogue en accordéon (25/11/2026, comme la liste des activités) : les rubriques sont fermées,
+// on clique sur une rubrique pour voir ses exercices. Recherche ou « seulement les cochés » → tout ouvert.
+let ptOpenSecs = {};
+function ptToggleSec(secKey) { ptOpenSecs[secKey] = !ptOpenSecs[secKey]; ptApplyNav(); }
+function ptSecSelectAll(secKey, val) {
+  const root = _ptRoot(); if (!root) return;
+  const sec = root.querySelector('.pt-section[data-sec="' + secKey + '"]'); if (!sec) return;
+  sec.querySelectorAll('.pt-item').forEach(it => {
+    const cb = it.querySelector('input[type=checkbox]');
+    if (cb) cb.checked = val;
+    _ptSetChecked(it.dataset.id, val);
+  });
+  _ptRefreshCountLabel();
+  if (ptNavOnlyChecked) ptApplyNav(); else ptUpdateCounts();
+  ptRenderPlanCard();
+}
+window.ptToggleSec = ptToggleSec; window.ptSecSelectAll = ptSecSelectAll;
+
 function ptNavSelectCat(catKey) {
   if (ptNavCat === catKey && !ptNavGrp) { ptNavCat = null; }
   else { ptNavCat = catKey; }
@@ -36826,13 +36866,15 @@ function ptApplyNav(rootEl) {
   const allScope = ptNavCat === 'all' || !!q || (!ptNavCat && ptNavOnlyChecked); // la recherche porte sur tous les sujets
 
   root.querySelectorAll('.pt-subject-tile').forEach(b => b.classList.toggle('active', b.dataset.cat === ptNavCat));
+  ptNavGrp = null; // les pastilles de sous-sujets sont remplacées par les rubriques en accordéon
+  const forceOpen = !!q || ptNavOnlyChecked;
   root.querySelectorAll('.pt-nav-groups').forEach(g => {
-    const show = g.dataset.groupsOf === ptNavCat;
-    g.style.display = show ? 'flex' : 'none';
+    const show = false;
+    g.style.display = 'none';
     if (show) g.querySelectorAll('.pt-grp-chip').forEach(c => c.classList.toggle('active', (c.dataset.grp || null) === ptNavGrp));
   });
 
-  let visibleCount = 0;
+  let visibleCount = 0, nSecs = 0, shownItems = 0;
   root.querySelectorAll('.pt-category').forEach(catEl => {
     const catOk = browsing && (allScope || catEl.dataset.cat === ptNavCat);
     let catVisible = 0;
@@ -36849,6 +36891,11 @@ function ptApplyNav(rootEl) {
           if (ok) secVisible++;
         });
         secEl.style.display = secVisible ? '' : 'none';
+        const open = forceOpen || !!ptOpenSecs[secEl.dataset.sec];
+        const body = secEl.querySelector('.pt-sec-body'); if (body) body.style.display = open ? '' : 'none';
+        const h = secEl.querySelector('.pt-acc-h');
+        if (h) { h.setAttribute('aria-expanded', open); h.classList.toggle('open', open); const ch = h.querySelector('.pt-acc-chev'); if (ch) ch.textContent = open ? '▾' : '▸'; }
+        if (secVisible) { nSecs++; if (open) shownItems += secVisible; }
         grpVisible += secVisible;
       });
       grpEl.style.display = grpVisible ? '' : 'none';
@@ -36863,7 +36910,7 @@ function ptApplyNav(rootEl) {
   const noRes = root.querySelector('#pt-no-result');
   if (noRes) noRes.style.display = (browsing && visibleCount === 0) ? '' : 'none';
   const scope = root.querySelector('#pt-scope-label');
-  if (scope) scope.textContent = browsing ? `${visibleCount} exercice(s) affiché(s)` : '';
+  if (scope) scope.textContent = !browsing ? '' : (shownItems ? `${shownItems} exercice(s) affiché(s)` : `${nSecs} rubrique(s) : clique sur une rubrique pour voir ses exercices`);
   ptUpdateCounts();
 }
 
@@ -36884,6 +36931,12 @@ function ptUpdateCounts() {
     const c = e.dataset.countCat;
     e.textContent = c === 'all' ? `${allChk}/${allTot}` : `${catChk[c] || 0}/${catTot[c] || 0}`;
     e.classList.toggle('has-checked', (c === 'all' ? allChk : (catChk[c] || 0)) > 0);
+  });
+  root.querySelectorAll('.pt-section[data-sec]').forEach(secEl => {
+    const items = secEl.querySelectorAll('.pt-item input[type=checkbox]');
+    const chk = Array.from(items).filter(cb => cb.checked).length;
+    const e = secEl.querySelector('[data-count-sec]');
+    if (e) { e.textContent = `${chk}/${items.length}`; e.classList.toggle('has-checked', chk > 0); }
   });
   root.querySelectorAll('[data-count-grp]').forEach(e => {
     const g = e.dataset.countGrp;
@@ -36960,10 +37013,13 @@ function ptToggleItem(id, checked) {
 function planSelectAll(val) {
   const root = _ptRoot();
   if (!root) return;
-  const visible = Array.from(root.querySelectorAll('.pt-item')).filter(it => it.style.display !== 'none' && it.closest('.pt-category').style.display !== 'none');
+  const visible = Array.from(root.querySelectorAll('.pt-item')).filter(it => {
+    const body = it.closest('.pt-sec-body');
+    return it.style.display !== 'none' && it.closest('.pt-category').style.display !== 'none' && (!body || body.style.display !== 'none');
+  });
   if (!visible.length) {
     const scope = root.querySelector('#pt-scope-label');
-    if (scope) scope.textContent = '👆 Choisissez d’abord un sujet : seuls les exercices affichés sont cochés ou décochés.';
+    if (scope) scope.textContent = '👆 Ouvre d’abord une rubrique : seuls les exercices affichés sont cochés ou décochés.';
     return;
   }
   visible.forEach(it => {
