@@ -2610,6 +2610,9 @@ input[type=text].calc-input.incorrect {
 .pt-grid-name button { background:none; border:none; padding:2px 4px; font:inherit; font-weight:800; color:var(--purple); cursor:pointer; text-align:left; }
 .pt-grid-cell { font-size:15px; }
 .pt-grid-pct { font-size:10px; font-weight:800; border-radius:6px; padding:0 3px; }
+.pt-grid .pt-grid-prio { background-color:#FFF6D6; }
+.pt-grid thead th.pt-grid-prio { background:#FFE9A8; }
+.pt-grid-star { color:#B07A00; font-weight:800; font-size:11px; }
 .pt-grid-na { background:repeating-linear-gradient(45deg,var(--bg),var(--bg) 4px,transparent 4px,transparent 8px); }
 .pt-section-count {
   font-size: 11px; font-weight: 700; padding: 2px 7px;
@@ -38179,15 +38182,22 @@ async function ptRenderResumeInto(el) {
       if (ptGridMode !== 'class') sums[st.name].ind.forEach(r => colSet.add(r.id));
       if (ptGridMode !== 'ind') sums[st.name].cls.forEach(r => colSet.add(r.id));
     });
-    const cols = [...colSet].sort((a, b) => cIdx[a].order - cIdx[b].order);
+    // Exercices prioritaires d'abord (25/11/2026) : priorité du plan de la classe et/ou d'un plan individuel, selon la vue
+    const gridPrio = id => {
+      if (ptGridMode !== 'ind' && ptIsPrio('class', id)) return true;
+      if (ptGridMode !== 'class') return students.some(st => ptIsPrio(st.name, id) && sums[st.name].ind.some(r => r.id === id));
+      return false;
+    };
+    const prioSet = new Set([...colSet].filter(gridPrio));
+    const cols = [...colSet].sort((a, b) => (prioSet.has(a) ? 0 : 1) - (prioSet.has(b) ? 0 : 1) || cIdx[a].order - cIdx[b].order);
     const mbtn = (m, t) => `<button type="button" class="pt-grp-chip ${ptGridMode === m ? 'active' : ''}" onclick="ptSetGridMode('${m}')">${t}</button>`;
     html += `<div class="pt-res-toolbar">${mbtn('ind', '👤 Travail individuel')}${mbtn('class', '🌍 Plan de la classe')}${mbtn('all', '📚 Tout')}${refreshBtn}</div>
-      <div class="pt-res-legend">✅ fait (avec le score) · ⏳ commencé, pas fini · ⬜ pas encore fait · case grise : pas donné à cet élève. Clique sur un prénom pour le détail.</div>`;
+      <div class="pt-res-legend">${prioSet.size ? '<span class="pt-grid-star">★</span> à faire en priorité (premières colonnes) · ' : ''}✅ fait (avec le score) · ⏳ commencé, pas fini · ⬜ pas encore fait · case grise : pas donné à cet élève. Clique sur un prénom pour le détail.</div>`;
     if (!cols.length) {
       html += '<div class="card pt-nav-empty">Aucun exercice à afficher pour ce choix.</div>';
     } else {
       html += '<div class="pt-grid-wrap"><table class="pt-grid"><thead><tr><th class="pt-grid-name">Élève</th>';
-      cols.forEach(id => { const it = cIdx[id].item; html += `<th title="${ptEsc(it.label.replace(/<[^>]+>/g, ''))}"><div class="pt-grid-head"><span class="pt-item-icon">${it.icon || ''}</span><span>${it.label}</span></div></th>`; });
+      cols.forEach(id => { const it = cIdx[id].item; const pr = prioSet.has(id); html += `<th class="${pr ? 'pt-grid-prio' : ''}" title="${pr ? 'Prioritaire : ' : ''}${ptEsc(it.label.replace(/<[^>]+>/g, ''))}"><div class="pt-grid-head">${pr ? '<span class="pt-grid-star">★ Priorité</span>' : ''}<span class="pt-item-icon">${it.icon || ''}</span><span>${it.label}</span></div></th>`; });
       html += '</tr></thead><tbody>';
       students.forEach(st => {
         const sum = sums[st.name];
@@ -38203,12 +38213,13 @@ async function ptRenderResumeInto(el) {
         html += `<tr><th class="pt-grid-name"><button type="button" onclick="ptOpenResumeStudent(${q})">${ptEsc(st.name)}</button></th>`;
         cols.forEach(id => {
           const s = map[id];
-          if (!s) { html += '<td class="pt-grid-na"></td>'; return; }
+          const pr = prioSet.has(id);
+          if (!s) { html += `<td class="pt-grid-na${pr ? ' pt-grid-prio' : ''}"></td>`; return; }
           let cell;
           if (s.state === 'done' && s.last) cell = `✅<div class="pt-grid-pct ${ptScoreClass(s.last.pct || 0)}">${s.last.pct}%</div>`;
           else if (ptIsCompleted(s.state)) cell = '✅';
           else cell = s.state === 'started' ? '⏳' : '⬜';
-          html += `<td class="pt-grid-cell">${cell}</td>`;
+          html += `<td class="pt-grid-cell${pr ? ' pt-grid-prio' : ''}">${cell}</td>`;
         });
         html += '</tr>';
       });
