@@ -2775,7 +2775,9 @@
                : `<span class="rx-pill" style="background:#f3f4f6;color:#4b5563">pas fait</span>`;
     }
 
-    // Un questionnaire réussi = livre lu, « lu le » = date du questionnaire, et l'exemplaire est libéré.
+    // Un questionnaire réussi = livre lu, « lu le » = date du questionnaire.
+    // L'exemplaire N'EST PAS libéré : s'il était « en cours » chez l'élève, il reste « à rendre »
+    // tant que l'enseignant n'a pas cliqué « 📥 Livre rendu ».
     function rxNextOrder(sid) {
       let max = 0, n = 0;
       const r = getStudentReadings(sid);
@@ -2802,7 +2804,7 @@
             timestamp: (rec && rec.timestamp) || q.ts,
             note: (rec && rec.note) || ''
           };
-          if (wasDone && rec.notReturned) state.readings[sid][bid].notReturned = true;
+          if ((wasDone && rec.notReturned) || (rec && rec.status === 'reading')) state.readings[sid][bid].notReturned = true;
           changed = true;
         });
       });
@@ -2845,7 +2847,7 @@
         if (borrower && borrower.student.id !== sid) {
           alert(borrower.toReturn
             ? `« ${book.title} » n'est pas disponible : ${borrower.student.name} l'a lu (le ${rxFmtDate(borrower.data.finishDate)}) mais ne l'a pas encore rendu.\n\nQuand il le rapporte, cliquez « 📥 Livre rendu » sur sa fiche.`
-            : `« ${book.title} » n'est pas disponible : il est chez ${borrower.student.name} depuis le ${rxFmtDate(borrower.data.borrowDate)}.\n\nIl redeviendra disponible quand ${borrower.student.name} l'aura lu (questionnaire fait) ou rendu.`);
+            : `« ${book.title} » n'est pas disponible : il est chez ${borrower.student.name} depuis le ${rxFmtDate(borrower.data.borrowDate)}.\n\nIl redeviendra disponible quand vous aurez cliqué « 📥 Livre rendu » (ou « Rendu sans être lu »).`);
           return false;
         }
         if (rec && rec.status === 'completed' && !confirm(`${student.name} a déjà lu « ${book.title} ». Le remettre « en cours » ?`)) return false;
@@ -2865,7 +2867,8 @@
           timestamp: (rec && rec.timestamp) || Date.now(),
           note: (rec && rec.note) || ''
         };
-        if (rec && rec.status === 'completed' && rec.notReturned) state.readings[sid][bid].notReturned = true;
+        // Passer de « en cours » à « lu » ne veut pas dire que le livre est rendu : il reste « à rendre »
+        if ((rec && rec.status === 'completed' && rec.notReturned) || (rec && rec.status === 'reading')) state.readings[sid][bid].notReturned = true;
       } else {
         if (!rec) return true;
         if (q) { alert(`${student.name} a fait le questionnaire de « ${book.title} » : ce livre reste dans ses lectures.\n\nPour l'annuler, supprimez ou annulez la tentative dans Gestion › Résultats.`); return false; }
